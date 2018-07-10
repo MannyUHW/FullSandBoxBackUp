@@ -1,0 +1,306 @@
+<apex:page standardController="MCL_Report__c" extensions="MCLReportPrintController" showHeader="false"
+           sidebar="false" applyHtmlTag="true" standardStylesheets="false" title="{!reportConfig.Name}" cache="false">
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/> -->
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="{!$Resource.MCL_Print_CSS}" type="text/css" media="print" />
+
+    <!-- AIzaSyD5ZL9YmEMeqCkdNUeeh1BdbkE3rXQtMw8 -->
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key={!googleMapsAPIKey}">
+    </script>
+
+    <style>
+        {!reportConfig.Custom_CSS__c}
+    </style>
+
+    <style>
+
+        @media print{@page {size: {!reportConfig.Orientation__c}}}
+
+        body {
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+        #test {
+            display: none;
+        }
+        /* automatically add page breaks after each page div */
+        .page {
+            page-break-after: always;
+        }
+        /* unless it's the last page */
+        .page:last-child {
+            page-break-after: avoid;
+        }
+        /* a column on a page */
+        .col {
+            border-left: 1px solid #CCCCCC;
+            border-right: 1px solid #CCCCCC;
+            height: 100%;
+            margin: -1px;
+            display: inline-block;
+            vertical-align: top;
+        }
+        /* record divs encapsulate contact records */
+        div.record {
+            border-bottom: 1px solid #999999;
+            width: 100%;
+        }
+        /* first record gets a top border; all ensuing records get bottom borders */
+        div.record:first-child {
+            border-top: 1px solid #999999;
+
+        }
+        /* prevent double borders on edges of pages since columns have left and right borders */
+        .page:first-child {
+            border-left:  none;
+        }
+        .page:last-child {
+            border-right:  none;
+        }
+        div.header {
+            padding: 2px;
+        }
+        .header-1 {
+            background-color: #141414;
+            color: #FFFFFF;
+        }
+        .header-2 {
+            background-color: #3D3D3D;
+            color: #FFFFFF;
+        }
+        .header-3 {
+            background-color: #666666;
+            color: #FFFFFF;
+        }
+        .header-4 {
+            background-color: #8F8F8F;
+            color: #000000;
+        }
+        .header-5 {
+            background-color: #B8B8B8;
+            color: #000000;
+        }
+        .header-6 {
+            background-color: #D1D1D1;
+            color: #000000;
+        }
+        .header-7 {
+            background-color: #DBDBDB;
+            color: #000000;
+        }
+        dt {
+            font-weight: 700;
+        }
+        .map {
+        }
+        #map-spinner {
+            display: none;
+            z-index: 100;
+            border: 2px solid black;
+            padding: 10px;
+            width: 400px;
+            position: absolute;
+            top: 30px;
+            left:50%;
+            margin-left: -200px;
+            background: #FFFFFF;
+        }
+    </style>
+
+    <script>
+
+        function toArray(s) {
+            if (!s || s.length == 0) return [];
+            return s.split(",").map(function (val) { return val.replace("\,", ",");})
+        }
+
+        function firstChar(s) {
+            return !s || s.length < 2 ? s : s.substring(0, 1);
+        }
+
+        /*\
+         |*|
+         |*|  :: cookies.js ::
+         |*|
+         |*|  A complete cookies reader/writer framework with full unicode support.
+         |*|
+         |*|  Revision #1 - September 4, 2014
+         |*|
+         |*|  https://developer.mozilla.org/en-US/docs/Web/API/document.cookie
+         |*|  https://developer.mozilla.org/User:fusionchess
+         |*|
+         |*|  This framework is released under the GNU Public License, version 3 or later.
+         |*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+         |*|
+         |*|  Syntaxes:
+         |*|
+         |*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+         |*|  * docCookies.getItem(name)
+         |*|  * docCookies.removeItem(name[, path[, domain]])
+         |*|  * docCookies.hasItem(name)
+         |*|  * docCookies.keys()
+         |*|
+         \*/
+
+        var docCookies = {
+            getItem: function (sKey) {
+                if (!sKey) { return null; }
+                return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+            },
+            setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+                if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+                var sExpires = "";
+                if (vEnd) {
+                    switch (vEnd.constructor) {
+                        case Number:
+                            sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+                            break;
+                        case String:
+                            sExpires = "; expires=" + vEnd;
+                            break;
+                        case Date:
+                            sExpires = "; expires=" + vEnd.toUTCString();
+                            break;
+                    }
+                }
+                document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+                return true;
+            },
+            removeItem: function (sKey, sPath, sDomain) {
+                if (!this.hasItem(sKey)) { return false; }
+                document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+                return true;
+            },
+            hasItem: function (sKey) {
+                if (!sKey) { return false; }
+                return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+            },
+            keys: function () {
+                var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+                for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+                return aKeys;
+            }
+        };
+
+        var initData = {
+            sfSessionId : "{!$Api.Session_Id}",
+            googleMapsAPIKey : "{!googleMapsAPIKey}",
+            mclReportId: "{!reportConfig.Id}",
+            employer: "{!reportConfig.Employer__c}",
+            columns: {!reportConfig.Columns__c},
+            rows: {!reportConfig.Rows__c},
+            rowHeight: {!reportConfig.Row_Height__c},
+            selectedBUs : toArray("{!reportConfig.Bargaining_Units__c}"),
+            selectedJobClasses : toArray("{!reportConfig.Job_Classes__c}"),
+            selectedDepartments : toArray("{!reportConfig.Departments__c}"),
+            surveyQuestions : [],
+            selectedSurveyQuestionCode : "{!reportConfig.Filter_Survey_Question__r.Survey_Code__c}",
+            selectedSurveyResponse : firstChar("{!reportConfig.Filter_Survey_Response__c}"),
+            mapZoom : "{!reportConfig.Map_Zoom_Level__c}",
+            mapGamma : "{!reportConfig.Map_Gamma__c}",
+            mapWidth : "{!reportConfig.Map_Width__c}",
+            mapHeight : "{!reportConfig.Map_Height__c}",
+            prefilterCurrentBu : "{!reportConfig.Prefilter_By_Current_BU__c}",
+            prefilterReportTags : "{!reportConfig.Prefilter_Report_Tags__c}",
+            addSOQLCriteria : "{!reportConfig.Add_SOQL_Criteria__c}",
+            allBUs : [],
+            allJobClasses : [],
+            allDepartments : [],
+            noResponsesChecked : "{!reportConfig.Records_with_no_responses__c}",
+            noResponsesList    : "{!reportConfig.Code_List__c}",
+            otherMode : "{!$CurrentPage.parameters.othermode}"
+        };
+
+    </script>
+
+    <script id="contact-template" type="text/x-handlebars-template">
+        {!reportConfig.Template__c}
+    </script>
+
+    <div class="header-page page">
+
+        <button type="button" id="print-button" class="btn btn-primary btn-lg" onClick="javascript:window.print()">Print</button>
+
+        <div id="map-spinner">
+            <span style="font-size: 3em">Loading maps </span> <i class="fa fa-spinner fa-spin fa-5x"></i>
+        </div>
+
+        <div class="page-header">
+            <h1>{!reportConfig.Name}</h1>
+            <h3><div id="PrintSomeUsed"></div></h3>
+            <small>
+                <span id="report-date"></span>
+            </small>
+        </div>
+
+        <dl class="dl-horizontal">
+            <dt>Total Records</dt>
+            <dd id="num-records"></dd>
+
+            <dt>Employer</dt>
+            <dd id="report-filters-bus">
+                {!reportConfig.Employer__r.Name}
+            </dd>
+            <dt>Campaign</dt>
+            <dd id="report-filters-bus">
+                {!reportConfig.UHW_Campaign__r.Name}
+            </dd>
+            <dt>Bargaining Units</dt>
+            <dd id="report-filters-bus">
+                {!reportConfig.Bargaining_Units__c}
+            </dd>
+            <dt>Prefilter By Current BU</dt>
+            <dd id="report-filters-bus">
+                {!reportConfig.Prefilter_By_Current_BU__c}
+            </dd>
+            <dt>Departments</dt>
+            <dd id="report-filters-depts">
+                {!reportConfig.Departments__c}
+            </dd>
+            <dt>Additional SOQL Criteria</dt>
+            <dd id="report-filters-addsoql">
+                {!reportConfig.Add_SOQL_Criteria__c}
+            </dd>
+            <dt>Job Classes</dt>
+            <dd id="report-filters-job-classes">
+                {!reportConfig.Job_Classes__c}
+            </dd>
+            <dt class="report-filters-sq">Survey Question</dt>
+            <dd class="report-filters-sq">
+                {!reportConfig.Filter_Survey_Question__r.Name} : {!reportConfig.Filter_Survey_Response__c}
+            </dd>
+            <dt>Ignore Contacts with specific SR responses</dt>
+            <dd id="report-filters-ignore-flag">
+                {!reportConfig.Records_with_no_responses__c}
+            </dd>
+            <dt>SR Ignore Codes</dt>
+            <dd id="report-filters-ignore-list">
+                {!reportConfig.Code_List__c}
+            </dd>
+        </dl>
+    </div>
+    <hr/>
+    <div id="report">
+    </div>
+
+    <script>
+
+        var printSomeCount = parseInt(docCookies.getItem('MclPrintSomeCount'));
+        var printSomeUsed  = document.getElementById('PrintSomeUsed');
+        if(printSomeCount > 0) {
+            if(printSomeCount == 1)
+                printSomeUsed.innerHTML = "'Print Some' feature used to restict report to 1 record.";
+            else
+                printSomeUsed.innerHTML = "'Print Some' feature used to restict report to " + printSomeCount + " records."
+        }
+
+    </script>
+
+    <script src="{!$Resource.async_js}"></script>
+    <script src="{!$Resource.JQuery}"></script>
+    <script src="{!$Resource.handlebars_js}"></script>
+    <script src="{!$Resource.JSForce}"></script>
+    <script src="{!$Resource.MCL_Print_js}"></script>
+</apex:page>

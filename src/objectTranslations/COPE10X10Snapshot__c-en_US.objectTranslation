@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>COPE10X10Snaphot</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>COPE10X10Snapshot</value>
+    </caseValues>
+    <fields>
+        <help><!-- Actual Increase Amount --></help>
+        <label><!-- Actual Increase Amount --></label>
+        <name>Actual_Increase_Amount__c</name>
+    </fields>
+    <fields>
+        <help><!-- Amount --></help>
+        <label><!-- Amount --></label>
+        <name>Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE Card Origination --></label>
+        <name>COPE_Card_Origination__c</name>
+    </fields>
+    <fields>
+        <help><!-- COPE Pledge Amount --></help>
+        <label><!-- COPE Pledge Amount --></label>
+        <name>COPE_Pledge_Amount__c</name>
+    </fields>
+    <fields>
+        <help><!-- COPE Sign-Up ID (record id in COPE Sign-Up object) --></help>
+        <label><!-- COPE Sign-Up ID --></label>
+        <name>COPE_Sign_Up_ID__c</name>
+    </fields>
+    <fields>
+        <help><!-- COPE Sign-Up ID --></help>
+        <label><!-- COPE Sign-Up --></label>
+        <name>COPE_Sign_Up__c</name>
+    </fields>
+    <fields>
+        <help><!-- Card Number --></help>
+        <label><!-- Card Number --></label>
+        <name>Card_Number__c</name>
+    </fields>
+    <fields>
+        <help><!-- Collected by --></help>
+        <label><!-- Collected by --></label>
+        <name>Collected_by__c</name>
+    </fields>
+    <fields>
+        <help><!-- Coordinator --></help>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+    </fields>
+    <fields>
+        <help><!-- Date Card Collected --></help>
+        <label><!-- Date Card Collected --></label>
+        <name>Date_Card_Collected__c</name>
+    </fields>
+    <fields>
+        <help><!-- DistrictName --></help>
+        <label><!-- DistrictName --></label>
+        <name>DistrictName__c</name>
+    </fields>
+    <fields>
+        <help><!-- DivisionName --></help>
+        <label><!-- DivisionName --></label>
+        <name>DivisionName__c</name>
+    </fields>
+    <fields>
+        <help><!-- Division Type - includes the Division Unon-Wide --></help>
+        <label><!-- Division Type --></label>
+        <name>Division_Type__c</name>
+    </fields>
+    <fields>
+        <help><!-- EBoardSeats ID --></help>
+        <label><!-- EBoardSeats ID --></label>
+        <name>EBoardSeats_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- EboardEcom Contact Id --></label>
+        <name>EboardEcom_Contact_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- Eboard/Ecom --></help>
+        <label><!-- Eboard/Ecom --></label>
+        <name>Eboard_Ecom__c</name>
+    </fields>
+    <fields>
+        <help><!-- Eboard Seats --></help>
+        <label><!-- Eboard Seats --></label>
+        <name>Eboard_Seats__c</name>
+    </fields>
+    <fields>
+        <help><!-- Member Employer Name --></help>
+        <label><!-- Member Employer Name --></label>
+        <name>Member_Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Name --></label>
+        <name>Member_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Salesforce contact id for Member --></help>
+        <label><!-- Member SF Id --></label>
+        <name>Member_SF_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- Organizer --></help>
+        <label><!-- Organizer --></label>
+        <name>Organizer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Preactive COPE Signer Employer --></label>
+        <name>Preactive_COPE_Signer_Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Preactive COPE Signer --></label>
+        <name>Preactive_COPE_Signer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Director --></label>
+        <name>Regional_Director__c</name>
+    </fields>
+    <fields>
+        <label><!-- Revoke --></label>
+        <name>Revoke__c</name>
+    </fields>
+    <fields>
+        <help><!-- SeatName --></help>
+        <label><!-- SeatName --></label>
+        <name>SeatName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Snapshot Date --></label>
+        <name>Snapshot_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Title --></help>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Verified COPE Pledge Date --></label>
+        <name>Verified_COPE_Pledge_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Verified COPE Pledge --></help>
+        <label><!-- Verified COPE Pledge --></label>
+        <name>Verified_COPE_Pledge__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

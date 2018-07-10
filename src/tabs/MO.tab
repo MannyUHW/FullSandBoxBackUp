@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Mobile Organizer</description>
+    <icon>015i0000006FnhS</icon>
+    <label>MO</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom298: TV Widescreen</motif>
+    <page>MO_Main_Page</page>
+</CustomTab>

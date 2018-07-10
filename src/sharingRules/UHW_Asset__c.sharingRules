@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingOwnerRules>
+        <fullName>UHW_Asset_Finance</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>UHW Asset Finance</label>
+        <sharedTo>
+            <group>Finance_and_Accounting</group>
+        </sharedTo>
+        <sharedFrom>
+            <allInternalUsers></allInternalUsers>
+        </sharedFrom>
+    </sharingOwnerRules>
+    <sharingOwnerRules>
+        <fullName>UHW_Asset_IT</fullName>
+        <accessLevel>Edit</accessLevel>
+        <label>UHW Asset IT</label>
+        <sharedTo>
+            <group>IT</group>
+        </sharedTo>
+        <sharedFrom>
+            <allInternalUsers></allInternalUsers>
+        </sharedFrom>
+    </sharingOwnerRules>
+</SharingRules>

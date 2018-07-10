@@ -1,0 +1,125 @@
+<apex:page sidebar="false" showHeader="false" >
+<div align="center"><font size="+2" color="#481C60"><b>June 2nd Bus Location Lists</b></font></div>
+<br></br>
+<script language="JavaScript">
+if (sforce.one) {
+  document.write("<font color=\"orange\">The Data Group recommends you use Google Chrome Mobile, not Salesforce1 for the June 2nd App.  Copy the following URL into Google Chrome's address bar:<br/>");
+  document.write("&nbsp;<br/>");
+  document.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;https://uhw--c.na15.visual.force.com/apex/MO_J2_Choose_Bus_Loc<br/>");
+  document.write("&nbsp;<br/></font>");  
+}
+</script>
+<br></br>
+<br></br><font color="#481C60" size="+1">On-Site Registration</font><br></br>
+<ul>
+<li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=0">0. Providing Their Own Transportation</a></li><br></br>
+</ul>
+
+<br></br><br></br><font color="#481C60" size="+1">Fresno</font><br></br><ul>   <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=1">1. SEIU UHW BAKERSFIELD OFFICE; 5405 STOCKDALE HWY STE 207; BAKERSFIELD; 5:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=4">4. F.C.N.A (FRESNO CENTER FOR NEW AMERICANS); 4879 E. KINGS CANYON RD.; FRESNO; 6:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=5">5. F.I.R.M.; 1940 N FRESNO ST.; FRESNO; 6:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=7">7. SEIU UHW FRESNO OFFICE; 550 E SHAW AVE.; FRESNO; 6:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=8">8. MENDOTA LIBRARY; 1246 BELMONT AVE.; MENDOTA; 6:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=9">9. SANGER LIBRARY; 1812 7TH ST.; SANGER; 6:00 am;</a></li><br></br>
+</ul><br></br><br></br><font color="#481C60" size="+1">Los Angeles</font><br></br><ul>  <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=10">10. KAISER BALDWIN PARK; 1011 BALDWIN PARK BLVD; BALDWIN PARK; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=11">11. KAISER DOWNEY; 9400 E. ROSECRANS AVE; BELLFLOWER; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=12">12. PROVIDENCE ST JOSEPH MEDICAL CENTER; 501 S BUENA VISTA ST; BURBANK; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=13">13. HOLLYWOOD COMMUNITY HOSPITAL AT BMC; 3828 DELMAS TERRACE; CULVER CITY; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=14">14. CITY OF HOPE; 1500 E DUARTE RD; DUARTE; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=15">15. KAISER SOUTH BAY; 25825 S VERMONT AVE; HARBOR CITY; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=16">16. CENTINELA HOSPITAL MEDICAL CENTER; 555 E HARDY ST; INGLEWOOD; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=17">17. LAKEWOOD REGIONAL MEDICAL CENTER; 3700 E SOUTH ST; LAKEWOOD; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=18">18. ANTELOPE VALLEY HOSPITAL; 1600 WEST AVENUE J; LANCASTER; 5:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=19">19. KAISER ANTELOPE VALLEY; 43112 15th St. West; LANCASTER; 5:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=20">20. ST MARY MEDICAL CENTER LONG BEACH; 1050 LINDEN AVE; LONG BEACH; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=21">21. CALIFORNIA HOSPITAL MEDICAL CENTER; 1401 SOUTH GRAND AVE; LOS ANGELES; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=22">22. CEDARS SINAI MEDICAL CENTER; 8700 W BEVERLY BLVD; LOS ANGELES; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=24">24. HOLLYWOOD PRESBYTERIAN MED CTR; 1300 N VERMONT AVE; LOS ANGELES; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=25">25. ST VINCENT MEDICAL CENTER; 2131 WEST 3RD STREET; LOS ANGELES; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=26">26. KAISER LOS ANGELES GENERAL; 4867 SUNSET BLVD; LOS ANGELES; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=27">27. KAISER WEST LOS ANGELES; 6041 CADILLAC AVE; LOS ANGELES; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=28">28. SEIU UHW COMMERCE OFFICE; 5480 FERGUSON DRIVE; LOS ANGELES; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=29">29. ST FRANCIS MEDICAL CENTER; 3630 E IMPERIAL HWY; LYNWOOD; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=31">31. NORTHRIDGE HOSPITAL MEDICAL CENTER ROSCOE; 18300 ROSCOE BLVD; NORTHRIDGE; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=32">32. KAISER PANORAMA CITY; 13651 WILLARD STREET; PANORAMA CITY; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=33">33. PACIFICA HOSPITAL OF THE VALLEY; 9449 SAN FERNANDO RD; SUN VALLEY; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=35">35. KAISER WOODLAND HILLS; 5601 DE SOTO AVE; WOODLAND HILLS; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=36">36. WESTERN MEDICAL ANAHEIM; 1025 S ANAHEIM BLVD; ANAHEIM; 4:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=37">37. KAISER ANAHEIM (OC); 3400 E. LA PALMA AVE; ANAHEIM; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=38">38. GARDEN GROVE HOSPITAL &amp; MEDICAL CENTER; 12601 GARDEN GROVE BLVD; GARDEN GROVE; 4:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=40">40. JFK MEMORIAL HOSPITAL; 47111 MONROE ST; INDIO; 3:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=42">42. LOS ALAMITOS MEDICAL CENTER; 3751 KATELLA AVE; LOS ALAMITOS; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=43">43. TRI CITY MEDICAL CENTER; 4002 VISTA WAY; OCEANSIDE; 3:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=44">44. ST JOHNS REGIONAL MED CTR; 1600 NORTH ROSE AVE; OXNARD; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=45">45. DESERT REGIONAL MEDICAL CENTER; 1150 N INDIAN CANYON DR; PALM SPRINGS; 3:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=46">46. RIVERSIDE COMMUNITY HOSPITAL; 4445 MAGNOLIA AVE; RIVERSIDE; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=47">47. COMMUNITY HOSPITAL OF SAN BERNARDINO; 1805 MEDICAL CENTER DRIVE; SAN BERNARDINO; 4:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=48">48. ST BERNARDINE MEDICAL CENTER; 2101 N WATERMAN AVE; SAN BERNARDINO; 4:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=49">49. COASTAL COMMUNITIES HOSPITAL; 2701 S BRISTOL ST; SANTA ANA; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=50">50. MARIAN MEDICAL CENTER; 1400 EAST CHURCH ST; SANTA MARIA; 4:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=51">51. MENIFEE VALLEY MEDICAL CENTER; 28400 MC CALL BLVD; SUN CITY; 3:30 am;</a></li><br></br>
+</ul><br></br><br></br><font color="#481C60" size="+1">Oakland</font><br></br><ul>  <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=53">53. KAISER BERKELEY LAB; 1725 EASTSHORE HWY; BERKELEY; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=54">54. ALTA BATES SUMMIT MEDICAL CENTER; 350 HAWTHORNE AVE.; OAKLAND; 8:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=55">55. SUTTER ALTA BATES SUMMIT; 2450 ASHBY AVENUE; OAKLAND; 8:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=56">56. KAISER OAKLAND; 3600 Broadway; OAKLAND; 8:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=57">57. SEIU-UHW OAKLAND OFFICE; 560 THOMAS L BERKLEY WAY; OAKLAND; 8:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=88">88. EDEN MEDICAL CENTER; 20103 LAKE CHABOT RD.; CASTRO VALLEY; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=96">96. KAISER RICHMOND; 901 NEVIN AVE; RICHMOND; 8:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=103">103. KAISER HAYWARD; 2500 Merced St; SAN LEANDRO; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=108">108. SUTTER MEDICAL CENTER OF SANTA ROSA; 3325 CHANATE RD; SANTA ROSA; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=109">109. SEIU UHW SANTA ROSA OFFICE; 1717 CORBY AVE; SANTA ROSA; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=111">111. KAISER VALLEJO; 975 SERENO DRIVE; VALLEJO; 9:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=112">112. JOHN MUIR MEDICAL CENTER CONCORD; 2540 EAST STREET; CONCORD; 7:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=113">113. KAISER WALNUT CREEK; 1425 SOUTH MAIN; WALNUT CREEK; 7:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=116">116. KPACC; 1440 168TH AVE; SAN LEANDRO; 7:30 am;</a></li><br></br>
+</ul><br></br><br></br><font color="#481C60" size="+1">Sacramento</font><br></br><ul>   <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=58">58. MERCY GENERAL HOSPITAL; 400 J STREET; SACRAMENTO; 9:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=59">59. METHODIST HOSPITAL OF SACRAMENTO; 7500 HOSPITAL DRIVE; SACRAMENTO; 9:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=60">60. KAISER SACRAMENTO; 2025 MORSE AVE; SACRAMENTO; 9:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=61">61. KAISER SO.SACRAMENTO; 6600 BRUCEVILLE RD; SACRAMENTO; 9:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=62">62. SEIU UHW SACRAMENTO OFFICE; 1911 F ST.; SACRAMENTO; 9:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=79">79. MERCY SAN JUAN MEDICAL CENTER; 6501 COYLE AVENUE; CARMICHAEL; 9:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=80">80. ENLOE MEDICAL CENTER; 1531 ESPLANADE; CHICO; 8:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=81">81. CHW MEDICAL FOUNDATION CLINICS; 3400 DATA DR; RANCHO CORDOVA; 9:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=82">82. MERCY MED CTR OF REDDING; 2175 ROSALINE AVENUE; REDDING; 7:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=84">84. KAISER ROSEVILLE; 1600 EUREKA RD; ROSEVILLE; 9:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=85">85. WOODLAND HEALTHCARE CLINIC; 1207 FAIRCHILD CT; WOODLAND; 9:15 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=110">110. KAISER VACAVILLE; 1 QUALITY DRIVE; VACAVILLE; 9:00 am;</a></li><br></br>
+</ul><br></br><br></br><font color="#481C60" size="+1">San Francisco</font><br></br><ul>    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=63">63. INSTITUTE ON AGING; 3575 GEARY BLVD.; SAN FRANCISCO; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=64">64. SAN FRANCISCO BAYSHORE DISTRICT; 201 WILLIAMS AVE; SAN FRANCISCO; 8:15 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=65">65. SAN FRANCISCO CHINATOWN DISTRICT; 777 BROADWAY ST.; SAN FRANCISCO; 8:15 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=67">67. SAN FRANCISCO MISSION DISTRICT; 580 CAPP ST.; SAN FRANCISCO; 8:15 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=69">69. WEST BAY CONFERENCE CENTER; 1240 FILLMORE ST.; SAN FRANCISCO; 8:15 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=70">70. CPMC ST LUKES HOSPITAL; 3555 CESAR CHAVEZ AVE; SAN FRANCISCO; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=71">71. SAINT FRANCIS MEMORIAL HOSPITAL; 900 HYDE ST; SAN FRANCISCO; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=72">72. ST MARYS MEDICAL CENTER; 450 STANYAN STREET; SAN FRANCISCO; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=73">73. KAISER SAN FRANCISCO; 2200 O'Farrell St; SAN FRANCISCO; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=74">74. JEWISH HOME OF SAN FRANCISCO; 302 SILVER AVE.; SAN FRANCISCO; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=75">75. SEIU UHW SAN FRANCISCO OFFICE; 1338 MISSION ST.; SAN FRANCISCO; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=76">76. KAISER SO.SAN FRANCISCO; 1200 EL CAMINO REAL; SAN FRANCISCO SOUTH; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=89">89. SETON MEDICAL CENTER; 1900 SULLIVAN AVE; DALY CITY; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=95">95. KAISER REDWOOD CITY; 901 marshall street; REDWOOD CITY; 7:45 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=104">104. KAISER SAN RAFAEL; 99 MONTECILLO RD; SAN RAFAEL; 8:15 am;</a></li><br></br>
+</ul><br></br><br></br><font color="#481C60" size="+1">San Jose</font><br></br><ul> <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=90">90. WASHINGTON HOSPITAL; 2000 MOWRY AVE; FREMONT; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=91">91. KAISER FREMONT; 39400 Paseo Padre Parkway ; FREMONT; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=92">92. EL CAMINO HOSPITAL; 2500 GRANT RD; MOUNTAIN VIEW; 7:45 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=97">97. GOOD SAMARITAN HOSPITAL/MISSION OAKS; 2425 SAMARITAN DR; SAN JOSE; 7:45 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=99">99. REGIONAL MEDICAL CENTER OF SAN JOSE; 225 NORTH JACKSON AVENUE; SAN JOSE; 7:45 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=101">101. KAISER SAN JOSE; 250 HOSPITAL PARKWAY; SAN JOSE; 7:45 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=105">105. KAISER SANTA CLARA; 710 LAWRENCE EXPRESSWAY; SANTA CLARA; 8:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=106">106. DOMINICAN HOSPITAL; 1555 SOQUEL DR; SANTA CRUZ; 7:30 am;</a></li><br></br>
+</ul><br></br><br></br><font color="#481C60" size="+1">Stockton</font><br></br><ul> <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=77">77. ST JOSEPHS MEDICAL CENTER; 1800 N. CALIFORNIA ST; STOCKTON; 9:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=78">78. SEIU-UHW STOCKTON OFFICE; 306 E MAIN ST; STOCKTON; 9:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=86">86. SUTTER DELTA MEDICAL CENTER; 3901 LONE TREE WAY; ANTIOCH; 8:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=87">87. KAISER ANTIOCH; 4501 Sand Creek Road; ANTIOCH; 8:30 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=114">114. KAISER MODESTO MEDICAL CENTER; 4601 DALE RD; MODESTO; 9:00 am;</a></li><br></br>
+    <li><a href="https://uhw--c.na15.visual.force.com/apex/MO_J2_Bus_Loc_List?busLocId=115">115. KAISER STOCKTON MEDICAL OFFICE; 7373 WEST LN; STOCKTON; 9:00 am;</a></li><br></br>
+
+
+
+</ul>
+
+<br></br>
+<br></br>
+
+
+</apex:page>

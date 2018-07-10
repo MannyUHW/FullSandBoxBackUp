@@ -1,0 +1,102 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+
+ <style>
+        .red1
+        {
+            color: red;
+        }
+        
+        input.ng-invalid {
+          border: 1px solid red;
+        }
+        input.ng-valid {
+          border: 1px solid green;
+        }
+        .error
+        {
+        color: red;
+        }
+ </style>
+
+
+<form class="well" name="ActivitySingleForm" id="ActivitySingleForm" novalidate="novalidate">
+
+ 
+    <div>
+        <button ng-click="navigateto('/activitydaily')" class="btn btn-primary">
+            Day View 
+        </button>
+        <button class="btn btn-primary" id="btnSaveActivity" ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus" ng-click="saveSingleActivity(ActivitySingleForm);">Save</button>
+    </div>
+
+    <br />
+
+	<div class="error" style="text-align: left;"  ng-show="sv_BhatActivityDailyList.WeeklyReviewStatus">This activity has been reviewed and can no longer be changed!.</div>
+	
+
+    <div class="control-group">
+
+        <label>
+            <b>
+                <button class="btn btn-success" ng-click="GoPreviousDay(ActivitySingleForm);"><i class="icon-backward icon-white"></i></button>
+                {{SelectedweekStartDate | date:'EEEE, MMM d,y'}} &nbsp;
+                <button class="btn btn-success" ng-click="GoNextDay(ActivitySingleForm);"><i class="icon-forward icon-white"></i></button>
+
+
+
+            </b>
+        </label>
+
+        <label>
+        Time Code</label>
+        <select ng-model="sv_currentActivityItem" ng-options="o as o.ActivityCode + ' - ' + o.ShortDescription for o in sv_BhatActivityDailyList.ActivityDtoList | orderBy:'ActivityCode':false | filter: {IsNonHourlyEmployeeAndDefaultACode: false}" ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus">
+        </select>
+        <label>Sub Category</label>
+        <ng-form name="activitySubCategoryForm">
+        <select
+        	id="ActivitySubCategoryDropdownSingle" 
+        	name="ActivitySubCategoryDropdownSingle"  
+        	ng-model="sv_currentActivityItem.SubCategoryID" 
+        	ng-required="IsActivitySubCategoryDropdownRequired4Single(sv_currentActivityItem.Hours)" 
+        	ng-options="o.Id as o.Activity_Note_Description for o in rsv_BhatGlobalData.BHATActivityNotesList | filter:{BHAT_Activity_Code: sv_currentActivityItem.ActivityCodeID}"  
+        	ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus" >
+        </select>
+        
+         <small class="error" ng-show="activitySubCategoryForm.ActivitySubCategoryDropdownSingle.$error.required">
+			<br/>Sub Category is required.
+		</small>
+        </ng-form>
+        
+        <!--
+        <select ng-model="sv_currentActivityItem.SubCategoryID" ng-options="o.Id as o.Activity_Note_Description for o in rsv_BhatGlobalData.BHATActivityNotesList | filter:{BHAT_Activity_Code: sv_currentActivityItem.ActivityCodeID, Activity_Note_Description:'!None'} ">
+        </select>
+        -->
+
+     
+        <label>
+            Description</label>
+        <ng-form name="activitydescForm">    
+        <input type="text" 
+        name="Activity_Note_Description" ng-maxlength="100"
+        ng-model="sv_currentActivityItem.Description" 
+        ng-required="IsNoteDescriptionRequired4Single()" 
+        value="{{sv_currentActivityItem.Description}}" 
+        ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus" 
+        />
+        
+	      <small class="error" ng-show="activitydescForm.Activity_Note_Description.$error.maxlength">
+				Activity Description cannot be longer than 100 characters.
+		  </small>
+	      <small class="error" ng-show="activitydescForm.Activity_Note_Description.$error.required">
+	              Activity Description is required.
+	      </small>
+	                                    
+       
+        </ng-form>
+        <label>Hours</label>
+         <input type="number" step="0.01" min="0" max="20.00" required = "required" style="width:70px;" ng-model="sv_currentActivityItem.Hours" ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus" value="{{sv_currentActivityItemHours}}" />
+    </div>
+
+</form>
+
+</apex:page>

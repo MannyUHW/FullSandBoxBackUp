@@ -1,0 +1,64 @@
+<apex:page sidebar="false">
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.tablesorter.min.js')}"/>
+<link rel="stylesheet" href="{!URLFOR($Resource.mo_assets, '/mo_assets/css/tablesorter/tablesorter_blue_style.css')}" type="text/css" id="" media="print, projection, screen" />
+
+<script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+<font color="#481C60" size="+2">CA Hospital Proximity Licensure Reports</font><br></br>
+<br>&nbsp;</br>
+<i>Hospitals from http://www.oshpd.ca.gov/HID/Products/Listings.html</i><br/>
+<i>Click on a facility to see details about union representation</i><br/>
+<br>&nbsp;</br>
+<table id="caHospitalsTable"  width="100%"  class="tablesorter">
+<thead>
+<tr valign="bottom"><th>CA Hospital Id</th><th>Hospital Name</th><th>City</th><th>Zip Code</th><th>County</th><th>Beds</th><th>Assess Stage</th><th> Report Links</th></tr>
+</thead>
+<tbody>
+<script language="JavaScript">
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+try {
+
+  var query = "SELECT BU_Count__c,BU_Union_BOC__c,BU_Union_Professional__c,BU_Union_RN__c,BU_Union_Skill_Maint__c,BU_Union_SM__c,BU_Union_Tech__c,CA_Health_Atlas_Link__c,Coordinator__c,County__c,Employer_ID__c,Facility_Type__c,Hospital_System__c,Id,Name,Number_of_Beds__c,OSHPD_ID_Secondary__c,OSHPD_ID__c,OwnerId,Region__c,Type__c, BillingCity, BillingPostalCode, Owner.Name, Assessment_Stage__c FROM Account where OSHPD_ID__c != null";
+  var records = sforce.connection.query(query); 
+  var records1 = records.getArray('records'); 
+  for (var i = 0; i < records1.length; i++) {
+
+      if (records1[i].Assessment_Stage__c == null) {
+        records1[i].Assessment_Stage__c = "";
+      }
+
+      document.write("<tr valign=\"top\">\n");
+      document.write("    <td align=\"center\">" + records1[i].OSHPD_ID__c + "</td>\n");
+      document.write("    <td align=\"left\"><a target=\"_BLANK\" href=\"/" + records1[i].Id + "\">" + toProperCase(records1[i].Name) + "</td>\n");
+      document.write("    <td align=\"left\">" + toProperCase(records1[i].BillingCity) + "</td>\n");   
+      document.write("    <td align=\"center\">" + records1[i].BillingPostalCode + "</td>\n");   
+      document.write("    <td align=\"left\">" + toProperCase(records1[i].County__c) + "</td>\n");    
+      document.write("    <td align=\"center\">" + parseInt(records1[i].Number_of_Beds__c) + "</td>\n");   
+      document.write("    <td align=\"center\">" + records1[i].Assessment_Stage__c + "</td>\n");      
+      document.write("    <td align=\"center\"><a href=\"/00Oi0000005oxjq?pv0=" + records1[i].OSHPD_ID__c + "\">5 mi</a>&nbsp;&nbsp;&nbsp;&nbsp;\n");
+      document.write("                       <a href=\"/00Oi0000005oxjg?pv0=" + records1[i].OSHPD_ID__c + "&pv1=" + records1[i].OSHPD_ID__c + "\">10 mi</a>&nbsp;&nbsp;&nbsp;&nbsp;    \n");
+      document.write("                       <a href=\"/00Oi0000005oxjv?pv0=" + records1[i].OSHPD_ID__c + "&pv1=" + records1[i].OSHPD_ID__c + "&pv2=" + records1[i].OSHPD_ID__c + "\">15 mi</a>&nbsp;&nbsp;&nbsp;&nbsp;  \n");
+      document.write("                       <a href=\"/00Oi0000005oxk0?pv0=" + records1[i].OSHPD_ID__c + "&pv1=" + records1[i].OSHPD_ID__c + "&pv2=" + records1[i].OSHPD_ID__c + "&pv3=" + records1[i].OSHPD_ID__c + "\">20 mi</a>&nbsp;&nbsp;&nbsp;&nbsp;</td>\n\n");
+      document.write("</tr>\n\n\n\n");
+    }
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+</script>
+</tbody> 
+
+</table>
+<script>
+$(document).ready(function() 
+    { 
+        $("#caHospitalsTable").tablesorter(); 
+    } 
+);    
+</script>
+</apex:page>

@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>BoothForce Snapshot; This is for Sarah&apos;s staffing assignments snapshot for various events (Leadership Assembly, Eboard Meetings).</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Area__c</fullName>
+        <externalId>false</externalId>
+        <label>Area</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Division__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned To Division</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Manager__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned To Manager</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other_FID__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned To Other - FID</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other_Facility__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned To Other - Facility</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned To Other</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Title__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned To Title</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_User_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned To User Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned To</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_to_Users_Manager__c</fullName>
+        <externalId>false</externalId>
+        <label>Assigned to Users Manager</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BoothForce_Event__c</fullName>
+        <externalId>false</externalId>
+        <label>BoothForce Event</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Booth_Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Booth Description</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Booth_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Booth ID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Booth_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Booth Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Booth_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Booth Type</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Is_Staffed_Non_UHW__c</fullName>
+        <externalId>false</externalId>
+        <label>Is Staffed Non-UHW</label>
+        <length>2</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Is_Staffed__c</fullName>
+        <externalId>false</externalId>
+        <label>Is Staffed</label>
+        <length>2</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Manager_Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Remaining_Shifts_to_be_Staffed__c</fullName>
+        <externalId>false</externalId>
+        <label>Remaining Shifts to be Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shift_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Shift Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Shift_End_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Shift End Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Shift_Start_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Shift Start Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Shift_Time_Friendly_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Shift Time Friendly Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shift_Time_Remain_Shifts_to_be_Staffed__c</fullName>
+        <description>Shift Time: Remaining Shifts to be Staffed</description>
+        <externalId>false</externalId>
+        <label>Shift Time Remain Shifts to be Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shift_Time_Total_Shifts_Staffed__c</fullName>
+        <description>Shift Time: Total Shifts Staffed</description>
+        <externalId>false</externalId>
+        <label>Shift Time Total Shifts Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shift_Time_Total_Shifts_to_be_Staffed__c</fullName>
+        <description>Shift Time: Total Shifts to be Staffed</description>
+        <externalId>false</externalId>
+        <label>Shift Time Total Shifts to be Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Staffing_Assignment_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Staffing Assignment ID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Staffing_Assignment__c</fullName>
+        <externalId>false</externalId>
+        <label>Staffing Assignment #</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Shifts_Staffed__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Shifts Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Shifts_to_be_Staffed__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Shifts to be Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>User_Booth_Staffing_Roles_Allowed__c</fullName>
+        <externalId>false</externalId>
+        <label>User Booth Staffing Roles Allowed</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zone__c</fullName>
+        <externalId>false</externalId>
+        <label>Zone</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>BoothForce Snapshot</label>
+    <nameField>
+        <displayFormat>BoothForce-{0000}</displayFormat>
+        <label>BoothForce Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>BoothForce Snapshot</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

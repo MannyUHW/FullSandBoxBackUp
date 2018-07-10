@@ -1,0 +1,604 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" controller="bhatindexcontroller">
+  <html>
+<head>
+
+
+
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/JiffyStubs.js')}"></script> -->
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="PRAGMA" content="NO-CACHE" />
+    <meta http-equiv="Expires" content="Mon, 01 Jan 1990 12:00:00 GMT" />
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport" />
+    <style>
+        body
+        {
+            padding-top: 125px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+
+        .button
+        {
+            text-align: center;
+        }
+    </style>
+
+    <style>
+        .red
+        {
+            color: red;
+        }
+
+        .backgroundred    
+        {
+             background: red;
+        }
+        
+        .black
+        {
+            color: black;
+        }
+
+        .green
+        {
+            color: #35d648;
+        }
+       .orange
+        {
+            color: #F7AD00;
+        }
+       .brown
+       {
+           color: #B404AE;
+       }         
+    </style>
+
+
+  
+    <link href="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/css/custom.css')}" rel="stylesheet" />
+
+
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap.css" rel="stylesheet" />
+    <!-- <script src="https://netdna.bootstrapcdn.com/bootstrap/2.3.1/js/bootstrap.min.js"></script>  -->
+    <link href="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/css/bhatdefault.css')}" rel="stylesheet" />
+    <link href="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/css/bootstrap-timepicker.css')}" rel="stylesheet" />
+    <link href="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/css/jquery.timeentry.css')}" rel="stylesheet" />
+    
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/entity/underscore-1.4.4.min.js')}"></script> -->
+    <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/bootstrap-timepicker.js')}"></script>
+    <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/jquery.timeentry.js')}"></script>
+
+
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/entity/forcetk.js')}"></script> -->
+
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/entity/force.entity.js')}"></script> -->
+
+
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/cordova/MockCordova.js')}"></script> -->
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/cordova/MockSmartStore.js')}"></script> -->
+
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/cordova/cordova.force.js')}"></script> -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.js"></script>
+
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/angular.1.0.6.min.js')}"></script> -->
+
+    <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/dropdownToggle.js')}"></script>
+
+    <!--  <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/init.js')}"></script> -->
+
+    <!--  <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/app.js')}"></script> -->
+
+    <!-- <script src="{!URLFOR($Resource.bhatinitjs)}"></script> -->
+
+    <!-- <script src="{!URLFOR($Resource.bhatappjs)}"></script> -->
+
+
+   <!-- Local Static Resource css and javascript, all part of Angular-Seed app. -->
+    <script src="{!URLFOR($Resource.bhatcontrollersjs)}"></script>
+    <script src="{!URLFOR($Resource.bhatdirectivesjs)}"></script>
+    <script src="{!URLFOR($Resource.bhatfiltersjs)}"></script>
+    <script src="{!URLFOR($Resource.bhatservicesjs)}"></script>
+    <script src="{!URLFOR($Resource.bhatappjs)}"></script>
+    <!--  <script src="{!URLFOR($Resource.bhatremotingjs)}"></script> -->
+    
+      <script>
+      
+        // Set rootscope variables
+         
+        bhatModule.
+            factory('setrootScopoeVariables', ['$q', '$rootScope', function ($q, $rootScope) {
+        
+                return function () {
+                        
+                    //$rootScope.currentweekStartDate=  "{!ThisWeekStartDate }";
+                    $rootScope.currentweekStartDate = getMonday(new Date()); 
+                    if (typeof($rootScope.SelectedweekStartDate) == 'undefined' || $rootScope.SelectedweekStartDate == null)
+                    {
+                         $rootScope.SelectedweekStartDate = $rootScope.currentweekStartDate;      
+                    }
+                }
+        
+            }]);
+
+         
+            // Create angular factory that defines service to call apex.
+        bhatModule.
+            factory('doubleMe', ['$q', '$rootScope', function ($q, $rootScope) {
+        
+                return function (inputString) {
+                    var deferred = $q.defer();
+        
+                    Visualforce.remoting.Manager.invokeAction(
+                        '{!$RemoteAction.bhatindexcontroller.valueDoubler}',
+                        inputString,
+                        function (result, event) {
+                            $rootScope.$apply(function () {
+                                if (event.status) {
+                                    deferred.resolve(result);
+                                } else {
+                                    deferred.reject(event);
+                                }
+                            })
+                        },
+                        { buffer: true, escape: true, timeout: 30000 }
+                    );
+        
+                    return deferred.promise;
+                }
+        
+            }]);
+        
+           
+            // Module to get Activity List for the day.
+            
+            bhatModule.
+                factory('getActivityList', ['$q', '$rootScope', function ($q, $rootScope) {
+            
+                    return function (weekStartDate) {
+                        
+                       var deferred = $q.defer();
+            
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.bhatindexcontroller.getActivityList}', weekStartDate,
+                                function (result, event) {
+                                $rootScope.$apply(function () {
+                                    if (event.status) {
+                                        deferred.resolve(result);
+                                    } else {
+                                        deferred.reject(event);
+                                    }
+                                })
+                            },
+                            { buffer: true, escape: true, timeout: 30000 }
+                        );
+            
+                        return deferred.promise;
+                    }
+            
+                }]);
+            
+
+            // Module to get Activity Summary
+            
+            bhatModule.
+                factory('GetActivitySummary', ['$q', '$rootScope', function ($q, $rootScope) {
+            
+                    return function (weekStartDate) {
+                        
+                       var deferred = $q.defer();
+            
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.bhatindexcontroller.GetActivitySummary}', weekStartDate,
+                                function (result, event) {
+                                $rootScope.$apply(function () {
+                                    if (event.status) {
+                                        deferred.resolve(result);
+                                    } else {
+                                        deferred.reject(event);
+                                    }
+                                })
+                            },
+                            { buffer: true, escape: true, timeout: 30000 }
+                        );
+            
+                        return deferred.promise;
+                    }
+            
+                }]);
+            
+
+            // Module to get Activity Summary
+            
+            bhatModule.
+                factory('GetBHATActivityByDate', ['$q', '$rootScope', function ($q, $rootScope) {
+            
+                    return function (activityDate) {
+                        
+                       var deferred = $q.defer();
+            
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.bhatindexcontroller.GetBHATActivityByDate}', activityDate,
+                                function (result, event) {
+                                $rootScope.$apply(function () {
+                                    if (event.status) {
+                                        deferred.resolve(result);
+                                    } else {
+                                        deferred.reject(event);
+                                    }
+                                })
+                            },
+                            { buffer: true, escape: true, timeout: 30000 }
+                        );
+            
+                        return deferred.promise;
+                    }
+            
+                }]);
+            
+ 
+ 
+             // Module to get Previous Activity By Date
+            
+            bhatModule.
+                factory('GetBHATPreviousActivityByDate', ['$q', '$rootScope', function ($q, $rootScope) {
+            
+                    return function (activityDate) {
+                        
+                       var deferred = $q.defer();
+            
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.bhatindexcontroller.GetBHATPreviousActivityByDate}', activityDate,
+                                function (result, event) {
+                                $rootScope.$apply(function () {
+                                    if (event.status) {
+                                        deferred.resolve(result);
+                                    } else {
+                                        deferred.reject(event);
+                                    }
+                                })
+                            },
+                            { buffer: true, escape: true, timeout: 30000 }
+                        );
+            
+                        return deferred.promise;
+                    }
+            
+                }]);
+            
+ 
+         // Delete BhatActivity
+ 
+           bhatModule.
+                        factory('DeleteSelectedActivities', ['$q', '$rootScope', function ($q, $rootScope) {
+                    
+                            return function ( activitiesJSON) {
+                                
+                               var activitiesJSONstring =  JSON.stringify(activitiesJSON) ;
+                                
+                               var deferred = $q.defer();
+                    
+                                Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.bhatindexcontroller.DeleteSelectedActivities_OLD}', activitiesJSONstring,
+                                        function (result, event) {
+                                        $rootScope.$apply(function () {
+                                            if (event.status) {
+                                                deferred.resolve(result);
+                                            } else {
+                                                deferred.reject(event);
+                                            }
+                                        })
+                                    },
+                                    { buffer: true, escape: true, timeout: 30000 }
+                                );
+                    
+                                return deferred.promise;
+                            }
+                    
+                        }]);
+                        
+ 
+ 
+ 
+            // Module to get GetBHATActivityLookupData
+            
+      bhatModule.
+                factory('UpdateBhatActivity', ['$q', '$rootScope', function ($q, $rootScope) {
+            
+                    return function ( activitiesJSON) {
+                        
+                       var activitiesJSONstring =  JSON.stringify(activitiesJSON) ;
+                        
+                       var deferred = $q.defer();
+            
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.bhatindexcontroller.UpdateBhatActivity}', activitiesJSONstring,
+                                function (result, event) {
+                                $rootScope.$apply(function () {
+                                    if (event.status) {
+                                        deferred.resolve(result);
+                                    } else {
+                                        deferred.reject(event);
+                                    }
+                                })
+                            },
+                            { buffer: true, escape: true, timeout: 30000 }
+                        );
+            
+                        return deferred.promise;
+                    }
+            
+                }]);
+            
+ 
+            bhatModule.
+                factory('GetBHATActivityLookupData', ['$q', '$rootScope', function ($q, $rootScope) {
+            
+                    return function () {
+                        
+                       var deferred = $q.defer();
+            
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.bhatindexcontroller.GetBHATActivityLookupData}', 
+                                function (result, event) {
+                                $rootScope.$apply(function () {
+                                    if (event.status) {
+                                        deferred.resolve(result);
+                                    } else {
+                                        deferred.reject(event);
+                                    }
+                                })
+                            },
+                            { buffer: true, escape: true, timeout: 30000 }
+                        );
+            
+                        return deferred.promise;
+                    }
+            
+                }]);
+            
+                                  
+            
+    bhatModule.
+                factory('GetBhatGlobalData', ['$q', '$rootScope', function ($q, $rootScope) {
+            
+                    return function () {
+                        
+                       var deferred = $q.defer();
+            
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.bhatindexcontroller.GetBhatGlobalData}', 
+                                function (result, event) {
+                                $rootScope.$apply(function () {
+                                    if (event.status) {
+                                        deferred.resolve(result);
+                                    } else {
+                                        deferred.reject(event);
+                                    }
+                                })
+                            },
+                            { buffer: true, escape: true, timeout: 30000 }
+                        );
+            
+                        return deferred.promise;
+                    }
+            
+                }]);
+            
+            
+            
+            
+          bhatModule.
+                factory('getActivityList2', ['$q', '$rootScope', function ($q, $rootScope) {
+            
+                    return function () {
+                        
+                       
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.bhatindexcontroller.getActivityList}',
+                                function (result, event) {
+                                
+                                    if (event.status) {
+                                    
+                                       $rootScope.testbysun = result.replace(/&quot;/g,'"');
+                                       return result;
+                                    } else if (event.type === 'exception') {
+                                        return result;
+                                    } else {
+                                        return result;
+                                    }                                
+                                
+                                
+                            },
+                            { escape: true}
+                        );
+            
+                        
+                    }
+            
+                }]);
+            
+                        
+            
+            
+            // Remember site prefix, if any, to support direct (logged-in) or Site-based usage.
+            // Applies to Angular $routeProvider.
+            var sitePrefix = '{!$Site.Prefix}';
+            if (sitePrefix == '') sitePrefix = '/apex';
+
+
+            function getMonday(d) {
+              d = new Date(d);
+              var day = d.getDay(),
+                  diff = d.getDate() - day + (day == 0 ? -6:1); // adjust when day is sunday
+              return new Date(d.setDate(diff));
+            }
+
+            Date.prototype.addDays = function(days) {
+                    this.setDate(this.getDate()+days);
+            }
+
+            Date.prototype.SubtractDays = function(days) {
+                    this.setDate(this.getDate()-days);
+            }
+
+            function getPlainDate(d)
+            {
+                return new Date(  d.getYear(), d.getMonth() , d.getDay(),0,0,0,0)
+            }
+
+            function getDateString(d)
+            {
+                
+                var curr_date = d.getDate();
+                var curr_month = d.getMonth() + 1; //Months are zero based
+                var curr_year = d.getFullYear();
+                return curr_month + "/" + curr_date + "/" + curr_year;
+            }
+
+
+
+            function parseDate(input) {
+              var parts = input.match(/(\d+)/g);
+                  // new Date(year, month [, date [, hours[, minutes[, seconds[, ms]]]]])
+              return new Date(parts[0], parts[1]-1, parts[2]); // months are 0-based
+            }
+
+
+
+            function GetTimeDifference(fromTimeString, ToTimeString) {
+            
+                fromDate = getTimeAddedToDate(fromTimeString);
+                toDate = getTimeAddedToDate(ToTimeString);
+            
+                var timeDiff = toDate.getTime() - fromDate.getTime();
+                
+                var hours = Math.floor(timeDiff / (1000 * 60 * 60));
+                timeDiff -= hours * (1000 * 60 * 60);
+                
+                var mins = Math.floor(timeDiff / (1000 * 60));
+                timeDiff -= mins * (1000 * 60);
+                
+                return hours + ":" + mins ;
+            }
+            
+            function getTimeAddedToDate(timeString)
+            {                
+                var hrs = Number(timeString.match(/^(\d+)/)[1]);
+                var mnts = Number(timeString.match(/:(\d+)/)[1]);
+                var format = timeString.match(/\s(.*)$/)[1];
+                if (format.toUpperCase() == "PM" && hrs < 12) hrs = hrs + 12;
+                if (format.toUpperCase() == "AM" && hrs == 12) hrs = hrs - 12;
+                var hours = hrs.toString();
+                var minutes = mnts.toString();
+                
+                //if (hrs < 10) hours = "0" + hours;
+                //if (mnts < 10) minutes = "0" + minutes;
+                
+                var calculatedDate = new Date();
+                calculatedDate.setHours(hours );
+                calculatedDate.setMinutes(minutes);
+                return calculatedDate;
+
+            }
+
+
+
+  </script>
+    
+
+    <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/angular-force.js')}"></script>  -->
+   <!-- <script src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/js/forcetk.ui.js')}"></script>  -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/example1/colorbox.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.colorbox/1.4.33/jquery.colorbox-min.js"></script>
+    <script type="text/javascript">
+    
+$(document).ready(function(){
+    var adminmsg = '{!$Setup.BHATSiteLoadPopup__c.AdminMessage__c}';
+    //if (adminmsg != '') alert(adminmsg);
+    $('#inline_popup').html(adminmsg);
+    if (adminmsg != '') $.colorbox({inline:true, open:true,maxWidth:'95%', maxHeight:'95%',href:"#inline_popup"});;
+});
+
+    </script>
+    
+</head>
+<body  ng-controller="MainCtrl">
+<div style='display:none'>
+            <div id='inline_popup' style='padding:10px; background:#fff;'>
+            </div>
+        </div>
+    <div id="simplyDoBanner"  class="hidden-phone">
+       <table border="0" cellpadding="0" cellspacing="0">
+       <tbody>
+            <tr>
+                <td class="left">
+                    <div style="height: 70px;">
+                    
+              
+                    
+                        <img src="{!URLFOR($Resource.Bhat_Resources_AngularJS, 'resources/img/locals2011_01.jpg')}"
+                            alt="Powered by S.O.S" 
+                            title="Powered by S.O.S" / ></div>
+                </td>
+                <td align="right" style="text-align:right;">
+
+                        <div>
+
+                       <span style="color:#F7F7F7;font-size:20px;">Activity Tracker</span> 
+                       </div>
+                </td>
+                <td></td>
+            </tr>
+         </tbody>   
+        </table>
+     </div>
+
+
+
+
+    <div class="container">
+        <div class="ngView">
+        </div>
+    </div>
+    
+
+    
+    <div id="footer"  class="hidden-phone">
+        <div class="container">
+            <div class="row">
+                <div class="span4">
+                    <p>
+                        &copy; 2013 <a target="new" href="http://strategicorganizingsystems.com">S.O.S</a>, LLC.<br/>
+                        All Rights Reserved.</p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    
+    
+</body>
+</html>
+
+
+<script> 
+var a = navigator.userAgent; 
+if ((a.indexOf('Salesforce') != -1) && (a.indexOf('iPhone') != -1 || a.indexOf('iPad') != -1) && (a.indexOf('Safari') == -1)) { 
+var s = document.createElement('style'); 
+if ((a.indexOf('OS/8') != -1 || a.indexOf('OS 8') != -1)) { 
+s.innerHTML = "html,html body{overflow: auto;-webkit-overflow-scrolling:touch;}body{position:absolute;left:0;right:0;top:0;bottom:0;}"; 
+} else if ((a.indexOf('OS/9') != -1 || a.indexOf('OS 9') != -1)) { 
+s.innerHTML = "html,html body{overflow: auto;-webkit-overflow-scrolling:auto;}body{position:absolute;left:0;right:0;top:0;bottom:0;}"; 
+} 
+document.getElementsByTagName('head')[0].appendChild(s); 
+} 
+</script>
+
+
+</apex:page>

@@ -1,0 +1,133 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>MO: Map</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.zipCodeGeoMap)}"/>
+<apex:includeScript value="{!URLFOR($Resource.June2ndBusList)}"/>
+
+<script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+</head>
+
+  <body>
+  <div align="center">
+  
+    <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:window.history.back();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="MO_Main_Page"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:window.location='MO_Search_Page';"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+  
+  
+  <br><font size="+2">June 2nd Buses</font></br>
+  <br><font color="#202020"  size="-1">Tap bus name and location to show map.</font></br>
+  <br>&nbsp;</br>  
+  
+<script language="JavaScript">
+  sessionStorage.setItem("mo_last_page", window.location);
+var emNames = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").split(",");  
+try {
+
+   var emGeoMap = new Array();
+
+    var records1 = new Array();
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var query = "select Name, ShippingLatitude, BillingLongitude, BillingLatitude, ShippingLongitude from Account";
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records'); 
+    for(var i=0;i<records0.length;i++){ 
+      var lat = records0[i].BillingLatitude;
+      var lon = records0[i].BillingLongitude;      
+      if (lat == null) {
+        lat = records0[i].ShippingLatitude;
+        lon = records0[i].ShippingLongitude ; 
+      }
+      emGeoMap[records0[i].Name.toUpperCase()] = [lat, lon];
+    } 
+
+    if (emNames.indexOf("KAISER-ORANGE COUNTY") >= 0) {
+      emNames.push("KAISER-IRVINE");
+      emGeoMap["KAISER-IRVINE"] = [33.6592682, -117.7740557];
+    }
+
+    for (var i = 0; i < emNames.length; i++) {
+    
+      if (emNames[i] != "") {
+    
+        var latLon = emGeoMap[emNames[i].toUpperCase()];
+        var busStop = getNearestBusStop(emNames[i], latLon[0], latLon[1]);
+        //distance from State Capitol
+        var distance = distanceInMilesFrom(latLon[0], latLon[1], 38.576851,-121.494919);
+      
+        document.write("<br><font color=\"#481C60\" size=\"+1\"><b>" + toProperCase(emNames[i]) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></font></br>");
+        document.write("<br>Assigned Bus:</br>");      
+        var desc =  busStop[0] + ". " + busStop [1] + "<br/>" + busStop[4] + "<br/>" + busStop[5] + "<br/>" + busStop[8];
+        document.write("<a href=\"MO_Map?lat=" + busStop[6] + "&lon=" +  busStop[7] + "&desc=" + encodeURIComponent(desc) + "\">" + busStop [0] + ". " + busStop [1] + "<br/>");
+        document.write(busStop[4] + "<br/>");             
+        document.write(busStop[5] + "</a><br/>");   
+        document.write(busStop[8] + "<br/>");          
+        document.write("<br><i><font color=\"#202020\" size=\"-1\">Distance from Capitol: " + distance.toFixed(1) + " miles</font></i></br>");            
+        document.write("<br></br>");            
+      }     
+    }
+
+
+
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i); 
+}   
+
+</script>
+
+<br>&nbsp;</br>
+  
+    <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:pageBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="MO_Main_Page"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:window.location='MO_Search_Page';"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+
+</div>
+    </body>
+</html>
+
+
+</apex:page>

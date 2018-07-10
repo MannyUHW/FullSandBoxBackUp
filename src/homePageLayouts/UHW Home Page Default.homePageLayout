@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HomePageLayout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <narrowComponents>standard-MessagesAndAlerts</narrowComponents>
+    <narrowComponents>standard-RecentItems</narrowComponents>
+    <narrowComponents>standard-UsefulLinks</narrowComponents>
+    <narrowComponents>Universal Restore</narrowComponents>
+    <wideComponents>standard-ProcessWorkitems</wideComponents>
+    <wideComponents>HR Approval Pending List</wideComponents>
+    <wideComponents>standard-Calendar</wideComponents>
+    <wideComponents>standard-Tasks</wideComponents>
+    <wideComponents>standard-Dashboard</wideComponents>
+</HomePageLayout>

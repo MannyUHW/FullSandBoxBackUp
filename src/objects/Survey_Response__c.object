@@ -1,0 +1,1240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Add_Info_Numeric__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(ISNUMBER(Add_Info__c), 
+   value(Add_Info__c),
+   if(ISNUMBER(left(Add_Info__c, 4)), value(left(Add_Info__c,4)),
+      if(ISNUMBER(left(Add_Info__c, 3)), value(left(Add_Info__c,3)),
+         if(ISNUMBER(left(Add_Info__c, 2)), value(left(Add_Info__c,2)),
+            if(ISNUMBER(left(Add_Info__c, 1)), value(left(Add_Info__c,1)),0)
+         )
+      )
+   )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Add_Info_Numeric</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Add_Info__c</fullName>
+        <externalId>false</externalId>
+        <label>Additional Information</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Alt_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Employer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Alt Employer</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Survey Responses</relationshipLabel>
+        <relationshipName>Survey_Responses</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Alt_First_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt First Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Last_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Last Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Middle_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Middle Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Person_Type__c</fullName>
+        <description>If the Survey Response is entered for someone not in Salesforce, the Organizer should indicate whether this person is a Member or someone else who is a non-member.</description>
+        <externalId>false</externalId>
+        <label>Alt Person Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Allies</fullName>
+                    <default>false</default>
+                    <label>Allies</label>
+                </value>
+                <value>
+                    <fullName>Community</fullName>
+                    <default>false</default>
+                    <label>Community</label>
+                </value>
+                <value>
+                    <fullName>Friend/Family of Member</fullName>
+                    <default>false</default>
+                    <label>Friend/Family of Member</label>
+                </value>
+                <value>
+                    <fullName>Medi-Cal Beneficiary</fullName>
+                    <default>false</default>
+                    <label>Medi-Cal Beneficiary</label>
+                </value>
+                <value>
+                    <fullName>Member</fullName>
+                    <default>false</default>
+                    <label>Member</label>
+                </value>
+                <value>
+                    <fullName>Non-Member in Facility</fullName>
+                    <default>false</default>
+                    <label>Non-Member in Facility</label>
+                </value>
+                <value>
+                    <fullName>NYU</fullName>
+                    <default>false</default>
+                    <label>NYU</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Alt_Phone_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Phone 2</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Alt_Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Phone</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Alt_Related_Member__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This alternative Contact is related to this Member.</description>
+        <externalId>false</externalId>
+        <label>Alt Related Member</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Survey Responses (Alt Related Member)</relationshipLabel>
+        <relationshipName>Survey_Responses2</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Alt_Source__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Source</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Attended__c</fullName>
+        <description>To track attended count;Use in canned reports;Do Not Delete by MD;</description>
+        <externalId>false</externalId>
+        <formula>IF( Response_Value__c =&quot;A. Attended&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Attended</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>BU_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>If (OR(ISNULL(Contact__c), ISBLANK(Contact__c)),  Alt_Employer__r.BU_Count__c,  Contact__r.Account.BU_Count__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>BU Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>COPE_Baseline_Pledge__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.COPE_Baseline_Pledge__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>COPE Baseline Pledge</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>COPE_Pledge__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.COPE_Pledge__c</formula>
+        <label>COPE Pledge</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>COPE_Value_Add__c</fullName>
+        <description>Special COPE field for the 2016 COPE Ninja Blitz</description>
+        <externalId>false</externalId>
+        <formula>if(Survey_Code__c = &apos;PKM&apos;, 
+   if ( left(Response_Value__c, 1) = &apos;A&apos;, 25.0 - COPE_Baseline_Pledge__c, 
+     if ( left(Response_Value__c, 1) = &apos;B&apos;, 20.0 -  COPE_Baseline_Pledge__c, 
+       if ( left(Response_Value__c, 1) = &apos;C&apos;, 15.0 -  COPE_Baseline_Pledge__c, 
+         if ( left(Response_Value__c, 1) = &apos;D&apos;, 10.0 -  COPE_Baseline_Pledge__c, 
+           if ( left(Response_Value__c, 1) = &apos;E&apos;, 5.0 -  COPE_Baseline_Pledge__c, 0)
+         )
+       )
+     )
+   ),
+   0
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>COPE Value Add</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Cancelled__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Response_Value__c =&quot;N. Cancelled&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cancelled</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Cnt__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cnt</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Collected_By_CS__c</fullName>
+        <externalId>false</externalId>
+        <formula>Collected_By__r.Contract_Specialist__c</formula>
+        <label>Collected By CS</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Collected_By_Contact_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>Collected_By__r.Salesforce_Contact_Id__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Collected By Contact Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Collected_By_Employer_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank( Collected_By__c ),  Employer_Name__c,  Collected_By__r.Account.Name )</formula>
+        <label>Collected By Employer Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Collected_By_FID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Collected_By__r.FID__c</formula>
+        <label>Collected By FID</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Collected_By_Is_EBoard__c</fullName>
+        <externalId>false</externalId>
+        <formula>Collected_By__r.EBoard__c</formula>
+        <label>Collected By Is EBoard</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Collected_By_Ldr_Promotion_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Collected_By__r.Stretch_Ldr_Promotion_Status__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Collected By Ldr Promotion Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Collected_By_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(or(isnull(Collected_By__r.MiddleName), isblank(Collected_By__r.MiddleName)), 
+Collected_By__r.LastName &amp; &quot;, &quot; &amp; Collected_By__r.FirstName, 
+Collected_By__r.LastName &amp; &quot;, &quot; &amp; Collected_By__r.FirstName &amp; &quot; &quot; &amp; Collected_By__r.MiddleName 
+)</formula>
+        <label>Collected By Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Collected_By__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Who collected this survey response?</description>
+        <externalId>false</externalId>
+        <label>Collected By</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Survey Responses (Collected By)</relationshipLabel>
+        <relationshipName>Survey_Responses1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Collected_Datetime__c</fullName>
+        <defaultValue>NOW()</defaultValue>
+        <externalId>false</externalId>
+        <label>Collected Datetime</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Committed__c</fullName>
+        <description>To track the committed count;Use in canned reports;Do Not Delete by MD;</description>
+        <externalId>false</externalId>
+        <formula>IF( Response_Value__c =&quot;M. Committed&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Committed</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Confirmed__c</fullName>
+        <description>To track confirmed count;Use in canned reports;Do Not Delete by MD;</description>
+        <externalId>false</externalId>
+        <formula>IF( Response_Value__c =&quot;B. Confirmed&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Confirmed</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (or(isnull(Contact__c),isblank(Contact__c)),
+      if(or(isnull(Alt_Middle_Name__c), isblank(Alt_Middle_Name__c)),
+         Alt_Last_Name__c &amp; &quot;, &quot; &amp;  Alt_First_Name__c,
+         Alt_Last_Name__c &amp; &quot;, &quot; &amp;  Alt_First_Name__c &amp; &quot; &quot; &amp;  Alt_Middle_Name__c
+      ),
+      if(or(isnull(Contact__r.MiddleName), isblank(Contact__r.MiddleName)),
+         Contact__r.LastName &amp; &quot;, &quot; &amp;  Contact__r.FirstName, 
+         Contact__r.LastName &amp; &quot;, &quot; &amp; Contact__r.FirstName &amp; &quot; &quot; &amp; Contact__r.MiddleName
+      )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Contact Survey Response</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Survey Responses</relationshipLabel>
+        <relationshipName>Survey_Responses</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Coordinator_Original__c</fullName>
+        <description>Coordinator at time this Survey was first entered. Populated by Trigger.</description>
+        <externalId>false</externalId>
+        <label>Original Coordinator</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Coordinator__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Contact__c),
+ Alt_Employer__r.Coordinator__r.FirstName &amp; &apos; &apos;&amp;  Alt_Employer__r.Coordinator__r.LastName,
+Contact__r.Account.Coordinator__r.FirstName &amp; &apos; &apos;&amp;  Contact__r.Account.Coordinator__r.LastName
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Coordinator</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Covered_Attends__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Contact__r.X80_Covered__c =TRUE  &amp;&amp; Response_Value__c =&quot;A. Attended&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Covered Attends</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Covered_Commits__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Contact__r.X80_Covered__c =TRUE  &amp;&amp; Response_Value__c =&quot;M. Committed&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Covered Commits</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Covered_Confirmed__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Contact__r.X80_Covered__c =TRUE  &amp;&amp; Response_Value__c =&quot;B. Confirmed&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Covered Confirmed</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Covered_Reminded__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Contact__r.X80_Covered__c =TRUE  &amp;&amp; Response_Value__c =&quot;D. Reminded&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Covered Reminded</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Custom_Entry_Page__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/apex/&quot; &amp;  Survey_Question__r.Custom_Entry_Page__c &amp; &quot;?cid=&quot; &amp;  CASESAFEID(Contact__c) ,  Contact_Name__c)</formula>
+        <label>Custom Entry Page</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Cvent_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Cvent_Email__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cvent Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Department__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Contact__c), &quot;Unknown&quot;, Contact__r.Department)</formula>
+        <label>Department</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (CONTAINS(Employer_Name__c, &quot;KAISER&quot;), &quot;Kaiser&quot;,
+If (CONTAINS(Employer_Name__c, &quot;SEIU-UHW&quot;), &quot;Staff&quot;,
+  if (OR(CONTAINS(Employer_Name__c, &quot;IHSS&quot;), CONTAINS(Employer_Name__c, &quot;AGING&quot;)), &quot;Home Care&quot;,
+    if (or(isnull(Contact__c), isblank(Contact__c)), 
+        Text(Alt_Employer__r.Account_Group__c),
+        TEXT(Contact__r.Account.Account_Group__c)  
+    )
+  )
+))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Division</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EBoard__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.EBoard__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>EBoard</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Contact__c),  Alt_Email__c, Contact__r.Email)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employer_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank(Contact__c),  Alt_Employer__r.Employer_ID__c,  Contact__r.Account.Employer_ID__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Employer Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employer_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (or(isnull(Contact__c), isblank(Contact__c)),  Alt_Employer__r.Name,  Contact__r.Account.Name)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Employer Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.FID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>FID</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Full_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(or(isnull(Contact__c),isblank(Contact__c)), Alt_First_Name__c &amp; &quot; &quot; &amp;  Alt_Last_Name__c, Contact__r.FirstName &amp; &quot; &quot; &amp;  Contact__r.LastName)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Full Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Getfeedback_API_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Getfeedback API ID</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Getfeedback_Response_Link__c</fullName>
+        <externalId>false</externalId>
+        <label>Getfeedback Response Link</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Hospital_System__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (OR(ISNULL(Contact__c), ISBLANK(Contact__c)),  Alt_Employer__r.Hospital_System__c,  Contact__r.Account.Hospital_System__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Hospital System</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ID_ed_Department__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank(Contact__r.Tier_Staff__c), FALSE, TRUE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ID-ed Department</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Language__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Probable_Language__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Language</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ldr_Assm__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(ISBLANK(Contact__c), ISBLANK( Survey_Question__r.Ldr_Assm_Vals__c)),
+  FALSE,
+  IF( FIND(UPPER(LEFT(Response_Value__c, 1)), UPPER(Survey_Question__r.Ldr_Assm_Vals__c)) &gt; 0, 
+    if(isblank( Survey_Question__r.Ldr_Assm_Add_Info_Min__c ), TRUE, 
+      if(  Add_Info_Numeric__c &gt;= Survey_Question__r.Ldr_Assm_Add_Info_Min__c , TRUE, FALSE)
+    ),
+    FALSE)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Leadership Assessment</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>MailingCity__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.MailingCity</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>MailingCity</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MailingPostalCode__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.MailingPostalCode</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>MailingPostalCode</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MailingStreet__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.MailingStreet</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Mailing Street</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Organizer_1_Original__c</fullName>
+        <description>Organizer 1 at time this Survey was first entered. Populated by Trigger.</description>
+        <externalId>false</externalId>
+        <label>Original Organizer 1</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Organizer_1__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Contact__c),
+ Alt_Employer__r.Organizer_1__r.FirstName  &amp; &apos; &apos; &amp;   Alt_Employer__r.Organizer_1__r.LastName, 
+Contact__r.Account.Organizer_1__r.FirstName &amp; &apos; &apos; &amp;  Contact__r.Account.Organizer_1__r.LastName
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Organizer 1</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Organizer_2__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Contact__c),
+ Alt_Employer__r.Organizer_2__r.FirstName  &amp; &apos; &apos; &amp;   Alt_Employer__r.Organizer_2__r.LastName, 
+Contact__r.Account.Organizer_2__r.FirstName &amp; &apos; &apos; &amp;  Contact__r.Account.Organizer_2__r.LastName
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Organizer 2</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>P7_Did_Something__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( CONTAINS(&quot;NH1:EN2:EN3:EN5:PC1:PC2:PR1:PR3:PS1:PS3:P10:P11:P13:TN1:TN3:V02:V04&quot;  , Survey_Code__c) , TRUE, TRUE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>P7 Did Something</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Phone_Cell__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank(Contact__c), if(isblank(Alt_Phone_2__c), &quot;&quot;,  Alt_Phone_2__c), Contact__r.MobilePhone)</formula>
+        <label>Phone - Cell</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone_Home__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank(Contact__c),  Alt_Phone__c , if(isblank( Contact__r.HomePhone), if(isblank( Contact__r.Phone), &quot;&quot;, Contact__r.Phone), Contact__r.HomePhone))</formula>
+        <label>Phone - Home</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Previous_Responses__c</fullName>
+        <description>Previous response values and dates.</description>
+        <externalId>false</externalId>
+        <label>Previous Responses</label>
+        <length>1024</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Question_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Survey_Question__r.Name</formula>
+        <label>Question Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>R_S_Ldr__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Stretch_Leader__r.FirstName &amp; &apos; &apos; &amp; Contact__r.Stretch_Leader__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>R&amp;S Ldr</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Reconfirmed__c</fullName>
+        <description>Use in canned reports;Do Not Delete by MD;</description>
+        <externalId>false</externalId>
+        <formula>IF( Response_Value__c =&quot;R. Reconfirmed&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Reconfirmed</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Record_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Record Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (or(isnull(Contact__c), isblank(Contact__c)), 
+  Text(Alt_Employer__r.Region__c), 
+  TEXT(Contact__r.Account.Region__c) 
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_Director__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (ISBLANK(Contact__c),
+  Alt_Employer__r.Regional_Director__r.FirstName &amp; &apos; &apos; &amp;   Alt_Employer__r.Regional_Director__r.LastName, 
+ Contact__r.Account.Regional_Director__r.FirstName &amp; &apos; &apos; &amp;  Contact__r.Account.Regional_Director__r.LastName
+)</formula>
+        <label>Regional Director</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Reminded__c</fullName>
+        <description>To track reminded count;Use in canned reports;Do Not Delete by MD;</description>
+        <externalId>false</externalId>
+        <formula>IF( OR(Response_Value__c =&quot;D. Reminded&quot;,Response_Value__c =&quot;D. Remind&quot;), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Reminded</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Report_Group__c</fullName>
+        <description>This field allows arbitrary groups to be uploaded for Reporting purposes.</description>
+        <externalId>false</externalId>
+        <label>Report Group</label>
+        <length>254</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Response_Value_Numeric__c</fullName>
+        <description>Converts numeric text value to a numeric type.</description>
+        <externalId>false</externalId>
+        <formula>IF (ISNUMBER(Response_Value__c),VALUE(Response_Value__c),0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Response Value Numeric</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Response_Value__c</fullName>
+        <externalId>false</externalId>
+        <label>Response Value</label>
+        <length>64</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Source_Text__c</fullName>
+        <externalId>false</externalId>
+        <label>Source Text</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Survey_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Survey_Question__r.Survey_Code__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Survey Code</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_How_Old__c</fullName>
+        <description>How old is this Survey in days?</description>
+        <externalId>false</externalId>
+        <formula>(NOW() -  Collected_Datetime__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Survey How Old?</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Question__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>Survey Question</description>
+        <externalId>false</externalId>
+        <label>Survey Question</label>
+        <referenceTo>Survey_Question__c</referenceTo>
+        <relationshipLabel>Survey Responses</relationshipLabel>
+        <relationshipName>Survey_Responses</relationshipName>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Title__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (OR(ISNULL(Contact__c),ISBLANK(Contact__c)),&quot;&quot;, Contact__r.Title )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Title</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Turf_Key__c</fullName>
+        <externalId>false</externalId>
+        <formula>Division__c &amp; &quot; / &quot; &amp;  Regional_Director__c &amp; &quot; / &quot; &amp; Coordinator__c &amp; &quot; / &quot; &amp;  Organizer_1__c &amp; &quot; / &quot; &amp; if(isblank( Collected_By_Employer_Name__c ),  Employer_Name__c , Collected_By_Employer_Name__c )</formula>
+        <label>Turf Key</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Campaign_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Survey_Question__r.UHW_Campaign__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>UHW Campaign Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Uncovered_Attends__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Contact__r.X80_Covered__c =FALSE &amp;&amp; Response_Value__c =&quot;A. Attended&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Uncovered Attends</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Uncovered_Commits__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Contact__r.X80_Covered__c = FALSE  &amp;&amp; Response_Value__c =&quot;M. Committed&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Uncovered Commits</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Uncovered_Confirmed__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Contact__r.X80_Covered__c = FALSE  &amp;&amp; Response_Value__c =&quot;B. Confirmed&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Uncovered Confirmed</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Uncovered_Reminded__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Contact__r.X80_Covered__c = FALSE  &amp;&amp; Response_Value__c =&quot;D. Reminded&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Uncovered Reminded</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>no__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Response_Value__c =&quot;no&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>no</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>unassessed__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Response_Value__c =&quot;unassessed&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>unassessed</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>yes__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Response_Value__c =&quot;yes&quot;  || Response_Value__c =&quot;Yes&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>yes</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Survey Response</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>Question_Name__c</columns>
+        <columns>Response_Value__c</columns>
+        <columns>Add_Info__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Since_Yesterday</fullName>
+        <columns>NAME</columns>
+        <columns>UHW_Campaign_Name__c</columns>
+        <columns>Survey_Question__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Response_Value__c</columns>
+        <columns>Add_Info_Numeric__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LAST_UPDATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>YESTERDAY</value>
+        </filters>
+        <label>All Since Yesterday</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>June_2nd_All</fullName>
+        <columns>NAME</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Division__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>Alt_Person_Type__c</columns>
+        <columns>Question_Name__c</columns>
+        <columns>Response_Value__c</columns>
+        <columns>Collected_Datetime__c</columns>
+        <columns>Collected_By_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>UHW_Campaign_Name__c</field>
+            <operation>contains</operation>
+            <value>june 2</value>
+        </filters>
+        <filters>
+            <field>Question_Name__c</field>
+            <operation>startsWith</operation>
+            <value>Attend</value>
+        </filters>
+        <label>June 2nd All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>June_2nd_HC</fullName>
+        <columns>NAME</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>Alt_Person_Type__c</columns>
+        <columns>Question_Name__c</columns>
+        <columns>Response_Value__c</columns>
+        <columns>Collected_Datetime__c</columns>
+        <columns>Collected_By_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>UHW_Campaign_Name__c</field>
+            <operation>contains</operation>
+            <value>june 2</value>
+        </filters>
+        <filters>
+            <field>Question_Name__c</field>
+            <operation>startsWith</operation>
+            <value>Attend</value>
+        </filters>
+        <filters>
+            <field>Alt_Source__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>June 2nd - HC</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>May23rd</fullName>
+        <columns>NAME</columns>
+        <columns>Response_Value__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>Question_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Survey_Code__c</field>
+            <operation>equals</operation>
+            <value>DA1</value>
+        </filters>
+        <label>May23rd</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>ldr15</fullName>
+        <columns>NAME</columns>
+        <columns>Response_Value__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>Question_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Survey_Code__c</field>
+            <operation>equals</operation>
+            <value>lr1</value>
+        </filters>
+        <label>ldr assymbly 2015</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>R{00000000}</displayFormat>
+        <label>Survey Response Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Survey Responses</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>UHW_Campaign_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Question_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Collected_By_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Contact_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Response_Value__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Contact_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Employer_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Division__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Phone_Home__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Phone_Cell__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Survey_Question__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Response_Value__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>SR</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>SR</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>https://uhw.my.salesforce.com/a0u/e?retURL=%2Fa0u%2Fo</url>
+    </webLinks>
+</CustomObject>

@@ -1,0 +1,105 @@
+<!--
+    Add this component to the BOTTOM of your VF page to show a warning message if user's brower is using TLSv1.0
+    Parameters:
+    message:    User message defined in Custom Label.
+    helpPage:   Link to a page containing instructions for how to enable TLSv1.1+. Defined in Custom Label
+                Ideally, this page would detect the browser version (i.e. UserAgent) and display instructions 
+                specifically tailored to that os/browser/version.
+    days_until_next_reminder: How long, in days, before the user should get another warning. Defined in Custom MetaData 
+-->
+<apex:component controller="TLS_WarningMessageController">
+<!--
+    Style the warning message. Feel free to customize or move into a static resource
+-->
+<style>
+    .tls_warning_container_hidden { display: none; }
+
+    .tls_warning_container {
+        position: fixed;
+        z-index: 111111;
+        top: 0;
+        left: 0;
+        background: #fdf2ab;
+        text-align: left;
+        border-bottom: 1px solid #a29330;
+        color: #000;
+        font-family: Arial,Helvetica,sans-serif;
+        font-size: 12px;
+        width: 100%;
+     }
+
+     #tls_close {
+        font-size: 18px;
+        font-weight: bold;
+        height: 20px;
+        padding: 0;
+        position: absolute;
+        right: 6px;
+        top: -2px;
+        width: 12px;
+    }
+
+     .tls_warning_container div {
+        padding: 5px 36px 5px 40px;
+    }
+ </style>
+
+    <!-- Warning Message container  -->
+    <div id="tls_warning_container" class="tls_warning_container_hidden">
+        <div>{!JSENCODE(message)} <a href="{!JSENCODE(helpPage)}" target="_blank">{!JSENCODE(helpUrlLinkText)}</a><div id="tls_close" onclick="tlsOnHide()">x</div></div>
+    </div>
+    
+<!--
+    Javascript & JQuery to toggle the display of the warning message.
+    If your implementation is JavaScript heavy then you may need to make adjustments to the below.
+-->
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/js-cookie/2.0.4/js.cookie.min.js"></script>
+<script type="text/javascript">
+    var days_until_next_reminder = {!daysBetweenWarning};
+
+    //noConflict to minimize risk of customer-specific JS implemenations
+    $tls = jQuery.noConflict(true);
+    var tls_cookies = Cookies.noConflict();
+
+    //Component initialization
+    $tls( document ).ready(function() { 
+        //Show warning if user's browser is using TLSv1.0.
+        if({!isTls10}){ 
+            if(!tlsAlreadyWarned()){
+                showTlsMessage();
+            }           
+        }
+     });
+
+    function showTlsMessage(){
+        $tls( "#tls_warning_container" ).addClass("tls_warning_container").removeClass("tls_warning_container_hidden");
+    }
+
+    // Called when X button on the warning message clicked. Hides message and saves the supression
+    function tlsOnHide(){
+        tlsRememberWarning();
+        $tls( "#tls_warning_container" ).addClass("tls_warning_container_hidden").removeClass("tls_warning_container");
+    }
+
+    //Has the user already been warned within the duration set. 
+    function tlsAlreadyWarned(){
+        if(days_until_next_reminder==0) return false;
+        else{
+            try{
+                return ( tls_cookies.get('tls_warning_message') === undefined) ? false : true;
+            }catch(err){ return false; } //If something went wrong show message anyway. Better safe than sorry.
+        }
+    }
+
+    //Record warning in Cookie. Won't warn again until duration is exceeded
+    function tlsRememberWarning(){
+        if(days_until_next_reminder>0){
+            try{
+                tls_cookies.set('tls_warning_message', '1', { expires:days_until_next_reminder});
+            }catch(err){ /*Do nothing to not negatively impact change if cookie-set failes.*/ }
+        }
+    }
+
+ </script>
+</apex:component>

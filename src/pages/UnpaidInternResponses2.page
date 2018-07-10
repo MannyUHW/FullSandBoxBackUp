@@ -1,0 +1,864 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="UnpaidInternsReportController">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.agGridEnterprise}"/>
+        <apex:includeScript value="{!$Resource.MomentJs}"/>
+        <apex:includeScript value="{!$Resource.Pikaday}"/>
+        <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono"/>
+
+        <style>
+
+            .hide {
+                display:none;
+            }
+
+            .sectionText {
+                font-size: 2em;
+                padding-left: 10px;
+                color: #fac1de;
+                padding-bottom: 3px;
+                padding-top: 5px;
+                width: 30%;
+                display: inline-block;
+            }
+
+            .saveAs {
+                visibility: visible;
+                float: right;
+                margin-top: 10px;
+                margin-right: 29px;
+            }
+
+            .cellClass1 {
+                text-align: center;
+            }
+
+            .cellClass2 {
+                text-align: center;
+                font-size: 16px;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .cellClass3 {
+                text-align: left;
+                padding-left:5px !important;
+                font-size: 16px;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .fontTest1 {
+                font-family: 'Roboto Condensed', sans-serif;
+                color:red;
+            }
+
+            .fontTest2 {
+                font-family: 'Roboto Mono', monospace;
+                /*   color:#8412ef; */
+            }
+            /* removes outline dots from button when it gets focus */
+            :focus {outline:none;}
+            ::-moz-focus-inner {border:0;}
+
+            .GroupHeader {
+                background-color: #799BA6 !important;
+            }
+
+            body {
+                font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+                font-size: 14px;
+                background-color: #9D37FF;
+            }
+
+            .right-align {
+                text-align: right;
+                padding-top:12px !important;
+                padding-right:5px !important;
+            }
+
+            #hr1 {
+                clear:both;
+            }
+
+            #Title {
+                text-align: center;
+                clear: both;
+                color:white;
+            }
+
+            #DatePicker {
+                width: 109px;
+                margin-left: 10px;
+                color:#8412ef;
+                background-color: white;
+                font-size: 1em;
+                font-family: 'Roboto Condensed', sans-serif;
+                padding-left: 5px;
+            }
+
+            #Content {
+                width: 1555px;
+                height: 690px;
+            }
+
+            #EmpCoordGridDiv {
+                height: 300px !important;
+                padding-right: 5px;
+                margin-right: 2px;
+            }
+
+            #ResponseGridDiv {
+                height: 600px !important;
+                padding-right: 5px;
+                margin-right: 2px;
+            }
+
+            #Container0 {
+                padding-left: 5px;
+                padding-top: 10px;
+            }
+
+            #Container1,Container2 {
+                padding-top: 10px;
+            }
+
+            #MessageDiv {
+                padding-left: 10px;
+                padding-top: 15px;
+                height: 30px;
+                color:white;
+            }
+
+            .shadow {
+                padding: 10px 10px 10px 10px;
+                background-color: #9B4FE1;
+                box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+                -moz-box-shadow: 0 1px 2px rgba(34,25,25,0.4);
+                -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+    <div id="Content">
+        <div id="Title">
+            <div id="fontTest2" class="fontTest2">
+                <h2>Response data</h2>
+            </div>
+        </div>
+        <hr/>
+
+        <div id="C0">
+            <div id="C1" class="shadow">
+                <div id="Controls">
+                    <div id = "Container0">
+
+                        <div id="MessageDiv"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div id = "Container1">
+            <div id="Desc`" class="sectionText">Summary</div>
+            <input id="SaveAsCsvButtonS" type="Button" value="Save As .csv" class="saveAs"></input>
+            <div id="EmpCoordGridDiv"  class="ag-fresh"></div>
+        </div>
+
+        <div id = "Container2">
+            <div id="Desc2" class="sectionText">Responses</div>
+            <input id="SaveAsCsvButtonD" type="Button" value="Save As .csv" class="saveAs"></input>
+            <div id="ResponseGridDiv"  class="ag-fresh"></div>
+        </div>
+
+        <div id="hr1">
+            <hr/>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+        function processResponses() {
+            return new Promise(function (resolve, reject) {
+                let i,rec;
+                let respCnt = 0, cnt = 0;
+                let a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15;
+                let contactId, ethnicGroup, gender, id, interviewDate, interviewerId, interviewer, memberName, primaryLanguage, updatedDate, updated,contact,employer,coord,division;
+                let email, cellPhone, phone;
+                let coordId, coordName, org1Id, org1Name;
+                let coordOrg1Map,org1Map;
+                let empCoordOrg1MapKey,coordOrg1MapKey,org1MapKey;
+
+                a1 = a2 = a3 = a4 = a5 = a5_Other = a6 = a7 = a8 = a9 = a10 = a11 = a12 = a13 = a14 = a15 = interviewer = '';
+                contactId = interviewDate = interviewerId = memberName = updatedDate = email = cellPhone = phone = '';
+                employer  = coordName = org1Name = 'n/a';
+
+                if (responseData.length) {
+                    for (i = 0; i < responseData.length; i++) {
+                        rec = responseData[i];
+                        a1                  = rec.A1__c;
+                        a2                  = rec.A2__c;
+                        a3                  = rec.A3__c;
+                        a4                  = rec.A4__c
+                        a5_Other            = rec.A5_Other__c || '';
+                        a5                  = rec.A5__c;
+                        a6                  = rec.A6__c;
+                        a7                  = rec.A7__c;
+                        a8                  = rec.A8__c;
+                        a9                  = rec.A9__c;
+                        a10                 = rec.A10__c;
+                        a11                 = rec.A11__c;
+                        a12                 = rec.A12__c;
+                        a13                 = rec.A13__c;
+                        a14                 = rec.A14__c;
+                        a15                 = rec.A15__c;
+                        contactId           = rec.ContactId__c;
+                        ethnicGroup         = rec.EthnicGroup__c;
+                        gender              = rec.Gender__c;
+                        id                  = rec.Id;
+                        interviewDate       = rec.InterviewDate__c;
+                        interviewerId       = rec.InterviewerId__c;
+                        memberName          = rec.MemberName__c;
+                        primaryLanguage     = rec.PrimaryLanguage__c;
+                        updatedDate         = rec.UpdatedDate__c;
+                        updated             = rec.Updated__c;
+
+                        if(rec.InterviewerId__r) {
+                            interviewer = rec.InterviewerId__r.LastName + ', ' + rec.InterviewerId__r.FirstName;
+                        }
+
+                        if(rec.ContactId__r) {
+
+debugger;
+                            email     = rec.ContactId__r.Email || ' - ';
+                            cellPhone = rec.ContactId__r.MobilePhone || ' - ';
+                            phone     = rec.ContactId__r.Phone || ' - ';
+                            console.log(contactId);
+                            console.log(email, cellPhone, phone);
+
+                            if(rec.ContactId__r.Account) {
+                                employer  = toProperCase(rec.ContactId__r.Account.Name);
+                                division  = toProperCase(rec.ContactId__r.Account.Account_Group__c);
+
+                                if(rec.ContactId__r.Account.Coordinator__r) {
+                                    coordId   = rec.ContactId__r.Account.Coordinator__r.Id;
+                                    coordName = toProperCase(rec.ContactId__r.Account.Coordinator__r.LastName) + ', ' + toProperCase(rec.ContactId__r.Account.Coordinator__r.FirstName);
+                                }
+
+                                if(rec.ContactId__r.Account.Organizer_1__r) {
+                                    org1Id = rec.ContactId__r.Account.Organizer_1__r.Id;
+                                    org1Name = toProperCase(rec.ContactId__r.Account.Organizer_1__r.LastName) + ', ' + toProperCase(rec.ContactId__r.Account.Organizer_1__r.FirstName);
+                                }
+                            }
+                        }
+
+                        if (!responseMap[contactId]) {
+                            respCnt++;
+
+                            if (!empCoordOrg1Map[employer])
+                                empCoordOrg1Map[employer] = {};
+
+                            if (!empCoordOrg1Map[employer][coordName])
+                                empCoordOrg1Map[employer][coordName] = {};
+
+                            if(!empCoordOrg1Map[employer][coordName][org1Name])
+                                empCoordOrg1Map[employer][coordName][org1Name] = {Cnt:1};
+                            else
+                                empCoordOrg1Map[employer][coordName][org1Name].Cnt++;
+
+                            responseMap[contactId] = contactId;
+                            responseDataArray.push({A1:a1, A2:a2, A3:a3, A4:a4, A5_Other:a5_Other, A5:a5, A6:a6, A7:a7, A8:a8, A9:a9, A10:a10, A11:a11, A12:a12, A13:a13, A14:a14, A15:a15,
+                                ContactId:contactId, InterviewDate:interviewDate, Interviewer:interviewer, MemberName:memberName, UpdatedDate:updatedDate,
+                                Employer:employer, CoordName: coordName, Org1Name: org1Name,ContactId:contactId,Email:email,CellPhone:cellPhone,Phone:phone});
+                        }
+
+                    }
+                }
+
+                for(empCoordOrg1MapKey in empCoordOrg1Map) {
+                    console.log(empCoordOrg1Map[empCoordOrg1MapKey]);
+                    coordOrg1Map = empCoordOrg1Map[empCoordOrg1MapKey];
+                    for(coordOrg1MapKey in coordOrg1Map) {
+                        console.log(coordOrg1Map[coordOrg1MapKey]);
+                        org1Map = coordOrg1Map[coordOrg1MapKey];
+                        for(org1MapKey in org1Map) {
+                            console.log(org1Map[org1MapKey]);
+                            cnt = org1Map[org1MapKey].Cnt;
+                            empCoordOrg1DataArray.push({Employer:empCoordOrg1MapKey, Coordinator: coordOrg1MapKey, Organizer1:org1MapKey,  Cnt: cnt});
+                        }
+                    }
+                }
+
+                messageDiv.innerHTML = respCnt + ' Responses loaded (no dups)';
+                showGrid();
+                resolve('ok');
+            });
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        function interviewDateRenderer(params) {
+            if(params.data.InterviewDate) {
+                let d = new Date(params.data.InterviewDate);
+                let t = d.toLocaleString('en-US', dateOptions2);
+                return t;
+            }
+            else
+                return '';
+        }
+
+        function A1cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A1;
+            switch(f) {
+                case 'X' :
+                    retval = 'X-ray';
+                    break;
+                case 'R' :
+                    retval = 'Respiratory';
+                    break;
+                case 'S' :
+                    retval = 'Surgical';
+                    break;
+                case 'P' :
+                    retval = 'Pharmacy';
+                    break;
+            }
+            return retval;
+        }
+
+        function A2cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A2;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+            }
+            return retval;
+        }
+
+        function A3cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A3;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+            }
+            return retval;
+        }
+
+        function A4cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A4;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+            }
+            return retval;
+        }
+
+        function A5cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A5;
+            switch(f) {
+                case 'K' :
+                    retval = 'Kaiser';
+                    break;
+                case 'D' :
+                    retval = 'Dignity';
+                    break;
+                case 'S' :
+                    retval = 'Sutter';
+                    break;
+                case 'O' :
+                    retval = 'Other';
+                    break;
+            }
+            return retval;
+        }
+
+        function A6cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A6;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+            }
+            return retval;
+        }
+
+        function A7cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A7;
+            switch(f) {
+                case 'M' :
+                    retval = 'Most of time';
+                    break;
+                case 'S' :
+                    retval = 'Some of time';
+                    break;
+                case 'L' :
+                    retval = 'Very little';
+                    break;
+            }
+            return retval;
+        }
+
+        function A8cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A8;
+            switch(f) {
+                case 'M' :
+                    retval = 'Most of time';
+                    break;
+                case 'S' :
+                    retval = 'Some of time';
+                    break;
+                case 'L' :
+                    retval = 'Very little';
+                    break;
+            }
+            return retval;
+        }
+
+        function A9cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A9;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+                case 'U' :
+                    retval = 'Unsure';
+                    break;
+            }
+            return retval;
+        }
+
+        function A10cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A10;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+                case 'U' :
+                    retval = 'Unsure';
+                    break;
+            }
+            return retval;
+        }
+
+        function A11cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A11;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+            }
+            return retval;
+        }
+
+        function A12cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A12;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+            }
+            return retval;
+        }
+
+        function A13cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A13;
+            switch(f) {
+                case 'F' :
+                    retval = 'Full Time';
+                    break;
+                case 'P' :
+                    retval = 'Part Time';
+                    break;
+                case 'D' :
+                    retval = 'Per Diem';
+                    break;
+            }
+            return retval;
+        }
+
+        function A14cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A14;
+            switch(f) {
+                case 'A' :
+                    retval = 'AM';
+                    break;
+                case 'P' :
+                    retval = 'PM';
+                    break;
+                case 'N' :
+                    retval = 'NOC';
+                    break;
+            }
+            return retval;
+        }
+
+        function A15cellRenderer(params) {
+            let retval = '?';
+            let f = params.data.A15;
+            switch(f) {
+                case 'Y' :
+                    retval = 'Yes';
+                    break;
+                case 'N' :
+                    retval = 'No';
+                    break;
+            }
+            return retval;
+        }
+
+        function initAgGrid() {
+            agGrid.LicenseManager.setLicenseKey("United_Healthcare_Workers_West_10-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+
+//            {Id:empId, Name:empName, CoordId:coordId, CoordName:coordName, CoordEmail:coordEmail, CoordCell: coordCell, Org1Id:org1Id, Org1Name:org1Name,Org1Email:org1Email, Org1Cell:org1Cell}
+
+            employerColDefs = [
+                { headerName: 'Employer',               field: 'Employer',          width:  350, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Coordinator',            field: 'Coordinator',       width:  230, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Organizer 1',            field: 'Organizer1',        width:  230, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'count',                  field: 'Cnt',               width:  100, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'}
+            ];
+
+            empSort = [
+                {colId: 'Employer',    sort: 'asc'},
+                {colId: 'Coordinator', sort: 'asc'},
+                {colId: 'Organizer1',  sort: 'asc'}
+            ]
+
+//                employerColDefs = [
+//                { headerName: 'Employer',              field: 'Name',              width:  230, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+//                { headerName: 'Coordinator',           field: 'CoordName',         width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+//                { headerName: 'Coord Email',           field: 'CoordEmail',        width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+//                { headerName: 'Coord Cell',            field: 'CoordCell',         width:  100, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+//                { headerName: 'Organizer 1',           field: 'Org1Name',          width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+//                { headerName: 'Org1 Email',            field: 'Org1Email',         width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+//                { headerName: 'Org1 Cell',             field: 'Org1Cell',          width:  100, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'}
+//            ];
+
+            responseColDefs = [
+                { headerName: 'Employer',              field: 'Employer',          width:  250, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Coordinator',           field: 'CoordName',         width:  180, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Organizer 1',           field: 'Org1Name',          width:  180, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Member',                field: 'MemberName',        width:  180, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+                { headerName: 'Interviewed',           field: 'InterviewDate',     width:  170, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc',cellRenderer: interviewDateRenderer},
+                { headerName: 'By',                    field: 'Interviewer',       width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'License',               field: 'A1',                width:  150, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A1cellRenderer},
+                { headerName: 'In CA < 4',             field: 'A2',                width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A2cellRenderer},
+                { headerName: 'Student',               field: 'A3',                width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A3cellRenderer},
+                { headerName: 'Work outside',          field: 'A4',                width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A4cellRenderer},
+                { headerName: 'Internship @',          field: 'A5',                width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A5cellRenderer},
+                { headerName: 'Other',                 field: 'A5_Other',          width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1'},
+                { headerName: 'Get training',          field: 'A6',                width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A6cellRenderer},
+                { headerName: 'Supervision',           field: 'A7',                width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A7cellRenderer},
+                { headerName: 'Unrelated tasks',       field: 'A8',                width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A8cellRenderer},
+                { headerName: 'Your work billed',      field: 'A9',                width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A9cellRenderer},
+                { headerName: 'Less staff',            field: 'A10',               width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A10cellRenderer},
+                { headerName: 'Expect job',            field: 'A11',               width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A11cellRenderer},
+                { headerName: 'Clearly stated unpaid', field: 'A12',               width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A12cellRenderer},
+                { headerName: 'Schedule',              field: 'A13',               width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A13cellRenderer},
+                { headerName: 'Shift',                 field: 'A14',               width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A14cellRenderer},
+                { headerName: 'Want to be involved',   field: 'A15',               width:  130, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', cellRenderer: A15cellRenderer},
+                { headerName: 'Contact Id',            field: 'ContactId',         width:  180, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Email',                 field: 'Email',             width:  180, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Cell Phone',            field: 'CellPhone',         width:  180, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Phone',                 field: 'Phone',             width:  180, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'}
+            ];
+
+        }
+
+        function showGrid() {
+
+            if(shownBefore) {
+                employerGridOptions.api.destroy();
+                responseGridOptions.api.destroy();
+            }
+            else shownBefore = true;
+
+            // employerDataArray
+
+            employerGridOptions = {
+                columnDefs: employerColDefs,
+                rowData: empCoordOrg1DataArray,
+                rowSelection: 'single',
+                enableSorting: true,
+                debug:false
+            };
+            new agGrid.Grid(empCoordGridDiv, employerGridOptions);
+            employerGridOptions.api.setSortModel(empSort);
+
+            responseGridOptions = {
+                columnDefs: responseColDefs,
+                rowData: responseDataArray,
+                rowSelection: 'single',
+                enableSorting: true,
+                debug:false
+            };
+            new agGrid.Grid(responseGridDiv, responseGridOptions);
+        }
+
+        function saveAsCsvD() {
+            let d = new Date();
+            let t = d.toLocaleString('en-US', dateOptions1);
+            let fileName = 'Unpaid Interns Detail (as of: ' + t + ').csv';
+            responseGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function saveAsCsvS() {
+            let d = new Date();
+            let t = d.toLocaleString('en-US', dateOptions1);
+            let fileName = 'Unpaid Interns Summary (as of: ' + t + ').csv';
+            employerGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function init() {
+            messageDiv            = document.getElementById('MessageDiv');
+            responseGridDiv       = document.getElementById('ResponseGridDiv');
+            empCoordGridDiv       = document.getElementById('EmpCoordGridDiv');
+            saveAsCsvButtonD      = document.getElementById("SaveAsCsvButtonD");
+            saveAsCsvButtonS      = document.getElementById("SaveAsCsvButtonS");
+            saveAsCsvButtonD.addEventListener("click", saveAsCsvD, false);
+            saveAsCsvButtonS.addEventListener("click", saveAsCsvS, false);
+            messageDiv.innerHTML  = '';
+            responseMap           = {};
+            empCoordOrg1Map       = {};
+            responseDataArray     = [];
+            empCoordOrg1DataArray = [];
+            dateOptions1          = { year: 'numeric', month: 'numeric', day: 'numeric'};
+            dateOptions2          = { year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute:'numeric'};
+
+        }
+
+        function phoneFormat(s) {
+            let s1;
+            if(s == null || s.trim().length < 10)
+                s1 = '';
+            else {
+                s1 = s.trim().replace(/[^0-9]/g,'');
+                s1 = '(' + s1.substr(0,3) + ') ' + s1.substr(3,3) + '-' + s1.substr(6);
+            }
+            return s1;
+        }
+
+        function toProperCase(s) {
+            // My version - handles hyphenated names correctly :)
+            let s1 = '';
+            if(s)
+                s1 = s.trim().toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function dateFmt(dStr) {
+            let localDate;
+            yyyy      = dStr.substr(0,4);
+            mm        = dStr.substr(5,2);
+            dd        = dStr.substr(8,2);
+            localDate = mm + '/' + dd + '/' + yyyy;
+            return localDate;
+        }
+
+        function dateRenderer(params) {
+            keyDate   = params.data.Date;
+            return dateFmt(keyDate);
+        }
+
+        function spawn(generatorFunc) {
+            function continuer(verb, arg) {
+                var result;
+                try {
+                    result = generator[verb](arg);
+                } catch (err) {
+                    return Promise.reject(err);
+                }
+                if (result.done) {
+                    return result.value;
+                } else {
+                    return Promise.resolve(result.value).then(onFulfilled, onRejected);
+                }
+            }
+            var generator = generatorFunc();
+            var onFulfilled = continuer.bind(continuer, "next");
+            var onRejected = continuer.bind(continuer, "throw");
+            return onFulfilled();
+        }
+
+        /*
+         controller code - getUserData():
+         Select Id,Name,Coordinator__r.Id,Coordinator__r.FirstName,Coordinator__r.LastName,Coordinator__r.Email, Coordinator__r.MobilePhone,
+         Organizer_1__r.Id,Organizer_1__r.FirstName,Organizer_1__r.LastName,Organizer_1__r.Email, Organizer_1__r.MobilePhone
+         From Account
+         Where (Type = 'Employer' And Active__c = 'YES' And Constituency__r.Name != null ) And
+         (Account_Group__c = 'Kaiser' OR Coordinator__c = 'Jean Cronin' OR Coordinator__c = 'Kristin Eldridge' )
+         Order By Account.Name ];
+         */
+        function getEmpData() {
+            return new Promise(function (resolve, reject) {
+                UnpaidInternsReportController.getEmpData( (result, event) => {
+                    if (event.status) {
+                    console.log('Retrieved Emp data');
+                    resolve(result);
+                }
+                else
+                {
+                    console.log('Error retrieving Emp data');
+                    reject(event);
+                }
+            });
+            });
+        }
+
+        function getRespData() {
+            return new Promise(function (resolve, reject) {
+                UnpaidInternsReportController.getRespData( (result, event) => {
+                    if (event.status) {
+                    console.log('Retrieved Resp data');
+                    resolve(result);
+                }
+                else {
+                    console.log('Error retrieving Resp data');
+                    reject(event);
+                }
+            });
+            });
+        }
+
+        function processEmployers(results) {
+
+            return new Promise(function(resolve, reject) {
+                let i,len,rec,empId,empDiv,empCode,empName,parentCorp,buCnt;
+                let coordId = coordName = coordEmail = coordCell = org1Id = org1Name = org1Email = org1Cell = '';
+                employerDataArray = [];
+                employerMap        = {};
+                employerCount      = 0;
+                len = results.length;
+                for (i = 0; i < len; i++) {
+                    employerCount++;
+                    rec        = results[i];
+                    empId      = rec.Id;
+                    empName    = toProperCase(rec.Name);
+
+                    if(rec.Coordinator__r) {
+                        coordId    = rec.Coordinator__r.Id;
+                        coordName  = rec.Coordinator__r.LastName + ', ' + rec.Coordinator__r.FirstName;
+                        coordEmail = rec.Coordinator__r.Email;
+                        coordCell  = rec.Coordinator__r.MobilePhone;
+                    }
+
+                    if(rec.Organizer_1__r) {
+                        org1Id    = rec.Organizer_1__r.Id;
+                        org1Name  = rec.Organizer_1__r.LastName + ', ' + rec.Organizer_1__r.FirstName;
+                        org1Email = rec.Organizer_1__r.Email;
+                        org1Cell  = rec.Organizer_1__r.MobilePhone;
+                    }
+
+                    if (!empCoordOrg1Map[empName])
+                        empCoordOrg1Map[empName] = {};
+
+                    if (!empCoordOrg1Map[empName][coordName])
+                        empCoordOrg1Map[empName][coordName] = {};
+
+                    if(!empCoordOrg1Map[empName][coordName][org1Name])
+                        empCoordOrg1Map[empName][coordName][org1Name] = {Cnt:0};
+                }
+                resolve('ok');
+            });
+        }
+
+        var messageDiv,responseGridDiv,empCoordGridDiv;
+        var employerColDefs,employerDataArray,employerGridOptions,employerMap;
+        var responseColDefs,responseDataArray,responseGridOptions,responseMap;
+        var shownBefore;
+        var saveAsCsvButtonD,saveAsCsvButtonS;
+        var dateOptions1,dateOptions2;
+        var employerData,responseData;
+        var empCoordOrg1DataArray;
+        var empCoordOrg1Map;
+        var empSort;
+
+        // ***************** Main Program Entry *****************
+        init();
+        initAgGrid();
+
+        spawn(function *() {
+
+            employerData = yield getEmpData();
+            yield processEmployers(employerData);
+            responseData = yield getRespData();
+            yield processResponses();
+
+        });
+
+    </script>
+    </body>
+</apex:page>

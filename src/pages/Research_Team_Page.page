@@ -1,0 +1,21 @@
+<apex:page >
+<dl>
+<dt></dt>
+<dd>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  <h1>Research Team</h1>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  <ul>
+  <li><apex:outputLink target="_blank" value="{!$Page.Report_Job_Groups}">Job Group Reports (may take a few minutes to run)</apex:outputLink></li>
+  <br>&nbsp;</br>  
+  <li><apex:outputLink target="_blank" value="{!$Page.Report_Licensure_All_CA_Hosps}">Licensure Proximity Reports for All CA Hospitals</apex:outputLink></li>
+  <br>&nbsp;</br>
+  <li><apex:outputLink target="_blank" value="https://www.google.com/fusiontables/DataSource?docid=1F0R3hfGrxY8vp8QdD_iJ4yH1gYN6Ubw9LgsSGFNL">Contracts Standards Database</apex:outputLink></li>
+  
+  </ul>
+</dd>
+</dl>
+</apex:page>

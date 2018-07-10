@@ -1,0 +1,190 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Contact Fields</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+<style type="text/css" media="screen,print">
+   .page-breaker {
+     display: block;
+     page-break-after: always;
+     border :1px solid black
+   }
+</style>
+
+<script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+
+  
+</head>
+
+<body>
+
+<font size="+2">Contact Field Usage</font><br/>
+
+
+<div id="mainDiv" align="center">
+</div>  
+
+ 
+<script language="JavaScript">
+
+
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              //pWorksite = pWorksite.replace(/\./g,'');
+              //pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return dept;
+}
+
+function truncateEmployer(pEmployer) {
+  var returnModEmployer = pEmployer.toLowerCase();
+  returnModEmployer = " " + returnModEmployer + " ";
+            returnModEmployer = returnModEmployer.replace("kaiser-", "");
+            returnModEmployer = returnModEmployer.replace(" hospital", "");                     
+            returnModEmployer = returnModEmployer.replace(" medical center", "");                                 
+            returnModEmployer = returnModEmployer.replace(" med ctr", "");                                              
+            returnModEmployer = returnModEmployer.replace(" west los angeles", " wla");              
+            returnModEmployer = returnModEmployer.replace(" orange county", " oc");  
+            returnModEmployer = returnModEmployer.replace(" svcs & admin", "");
+            returnModEmployer = toProperCase(returnModEmployer.trim());
+  return returnModEmployer;
+}
+
+function removeQuotes(pString) {
+  if (pString == null) {
+    return null;
+  }
+  var returnString = "";
+  for (var sdex = 0 ; sdex < pString.length; sdex++) {
+    if (pString.charAt(sdex) != "\"") {
+      returnString += pString.charAt(sdex);
+    }
+  }
+  return returnString;
+}
+
+var lastRecord = {};
+
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+var ALL = "ALL";
+
+var user = sforce.connection.getUserInfo();
+
+try {
+    var divWriter = "";
+
+    var query = "Select Id, IsDeleted, MasterRecordId, AccountId, LastName, FirstName, Salutation, MiddleName, Suffix, Name, ";
+    query += "RecordTypeId, OtherStreet, OtherCity, OtherState, OtherPostalCode, OtherCountry, OtherLatitude, OtherLongitude, ";
+    query += "OtherGeocodeAccuracy, OtherAddress, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingCountry, ";
+    query += "MailingLatitude, MailingLongitude, MailingGeocodeAccuracy, MailingAddress, Phone, Fax, MobilePhone, HomePhone, ";
+    query += "OtherPhone, AssistantPhone, ReportsToId, Email, Title, Department, AssistantName, LeadSource, Birthdate, Description,";
+    query += "OwnerId, HasOptedOutOfEmail, HasOptedOutOfFax, DoNotCall, CreatedDate, CreatedById, LastModifiedDate, LastModifiedById, ";
+    query += "SystemModstamp, LastActivityDate, LastCURequestDate, LastCUUpdateDate, LastViewedDate, LastReferencedDate, ";
+    query += "EmailBouncedReason, EmailBouncedDate, IsEmailBounced, PhotoUrl, Jigsaw, JigsawContactId, Hire_Date__c, Surveys_Consolidated__c, Surveys_Encoded__c, Activist__c, Probation_Evalution_Required__c, Canvasser_COPE_Date__c, Cope_Amount__c, GOTV_Board_Challenge__c, GOTV_Exact_Vote_Time__c, Regional_Director__c, GOTV_Gettable__c, GOTV_Assessment__c, GOTV_Hard_Pull__c, GOTV_Hard_Pull_Reason__c, GOTV_Inside_Plan_Notes__c, Cope_Payment_Date__c, Employer__c, Ethnicity__c, Field_Work_Notes__c, Gender__c, GeoLocation__Latitude__s, GeoLocation__Longitude__s, GeoLocation__c, Languages__c, Leader__c, Signed_Membership_Card_Date__c, Signed_Membership_Card__c, Address__c, MemberID__c, My_Campaign_Id__c, In_Current_BU__c, GOTV_Mngt_Challange__c, Signed_Membership_Card_By__c, Zipcode5__c, AssignedLeader__c, County__c, Community_Leader_Id__c, External_Leader__c, ULP_Dialysis__c, Last_Dues_Paid_Date__c, Member_Active_Status_Change_Date__c, Subject__c, Salesforce_Contact_Id__c, Executive_Body_Title__c, District_Leader__c, Secondary_Phone1__c, Secondary_Phone2__c, Community_Region__c, Bad_Phone_Numbers__c, Last_Phone_Bank_Task_Subject__c, No_one_home__c, RefusedToSign__c, VisitLast6Months__c, Dignity_Region__c, IsJune5Action__c, Division_Type__c, Last_Phone_Bank_Task_Date__c, Upload_Iteration__c, Member_Status__c, Facility_Cluster__c, GOTV_Outside_Plan__c, Shift__c, Dignity_Sub_Region__c, ID_Leaders__c, Leader_Recruited__c, Verbal_Support__c, Public_Support__c, Contract_Specialist__c, LN_Street_1__c, DWID__c, LN_City_1__c, Other_Email__c, Organizer_IDd_as_Leader__c, Coworker_IDd_as_Leader__c, Cross_Match_UHW__c, Cross_Match_NUHW__c, LOA__c, Verbal_Assessment__c, CrossMatchFacility__c, Work_Status__c, Cross_Match_CNA__c, X1_1_set__c, X1_1_complete__c, Previous_Supporter_Target__c, FID__c, Employee_ID__c, Card_Assessment__c, Synced_By_API_Process__c, Synced_By_API_Process_Date__c, COPE_Pledge__c, Verified_Membership_Card_Date__c, Age__c, LN_Zip_Code_1__c, New_Organizing_Signed_Date__c, Override_Employer__c, Worksite__c, BU__c, Work_Phone__c, Work_Email__c, Job_Group__c, IsExclude__c, CopePledgeDate__c, VerifiedByMbrAssociate__c, GOTV_Off_Both_Days__c, GOTV_Shift_Scheduler__c, GOTV_Slip__c, GOTV_Special_Plan__c, GOTV_Special_Plan_Notes__c, GOTV_Took_Photo__c, GOTV_UHW_Challenge__c, UNAC_Card_Assessment__c, UNAC_Vote_Yes_Petition__c, LN_Street_2__c, GOTV_Vote_Yes_Petition__c, GOTV_Where_After_Voting__c, GOTV_Where_Before_Voting__c, GOTV_Works_Eday_1__c, GOTV_Works_Eday2__c, GOTV_Works_Night_Before_Eday1__c, Vote_Captain__c, Assigned_to_VC__c, DoNotVisit__c, DoNotSendMail__c, Employer1__c, COPE_Pledge_10X10__c, Three_Touch_VC__c, Three_Touch__c, Three_Touch_ST__c, Election_Day_Voted__c, GOTV_Challenge__c, E_Day_Challenge__c, Needs_a_ride__c, Enrollment_Region__c, LN_State_1__c, JobScheduling__c, Trgt_Home_Care_Census_Tract__c, Probable_Language__c, Voted__c, Post_Election_Petition__c, Sticker_Up_Actions__c, LN_City_2__c, SSJM_Vote_Period__c, GeoLocationDiffers__c, UNAC_GOTV__c, GOTV_Purple_Up__c, GOTV_Got_Picture__c, soft2__c, Works_Night_Before_Eday2__c, GOTV_Challenge_Reason__c, E_Day_Challenge_Reason__c, Inside_Plan_D2__c, MailingLatFormula__c, MailingLongFormula__c, Other_Emails_Any__c, IHSS_Exclude_Address__c, pi__campaign__c, pi__comments__c, pi__conversion_date__c, pi__conversion_object_name__c, pi__conversion_object_type__c, pi__created_date__c, pi__first_activity__c, pi__first_search_term__c, pi__first_search_type__c, pi__first_touch_url__c, pi__grade__c, pi__last_activity__c, pi__notes__c, pi__score__c, pi__url__c, pi__utm_campaign__c, pi__utm_content__c, pi__utm_medium__c, pi__utm_source__c, pi__utm_term__c, LN_State_2__c, OK_To_Text__c, EBoard__c, CVRSOS__Request_Geocode__c, CVRSOS__Schedule_Geocode__c, Catalist_Mailing_City__c, Catalist_Mailing_State__c, Catalist_Mailing_Street__c, Catalist_Mailing_Zip__c, Catalist_Voting_City__c, Catalist_Voting_State__c, Catalist_Voting_Street__c, Catalist_Voting_Zip__c, Term_Date__c, Years_of_Service__c, LN_Zip_Code_2__c, LN_Phone__c, Job_Paid_Status__c, Catalist_Phone__c, District_Hospital_Assessment__c, Cat_Mailing_BA__c, Cat_Voting_BA__c, Coming_to_Meeting__c, Work_Days_at_Primary_Worksite__c, Cvent_Email__c, Leadership_Assembly_Eboard_Seat__c, Community_Employer_Name__c, Translation__c, Cvent_Division_Type__c, Ethnic_Group__c, Community_Ethnicity__c, Record_Count__c, Addresses_Consolidated__c, New_Org_Lead_Status__c, Cvent_CC_Email__c, Lead__c, Div_Sub_Region__c, Owner_Name__c, Notes_Consolidated__c, Min_Wage_Region__c, Mailing_BA__c, Report_Tags__c, Report_Sort_Value__c, Dialysis_Build_OC__c, Pol_Perm_Absentee_Voter__c, Pol_PDI_Id__c, Pol_Party__c, Pol_Congress_District__c, Pol_St_Senate_District__c, Pol_St_Assembly_District__c, Pol_Supervisorial_District__c, Override_Employer_Date__c, Employer_Region__c, Contact_Name__c, Build_OC_Support__c, Status_Formula__c, pi__pardot_hard_bounced__c, Leadership_Assembly_Org_Workshop__c, Coordinator__c, Reconfirmed_GOTV__c, Community_No_Email__c, Organizer_1__c, Outside_Team__c, Three_Touch_Count__c, Leadership_Assembly_Facility_Breakdown__c, Assignment_Given__c, Car_Has_Access__c, Car_Has_License__c, Community_Contact_Source__c, Wage_Hourly__c, Hours_Per_Week__c, Related_Contact__c, Related_Contact_How__c, Phone_Disconnected__c, Children_in_Household__c, Devices_Owns__c, Social_Facebook__c, Social_Twitter__c, Social_Instagram__c, Healthcare_Coverage__c, Cvent_Checked_In__c, Contact_Info_Searches_Completed__c, Stretch_Member_Card_Signed__c, Employer_ID__c, Medical_Note__c, Cvent_Tags__c, Cvent_Code__c, Cvent_Language__c, Division__c, Community_Former_Home_Care_Id__c, Community_Former_Home_Care__c, In_Current_BU_Override__c, Country_of_Origin__c, SignedOrVerified__c, Other_Address_BA__c, Agency__c, LL_Mailing_Street__c, LL_Mailing_City__c, LL_Mailing_State__c, LL_Mailing_Zip__c, TS_Mailing_Street_1__c, TS_Mailing_City_1__c, TS_Mailing_State_1__c, TS_Mailing_Zip_1__c, TS_Mailing_Street_2__c, TS_Mailing_City_2__c, TS_Mailing_State_2__c, TS_Mailing_Zip_2__c, TS_Mailing_Street_3__c, TS_Mailing_City_3__c, TS_Mailing_State_3__c, TS_Mailing_Zip_3__c, Catalist_Mobile_Phone__c, COPE_Baseline_Pledge__c, Lic_List_Phone__c, No_Contract__c, Verified_In_Past_Week__c, Pol_CPVI__c, Pol_Area__c, Photo_URL__c, Photo_Embedded__c, Pol_District_Map__c, Pol_Committees__c, Pol_District_Office_1_Address__c, Pol_District_Office_2_Phone__c, Pol_District_Office_1_Phone__c, Pol_District_Office_2_Address__c, Pol_District_Office_3_Address__c, Pol_District_Office_3_Phone__c, API_Emp_Name__c, Do_Not_Email__c, Attended_Auth_Launch__c, EBoard_Former_NH_or_HC__c, Assigned_to_VC_Name__c, Photo_Release_Signed__c, COPE_Baseline_Date__c, Worksite_Add_Info__c, Bargaining_Survey__c, Hospital_System__c, Argue_Out_Reason__c, Purple_UP__c, New_Org_Card_Signed_By__c, Medical_Note_Expiration_Date__c, Spot_Check__c, Agreed_In_Unit__c, Elist_Street__c, Elist_City__c, Elist_State__c, Elist_Zip__c, Elist_Email__c, COPE_Field_Date__c, Home_Care_Min_Hours__c, Elist_Phone__c, Schedule_In_Hand__c, GotCardV__c, New_Address__c, CVRSOS__Address_Full__c, CVRSOS__BUnit__c, CVRSOS__GeoLocation__Latitude__s, CVRSOS__GeoLocation__Longitude__s, CVRSOS__GeoLocation__c, CVRSOS__IsAddressModified__c, CVRSOS__Language__c, CVRSOS__Result__c, CVRSOS__Shifts__c, CVRSOS__Status__c, CVRSOS__Worksite_Name__c, LanguagePrimary__c, Became_A_Member_Via__c, ExcludeDec12_temp__c, Delete_Packet_Contact__c, New_Organizing_Has_Access__c, Remove_Employer_Address__c, Age_Range__c, Record_Type_Id__c, Worksite_Address__c, Full_Name_2__c, Letter_to_KPC_Global__c, EBoard_2017_Voter__c, E_Signed_Card__c, Received_E_Signed_Card__c, Photo_Assessment__c, Received_Physical_Card__c, Card_Type__c, Time_Date_per_OC__c, Card_Assess__c, Verbal_Assess__c, ECard_Notes__c, GOTV_Vote_Block_Time__c, Plan_Type_Notes__c, PetitionQty__c, Stretch_Team_Intake_Phase__c, PDI_Count__c, HCA_Picket_Leader__c, HCA_CAT__c, Ethnicity_PDI__c, Steward_Start_Date__c, Steward_End_Date__c, Steward__c, Date_Per_OC__c, Staffing_17__c, District_Name_2017__c, Constituency_Name_2017__c, Leader_UHW_fix__c, Inoculated__c, Animo_Day__c, Staffing_17_Collected_By__c, Staffing17CollectedBy__c, GOTV_Collected_By__c, GOTVCollectedBy__c, GOTV_Assess__c, Power_Party__c, Power_Up__c, GOTV_Card_Signed_Date__c, Political_City_Council_District__c, Political_Health_Care_District__c, Political_Hospital_District__c, Political_VTD_16G__c, GOTV_Plan_Type__c, New_Organizing_Signed_Card_By__c, FH_Crazy_Notes__c, FCH_Notes__c, Shift_Standardized__c, Department_Mod__c, Split_Employer__c, Mbr_Ldr_App_Status__c, Mbr_Ldr_App_Status_Datetime__c, Mbr_Ldr_App_Tier__c, Dialysis_Employer__c, Pol_TwitterName__c, Pol_COS_Name__c, Pol_COS_Email__c, Pol_LegDirector_Name__c, Pol_LegDirector_Email__c, Pol_Scheduler_Name__c, Pol_Scheduler_Email__c, Pol_CommDir_Name__c, Pol_CommDir_Email__c, Pol_LegAise1_Name__c, Pol_LegAide1_Email__c, Pol_Position__c, Pol_Website__c, Tier_1_Leader__c, Tier_2_Leader__c, Tier_1_Leader_Name__c, Tier_2_Leader_Name__c, Tier_Staff__c, Tier_Staff_Name__c, Assignment_Complete__c, BU_Date__c, Coworker_Name__c, Kaiser_Roles__c, Funding_17__c, Avg_Hours_Per_Week__c, Stretch_Member_Card_Upload_Date__c, Stretch_Leader__c, Stretch_Leader_Name__c, Stretch_EBoard_Leader_Name__c, Stretch_Leader_FID__c, Stretch_Leader_Employer_Name__c, Stretch_Same_Facility__c, Received_ECard__c, Other_Title__c, Other_Department__c, Stretch_Card_AA_Verified__c, MA__c, Stretch_Card_Office_Mgr_Verified__c, Stretch_Card_Date_Verified__c, Stretch_Ldr_Run_By_EBoard__c, Stretch_EBoard_Team__c, Stretch_Ldr_Promotion_Status__c, EDF__c, Stretch_Card_Mbr_Pack_No__c, Stretch_Card_Mbr_Assigned__c, Stretch_Card_Membership_Received_Date__c, Stretch_Card_Mbr_Verified__c, Stretch_Team_Participation__c, Testimonial_ST_17__c, Received_eCard_From__c, IP_Address__c, Testimonial_ST_17_Collected_By__c, Stretch_Dept_Ldr_Nominee_P4__c, UHW_Manager__c, Captain__c, Captain_s_OC__c, OC_Member__c, Dialysis_Phases__c, User_Profile__c";
+    //query += " FROM Contact limit 50000 "; 
+    query += " FROM Contact  "; 
+    var result = sforce.connection.query(query); 
+    var queryMore = true;
+    var fieldSet = [];
+    var p = 0;
+    var q = 0;
+    while (queryMore) {    
+      var records1 = result.getArray('records'); 
+      for (var i = 0; i < records1.length; i++) {    
+        var a = records1[i];
+        if (i == 0 && p == 0) {
+          for (var f in a) {
+            if (f.indexOf("__c") > 0) {
+              fieldSet.push(f);
+            }
+          }         
+        }
+        for (var f in a) {        
+          if (f.indexOf("__c") > 0) {
+            if (a[f] == null || a[f] == "" || a[f] == "false" || a[f] == false || a[f] == "FALSE") {
+              incrementCounter([ALL, f], 1.0);
+              if (q == 0) {
+                 //alert("found null field = " + f);
+                 q++;
+              }
+            }
+          }
+        }
+        incrementCounter([ALL, ALL], 1.0);        
+      }        
+      if (result.getBoolean("done")) {
+        queryMore = false;
+      } else {
+        result = sforce.connection.queryMore(result.queryLocator);
+      } 
+      p++;       
+    }
+    
+
+    for (var i = 0; i < fieldSet.length; i++) {
+      var f = fieldSet[i];
+      divWriter += f + "," + getCounter([ALL, f]) + "," + getCounter([ALL, f]) / getCounter([ALL, ALL]) + "<br/>";    
+    }
+    
+    $("#mainDiv").html(divWriter);
+    
+} catch(e) { 
+       alert('An Error has Occured. Error:' +e + "\n" + JSON.stringify(lastRecord)); 
+}  
+
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

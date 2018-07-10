@@ -1,0 +1,443 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="RecruitSummaryReportController">
+<html>
+<head>
+  <meta charset="utf-8"></meta>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+  <meta name="referrer" content="always"></meta>
+  <apex:includeScript value="{!$Resource.agGridEnterprise17}" />
+  <apex:includeScript value="{!$Resource.MomentJs}" />
+  <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono" />
+  
+  <style>
+    @font-face {
+      font-family: 'Roboto Condensed';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Roboto Condensed'), local('RobotoCondensed-Regular'), url(https://fonts.gstatic.com/s/robotocondensed/v16/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7DQ.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @media screen and (max-width: 1920px) { 
+      #ContactGridDiv {
+        height: 765px;
+        padding-left: 9px;
+        padding-top: 4px;
+        padding-bottom: 9px;
+        padding-right: 9px;
+      }
+
+      #SourceKeyGridDiv {
+        height: 130px;
+        padding-left: 9px;
+        padding-top: 4px;
+        padding-bottom: 9px;
+        padding-right: 9px;        
+      }
+    }
+
+    #Content {
+      padding: 5px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .HeaderLeft {  
+      color: blue;
+      margin-left: 5px;
+      padding-right: 7px !important;
+    }
+
+    .HeaderRight {  
+      display: flex;  
+      justify-content: flex-end;
+      color: blue;
+      margin-left: 2px;
+      padding-right: 7px !important;
+    }
+
+    .HeaderCenter {  
+      color: blue;
+      margin-left: 2px;
+      padding-left: 18px !important;
+      padding-right: 5px !important;
+    }
+
+    .CellLeft {
+      text-align: left;
+      padding-left: 5px !important;
+    }
+
+    .CellRight {
+      text-align: right;
+      padding-right: 5px !important;
+    }
+
+    .CellCenter {
+      text-align: center !important;
+    }
+
+    #Version, #ScreenSize {
+      font-size: 10px;
+      color: blue;
+    }
+
+    #TitleDiv {
+      margin-top: 2px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #Title {
+      font-size: 18px;      
+      color: blue;
+      font-weight: bold;
+    }
+
+    #TotalCount {
+      padding-left: 4px;
+      font-size: 14px;
+      color: #c1aab5;
+    }
+
+    .modalDialog {
+      position: fixed;
+      font-family: Arial, Helvetica, sans-serif;
+      top: 200px;
+      left: 270px;
+      width: 80%;
+      height: 70%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 99999;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .modalDialog>div {
+      width: 400px;
+      position: relative;
+      margin: 10% auto;
+      padding: 5px 20px 13px 20px;
+      border-radius: 10px;
+      background: #fff;
+      background: -moz-linear-gradient(#fff, #999);
+      background: -webkit-linear-gradient(#fff, #999);
+      background: -o-linear-gradient(#fff, #999);
+    }
+
+    .hide {
+      visibility: hidden;
+    }
+
+    .show {
+      visibility: visible;        
+    }
+
+    #FilterDiv1Container {
+      display: flex;
+      justify-content: space-between;
+    } 
+
+    #FilterDiv1 {
+      display: inline-block;
+      color: #bbc6a5;
+      font-size: 16px;
+      padding-bottom: 4px;
+      background-color: white;
+      padding-right: 18px;
+      margin-left: 10px;
+      padding-top: 4px;
+      width: 80%;
+    }
+
+    #FilterDiv2 {
+      width: 100px;
+    }
+
+    #FilterInput {
+      padding-left: 5px;
+      width: 100%;
+      height: 24px;
+      font-size: 14px;
+    }
+
+    #ExportBtn {
+      color: blue;
+      margin-left: 4px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      border-radius: 10px;
+      margin-top: 7px;
+      border-radius: 10px;
+    }
+
+    :focus {
+      outline: none;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div id="Content">
+    <div id="TitleDiv">
+      <label id="Version">v1.0</label>
+      <label id="Title">Recruits Summary Report<label id="TotalCount"></label></label>
+      <label id="ScreenSize"></label>      
+    </div>
+
+    <div id="FilterDiv1Container">
+      <div id="FilterDiv1">
+        <input id="FilterInput" placeholder="Search..." type="text" />
+      </div>
+      <div id="FilterDiv2">
+        <input id="ExportBtn" type="Button" value="Export"></input>
+      </div>
+    </div>
+
+    <div id="ContactGridDiv" class="ag-fresh"></div>
+    <div id="SourceKeyGridDiv" class="ag-fresh"></div>
+  </div>
+
+  <div id="ModalLoadingDiv" class="modalDialog hide">
+    <div>
+      <h2>Loading data...</h2>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    'use strict';
+
+    function exportButtonHandler() {
+      let rightnow = Date().toLocaleString();
+      let params   = {};
+      params.allColumns = true;
+      params.fileName   = 'RecruitsSummaryReport.xls';
+      contactGridOptions.api.exportDataAsExcel(params);
+    }    
+
+    function filterInputHandler(e) {
+      let searchText = e.target.value;
+      contactGridOptions.api.setQuickFilter(searchText);
+    }
+
+    function showLoadingMsg(show) {
+      if (show) // modal window fake
+        modalLoadingDiv.setAttribute('class', 'modalDialog');
+      else
+        modalLoadingDiv.setAttribute('class', 'hide');
+    }
+
+    function clean(s) {
+      let s1, s2, s3, s4, s5, s6, s7, s8, s9 = '';
+
+      if (s == null || s == undefined)
+        s9 = '';
+      else {
+        s1 = s.replace(r1, "&");
+        s2 = s1.replace(r2, "'");
+        s3 = s2.replace(r3, "&");
+        s4 = s3.replace(r4, "'");
+        s5 = s4.replace(r5, "'");
+        s6 = s5.replace(r6, ">");
+        s7 = s6.replace(r7, ">");
+        s8 = s7.replace(r8, "<");
+        s9 = s8.replace(r9, "<");
+      }
+      return s9;
+    }
+
+    function toProperCase(s) {
+      // My version - handles hyphenated names correctly :)
+      let s1, s2;
+      if (s == null || s == undefined)
+        s2 = '';
+      else {
+        s1 = s.trim().toLowerCase();
+        s2 = clean(s1);
+        s2 = s2.replace(/\b[a-zA-Z]/g, function ($1) { return $1.toUpperCase(); });
+      }
+      return s2;
+    }
+    
+    async function getData() {
+      let tStart,tEnd;
+      tStart     = performance.now();
+      reportData = await getReportData();
+      tEnd       = performance.now();
+      console.log(`Call to getReportData() took ${tEnd - tStart} milliseconds.`)
+      
+      tStart = performance.now();
+      status = await processReportData(reportData);
+      tEnd   = performance.now();
+      console.log(`Processing ReportData took ${tEnd - tStart} milliseconds.`)
+      showLoadingMsg(false);
+    }
+
+    function getReportData() {
+      return new Promise(function (resolve, reject) {
+        RecruitSummaryReportController.getReportData((result, event) => {
+          if (event.status) {
+            console.log('Retrieved Report data');
+            resolve(result);
+          }
+          else {
+            console.log('Error retrieving Report data');
+            reject(event);
+          }
+        });
+      });
+    }
+
+    function processReportData(results) {
+      return new Promise(function (resolve, reject) {
+        let rec,fid,firstName,lastName,total,accountName,division,region,consName,consCode,seatHolderName,seatHolderId;
+
+        for (rec of Object.values(results)) {
+          fid = firstName = lastName = accountName = division = region = consName = consCode = seatHolderName = seatHolderId = '';
+          total = 0;
+          fid            = rec.Fid;
+          firstName      = toProperCase(rec.FirstName);
+          lastName       = toProperCase(rec.LastName);
+          accountName    = toProperCase(rec.AccountName);
+          division       = toProperCase(rec.Division);
+          region         = toProperCase(rec.Region);
+          consName       = toProperCase(rec.ConsName);
+          seatHolderName = toProperCase(rec.SeatHolderName);
+          consCode       = rec.ConsCode || '';          
+          seatHolderId   = rec.SeatHolderId || '';
+
+          if(rec.Total == null || rec.Total == undefined) {
+            total = '0.00';  
+          } else {
+            total = parseInt(rec.Total).toFixed(2);
+          }
+          contactDataArray.push({Fid:fid,FirstName:firstName,LastName:lastName,Total:total,AccountName:accountName,Division:division,Region:region,ConsName:consName,ConsCode:consCode,SeatHolderName:seatHolderName,SeatHolderId:seatHolderId});
+          console.log(firstName,lastName);
+        } 
+        showContactGrid();
+        resolve('ok');
+      });
+    }    
+
+    function initAgGrid() {
+
+      contactColDefs = [ 
+        { headerName: 'Fid',                      field: 'Fid',                      hide: true, width: 180, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft', pinned:'left' },
+        { headerName: 'Last',                     field: 'LastName',                 width: 180, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft', pinned:'left' },
+        { headerName: 'First',                    field: 'FirstName',                width: 140, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft', pinned:'left' },
+        { headerName: 'Total',                    field: 'Total', type: 'numericColumn', comparator: numComparator, width: 140, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellRight',  headerClass: 'HeaderRight', pinned:'left'},
+        { headerName: 'Account Name',             field: 'AccountName',              width: 435, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Region',                   field: 'Region',                   width: 120, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true }, suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Division',                 field: 'Division',                 width: 120, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true }, suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Constituency Code',        field: 'ConsCode',                 width: 160, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true }, suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellCenter', headerClass: 'HeaderCenter' },
+        { headerName: 'Constituency Name',        field: 'ConsName',                 width: 620, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'DistrictName',             field: 'SeatHolderName',           width: 520, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Ecomm Name',               field: 'SeatHolderId',             width: 180, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true }, suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' }
+
+      ];
+      
+    }
+     
+    function numComparator(a, b) {
+      var numA = parseFloat(a);
+      var numB = parseFloat(b);
+      if (numA > numB) {
+        return 1;
+      } else if (numA < numB) {
+      return -1;
+      } else {
+        return 0;
+      }
+    }
+
+    function x80LeaderCellRenderer(params) {
+      let checkbox = document.createElement('input');
+      checkbox.type = "checkbox";
+      checkbox.name = 'X80Leader';
+      checkbox.checked = params.value;
+      return checkbox;
+    }    
+
+    function showContactGrid() {
+      if (contactGridOptions)
+        contactGridOptions.api.destroy();
+        
+      contactGridOptions = {
+        rowHeight: 20,
+        columnDefs: contactColDefs,
+        rowData: contactDataArray,
+        enableSorting: true,
+        enableFilter: true,
+        showToolPanel: false,
+        toolPanelSuppressRowGroups: true,
+        toolPanelSuppressValues: true,
+        toolPanelSuppressPivots: true,
+        toolPanelSuppressPivotMode: true
+      };
+      new agGrid.Grid(contactGridDiv, contactGridOptions);
+      contactGridOptions.api.setSortModel(initialSort);
+    }
+
+    function showSourceKeyGrid() {
+      if (sourceKeyGridOptions)
+        sourceKeyGridOptions.api.destroy();
+        
+      sourceKeyGridOptions = {
+        rowHeight: 20,
+        columnDefs: sourceKeyColDefs,
+        rowData: sourceKeyDataArray,
+        enableSorting: false,
+        enableFilter: false,
+        showToolPanel: false,
+        toolPanelSuppressRowGroups: true,
+        toolPanelSuppressValues: true,
+        toolPanelSuppressPivots: true,
+        toolPanelSuppressPivotMode: true
+      };
+      new agGrid.Grid(sourceKeyGridDiv, sourceKeyGridOptions);
+    }
+
+    // ***************** Main Program Entry *****************
+    var reportData;
+    var contactColDefs, contactGridOptions, contactDataArray = [];
+    var sourceKeyColDefs,sourceKeyGridOptions,sourceKeyDataArray = [];
+
+    const contactGridDiv   = document.getElementById('ContactGridDiv');
+    const sourceKeyGridDiv = document.getElementById('SourceKeyGridDiv');
+    const modalLoadingDiv  = document.getElementById('ModalLoadingDiv');
+    const totalCount       = document.getElementById('TotalCount');
+    const screensize       = document.getElementById('ScreenSize');
+    const filterInput      = document.getElementById('FilterInput');
+    const exportButton     = document.getElementById('ExportBtn');
+
+    exportButton.addEventListener("click",exportButtonHandler, false);
+    filterInput.addEventListener("input", filterInputHandler, false);
+    screensize.innerHTML = `screen: ${screen.width} x ${screen.height}`;
+
+    const initialSort = [
+      { colId: 'X80Leader',   sort: 'desc' },
+      { colId: 'LeaderTier',  sort: 'desc' },
+      { colId: 'SignatureCnt',sort: 'desc' },
+      { colId: 'LastName',    sort: 'asc' },
+      { colId: 'FirstName',   sort: 'asc' }
+    ];
+
+    const r1 = new RegExp(/&amp/, 'gm');
+    const r2 = new RegExp(/&#39/, 'gm');
+    const r3 = new RegExp(/&;/, 'gm');
+    const r4 = new RegExp(/&quot/, 'gm');
+    const r5 = new RegExp(/';/, 'gm');
+    const r6 = new RegExp(/&gt/, 'gm');
+    const r7 = new RegExp(/>;/, 'gm');
+    const r8 = new RegExp(/&lt/, 'gm');
+    const r9 = new RegExp(/<;/, 'gm');
+    const rQuote = new RegExp(/'/, 'g');
+
+    showLoadingMsg(true);
+    initAgGrid();
+    getData();
+
+  </script>
+
+</body>
+</html>
+</apex:page>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BHAT Activity Code</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BHAT Activity Codes</value>
+    </caseValues>
+    <fields>
+        <label><!-- Activity Code Category --></label>
+        <name>Activity_Code_Category__c</name>
+        <picklistValues>
+            <masterLabel>Kaiser</masterLabel>
+            <translation><!-- Kaiser --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Overtime</masterLabel>
+            <translation><!-- Overtime --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Regular</masterLabel>
+            <translation><!-- Regular --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Time Off</masterLabel>
+            <translation><!-- Time Off --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Chargeable --></label>
+        <name>Chargeable__c</name>
+    </fields>
+    <fields>
+        <label><!-- Full Activity Name --></label>
+        <name>Full_Activity_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Long Description --></help>
+        <label><!-- Long Description --></label>
+        <name>Long_Description__c</name>
+    </fields>
+    <fields>
+        <help><!-- Short Description --></help>
+        <label><!-- Short Description --></label>
+        <name>Short_Description__c</name>
+    </fields>
+    <layouts>
+        <layout>BHAT Activity Code Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

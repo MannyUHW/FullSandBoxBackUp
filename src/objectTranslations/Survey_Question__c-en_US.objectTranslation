@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Survey Question</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Survey Questions</value>
+    </caseValues>
+    <fields>
+        <help><!-- Required only if survey question is a vote block type --></help>
+        <label><!-- Account --></label>
+        <name>Account__c</name>
+        <relationshipLabel><!-- Survey Questions --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Add Info Allowed Dates --></label>
+        <name>Add_Info_Allowed_Dates__c</name>
+    </fields>
+    <fields>
+        <label><!-- Add Info Control --></label>
+        <name>Add_Info_Control__c</name>
+    </fields>
+    <fields>
+        <label><!-- Add Info Type --></label>
+        <name>Add_Info_Type__c</name>
+        <picklistValues>
+            <masterLabel>Not Specified</masterLabel>
+            <translation><!-- Not Specified --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Numeric Additive</masterLabel>
+            <translation><!-- Numeric Additive --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Picklist</masterLabel>
+            <translation><!-- Picklist --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Allowed Responses --></label>
+        <name>Allowed_Responses__c</name>
+    </fields>
+    <fields>
+        <label><!-- Collected By Label --></label>
+        <name>Collected_By_Label__c</name>
+    </fields>
+    <fields>
+        <label><!-- Custom Entry Page --></label>
+        <name>Custom_Entry_Page__c</name>
+    </fields>
+    <fields>
+        <label><!-- Description --></label>
+        <name>Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Start Date --></label>
+        <name>Effective_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- End Date --></label>
+        <name>End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Field Staff Assessment --></label>
+        <name>Field_Staff_Assessment__c</name>
+    </fields>
+    <fields>
+        <help><!-- Check if this survey code is a Vote Block (ie, list of time ranges) --></help>
+        <label><!-- Is Vote Block --></label>
+        <name>Is_Vote_Block__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ldr Assmnt Add Info Num Min --></label>
+        <name>Ldr_Assm_Add_Info_Min__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ldr Assmnt Values --></label>
+        <name>Ldr_Assm_Vals__c</name>
+    </fields>
+    <fields>
+        <label><!-- Linked to Petition --></label>
+        <name>Linked_to_Petition__c</name>
+    </fields>
+    <fields>
+        <label><!-- Linked to Recruits --></label>
+        <name>Linked_to_Recruits__c</name>
+    </fields>
+    <fields>
+        <label><!-- MO Show Collected Date Label --></label>
+        <name>MO_Show_Collected_Date_Label__c</name>
+    </fields>
+    <fields>
+        <label><!-- MO Show Collected Date --></label>
+        <name>MO_Show_Collected_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mbr Ldr Portal Access --></label>
+        <name>Mbr_Ldr_Portal_Access__c</name>
+        <picklistValues>
+            <masterLabel>None</masterLabel>
+            <translation><!-- None --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Read Only</masterLabel>
+            <translation><!-- Read Only --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Read/Write</masterLabel>
+            <translation><!-- Read/Write --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Populated by Question Response Field --></label>
+        <name>Populated_by_Question_Response_Field__c</name>
+    </fields>
+    <fields>
+        <label><!-- Populated by Questionnaire Name --></label>
+        <name>Populated_by_Questionnaire_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Populated by Questionnaire --></label>
+        <name>Populated_by_Questionnaire__c</name>
+        <picklistValues>
+            <masterLabel>Bargaining Ldr</masterLabel>
+            <translation><!-- Bargaining Ldr --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Contact</masterLabel>
+            <translation><!-- Contact --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Department Ldr</masterLabel>
+            <translation><!-- Department Ldr --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Propagated from Cvent --></label>
+        <name>Propagated_from_Cvent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Questionnaire Link English --></label>
+        <name>Questionnaire_Link_English__c</name>
+    </fields>
+    <fields>
+        <label><!-- Questionnaire Link Spanish --></label>
+        <name>Questionnaire_Link_Spanish__c</name>
+    </fields>
+    <fields>
+        <label><!-- SQ Id --></label>
+        <name>SQ_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scope --></label>
+        <name>Scope__c</name>
+        <picklistValues>
+            <masterLabel>Division</masterLabel>
+            <translation><!-- Division --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Employer Only</masterLabel>
+            <translation><!-- Employer Only --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Global</masterLabel>
+            <translation><!-- Global --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Survey Code --></label>
+        <name>Survey_Code__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Campaign Name --></label>
+        <name>UHW_Campaign_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Campaign --></label>
+        <name>UHW_Campaign__c</name>
+        <relationshipLabel><!-- Survey Questions --></relationshipLabel>
+    </fields>
+    <layouts>
+        <layout>Survey Question Layout</layout>
+        <sections>
+            <label><!-- Add Info Behavior --></label>
+            <section>Add Info Behavior</section>
+        </sections>
+        <sections>
+            <label><!-- Additional Controls --></label>
+            <section>Additional Controls</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- Survey_Question_SOP --></label>
+        <name>Survey_Question_SOP</name>
+    </webLinks>
+</CustomObjectTranslation>

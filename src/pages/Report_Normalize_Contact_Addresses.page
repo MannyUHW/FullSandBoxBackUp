@@ -1,0 +1,260 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.zipCodeGeoMap)}"/>
+
+ <script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+
+<div align="center">
+<h1 id="h1Title"></h1>
+
+<br>&nbsp;</br>
+<h4 id="h4Count"></h4>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+
+var paramEmid = "{!$CurrentPage.parameters.emid}";
+var emid = 9998 ;
+//alert("paramcode="  + paramEmid );
+if (paramEmid != null && paramEmid != "" && paramEmid != "null") {
+  emid = paramEmid ;
+}
+//alert("rcode0="  + rcode);
+
+try{ 
+
+    var idAddressMap = {};
+    
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var query = "Select Id, Name from Account where Employer_ID__c=\'" + emid + "\'";
+    //alert(query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var accountId = null;
+    var emName = null;
+    if (records1.length > 0) {
+      accountId = records1[0].Id;
+      emName  = records1[0].Name;
+    } else {
+      alert("Cannot find Employer Id " + emid);
+    }        
+    
+    var idRecordMap = new Array();
+
+    var ccount = 0;
+
+
+    document.write("<table cellpadding=\"10\" border=\"1\" >\n");
+    document.write("  <tr valign=\"bottom\">\n");
+    document.write("    <td bgcolor=\"#481C60\"  align=\"center\"><font color=\"white\">Contact Id</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\"  align=\"center\"><font color=\"white\">Information Source</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\"  align=\"center\"><font color=\"white\">Street</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\"  align=\"center\"><font color=\"white\">City</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\"  align=\"center\"><font color=\"white\">State</font></td>\n");    
+    document.write("    <td bgcolor=\"#481C60\"  align=\"center\"><font color=\"white\">Zip</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\"  align=\"center\"><font color=\"white\">Primary Address</font></td>\n");    
+    document.write("  </tr>\n");  
+        
+    for (var p = 0; p < 10; p++) {
+      var query = "SELECT Id, MailingStreet, MailingCity, MailingState, MailingPostalCode, OtherStreet, OtherCity, OtherState, OtherPostalCode, Catalist_Mailing_Street__c, Catalist_Mailing_City__c, Catalist_Mailing_State__c, Catalist_Mailing_Zip__c, Catalist_Voting_Street__c, Catalist_Voting_City__c, Catalist_Voting_State__c, Catalist_Voting_Zip__c, Elist_Street__c, Elist_City__c, Elist_State__c, Elist_Zip__c, LL_Mailing_Street__c, LL_Mailing_City__c, LL_Mailing_State__c, LL_Mailing_Zip__c      , LN_Street_1__c, LN_City_1__c, LN_State_1__c, LN_Zip_Code_1__c, LN_Street_2__c, LN_City_2__c, LN_State_2__c, LN_Zip_Code_2__c, TS_Mailing_Street_1__c, TS_Mailing_City_1__c, TS_Mailing_State_1__c, TS_Mailing_Zip_1__c        , TS_Mailing_Street_2__c, TS_Mailing_City_2__c, TS_Mailing_State_2__c, TS_Mailing_Zip_2__c      , TS_Mailing_Street_3__c, TS_Mailing_City_3__c, TS_Mailing_State_3__c, TS_Mailing_Zip_3__c  FROM Contact where Account.Name=\'" + emName + "\' and FID__c like \'%" + p + "\'";
+      //alert(query);
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records');
+      //alert("count = " + records1.length);
+      for (var i=0;i<records1.length;i++) {
+          var contactId = records1[i].Id;
+          if (records1[i].MailingStreet != null && records1[i].MailingStreet.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">Migrated from Contact</td>");
+            document.write("    <td align=\"center\">" + records1[i].MailingStreet + "</td>");
+            document.write("    <td align=\"center\">" + records1[i].MailingCity + "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].MailingState + "</td>");   
+            if (records1[i].MailingPostalCode == null) {
+              records1[i].MailingPostalCode = getZipFromCity(records1[i].MailingCity);
+            }             
+            document.write("    <td align=\"center\">" + records1[i].MailingPostalCode + "</td>");
+            document.write("    <td align=\"center\">TRUE</td>");            
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }
+          if (records1[i].OtherStreet != null && records1[i].OtherStreet.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">Other</td>");
+            document.write("    <td align=\"center\">" + records1[i].OtherStreet + "</td>");
+            document.write("    <td align=\"center\">" + records1[i].OtherCity + "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].OtherState + "</td>");      
+            if (records1[i].OtherPostalCode == null) {
+              records1[i].OtherPostalCode = getZipFromCity(records1[i].OtherCity);
+            }                                 
+            document.write("    <td align=\"center\">" + records1[i].OtherPostalCode + "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                        
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }
+          if (records1[i].Catalist_Mailing_Street__c != null && records1[i].Catalist_Mailing_Street__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">Catalist</td>");
+            document.write("    <td align=\"center\">" + records1[i].Catalist_Mailing_Street__c + "</td>");
+            document.write("    <td align=\"center\">" + records1[i].Catalist_Mailing_City__c + "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].Catalist_Mailing_State__c + "</td>");    
+            if (records1[i].Catalist_Mailing_Zip__c== null) {
+              records1[i].Catalist_Mailing_Zip__c = getZipFromCity(records1[i].Catalist_Mailing_City__c);
+            }                         
+            document.write("    <td align=\"center\">" + records1[i].Catalist_Mailing_Zip__c + "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }     
+          if (records1[i].Catalist_Voting_Street__c != null && records1[i].Catalist_Voting_Street__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">Catalist</td>");
+            document.write("    <td align=\"center\">" + records1[i].Catalist_Voting_Street__c + "</td>");
+            document.write("    <td align=\"center\">" + records1[i].Catalist_Voting_City__c + "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].Catalist_Voting_State__c + "</td>"); 
+            if (records1[i].Catalist_Voting_Zip__c == null) {
+              records1[i].Catalist_Voting_Zip__c = getZipFromCity(records1[i].Catalist_Voting_City__c );
+            }                          
+            document.write("    <td align=\"center\">" + records1[i].Catalist_Voting_Zip__c + "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }      
+          if (records1[i].Elist_Street__c != null && records1[i].Elist_Street__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">EList</td>");
+            document.write("    <td align=\"center\">" + records1[i].Elist_Street__c+ "</td>");
+            document.write("    <td align=\"center\">" + records1[i].Elist_City__c+ "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].Elist_State__c+ "</td>"); 
+            if (records1[i].Elist_Zip__c == null) {
+              records1[i].Elist_Zip__c= getZipFromCity(records1[i].Elist_City__c );
+            }                         
+            document.write("    <td align=\"center\">" + records1[i].Elist_Zip__c+ "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }      
+          if (records1[i].LL_Mailing_Street__c != null && records1[i].LL_Mailing_Street__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">License List 2014</td>");
+            document.write("    <td align=\"center\">" + records1[i].LL_Mailing_Street__c + "</td>");
+            document.write("    <td align=\"center\">" + records1[i].LL_Mailing_City__c + "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].LL_Mailing_State__c + "</td>");    
+            if (records1[i].LL_Mailing_Zip__c == null) {
+              records1[i].LL_Mailing_Zip__c  = getZipFromCity(records1[i].LL_Mailing_City__c );
+            }                         
+            document.write("    <td align=\"center\">" + records1[i].LL_Mailing_Zip__c + "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }  
+          if (records1[i].LN_Street_1__c != null && records1[i].LN_Street_1__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">Lexis-Nexus</td>");
+            document.write("    <td align=\"center\">" + records1[i].LN_Street_1__c + "</td>");
+            document.write("    <td align=\"center\">" + records1[i].LN_City_1__c+ "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].LN_State_1__c+ "</td>");  
+            if (records1[i].LN_Zip_1__c == null) {
+              records1[i].LN_Zip_1__c = getZipFromCity(records1[i].LN_City_1__c);
+            }                            
+            document.write("    <td align=\"center\">" + records1[i].LN_Zip_1__c+ "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }                                          
+          if (records1[i].LN_Street_2__c != null && records1[i].LN_Street_2__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">Lexis-Nexus</td>");
+            document.write("    <td align=\"center\">" + records1[i].LN_Street_2__c + "</td>");
+            document.write("    <td align=\"center\">" + records1[i].LN_City_2__c+ "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].LN_State_2__c+ "</td>");   
+            if (records1[i].LN_Zip_2__c == null) {
+              records1[i].LN_Zip_2__c = getZipFromCity(records1[i].LN_City_2__c);
+            }                           
+            document.write("    <td align=\"center\">" + records1[i].LN_Zip_2__c+ "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }
+          if (records1[i].TS_Mailing_Street_1__c != null && records1[i].TS_Mailing_Street_1__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">TargetSmart</td>");
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_Street_1__c+ "</td>");
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_City_1__c+ "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_State_1__c+ "</td>");   
+            if (records1[i].TS_Mailing_Zip_1__c == null) {
+              records1[i].TS_Mailing_Zip_1__c = getZipFromCity(records1[i].TS_Mailing_City_1__c);
+            }                             
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_Zip_1__c+ "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }                         
+          if (records1[i].TS_Mailing_Street_2__c != null && records1[i].TS_Mailing_Street_2__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">TargetSmart</td>");
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_Street_2__c+ "</td>");
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_City_2__c+ "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_State_2__c+ "</td>");
+            if (records1[i].TS_Mailing_Zip_2__c == null) {
+              records1[i].TS_Mailing_Zip_2__c = getZipFromCity(records1[i].TS_Mailing_City_2__c);            
+            }                                                   
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_Zip_2__c+ "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }        
+          if (records1[i].TS_Mailing_Street_3__c != null && records1[i].TS_Mailing_Street_3__c.trim() != "") {
+            document.write("  <tr>\n");
+            document.write("    <td align=\"center\">" + contactId + "</td>");
+            document.write("    <td align=\"center\">TargetSmart</td>");
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_Street_3__c+ "</td>");
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_City_3__c+ "</td>");                        
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_State_3__c+ "</td>");  
+            if (records1[i].TS_Mailing_Zip_3__c == null) {
+              records1[i].TS_Mailing_Zip_3__c = getZipFromCity(records1[i].TS_Mailing_City_3__c);            
+            }                           
+            document.write("    <td align=\"center\">" + records1[i].TS_Mailing_Zip_3__c+ "</td>");
+            document.write("    <td align=\"center\">FALSE</td>");                                    
+            document.write("  </tr>\n");                        
+            ccount++;            
+          }                            
+      }
+    }
+
+
+    $("#h1Title").html("Normalized Addresses for " + emName);    
+
+    
+    $("#h4Count").html("Count " + ccount );    
+       
+    document.write("</table>\n");
+    
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+
+</div>
+</apex:page>

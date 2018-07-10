@@ -1,0 +1,132 @@
+<apex:page sidebar="false" showHeader="false">
+<div align="center">
+  <font size="+2">June 2nd Will Attends by Organizer</font>
+
+
+<script language="JavaScript">
+document.write("<div align=\"center\"><i>Generated " + (new Date()) + "</i></div>");
+</script>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></scrip
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.TurfMap)}"/>
+
+<br>&nbsp;</br>
+<div id="warningDiv"></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+var i = 0;
+
+
+    var turfDataMap = new Array();
+    var turfSortList = new Array();    
+    var currentRecord = null;
+try{ 
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var z = 0;
+    for (var i = 0; i < 10; i++) {
+      var query = "select Id, FID__c, Contact__r.Id, Contact_Name__c, Division__c, Employer_Name__c, Alt_Person_Type__c, Contact__c, Contact__r.Department, Contact__r.Title, Contact__r.Shift__c, Collected_By__c, Collected_By_Name__c, Collected_By__r.Account.Name, Collected_By__r.Title, Contact__r.COPE_Pledge__c, Region__c, Response_Value__c, Owner.Name    from Survey_Response__c where ";
+      query += " Survey_Code__c=\'J2A\' and (Response_Value__c like \'M%\' OR Response_Value__c like \'B%\' OR Response_Value__c like \'R%\' OR Response_Value__c like \'D%\' OR Response_Value__c like \'W%\' OR Response_Value__c like \'S%\') ";
+      query += " AND (FID__c like \'%" + i + "\' ";
+      if (i== 0) {
+          query += " or Contact__c = null )";
+      } else {
+          query += " )";
+      }
+      query += " AND (Alt_Person_Type__c = null or Alt_Person_Type__c = 'Member') "
+      query += " limit 2000";
+      //alert(query);
+      
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records'); 
+    
+      //alert("query(" + i + ")=" + query + "\nlength=" +records0.length);
+    
+      if (records0.length >= 2000) {
+        document.getElementById("warningDiv").innerHTML = "<font color=\"red\"><b>Over 2000 records were found and these results have been cutoff.  Please contact your AA if you want to get a full list for your facilities.</b></font>";
+      }
+ 
+        
+      for (var j = 0; j < records0.length; j++) {
+        if (j == 0) {
+          //alert(JSON.stringify(records0[j]));
+        }
+        currentRecord = records0[j];
+        
+        var emName2 = records0[j].Employer_Name__c.toLowerCase();
+        var organizer = "undefined";
+        if (emName2.indexOf("ihss") >=0 || emName2.indexOf("aging") >= 0)  {
+          if (records0[j].Collected_By__c != null) {
+            //alert("Home Care\n" + JSON.stringify(records0[j]));
+          }
+          if (records0[j].Collected_By__c != null && records0[j].Collected_By__r.Account.Name.toLowerCase().indexOf("seiu") >= 0) {
+            organizer = records0[j].Collected_By_Name__c;
+            //alert("Home Care Organizer = " + organizer);
+          }
+        } else if (turfMap[records0[j].Employer_Name__c] != null) {
+          organizer =  records0[j].Owner.Name;
+          var organizer2 = turfMap[records0[j].Employer_Name__c][2];
+          if (organizer2.toLowerCase().indexOf(organizer.toLowerCase()) < 0 && organizer.toLowerCase().indexOf("collins") < 0) {
+            organizer = organizer2;   
+          }       
+        }
+
+        var turfKey = (records0[j].Division__c + "|" + organizer).toLowerCase();
+        var turfCount = 0;
+        if (turfDataMap[turfKey] != null) {
+          turfCount = turfDataMap[turfKey];
+        }
+        turfCount++;
+        if (j == 0) {
+          //alert("turfKey=" +turfKey);
+        }
+        turfDataMap[turfKey] = turfCount;
+        z++;
+      }
+      
+
+    }
+
+    //alert("all count = " + z);
+
+    for (var turfKey in turfDataMap) {
+     var turfKey2 = "T" + (99999999 - turfDataMap[turfKey]) + "~" + turfKey;
+     turfSortList.push(turfKey2);
+    }
+    turfSortList.sort();
+    
+    document.write("<table cellpadding=\"10\">\n");
+    document.write("<tr valign=\"bottom\">\n");  
+    document.write("<th>Organizer</th>\n"); 
+    document.write("<th>Division</th>\n"); 
+    document.write("<th>Members Recruited</th>\n");    
+    document.write("</tr>\n"); 
+    
+    for (var i = 0; i < turfSortList.length; i++) {
+      var turfKey2 = turfSortList[i];
+      if (turfKey2.toLowerCase().indexOf("vacant") < 0 && turfKey2.toLowerCase().indexOf("undefined") < 0) {
+        var turfKey = turfKey2.split("~")[1];
+        var turfCount = turfDataMap[turfKey];
+        document.write("<tr valign=\"top\">\n");  
+        document.write("<td>" + toProperCase(turfKey.split("|")[1])  + "</td>");
+        document.write("<td>" + toProperCase(turfKey.split("|")[0])  + "</td>");
+        document.write("<td align=\"center\">" + turfCount  + "</td>");
+        document.write("</tr>\n"); 
+      }
+    }
+    document.write("</table>\n"); 
+    
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(currentRecord)); 
+}
+
+</script>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+</apex:page>

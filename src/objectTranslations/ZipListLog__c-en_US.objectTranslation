@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>ZipListLog</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>ZipListLogs</value>
+    </caseValues>
+    <fields>
+        <label><!-- Distance --></label>
+        <name>Distance__c</name>
+    </fields>
+    <fields>
+        <label><!-- ExportDatetime --></label>
+        <name>ExportDatetime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Origin --></label>
+        <name>Origin__c</name>
+    </fields>
+    <fields>
+        <label><!-- RecordCount --></label>
+        <name>RecordCount__c</name>
+    </fields>
+    <fields>
+        <label><!-- User --></label>
+        <name>User__c</name>
+        <relationshipLabel><!-- ZipListLogs --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

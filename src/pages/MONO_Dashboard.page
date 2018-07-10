@@ -1,0 +1,314 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" >
+<meta name="viewport" content="width=device-width, initial-scale=0.75,minimum-scale=0.5, maximum-scale=1.5, user-scalable=yes"></meta>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<meta name="viewport" content="width=device-width, initial-scale=0.75"></meta>
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+var userName = "";
+var debugWriter = "";
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+
+<a name="topofpage"></a>
+<div align="center">
+
+<table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MONO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MONO_Search}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+
+  <font size="+2"><div id="titleDiv">Dashboard</div></font>
+  
+  <select id="assessSelect" onchange="changeAssess()">
+  <option value="verbal">Verbal</option>
+  <option value="card">Card</option>
+  <option value="vyp">Vote Yes Petition</option>
+  <option value="gotv">GOTV</option>
+  <option value="tt">Three Touch Count</option>        
+  </select>
+  
+<br>&nbsp;</br>
+<div id="countDiv"></div>
+
+<script language="JavaScript">
+var debugWriter = "";
+
+var ALL = "ALL";
+var ORGANIZER = "ORGANIZER";
+var CARD = "CARD";
+var VERBAL = "VERBAL";
+var VYP = "VYP";
+var GOTV = "GOTV";
+var TT = "TT";
+var ELIST = "ELIST";
+
+var AVALUES = ["v0", "v1", "v2", "v3", "v4", "v5", "v6", "v9"]; 
+var ADESCS = [["Verbal", VERBAL], ["Card", CARD], ["Vote Yes Petition", VYP], ["GOTV", GOTV], ["Three Touch Count", TT]];
+    
+ 
+var countMap = new Array();
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount + "; countMap length = " + JSON.stringify(countMap));  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+ 
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("[get] incrementKey = " + incrementKey);
+  if (countMap[incrementKey] != null) {
+    //alert("[getCounter] returning for " + incrementKey + " = " + countMap[incrementKey]);
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+
+var DIGITS = "0123456789";
+
+
+
+var paramEmid = "{!$CurrentPage.parameters.emid}";
+var emid = 8817;
+//alert("paramcode="  + paramEmid );
+if (paramEmid != null && paramEmid != "" && paramEmid != "null") {
+  emid = paramEmid ;
+}
+
+var assess = "verbal";
+if (localStorage.getItem("mono_dashboard") != null) {
+  $('#assessSelect').val(localStorage.getItem("mono_dashboard").trim().toLowerCase());
+  assess = localStorage.getItem("mono_dashboard").trim().toLowerCase();
+}
+
+
+try{ 
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+    var user = sforce.connection.getUserInfo(); 
+    //alert(JSON.stringify(user)); 
+    var userName = user.userFullName;     
+    if (userName.toLowerCase().indexOf("borcherding") >= 0) {
+      userName = "Dulce Armendariz";
+    }
+    
+    var query = "SELECT Id, LastName, FirstName, MiddleName, Department, Title, Work_Status__c, Verbal_Assessment__c, Card_Assessment__c, GOTV_Vote_Yes_Petition__c,  GOTV_Assessment__c, Three_Touch_Count__c, MailingCity, HomePhone, MobilePhone, Owner_Name__c,     GOTV_Challenge__c, AssistantName, In_Current_BU__c   from Contact where (In_Current_BU__c = true OR AssistantName like '%elist%') and Account.Employer_ID__c = \'" + emid + "\' ";
+    query += " order by LastName, FirstName, MiddleName";
+     
+    var records = sforce.connection.query(query);
+    var records1 = new Array();
+    var records0 = records.getArray('records'); 
+     
+    var ownerSet = new Array();
+    
+    //alert("records0.length = " + records0.length);
+    
+    for(var i=0;i < records0.length; i++){ 
+        debugRecord = records0[i];
+        var cverbal = 0;
+        if (records0[i].Verbal_Assessment__c != null) {
+          cverbal = parseInt(records0[i].Verbal_Assessment__c.substring(0, 1));
+        } else {
+          records0[i].Verbal_Assessment__c = "0. Not Assessed";
+        }
+        
+        var ccard = 0;
+        if (records0[i].Card_Assessment__c != null) {
+          ccard = parseInt(records0[i].Card_Assessment__c.substring(0, 1));
+        } else {
+          records0[i].Card_Assessment__c = "0. Not Assessed";
+        }
+        
+        var cvyp = 0;
+        if (records0[i].GOTV_Vote_Yes_Petition__c != null) {
+          cvyp = parseInt(records0[i].GOTV_Vote_Yes_Petition__c.substring(0, 1));
+        } else {
+          records0[i].GOTV_Vote_Yes_Petition__c = "0. Not Assessed";
+        }
+        
+        var cgotv = 0;
+        if (records0[i].GOTV_Assessment__c != null) {
+          cgotv = parseInt(records0[i].GOTV_Assessment__c.substring(0, 1));
+        } else {
+          records0[i].GOTV_Assessment__c = "0. Not Assessed";
+        }
+        
+        var ctt = null;
+        if (records0[i].Three_Touch_Count__c != null) {
+          ctt = "" + parseInt(records0[i].Three_Touch_Count__c) + "";
+        }
+
+        var owner = records0[i].Owner_Name__c;   
+        
+        //alert(JSON.stringify(records0[i]));
+        
+        if (   records0[i].AssistantName != null &&   records0[i].AssistantName.toLowerCase().indexOf("elist") >= 0) {
+          incrementCounter([ALL, ELIST], 1);
+          incrementCounter([owner, ELIST], 1);
+          incrementCounter([ALL, ELIST, VERBAL, "v" + cverbal], 1);
+          incrementCounter([ALL, ELIST, CARD, "v" + ccard], 1);
+          incrementCounter([ALL, ELIST, VYP, "v" + cvyp], 1);
+          incrementCounter([ALL, ELIST, GOTV, "v" + cgotv], 1);                        
+          incrementCounter([ALL, ELIST, TT, "v" + ctt], 1);
+                 
+          incrementCounter([owner, ELIST, VERBAL, "v" + cverbal], 1);
+          incrementCounter([owner, ELIST, CARD, "v" + ccard], 1);
+          incrementCounter([owner, ELIST, VYP, "v" + cvyp], 1);
+          incrementCounter([owner, ELIST, GOTV, "v" + cgotv], 1);                        
+          incrementCounter([owner, ELIST, TT, "v" + ctt], 1);              
+          //alert("found Elist record.");    
+        } 
+        
+        if ((records0[i].In_Current_BU__c == true || records0[i].In_Current_BU__c == "true" )  &&   records0[i].AssistantName.toLowerCase().indexOf("elist") >= 0) {   
+          incrementCounter([ALL], 1);
+          incrementCounter([ALL, VERBAL, "v" + cverbal], 1);
+          incrementCounter([ALL, CARD, "v" + ccard], 1);
+          incrementCounter([ALL, VYP, "v" + cvyp], 1);
+          incrementCounter([ALL, GOTV, "v" + cgotv], 1);                        
+          incrementCounter([ALL, TT, "v" + ctt], 1);
+                 
+          if (ownerSet.indexOf(owner) < 0) {
+            ownerSet.push(owner);
+          }
+          incrementCounter([owner], 1);
+          incrementCounter([owner, VERBAL, "v" + cverbal], 1);
+          incrementCounter([owner, CARD, "v" + ccard], 1);
+          incrementCounter([owner, VYP, "v" + cvyp], 1);
+          incrementCounter([owner, GOTV, "v" + cgotv], 1);                        
+          incrementCounter([owner, TT, "v" + ctt], 1);
+        }
+        
+    }
+    
+    ownerSet.sort();
+    ownerSet.unshift(ALL);
+    if (ownerSet.indexOf(userName) >= 0) {
+      ownerSet.splice(ownerSet.indexOf(userName), 1);
+      ownerSet.unshift(userName);
+    }
+    
+    //alert("countMap length = " + countMap.length + "\n" + JSON.stringify(countMap));
+    //alert(getCounter(["all"])); 
+ 
+    
+
+} catch(e) { 
+
+   alert('An Error has occurred. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(debugRecord)); 
+ 
+}
+
+ 
+document.write("<br/>Generated on " + (new Date()).toLocaleString() + "<br/>&nbsp;<br/>");
+
+
+function changeAssess() {
+  assess = document.getElementById("assessSelect").value;
+  localStorage.setItem("mono_dashboard", assess);
+  updateDashDiv();
+  return false;
+}
+
+function updateDashDiv() {
+    //alert("[updateDashDiv] start. assess = " + assess);
+    var  dashWriter = "";
+    dashWriter += ("\n\n\n<table border=\"0\">\n");
+    for (var a = 0; a < ownerSet.length; a++) {  
+      for (var i = 0; i < ADESCS.length; i++) {
+        if (ADESCS[i][1].trim().toLowerCase() == assess) {
+          dashWriter += ("<tr valign=\"top\"><td align=\"left\">");
+          dashWriter += ("<font size=\"+2\">" + ADESCS[i][0] + " - " + ownerSet[a] + "</font><br/>&nbsp;<br/>\n");
+          dashWriter += ("<table border=\"0\" cellpadding=\"5\" width=\"100%\">\n");
+          dashWriter += "<th>Assess</th><th>Count</th><th>Pct Univ.</th><th>Pct EList</th>";
+          for (var j = 0; j < AVALUES.length; j++) {
+            var ikey = [ownerSet[a], ADESCS[i][1], AVALUES[j]];
+            var ikey2 = [ownerSet[a], ELIST, ADESCS[i][1], AVALUES[j]];
+            //alert("ikey = " + JSON.stringify(ikey));
+            dashWriter += ("<tr valign=\"top\">");
+            dashWriter += "  <td width=\"35%\" align=\"center\">" + AVALUES[j].replace("v", "") + "</td>";
+            dashWriter += "  <td  width=\"25%\" align=\"center\">" + getCounter(ikey) + "</td>";
+            dashWriter += "  <td  bgcolor=\"#e0ffe0\" align=\"center\"  width=\"20%\">" + (100 * getCounter(ikey) / getCounter([ownerSet[a]])).toFixed(0) + "%</td>";
+            if (getCounter([ownerSet[a], ELIST]) > 0) {
+              dashWriter += "  <td  bgcolor=\"#e0ffe0\" align=\"center\"  width=\"20%\">" + (100 * getCounter(ikey2) / getCounter([ownerSet[a], ELIST])).toFixed(0) + "%</td>";            
+            } else {
+              dashWriter += "  <td  bgcolor=\"#e0ffe0\" align=\"center\"  width=\"20%\">0%</td>";                        
+            }
+            dashWriter += "</tr>\n\n";
+            if (ADESCS[i][1].trim().toLowerCase() == TT.trim().toLowerCase() && j >= 3) {
+              break;
+            }
+          }                
+          dashWriter += ("</table>\n<br/>&nbsp;<br/>&nbsp;<br/><font color=\"white\">_______________________________________________</font><br/>\n");
+          dashWriter += ("</td></tr>");        
+        }
+      }
+    }
+    dashWriter += ("</table>\n\n\n");  
+    document.getElementById("dashDiv").innerHTML = dashWriter;  
+}
+
+</script>
+
+<div id="dashDiv"></div>
+
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+
+<script> 
+(function(){try{var a=navigator.userAgent;if((a.indexOf('Salesforce')!=-1)&&(a.indexOf('iPhone')!=-1||a.indexOf('iPad')!=-1)&&(a.indexOf('OS/8')!=-1||a.indexOf('OS 8')!=-1)&&(a.indexOf('Safari')==-1)){ 
+var s=document.createElement('style'); 
+s.innerHTML="html,html body{overflow: auto;-webkit-overflow-scrolling:touch;}body{position:absolute;left:0;right:0;top:0;bottom:0;}"; 
+document.getElementsByTagName('head')[0].appendChild(s);}}catch(e){}})(); 
+</script> 
+
+
+<div id="debugDiv"></div>
+<script> 
+//document.getElementById("debugDiv").innerHTML = debugWriter;
+
+updateDashDiv();
+
+</script>
+</apex:page>

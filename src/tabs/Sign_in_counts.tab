@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>Sign in counts</label>
+    <mobileReady>false</mobileReady>
+    <motif>Custom37: Bridge</motif>
+    <page>Sign_In_Counts</page>
+</CustomTab>

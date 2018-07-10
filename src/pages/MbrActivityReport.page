@@ -1,0 +1,519 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="MbrActivityReportController">
+<html>
+<head>
+  <meta charset="utf-8"></meta>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+  <meta name="referrer" content="always"></meta>
+  <apex:includeScript value="{!$Resource.agGridEnterprise17}" />
+  <apex:includeScript value="{!$Resource.MomentJs}" />
+  <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono" />
+  
+  <style>
+    @font-face {
+      font-family: 'Roboto Condensed';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Roboto Condensed'), local('RobotoCondensed-Regular'), url(https://fonts.gstatic.com/s/robotocondensed/v16/ieVl2ZhZI2eCN5jzbjEETS9weq8-19K7DQ.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    @media screen and (max-width: 1920px) { 
+      #ContactGridDiv {
+        height: 765px;
+        padding-left: 9px;
+        padding-top: 4px;
+        padding-bottom: 9px;
+        padding-right: 9px;
+      }
+
+      #SourceKeyGridDiv {
+        height: 130px;
+        padding-left: 9px;
+        padding-top: 4px;
+        padding-bottom: 9px;
+        padding-right: 9px;        
+      }
+    }
+
+    #Content {
+      padding: 5px;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .HeaderLeft {  
+      color: blue;
+      margin-left: 5px;
+      padding-right: 7px !important;
+    }
+
+    .HeaderRight {  
+      display: flex;  
+      justify-content: flex-end;
+      color: blue;
+      margin-left: 2px;
+      padding-right: 7px !important;
+    }
+
+    .HeaderCenter {  
+      color: blue;
+      margin-left: 2px;
+      padding-left: 18px !important;
+      padding-right: 5px !important;
+    }
+
+    .CellLeft {
+      text-align: left;
+      padding-left: 5px !important;
+    }
+
+    .CellRight {
+      text-align: right;
+      padding-right: 5px !important;
+    }
+
+    .CellCenter {
+      text-align: center !important;
+    }
+
+    #Version, #ScreenSize {
+      font-size: 10px;
+      color: blue;
+    }
+
+    #TitleDiv {
+      margin-top: 2px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #Title {
+      font-size: 18px;      
+      color: blue;
+      font-weight: bold;
+    }
+
+    #TotalCount {
+      padding-left: 4px;
+      font-size: 14px;
+      color: #c1aab5;
+    }
+
+    .modalDialog {
+      position: fixed;
+      font-family: Arial, Helvetica, sans-serif;
+      top: 200px;
+      left: 270px;
+      width: 80%;
+      height: 70%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 99999;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .modalDialog>div {
+      width: 400px;
+      position: relative;
+      margin: 10% auto;
+      padding: 5px 20px 13px 20px;
+      border-radius: 10px;
+      background: #fff;
+      background: -moz-linear-gradient(#fff, #999);
+      background: -webkit-linear-gradient(#fff, #999);
+      background: -o-linear-gradient(#fff, #999);
+    }
+
+    .hide {
+      visibility: hidden;
+    }
+
+    .show {
+      visibility: visible;        
+    }
+
+    #FilterDiv1Container {
+      display: flex;
+      justify-content: space-between;
+    } 
+
+    #FilterDiv1 {
+      display: inline-block;
+      color: #bbc6a5;
+      font-size: 16px;
+      padding-bottom: 4px;
+      background-color: white;
+      padding-right: 18px;
+      margin-left: 10px;
+      padding-top: 4px;
+      width: 80%;
+    }
+
+    #FilterDiv2 {
+      width: 100px;
+    }
+
+    #FilterInput {
+      padding-left: 5px;
+      width: 100%;
+      height: 24px;
+      font-size: 14px;
+    }
+
+    #ExportBtn {
+      color: blue;
+      margin-left: 4px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      border-radius: 10px;
+      margin-top: 7px;
+      border-radius: 10px;
+    }
+
+    :focus {
+      outline: none;
+    }
+    
+  </style>
+</head>
+<body>
+
+  <div id="Content">
+    <div id="TitleDiv">
+      <label id="Version">v1.0</label>
+      <label id="Title">Mbr Activity Report<label id="TotalCount"></label></label>
+      <label id="ScreenSize"></label>      
+    </div>
+
+    <div id="FilterDiv1Container">
+      <div id="FilterDiv1">
+        <input id="FilterInput" placeholder="Search..." type="text" />
+      </div>
+      <div id="FilterDiv2">
+        <input id="ExportBtn" type="Button" value="Export"></input>
+      </div>
+    </div>
+
+    <div id="ContactGridDiv" class="ag-fresh"></div>
+    <div id="SourceKeyGridDiv" class="ag-fresh"></div>
+  </div>
+
+  <div id="ModalLoadingDiv" class="modalDialog hide">
+    <div>
+      <h2>Loading data...</h2>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    'use strict';
+
+    function exportButtonHandler() {
+      let rightnow = Date().toLocaleString();
+      let params   = {};
+      params.allColumns = true;
+      params.fileName   = 'MbrActivityReport.xls';
+      contactGridOptions.api.exportDataAsExcel(params);
+    }    
+
+    function filterInputHandler(e) {
+      let searchText = e.target.value;
+      contactGridOptions.api.setQuickFilter(searchText);
+    }
+
+    function showLoadingMsg(show) {
+      if (show) // modal window fake
+        modalLoadingDiv.setAttribute('class', 'modalDialog');
+      else
+        modalLoadingDiv.setAttribute('class', 'hide');
+    }
+
+    function clean(s) {
+      let s1, s2, s3, s4, s5, s6, s7, s8, s9 = '';
+
+      if (s == null || s == undefined)
+        s9 = '';
+      else {
+        s1 = s.replace(r1, "&");
+        s2 = s1.replace(r2, "'");
+        s3 = s2.replace(r3, "&");
+        s4 = s3.replace(r4, "'");
+        s5 = s4.replace(r5, "'");
+        s6 = s5.replace(r6, ">");
+        s7 = s6.replace(r7, ">");
+        s8 = s7.replace(r8, "<");
+        s9 = s8.replace(r9, "<");
+      }
+      return s9;
+    }
+
+    function toProperCase(s) {
+      // My version - handles hyphenated names correctly :)
+      let s1, s2;
+      if (s == null || s == undefined)
+        s2 = '';
+      else {
+        s1 = s.trim().toLowerCase();
+        s2 = clean(s1);
+        s2 = s2.replace(/\b[a-zA-Z]/g, function ($1) { return $1.toUpperCase(); });
+      }
+      return s2;
+    }
+    
+    async function getData() {
+      let tStart,tEnd;
+      tStart     = performance.now();
+      reportData = await getReportData();
+      tEnd       = performance.now();
+      console.log(`Call to getReportData() took ${tEnd - tStart} milliseconds.`)
+      
+      tStart = performance.now();
+      status = await processReportData(reportData);
+      tEnd   = performance.now();
+      console.log(`Processing ReportData took ${tEnd - tStart} milliseconds.`)
+      showLoadingMsg(false);
+    }
+
+    function getReportData() {
+      return new Promise(function (resolve, reject) {
+        MbrActivityReportController.getReportData((result, event) => {
+          if (event.status) {
+            console.log('Retrieved Report data');
+            resolve(result);
+          }
+          else {
+            console.log('Error retrieving Report data');
+            reject(event);
+          }
+        });
+      });
+    }
+
+    function processReportData(results) {
+      return new Promise(function (resolve, reject) {
+        let len, rec, i, j, emptyArrayItem;
+        let id,firstName,lastName,leaderTier,x80Leader,pbUpdated,ltUpdated,lastCopeAmt,phoneBankTotal,source,signatureCnt;
+        let lastCopeDate,lastCopeDate1,dateAdjusted,lastCopeDateStr; 
+        let accountId, accountName, buCount, region, accountGroup, constituencyCode, constituencyName, subSeat, districtName, ecommName, ecommId; 
+        let sourceMap = {};
+        sourceMap['A'] = {Cnt:0};
+        sourceMap['B'] = {Cnt:0};
+        sourceMap['C'] = {Cnt:0};
+        sourceMap['D'] = {Cnt:0};
+
+        for (rec of Object.values(results)) {
+          firstName = lastName = leaderTier = lastCopeDateStr = source = '';
+          accountId = accountName = region = accountGroup = constituencyCode = constituencyName = subSeat = districtName = ecommName = ecommId = ''; 
+          lastCopeAmt = 0, phoneBankTotal = 0, signatureCnt = buCount = 0;
+          x80Leader = ltUpdated = pbUpdated = false;
+
+          id               = rec.Id;
+          firstName        = toProperCase(rec.FirstName);
+          lastName         = toProperCase(rec.LastName);
+          source           = rec.Source;
+          accountId        = rec.AccountId;
+          accountName      = toProperCase(rec.AccountName);
+          if(rec.BuCount == null || rec.BuCount == undefined) {
+            buCount = '0';  
+          } else {
+            buCount        = parseInt(rec.BuCount).toFixed(0);
+          }
+          region           = toProperCase(rec.Region);
+          accountGroup     = toProperCase(rec.AccountGroup);
+          subSeat          = rec.SubSeat || '';
+          constituencyCode = (rec.ConstituencyCode || '') + subSeat;
+          constituencyName = rec.ConstituencyName;
+          districtName     = rec.DistrictName;
+          ecommName        = rec.EcommName;
+          ecommId          = rec.EcommId;
+    
+          if('LeaderTier' in rec) { 
+            leaderTier = rec.LeaderTier;
+          }
+
+          if('LastCopeDate' in rec) { 
+            lastCopeDate  = rec.LastCopeDate;
+            lastCopeDate1 = moment(lastCopeDate);
+            dateAdjusted  = moment(lastCopeDate1).subtract(8, 'hours'); // Defaults to zulu time
+            lastCopeDateStr = dateAdjusted.format('MM/DD/YYYY');
+          }
+
+          if('LastCopeAmt' in rec) { 
+            lastCopeAmt = parseFloat(rec.LastCopeAmt).toFixed(2);
+          }
+
+          if('X80Leader' in rec) { 
+            x80Leader = rec.X80Leader;
+          }
+
+          if('PhoneBankTotal' in rec) { 
+            phoneBankTotal = rec.PhoneBankTotal;
+          }
+
+          if('SignatureCnt' in rec) { 
+            signatureCnt = parseInt(rec.SignatureCnt).toFixed(0);
+          }
+
+          contactDataArray.push({Id: id, FirstName:firstName, LastName:lastName, LeaderTier:leaderTier, X80Leader:x80Leader, LastCopeAmt:lastCopeAmt, LastCopeDate:lastCopeDateStr, PhoneBankTotal:phoneBankTotal, Source:source, SignatureCnt:signatureCnt,
+            AccountId:accountId,AccountName:accountName,BuCount:buCount,Region:region,AccountGroup:accountGroup,ConstituencyCode:constituencyCode,ConstituencyName:constituencyName,
+            SubSeat:subSeat,DistrictName:districtName,EcommName:ecommName,EcommId:ecommId});
+
+          sourceMap[source].Cnt++;
+
+        } 
+
+        let cntA = sourceMap['A'].Cnt;
+        let cntB = sourceMap['B'].Cnt;
+        let cntC = sourceMap['C'].Cnt;
+        let cntD = sourceMap['D'].Cnt;
+        let countTotal = cntA + cntB + cntC + cntD;
+
+        sourceKeyDataArray.push({Key:'A',Cnt:cntA, Desc:'80 % Leaders',Soql:`SELECT Id,FirstName,LastName,X80_Leader__c,AccountId FROM Contact WHERE X80_Leader__c  != null AND In_Current_BU__c = true`});
+        sourceKeyDataArray.push({Key:'B',Cnt:cntB, Desc:'COOL Assessment',Soql:`SELECT Contact__r.Id,Contact__r.FirstName,Contact__r.LastName,Contact__r.AccountId,Response_Value__c FROM Survey_Response__c WHERE Survey_Code__c = 'CL6' AND Contact__r.In_Current_BU__c = true`});
+        sourceKeyDataArray.push({Key:'C',Cnt:cntC, Desc:'Phone Banking',Soql:`SELECT Recruit__r.AccountId, Recruit__r.Id, Recruit__r.FirstName,Recruit__r.LastName, Total_Shift__c FROM Recruit__c WHERE Volunteer_Date__c >= 2017-01-01 AND Recruit__c != null AND Total_Shift__c > 0`});
+        sourceKeyDataArray.push({Key:'D',Cnt:cntD, Desc:'Dialysis Petition Signatures',Soql:`SELECT Transferred_From__r.Id,Transferred_From__r.FirstName,Transferred_From__r.LastName,Transferred_From__r.AccountId,Valid_Signatures__c FROM Petition_Ledger__c WHERE Transferred_From__c != null AND Valid_Signatures__c != null`});
+        totalCount.textContent = 'Leaders found: ' + countTotal.toLocaleString();
+
+        showContactGrid();
+        showSourceKeyGrid();
+        resolve('ok');
+        console.log(sourceMap);
+      });
+    }    
+
+    function initAgGrid() {
+
+      contactColDefs = [ 
+        { headerName: 'Id',                       field: 'Id',                       hide: true, width: 180, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft', pinned:'left' },
+        { headerName: 'Source',                   field: 'Source',                   width:  90, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellCenter', headerClass: 'HeaderCenter', pinned:'left'},
+        { headerName: 'Last',                     field: 'LastName',                 width: 180, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft', pinned:'left' },
+        { headerName: 'First',                    field: 'FirstName',                width: 140, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft', pinned:'left' },
+        { headerName: 'Leader Tier',              field: 'LeaderTier',               width: 140, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true },  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft', pinned:'left' },
+        { headerName: 'X80 Leader',               field: 'X80Leader',                width: 140, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true },  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellCenter', headerClass: 'HeaderLeft', cellRenderer: x80LeaderCellRenderer, pinned:'left' },
+        { headerName: 'PhoneBank Total',          field: 'PhoneBankTotal',           width: 120, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellRight',  headerClass: 'HeaderRight', pinned:'left'},
+        { headerName: 'Signature Cnt',            field: 'SignatureCnt', type: 'numericColumn', comparator: numComparator, width: 140, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellRight',  headerClass: 'HeaderRight', pinned:'left'},
+        { headerName: 'Last Cope Amt',            field: 'LastCopeAmt', type: 'numericColumn',  comparator: numComparator, width: 120, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellRight',  headerClass: 'HeaderRight'  },
+        { headerName: 'Last Cope Date',           field: 'LastCopeDate',             width: 140, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellCenter', headerClass: 'HeaderCenter' },
+        { headerName: 'Account Id',               field: 'AccountId',                hide: true, width: 180, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Account Name',             field: 'AccountName',              width: 435, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Bu Count',                 field: 'BuCount',   type: 'numericColumn',  comparator: numComparator, width: 120, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellRight', headerClass: 'HeaderRight' },
+        { headerName: 'Region',                   field: 'Region',                   width: 120, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true }, suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Division',                 field: 'AccountGroup',             width: 120, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true }, suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Constituency Code',        field: 'ConstituencyCode',         width: 160, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true }, suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellCenter', headerClass: 'HeaderCenter' },
+        { headerName: 'Constituency Name',        field: 'ConstituencyName',         width: 620, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'DistrictName',             field: 'DistrictName',             width: 520, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Ecomm Name',               field: 'EcommName',                width: 180, filter: 'agSetColumnFilter', menuTabs: ['filterMenuTab'], filterParams: { suppressMiniFilter: true }, suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Ecomm Id',                 field: 'EcommId',                  hide: true, width: 180, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' }
+      ];
+      
+      sourceKeyColDefs = [
+        { headerName: 'Source',                   field: 'Key',                      width:  90, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellCenter', headerClass: 'HeaderCenter' },
+        { headerName: 'Description',              field: 'Desc',                     width: 190, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' },
+        { headerName: 'Cnt',                      field: 'Cnt', type: 'numericColumn', comparator: numComparator, width: 80, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellRight',  headerClass: 'HeaderRight'  },
+        { headerName: 'SQOL',                     field: 'Soql',                     width: 1800, suppressMenu: true,  suppressSorting: false, sortingOrder: ['asc', 'desc'], cellClass: 'CellLeft', headerClass: 'HeaderLeft' }        
+      ];
+
+    }
+     
+    function numComparator(a, b) {
+      var numA = parseFloat(a);
+      var numB = parseFloat(b);
+      if (numA > numB) {
+        return 1;
+      } else if (numA < numB) {
+      return -1;
+      } else {
+        return 0;
+      }
+    }
+
+    function x80LeaderCellRenderer(params) {
+      let checkbox = document.createElement('input');
+      checkbox.type = "checkbox";
+      checkbox.name = 'X80Leader';
+      checkbox.checked = params.value;
+      return checkbox;
+    }    
+
+    function showContactGrid() {
+      if (contactGridOptions)
+        contactGridOptions.api.destroy();
+        
+      contactGridOptions = {
+        rowHeight: 20,
+        columnDefs: contactColDefs,
+        rowData: contactDataArray,
+        enableSorting: true,
+        enableFilter: true,
+        showToolPanel: false,
+        toolPanelSuppressRowGroups: true,
+        toolPanelSuppressValues: true,
+        toolPanelSuppressPivots: true,
+        toolPanelSuppressPivotMode: true
+      };
+      new agGrid.Grid(contactGridDiv, contactGridOptions);
+      contactGridOptions.api.setSortModel(initialSort);
+    }
+
+    function showSourceKeyGrid() {
+      if (sourceKeyGridOptions)
+        sourceKeyGridOptions.api.destroy();
+        
+      sourceKeyGridOptions = {
+        rowHeight: 20,
+        columnDefs: sourceKeyColDefs,
+        rowData: sourceKeyDataArray,
+        enableSorting: false,
+        enableFilter: false,
+        showToolPanel: false,
+        toolPanelSuppressRowGroups: true,
+        toolPanelSuppressValues: true,
+        toolPanelSuppressPivots: true,
+        toolPanelSuppressPivotMode: true
+      };
+      new agGrid.Grid(sourceKeyGridDiv, sourceKeyGridOptions);
+    }
+
+    // ***************** Main Program Entry *****************
+    var reportData;
+    var contactColDefs, contactGridOptions, contactDataArray = [];
+    var sourceKeyColDefs,sourceKeyGridOptions,sourceKeyDataArray = [];
+
+    const contactGridDiv   = document.getElementById('ContactGridDiv');
+    const sourceKeyGridDiv = document.getElementById('SourceKeyGridDiv');
+    const modalLoadingDiv  = document.getElementById('ModalLoadingDiv');
+    const totalCount       = document.getElementById('TotalCount');
+    const screensize       = document.getElementById('ScreenSize');
+    const filterInput      = document.getElementById('FilterInput');
+    const exportButton     = document.getElementById('ExportBtn');
+
+    exportButton.addEventListener("click",exportButtonHandler, false);
+    filterInput.addEventListener("input", filterInputHandler, false);
+    screensize.innerHTML = `screen: ${screen.width} x ${screen.height}`;
+
+    const initialSort = [
+      { colId: 'X80Leader',   sort: 'desc' },
+      { colId: 'LeaderTier',  sort: 'desc' },
+      { colId: 'SignatureCnt',sort: 'desc' },
+      { colId: 'LastName',    sort: 'asc' },
+      { colId: 'FirstName',   sort: 'asc' }
+    ];
+
+    const r1 = new RegExp(/&amp/, 'gm');
+    const r2 = new RegExp(/&#39/, 'gm');
+    const r3 = new RegExp(/&;/, 'gm');
+    const r4 = new RegExp(/&quot/, 'gm');
+    const r5 = new RegExp(/';/, 'gm');
+    const r6 = new RegExp(/&gt/, 'gm');
+    const r7 = new RegExp(/>;/, 'gm');
+    const r8 = new RegExp(/&lt/, 'gm');
+    const r9 = new RegExp(/<;/, 'gm');
+    const rQuote = new RegExp(/'/, 'g');
+
+    showLoadingMsg(true);
+    initAgGrid();
+    getData();
+
+  </script>
+
+</body>
+</html>
+</apex:page>

@@ -1,0 +1,276 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.agGridEnterprise}"/>
+        <style>
+
+            #title {
+                text-align: center;
+            }
+
+            #legends {
+                display: inline-block;
+                font-weight: 600;
+            }
+
+            #Container1 {
+                clear:both;
+            }
+
+            #Content {
+                width: 290px;
+                height: 690px;
+            }
+
+            #SaveAsCsvButton1 {
+                margin-bottom: 6px;
+                margin-left: 33%;
+            }
+
+            .right-align {
+                text-align: right;
+                padding-right:5px !important;
+            }
+
+        </style>
+    </head>
+    <body>
+
+    <div id="Content">
+        <div id="title"><h2>Pomona Picket Attendance 2016</h2></div>
+
+        <div id = "Container1">
+            <div id="MainGridDiv" class="ag-fresh"></div>
+        </div>
+
+        <hr/>
+        <input id="SaveAsCsvButton1" type="Button" value="Save As .csv" ></input>
+        <hr/>
+
+    </div>
+
+    <script type="text/javascript">
+
+        function loadResponses() {
+
+            var responseQuery = "SELECT Id, Contact__c, Division__c, Response_Value__c FROM Survey_Response__c WHERE Survey_Code__c = 'zjk'";
+            try {
+                var responseResults = sforce.connection.query(responseQuery);
+                processResponses(responseResults);
+            }
+            catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processResponses(results) {
+
+            let     staffConfirmedCnt,     staffCommitedCnt,      staffRemindCnt;
+            let    kaiserConfirmedCnt,    kaiserCommitedCnt,     kaiserRemindCnt;
+            let  hospitalConfirmedCnt,  hospitalCommitedCnt,   hospitalRemindCnt;
+            let communityConfirmedCnt, communityCommitedCnt,  communityRemindCnt;
+
+            let hospitalPC,kaiserPC,communityPC;
+            let records,rec,test;
+            let hospitalTotal, kaiserTotal, communityTotal = 0;
+            let staffTotal = 0,  staffPC = 0;
+            let processedAll = false;
+
+            let currentMap;
+            let currentMapKey;
+
+            let id,current,contactId,division;
+            let div,curr,cnt,dsStart;
+            let divisionCurrentMapKey;
+
+            id = current = contactId = division = '';
+
+            staffConfirmedCnt     = staffCommitedCnt     = staffRemindCnt     = 0;
+            kaiserConfirmedCnt    = kaiserCommitedCnt    = kaiserRemindCnt    = 0;
+            hospitalConfirmedCnt  = hospitalCommitedCnt  = hospitalRemindCnt  = 0;
+            communityConfirmedCnt = communityCommitedCnt = communityRemindCnt = 0;
+
+            hospitalPC  = kaiserPC  = communityPC  = 0.0;
+            records     = results.getArray('records');
+
+            mainDataArray = [];
+            divisionCurrentMap = {};
+
+            while (!processedAll) {
+                for (i = 0; i < records.length; i++) {
+                    id = current = contactId = division = '';
+                    rec       = records[i];
+                    id        = rec.Id;
+                    current   = toProperCase(rec.Response_Value__c);
+                    division  = rec.Division__c    || 'no Did';
+                    contactId = rec.Contact__c     || 'no Cid';
+
+                    if(current) {
+                        dsStart = current.indexOf(' (');
+                        if (dsStart == -1)
+                            curr = current;
+                        else
+                            curr = current.substr(0, dsStart);
+
+                    }
+                    else curr = 'none';
+
+                    if(rec.Division__c)
+                        division  = rec.Division__c;
+                    else
+                        division  = 'none';
+
+                    if(!divisionCurrentMap[division])
+                        divisionCurrentMap[division] = {};
+
+                    if(!divisionCurrentMap[division][curr])
+                        divisionCurrentMap[division][curr] = {Division:division, Current: curr, Count: 1 };
+                    else
+                        divisionCurrentMap[division][curr].Count++;
+
+                    switch (division) {
+                        case 'Hospital' :
+                            if (curr == 'B. Confirmed')   hospitalConfirmedCnt++;
+                            if (curr == 'M. Commited')    hospitalCommitedCnt++;
+                            if (curr == 'D. Remind')      hospitalRemindCnt++;
+                            break;
+                        case 'Kaiser' :
+                            if (curr == 'B. Confirmed')   kaiserConfirmedCnt++;
+                            if (curr == 'M. Commited')    kaiserCommitedCnt++;
+                            if (curr == 'D. Remind')      kaiserRemindCnt++;
+                            break;
+                        case 'Community' :
+                            if (curr == 'B. Confirmed')   communityConfirmedCnt++;
+                            if (curr == 'M. Commited')    communityCommitedCnt++;
+                            if (curr == 'D. Remind')      communityRemindCnt++;
+                            break;
+                        case 'Staff' :
+                            if (curr == 'B. Confirmed')   staffConfirmedCnt++;
+                            if (curr == 'M. Commited')    staffCommitedCnt++;
+                            if (curr == 'D. Remind')      staffRemindCnt++;
+                            break;
+                    }
+                }
+                if (results.done == 'true')
+                    processedAll = true;
+                else {
+                    batCnt++;
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+            }
+
+            let ptr = 0;
+            for(divisionCurrentMapKey in divisionCurrentMap) {
+                div = divisionCurrentMapKey;
+                currentMap = divisionCurrentMap[divisionCurrentMapKey];
+                for(currentMapKey in currentMap) {
+                    ptr++;
+                    curr = currentMapKey;
+                    cnt = currentMap[currentMapKey].Count;
+                    mainDataArray.push({Ptr: ptr, Div: div, Curr: curr, Cnt: cnt});
+                }
+            }
+
+            hospitalTotal = parseInt(hospitalConfirmedCnt) + parseInt(hospitalCommitedCnt) + parseInt(hospitalRemindCnt);
+            if(hospitalTotal > 0) {
+                hospitalPC = (hospitalRemindCnt / hospitalTotal) * 100;
+                hospitalPC = hospitalPC.toFixed(2);
+            }
+
+            kaiserTotal = parseInt(kaiserConfirmedCnt) + parseInt(kaiserCommitedCnt) + parseInt(kaiserRemindCnt)
+            if(kaiserTotal > 0) {
+                kaiserPC = (kaiserRemindCnt / kaiserTotal) * 100;
+                kaiserPC = kaiserPC.toFixed(2);
+            }
+
+            communityTotal = parseInt(communityConfirmedCnt) + parseInt(communityCommitedCnt) + parseInt(communityRemindCnt)
+            if(communityTotal > 0) {
+                communityPC = (communityRemindCnt / communityTotal) * 100;
+                communityPC = communityPC.toFixed(2);
+            }
+
+            staffTotal = parseInt(staffConfirmedCnt) + parseInt(staffCommitedCnt) + parseInt(staffRemindCnt)
+            if(staffTotal > 0) {
+                staffPC = (staffRemindCnt / staffTotal) * 100;
+                staffPC = staffPC.toFixed(2);
+            }
+            showGrid();
+        }
+
+        function initAgGrid() {
+
+            agGrid.LicenseManager.setLicenseKey("United_Healthcare_Workers_West_10-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+            mainColumnDefs = [
+                { headerName: 'Division',    field: 'Div',    width:  90, sortingOrder: ['asc', 'desc']},
+                { headerName: 'Current',     field: 'Curr',   width: 110, sortingOrder: ['asc', 'desc']},
+                { headerName: 'Count',       field: 'Cnt',    width:  60, sortingOrder: ['asc', 'desc'], cellClass: 'right-align'}
+            ];
+
+            mainSort = [
+                {colId: 'Div',  sort: 'asc'},
+                {colId: 'Curr', sort: 'asc'}
+            ];
+        }
+
+        function showGrid() {
+
+            if (shownBefore)
+                mainGridOptions.api.destroy();
+            else shownBefore = true;
+
+            mainGridOptions = {
+                columnDefs: mainColumnDefs,
+                rowData:    mainDataArray,
+                rowSelection: 'single',
+                enableSorting: true,
+                suppressMenuColumnPanel: true,
+                suppressMenuFilterPanel: true,
+                suppressMenuMainPanel: true
+            };
+            new agGrid.Grid(mainGridDiv, mainGridOptions);
+            mainGridOptions.api.setSortModel(mainSort);
+
+        }
+
+        function toProperCase(s) {
+            // My version - handles hyphenated names correctly :)
+            let s1 = '';
+            if(s)
+                s1 = s.trim().toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function saveAsCsv1() {
+            let fileName = 'Pomona ZJK divison counts.csv';
+            mainGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        var divisionCurrentMap;
+        var mainColumnDefs;
+        var mainDataArray;
+        var mainGridoptions;
+        var mainSort;
+
+        var saveAsCsvButton1;
+        var shownBefore = false;
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            mainGridDiv      = document.getElementById('MainGridDiv');
+            saveAsCsvButton1 = document.getElementById("SaveAsCsvButton1");
+            saveAsCsvButton1.addEventListener("click", saveAsCsv1, false);
+
+            initAgGrid();
+            loadResponses();
+
+        });
+
+    </script>
+    </body>
+</apex:page>

@@ -1,0 +1,522 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<div align="center">
+<font size="+2"><div id="titleDiv">St Johns Santa Monica GOTV Plan</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+</div>
+
+<br>&nbsp;</br>
+
+<div align="center" id="countDiv"></div>
+
+<font size="+2"><div align="center" id="progressDiv">0%</div></font>
+
+
+
+<script language="JavaScript">
+var debugString = "";
+var lastRecord = null;
+var ALL = "ALL";
+var BU = "BU";
+var DEPT = "DEPT";
+var ORGANIZER = "ORGANIZER";
+
+var VERBAL = "VERBAL";
+var CARD = "CARD";
+var INOCULATED = "INOCULATED";
+
+var GOTV = "GOTV";
+var PHOTO = "PHOTO";
+var PURPLE = "PURPLE";
+var PLAN = "PLAN";
+
+var RECONFIRMED = "RECONFIRMED";
+
+var countMap = {};
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+var shiftsParameter = "{!$CurrentPage.parameters.shifts}";
+var shiftsShow = false;
+if (shiftsParameter != null && shiftsParameter.trim().length > 0 && (shiftsParameter.toLowerCase().trim().substring(0, 1) == "y" || shiftsParameter == "true")) {
+  shiftsShow = true;
+}
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+    var query = "select Id, Owner_Name__c, Department, Shift__c, Verbal_Assessment__c, Card_Assessment__c, Inoculated__c, GOTV_Took_Photo__c, GOTV_Purple_Up__c, GOTV_Assess__c, Reconfirmed_GOTV__c from Contact where Account.Name like \'PROVIDENCE ST JOHNS HEALTH CENTER\' and In_Current_BU__c = true";
+      
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    debugString += query + " - " + records1.length + "<br/>";
+
+    var orgDeptSet = new Array();
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      if (records1[i].Department == null || records1[i].Department == "null" || records1[i].Department == "") {
+        records1[i].Department = "Unknown";
+      }
+      if (records1[i].Shift__c == null || records1[i].Shift__c== "null" || records1[i].Shift__c== "") {
+        records1[i].Shift__c = "Unknown";
+      }    
+    
+      //if (shiftsShow == true) {
+      records1[i].Department = records1[i].Department + " ~ " + records1[i].Shift__c
+      //}
+    
+      lastRecord = records1[i];
+      incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, BU], 1.0);
+      incrementCounter([ORGANIZER, records1[i].Owner_Name__c, BU], 1.0);        
+      incrementCounter([ALL, BU], 1.0);              
+              
+      if (records1[i].Card_Assessment__c != null && (records1[i].Card_Assessment__c.substring(0,1) == "1" || records1[i].Card_Assessment__c.substring(0,1) == "2")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, CARD], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, CARD], 1.0);        
+        incrementCounter([ALL, CARD], 1.0);                      
+      }
+      if (records1[i].Verbal_Assessment__c != null && (records1[i].Verbal_Assessment__c.substring(0,1) == "1" || records1[i].Verbal_Assessment__c.substring(0,1) == "2")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, VERBAL], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, VERBAL], 1.0);                
+        incrementCounter([ALL, VERBAL], 1.0);                              
+      }
+      if (records1[i].Inoculated__c != null && (records1[i].Inoculated__c == true || records1[i].Inoculated__c == "true")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, INOCULATED], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, INOCULATED], 1.0);                
+        incrementCounter([ALL, INOCULATED], 1.0);                              
+      }      
+      if (records1[i].GOTV_Took_Photo__c != null && (records1[i].GOTV_Took_Photo__c == true || records1[i].GOTV_Took_Photo__c == "true")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, PHOTO], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, PHOTO], 1.0);                
+        incrementCounter([ALL, PHOTO], 1.0);                              
+      }  
+      if (records1[i].GOTV_Purple_Up__c != null && (records1[i].GOTV_Purple_Up__c == true || records1[i].GOTV_Purple_Up__c == "true")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, PURPLE], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, PURPLE], 1.0);                
+        incrementCounter([ALL, PURPLE], 1.0);                              
+      }  
+      if (records1[i].GOTV_Assess__c  != null && (records1[i].GOTV_Assess__c.substring(0,1) == "1" || records1[i].GOTV_Assess__c.substring(0,1) == "2")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, GOTV], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, GOTV], 1.0);                
+        incrementCounter([ALL, GOTV], 1.0);                              
+      }        
+      if (records1[i].Reconfirmed_GOTV__c != null && (records1[i].Reconfirmed_GOTV__c == true || records1[i].Reconfirmed_GOTV__c == "true")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, RECONFIRMED], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, RECONFIRMED], 1.0);                
+        incrementCounter([ALL, RECONFIRMED], 1.0);                              
+      }        
+      
+      var akey = JSON.stringify([records1[i].Owner_Name__c, records1[i].Department]);
+      if (orgDeptSet.indexOf(akey.toLowerCase()) < 0) {
+        orgDeptSet.push(akey.toLowerCase());
+      }
+    }
+    orgDeptSet.sort();
+    
+    var countWriter = "<table cellpadding=\"3\">";
+    countWriter += "<tr>";
+    countWriter += "<td></td>";
+    countWriter += "<td></td>";
+    countWriter += "<td></td>";    
+    countWriter += "<td align=\"center\" colspan=\"2\"><u>Cards</u></td>";
+    countWriter += "<td></td>";
+    countWriter += "<td  align=\"center\" colspan=\"2\"><u>Inoculated</u></td>";                
+    countWriter += "<td></td>";
+    countWriter += "<td  align=\"center\" colspan=\"2\"><u>Photo</u></td>";
+    countWriter += "<td></td>";
+    countWriter += "<td  align=\"center\" colspan=\"2\"><u>Purple</u></td>";
+    countWriter += "<td></td>";
+    countWriter += "<td  align=\"center\" colspan=\"2\"><u>GOTV</u></td>";
+    countWriter += "<td></td>";
+    countWriter += "<td  align=\"center\" colspan=\"2\"><u>Confirm</u></td>";
+    countWriter += "<td></td>";
+    countWriter += "</tr>";                            
+
+    var buCount = getCounter([ALL, BU]);
+    var verbalCount = getCounter([ALL, VERBAL]);
+    var cardCount = getCounter([ALL, CARD]);
+    var inocCount = getCounter([ALL, INOCULATED]);
+    var photoCount = getCounter([ALL, PHOTO]);    
+    var purpleCount = getCounter([ALL, PURPLE]);
+    var gotvCount = getCounter([ALL, GOTV]);    
+    var reconfirmedCount = getCounter([ALL, RECONFIRMED]);        
+
+    //
+    // row 2
+    //
+    countWriter += "<tr>";
+    countWriter += "<td align=\"right\">BU Count</td>";
+    countWriter += "<td align=\"center\"><b>" + buCount + "</b></td>";
+    countWriter += "<td></td>";    
+    //countWriter += "<td colspan=\"2\"><u>Cards</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">Count</td><td align=\"center\" width=\"6%\"><b>" + cardCount  + "</b></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Inoculated</u></td>";                
+    countWriter += "<td width=\"6%\" align=\"right\">Count</td><td align=\"center\" width=\"6%\"><b>" + inocCount  + "</b></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Photo</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">Count</td><td align=\"center\" width=\"6%\"><b>" + photoCount  + "</b></td>";        
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Purple</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">Count</td><td align=\"center\" width=\"6%\"><b>" + purpleCount  + "</b></td>";        
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>GOTV</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">Count</td><td align=\"center\" width=\"6%\"><b>" + gotvCount  + "</b></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Reconfirmed</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">Count</td><td align=\"center\" width=\"6%\"><b>" + reconfirmedCount  + "</b></td>";        
+    countWriter += "<td></td>";
+    countWriter += "</tr>";                            
+
+    //
+    // row 3
+    //
+    countWriter += "<tr>";
+    countWriter += "<td align=\"right\">Verbal 1s, 2s Count</td>";
+    countWriter += "<td align=\"center\"><b>" + verbalCount + "</b></td>";
+    countWriter += "<td></td>";    
+    //countWriter += "<td colspan=\"2\"><u>Cards</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">%</td><td align=\"center\" width=\"6%\"><i><b>" + (100.0 * cardCount / buCount).toFixed(0)  + "%</b></i></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Inoculated</u></td>";                
+    countWriter += "<td width=\"6%\" align=\"right\">%</td><td align=\"center\" width=\"6%\"><i><b>" + (100.0 * inocCount / cardCount).toFixed(0) + "%</b></i></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Photo</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">%</td><td align=\"center\" width=\"6%\"><i><b>" + (100.0 * photoCount / buCount).toFixed(0)  + "%</b></i></td>";        
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Purple</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">%</td><td align=\"center\" width=\"6%\"><i><b>" + (100.0 * purpleCount / buCount).toFixed(0)  + "%</b></i></td>";        
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>GOTV</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">%</td><td align=\"center\" width=\"6%\"><i><b>" + (100.0 * gotvCount / buCount).toFixed(0)  + "%</b></i></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Reconfirmed</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">%</td><td align=\"center\" width=\"6%\"><i><b>" + (100.0 * reconfirmedCount / buCount).toFixed(0)  + "%</b></i></td>";        
+    countWriter += "<td></td>";
+    countWriter += "</tr>";    
+
+    //
+    // row 4
+    //
+    countWriter += "<tr>";
+    countWriter += "<td align=\"right\">Verbal 1s, 2s Percent</td>";
+    countWriter += "<td align=\"center\"><i><b>" +  (100.0 * verbalCount / buCount).toFixed(0) + "%</b></i></td>";
+    countWriter += "<td></td>";    
+    //countWriter += "<td colspan=\"2\"><u>Cards</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">To Go</td><td align=\"center\" width=\"6%\"><b>" + (verbalCount - cardCount) + "</b></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Inoculated</u></td>";                
+    countWriter += "<td width=\"6%\" align=\"right\">To Go</td><td align=\"center\" width=\"6%\"><b>" + (cardCount - inocCount) + "</b></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Photo</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">To Go</td><td align=\"center\" width=\"6%\"><b>" + (verbalCount - photoCount) + "</b></td>";        
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Purple</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">To Go</td><td align=\"center\" width=\"6%\"><b>" + (verbalCount - purpleCount) + "</b></td>";        
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>GOTV</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">To Go</td><td align=\"center\" width=\"6%\"><b>" + (cardCount - gotvCount) + "</b></td>";    
+    countWriter += "<td></td>";
+    //countWriter += "<td colspan=\"2\"><u>Reconfirmed</u></td>";
+    countWriter += "<td width=\"6%\" align=\"right\">To Go</td><td align=\"center\" width=\"6%\"><b>" + (gotvCount - reconfirmedCount) + "</b></td>";        
+    countWriter += "<td></td>";
+    countWriter += "</tr>";    
+    countWriter += "</table>";     
+
+
+    countWriter += "<br>&nbsp;</br><br>&nbsp;</br><table cellpadding=\"1\">";
+    var lastOrganizer = "";   
+    
+    for (var i = 0; i <= orgDeptSet.length; i++) {
+      
+      var organizer = "";
+      var department = "";
+      if (orgDeptSet[i] != null) {
+        organizer = toProperCase(JSON.parse(orgDeptSet[i])[0]);
+        department = toProperCase(JSON.parse(orgDeptSet[i])[1]);      
+      }
+      
+      if (organizer != lastOrganizer) {
+        if (i > 0) {
+          countWriter += "<tr valign=\"top\">\n";
+          countWriter += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+          countWriter += "<td align=\"center\"><b>Subtotal</b></td>\n";      
+          var buCount = getCounter([ORGANIZER, lastOrganizer, BU]);
+          var verbalCount = getCounter([ORGANIZER, lastOrganizer, VERBAL]);
+          var cardCount = getCounter([ORGANIZER, lastOrganizer, CARD]);
+          var inocCount = getCounter([ORGANIZER, lastOrganizer, INOCULATED]);
+          var purpleCount = getCounter([ORGANIZER, lastOrganizer, PURPLE]);
+          var photoCount = getCounter([ORGANIZER, lastOrganizer, PHOTO]);          
+          var gotvCount = getCounter([ORGANIZER, lastOrganizer, GOTV]);
+          var reconfirmedCount = getCounter([ORGANIZER, lastOrganizer, RECONFIRMED]);
+                                                 
+          countWriter += "<td align=\"center\"><b>" + buCount + "</b></td>\n";      
+          countWriter += "<td align=\"center\">&nbsp;</td>\n";
+          countWriter += "<td align=\"center\"><b>" + verbalCount + "</b></td>\n";      
+          countWriter += "<td bgcolor=\"#F0FFF0\" align=\"center\"><b><i>" + (100.0 * verbalCount / buCount).toFixed(0) + "%</i></b></td>\n";      
+          countWriter += "<td align=\"center\">&nbsp;</td>\n";      
+      
+      
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + cardCount + "</b></td>\n";      
+          countWriter += "<td width=\"3%\" bgcolor=\"#F0FFF0\" align=\"center\"><b><i>" + (100.0 * cardCount / buCount).toFixed(0) + "%</i></b></td>\n";  
+          countWriter += "<td width=\"2%\"align=\"center\"><b>" + (verbalCount - cardCount) + "</b></td>\n";
+      
+          countWriter += "<td align=\"center\">&nbsp;</td>\n";    
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + inocCount + "</b></td>\n";         
+          countWriter += "<td width=\"3%\"bgcolor=\"#F0FFF0\" align=\"center\"><b><i>";
+          if (cardCount > 0) {
+                countWriter += (100.0 * inocCount / cardCount).toFixed(0) ;
+          } else {
+                countWriter += "0";          
+          }
+          countWriter += "%</i></b></td>\n";  
+          countWriter += "<td width=\"2%\"align=\"center\"><b>" + (cardCount - inocCount) + "</b></td>\n";         
+
+
+          countWriter += "<td align=\"center\">&nbsp;</td>\n";
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + photoCount + "</b></td>\n";         
+          countWriter += "<td width=\"3%\" bgcolor=\"#F0FFF0\" align=\"center\"><b><i>";
+          if (cardCount > 0) {
+                countWriter += (100.0 * photoCount / cardCount).toFixed(0) ;
+          } else {
+                countWriter += "0";          
+          }
+          countWriter += "%</i></b></td>\n";  
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + (cardCount - photoCount ) + "</b></td>\n";         
+
+
+          countWriter += "<td align=\"center\">&nbsp;</td>\n";
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + purpleCount + "</b></td>\n";         
+          countWriter += "<td width=\"3%\" bgcolor=\"#F0FFF0\" align=\"center\"><b><i>";
+          if (cardCount > 0) {
+                countWriter += (100.0 * purpleCount / cardCount).toFixed(0) ;
+          } else {
+                countWriter += "0";          
+          }
+          countWriter += "%</i></b></td>\n";  
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + (cardCount - purpleCount ) + "</b></td>\n";         
+      
+      
+      
+          countWriter += "<td align=\"center\">&nbsp;</td>\n";
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + gotvCount + "</b></td>\n";         
+          countWriter += "<td width=\"3%\" bgcolor=\"#F0FFF0\" align=\"center\"><b><i>";
+          if (cardCount > 0) {
+                countWriter += (100.0 * gotvCount / cardCount).toFixed(0) ;
+          } else {
+                countWriter += "0";          
+          }
+          countWriter += "%</i></b></td>\n";  
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + (cardCount - gotvCount ) + "</b></td>\n";       
+      
+      
+      
+          countWriter += "<td align=\"center\">&nbsp;</td>\n";
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + reconfirmedCount + "</b></td>\n";         
+          countWriter += "<td width=\"3%\" bgcolor=\"#F0FFF0\" align=\"center\"><b><i>";
+          if (cardCount > 0) {
+                countWriter += (100.0 * reconfirmedCount / gotvCount ).toFixed(0) ;
+          } else {
+                countWriter += "0";          
+          }
+          countWriter += "%</i></b></td>\n";  
+          countWriter += "<td width=\"2%\" align=\"center\"><b>" + (gotvCount - reconfirmedCount ) + "</b></td>\n";       
+   
+
+      
+          countWriter += "</tr>\n";
+
+   
+        }
+        if (i >= orgDeptSet.length) {
+          break;
+        }
+      
+        countWriter += "<tr><td colspan=\"30\">&nbsp;<br/><b>" + organizer + "</b></td></tr>\n";
+        countWriter += "<tr valign=\"bottom\"><td width=\"2%\">&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+        countWriter += "<td width=\"10%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Dept/Shift</font></td>";
+        countWriter += "<td width=\"4%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">BU</font></td>";
+        countWriter += "<td></td>";
+        countWriter += "<td colspan=\"2\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Verbal</font></td>";
+        countWriter += "<td></td>";
+
+        countWriter += "<td colspan=\"2\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Card</font></td>";
+        countWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">To<br/>Go</font></td>";                
+        
+        countWriter += "<td></td>";
+        countWriter += "<td colspan=\"2\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Inoc</font></td>";
+        countWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">To<br/>Go</font></td>";                
+        
+        countWriter += "<td></td>";
+        countWriter += "<td colspan=\"2\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Photo</font></td>";
+        countWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">To<br/>Go</font></td>";                
+        
+        countWriter += "<td></td>";
+        countWriter += "<td colspan=\"2\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Purple</font></td>";
+        countWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">To<br/>Go</font></td>";                
+        
+        countWriter += "<td></td>";
+        countWriter += "<td colspan=\"2\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">GOTV</font></td>";
+        countWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">To<br/>Go</font></td>";                
+        
+        countWriter += "<td></td>";
+        countWriter += "<td colspan=\"2\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Confirm</font></td>";
+        countWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">To<br/>Go</font></td>";                
+        
+        countWriter += "</tr>\n";        
+      }
+      
+
+       
+      countWriter += "<tr valign=\"top\">\n";
+      countWriter += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+
+      var dept2 = department.split("~")[0].trim();
+      var shift2 = "";
+      if (department.split("~").length > 0 && department.split("~")[1] != null) {
+        shift2 = department.split("~")[1].trim();        
+      }
+      if (shift2 == "Unknown") {
+        shift2 = "";
+      }
+      countWriter += "<td><a href=\"/00Oi0000006PCZI?pv2=" + organizer + "&pv3=" + encodeURIComponent(dept2) + "&pv4=" + encodeURIComponent(shift2) + "\">" + department.replace("~", "-") + "</a></td>\n";   
+ 
+
+      var buCount = getCounter([ORGANIZER, DEPT, organizer, department, BU]);
+      var verbalCount = getCounter([ORGANIZER, DEPT, organizer, department, VERBAL]);
+      var cardCount = getCounter([ORGANIZER, DEPT, organizer, department, CARD]);
+      var inocCount = getCounter([ORGANIZER, DEPT, organizer, department, INOCULATED]);
+      var photoCount = getCounter([ORGANIZER, DEPT, organizer, department, PHOTO]);
+      var purpleCount = getCounter([ORGANIZER, DEPT, organizer, department, PURPLE]);
+      var gotvCount = getCounter([ORGANIZER, DEPT, organizer, department, GOTV]);
+      var reconfirmedCount = getCounter([ORGANIZER, DEPT, organizer, department, RECONFIRMED]);                        
+
+      countWriter += "<td width=\"5%\" align=\"center\">" + buCount + "</td>\n";      
+      countWriter += "<td width=\"1%\" align=\"center\"></td>\n";
+      countWriter += "<td width=\"3%\" align=\"center\">" + verbalCount + "</td>\n";      
+      countWriter += "<td width=\"4%\" bgcolor=\"#F0FFF0\" align=\"center\"><i>" + (100.0 * verbalCount / buCount).toFixed(0) + "%</i></td>\n";      
+      countWriter += "<td  width=\"1%\" align=\"center\"></td>\n";      
+      
+      
+      countWriter += "<td width=\"3%\" align=\"center\">" + cardCount + "</td>\n";      
+      countWriter += "<td width=\"4%\" bgcolor=\"#F0FFF0\" align=\"center\"><i>" + (100.0 * cardCount / buCount).toFixed(0) + "%</i></td>\n";  
+      countWriter += "<td width=\"3%\"align=\"center\">" + (verbalCount - cardCount) + "</td>\n";
+      
+      countWriter += "<td  width=\"1%\" align=\"center\"></td>\n";    
+      countWriter += "<td width=\"3%\" align=\"center\">" + inocCount + "</td>\n";         
+      countWriter += "<td width=\"4%\"bgcolor=\"#F0FFF0\" align=\"center\"><i>";
+      if (cardCount > 0) {
+            countWriter += (100.0 * inocCount / cardCount).toFixed(0) ;
+      } else {
+            countWriter += "0";          
+      }
+      countWriter += "%</i></td>\n";  
+      countWriter += "<td width=\"3%\"align=\"center\">" + (cardCount - inocCount) + "</td>\n";         
+
+
+      countWriter += "<td  width=\"1%\" align=\"center\"></td>\n";
+      countWriter += "<td width=\"3%\" align=\"center\">" + photoCount + "</td>\n";         
+      countWriter += "<td width=\"4%\" bgcolor=\"#F0FFF0\" align=\"center\"><i>";
+      if (cardCount > 0) {
+            countWriter += (100.0 * photoCount / cardCount).toFixed(0) ;
+      } else {
+            countWriter += "0";          
+      }
+      countWriter += "%</i></td>\n";  
+      countWriter += "<td width=\"3%\" align=\"center\">" + (cardCount - photoCount ) + "</td>\n";         
+
+
+      countWriter += "<td  width=\"1%\" align=\"center\"></td>\n";
+      countWriter += "<td width=\"3%\" align=\"center\">" + purpleCount + "</td>\n";         
+      countWriter += "<td width=\"4%\" bgcolor=\"#F0FFF0\" align=\"center\"><i>";
+      if (cardCount > 0) {
+            countWriter += (100.0 * purpleCount / cardCount).toFixed(0) ;
+      } else {
+            countWriter += "0";          
+      }
+      countWriter += "%</i></td>\n";  
+      countWriter += "<td width=\"3%\" align=\"center\">" + (cardCount - purpleCount ) + "</td>\n";         
+      
+      
+      
+      countWriter += "<td  width=\"1%\" align=\"center\"></td>\n";
+      countWriter += "<td width=\"3%\" align=\"center\">" + gotvCount + "</td>\n";         
+      countWriter += "<td width=\"4%\" bgcolor=\"#F0FFF0\" align=\"center\"><i>";
+      if (cardCount > 0) {
+            countWriter += (100.0 * gotvCount / cardCount).toFixed(0) ;
+      } else {
+            countWriter += "0";          
+      }
+      countWriter += "%</i></td>\n";  
+      countWriter += "<td width=\"3%\" align=\"center\">" + (cardCount - gotvCount ) + "</td>\n";       
+      
+      
+      
+      countWriter += "<td  width=\"1%\" align=\"center\"></td>\n";
+      countWriter += "<td width=\"3%\" align=\"center\">" + reconfirmedCount + "</td>\n";         
+      countWriter += "<td width=\"4%\" bgcolor=\"#F0FFF0\" align=\"center\"><i>";
+      if (gotvCount > 0) {
+            countWriter += (100.0 * reconfirmedCount / gotvCount ).toFixed(0) ;
+      } else {
+            countWriter += "0";          
+      }
+      countWriter += "%</i></td>\n";  
+      countWriter += "<td width=\"3%\" align=\"center\">" + (gotvCount - reconfirmedCount ) + "</td>\n";       
+   
+
+      
+      countWriter += "</tr>\n";
+      
+      
+      lastOrganizer = organizer;
+    }
+    
+    countWriter += "</table>";        
+  
+    document.getElementById("countDiv").innerHTML = countWriter;
+                
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="confidentialDiv" align="center"><i>CONFIDENTIAL</i></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+
+<script language="JavaScript">
+   
+  document.getElementById("progressDiv").innerHTML = ""; 
+
+    
+</script> 
+  
+</apex:page>

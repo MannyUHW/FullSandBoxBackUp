@@ -1,0 +1,48 @@
+<apex:page showHeader="false" controller="SOS_BHATActivityWithOTReportController" docType="html-5.0">
+<apex:messages />
+<apex:form >
+    <apex:pageBlock title="" mode="edit">
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!search}" value="Search"/>
+        </apex:pageBlockButtons>
+        <!-- display. -->
+        <apex:pageMessages />
+        <apex:pageBlockSection title="BHAT OT Report - Use By Payroll" columns="2" id="searchCriteriaRegion">
+
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Show:" />
+                <apex:selectList value="{!showBy}" size="1" multiselect="false">
+                    <apex:selectOptions value="{!itemsForShowBy}"/>
+                </apex:selectList>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Range:"/> 
+                <apex:actionRegion renderRegionOnly="false">
+                <apex:selectList value="{!range}" size="1" multiselect="false">
+                    <apex:selectOptions value="{!itemsForRange}"/>
+                    <apex:actionSupport event="onchange" action="{!setDates}" rerender="searchCriteriaRegion" />
+                </apex:selectList> 
+                 
+                </apex:actionRegion>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!dateEnabled}">
+                <apex:outputLabel value="Start Date:"/>
+                <apex:inputField value="{!startDateDummyObj.Activity_Date__c}" label="Start Date"   /> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!!dateEnabled}">
+                <apex:outputLabel value="Start Date:"/>
+                <apex:outputLabel value="{!startDateString}"   /> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!dateEnabled}">
+                <apex:outputLabel value="End Date:"/>
+                <apex:inputField value="{!endDateDummyObj.Activity_Date__c}" label="End Date"  />
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem rendered="{!!dateEnabled}">
+                <apex:outputLabel value="End Date:"/>
+                <apex:outputLabel value="{!endDateString}"   /> 
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        <apex:outputText escape="false" value="{!outputTable}" />
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

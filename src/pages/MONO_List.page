@@ -1,0 +1,1004 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" >
+<meta name="viewport" content="width=device-width, initial-scale=0.75,minimum-scale=0.5, maximum-scale=1.5, user-scalable=yes"></meta>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<meta name="viewport" content="width=device-width, initial-scale=0.75"></meta>
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+
+<style type="text/css">
+#pleaseWait {
+  width:40.9%;
+  min-height:9.9%;
+  height:auto;
+  z-index:0;
+  position:absolute;
+  left:25%;
+  top:30%;
+  padding: 10%, 10%;
+  text-align:center;
+}
+</style>
+
+<div align="center" id="pleaseWait"><font size="+2">Processing, please wait.</font></div>
+
+<script language="JavaScript">
+
+var FILTER = "FILTER";
+var TTCOUNT = "TTCOUNT";
+var TTOB = "TTOB";
+var TTVC = "TTVC";
+var TTST = "TTST";
+
+var countMap = new Array();
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount + "; countMap length = " + JSON.stringify(countMap));  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+ 
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("[get] incrementKey = " + incrementKey);
+  if (countMap[incrementKey] != null) {
+    //alert("[getCounter] returning for " + incrementKey + " = " + countMap[incrementKey]);
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+var omode = "standard";
+if (localStorage.getItem("mono_settings_mode") != null) {
+  omode = localStorage.getItem("mono_settings_mode").toLowerCase().trim();
+}
+var omodeDesc = omode;
+if (localStorage.getItem("mono_settings_modedesc") != null) {
+  omodeDesc = localStorage.getItem("mono_settings_modedesc").toLowerCase().trim();
+} 
+
+var paramEmid = "{!$CurrentPage.parameters.emid}";
+var emid = 8817;
+if (paramEmid != null && paramEmid != "" && paramEmid != "null") {
+      emid = paramEmid ;
+}
+
+var debugWriter = "";
+var filterWriter = "";
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) { 
+  //alert("[navigateTo] start " + pUrl); 
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+function updateTt(pArg) {
+  try {
+    var pType = pArg.substring(0, 2);
+    var pId = pArg.substring(2);
+    
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var c = new sforce.SObject("Contact"); 
+    c.Id=pId;
+    if (pType.toLowerCase() == "ob") {
+      if (document.getElementById(pArg) != null && document.getElementById(pArg).checked == true) {
+        c.Three_Touch__c = true;
+      } else {
+        c.Three_Touch__c = false;
+      }          
+    }
+    if (pType.toLowerCase() == "st") {
+      if (document.getElementById(pArg) != null && document.getElementById(pArg).checked == true) {
+        c.Three_Touch_ST__c = true;
+      } else {
+        c.Three_Touch_ST__c = false;
+      }          
+    }
+    if (pType.toLowerCase() == "vc") {
+      if (document.getElementById(pArg) != null && document.getElementById(pArg).checked == true) {
+        c.Three_Touch_VC__c = true;
+      } else {
+        c.Three_Touch_VC__c = false;
+      }          
+    }
+    results = sforce.connection.update([ c ]); 
+    if (results[0].getBoolean("success")) { 
+      //alert("Response submitted successfully."); 
+    } else { 
+      alert("failed to update SurveyResponse " + results[0]); 
+    } 
+    var query = "SELECT Id, Three_Touch__c, Three_Touch_ST__c,  Three_Touch_VC__c from Contact  where In_Current_BU__c = true and Account.Employer_ID__c = \'" + emid + "\' ";
+    var records = sforce.connection.query(query);
+    var records0 = records.getArray('records');
+    countMap = new Array();    
+    for(var i=0;i < records0.length; i++){ 
+       var recordIncluded = false;
+       var touches = 0;       
+       if (document.getElementById("ob" +      records0[i].Id) != null) {
+         recordIncluded = true; 
+         if (records0[i].Three_Touch__c == true || records0[i].Three_Touch__c == "true") {
+           incrementCounter([FILTER, TTOB], 1);
+           touches++;
+           document.getElementById("ob" +      records0[i].Id).checked = true;
+         } else {
+           document.getElementById("ob" +      records0[i].Id).checked = false;
+         }
+       }
+       if (document.getElementById("st" +      records0[i].Id) != null) {
+         recordIncluded = true;        
+         if (records0[i].Three_Touch_ST__c == true || records0[i].Three_Touch_ST__c == "true") {
+           //alert("checking ST " + records0[i].Id);
+           document.getElementById("st" +      records0[i].Id).checked = true;
+           incrementCounter([FILTER, TTST], 1);
+           touches++;
+         } else {
+           document.getElementById("st" +      records0[i].Id).checked = false;
+         }
+       }
+       if (document.getElementById("vc" +      records0[i].Id) != null) {
+         recordIncluded = true;        
+         if (records0[i].Three_Touch_VC__c == true || records0[i].Three_Touch_VC__c == "true") {
+           document.getElementById("vc" +      records0[i].Id).checked = true;
+           incrementCounter([FILTER, TTVC], 1);
+
+           touches++;          
+         } else { 
+           document.getElementById("vc" +      records0[i].Id).checked = false;
+         }
+       } 
+       
+       if (recordIncluded) {
+         //incrementCounter([FILTER, TTCOUNT, "" + parseInt(records0[i].Three_Touch_Count__c)], 1);
+         incrementCounter([FILTER, TTCOUNT, "" + touches], 1);
+       }
+         
+    }
+    document.getElementById("tt0Div").innerHTML = getCounter([FILTER, TTCOUNT, "0"]) ;
+    document.getElementById("tt1Div").innerHTML = getCounter([FILTER, TTCOUNT, "1"]) ;
+    document.getElementById("tt2Div").innerHTML = getCounter([FILTER, TTCOUNT, "2"]) ;
+    document.getElementById("tt3Div").innerHTML = getCounter([FILTER, TTCOUNT, "3"]) ;
+    document.getElementById("ttstDiv").innerHTML = getCounter([FILTER, TTST]) ;
+    document.getElementById("ttvcDiv").innerHTML = getCounter([FILTER, TTVC]) ;
+    document.getElementById("ttobDiv").innerHTML = getCounter([FILTER, TTOB]) ;
+         
+  } catch(e) { 
+   alert('Update Error has occurred. Error:' +e + "\n\n" + i + "\n\n" + pId); 
+  }
+  alert("updated complete");
+  return false;
+}
+
+ 
+</script>
+
+
+<a name="topofpage"></a>
+<div align="center"> 
+
+
+<table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MONO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MONO_Search}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+
+  <font size="+2"><div id="titleDiv"></div></font>
+<br>&nbsp;</br>
+<div id="countDiv"></div>
+<div id="stCountDiv">
+  <table cellpading="10" cellspacing="5">
+  <tr valign="top">
+  <td width="50%" align="center"><font size="-1">
+    0 Touch Count = <div id="tt0Div"  style="display: inline">0</div><br></br>
+    1 Touch Count = <div id="tt1Div"  style="display: inline">0</div><br></br>
+    2 Touch Count = <div id="tt2Div"  style="display: inline">0</div><br></br>      
+    3 Touch Count = <div id="tt3Div"  style="display: inline">0</div></font>
+  </td>
+  <td width="50%" align="center"><font size="-1">
+    ST Count = <div id="ttstDiv"  style="display: inline">0</div><br></br>
+    VC Count = <div id="ttvcDiv"  style="display: inline">0</div><br></br>
+    OB Count = <div id="ttobDiv"  style="display: inline">0</div></font>   
+  </td>  
+  </tr>       
+  </table>
+  <br>&nbsp;</br>
+</div>
+
+<script language="JavaScript">
+
+$("#stCountDiv").hide();
+
+var DIGITS = "0123456789";
+var debugRecord = null;
+
+var obMap = new Array();
+var stMap = new Array();
+var vcMap = new Array();
+var idSet = new Array();
+
+var filterCountMap = new Array();
+
+try{ 
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+ 
+    var paramSearch = " {!$CurrentPage.parameters.search} "; 
+ 
+    var user = sforce.connection.getUserInfo(); 
+    //alert(JSON.stringify(user)); 
+    var userName = user.userFullName.toLowerCase(); 
+     
+    if (userName.indexOf("borcherding") >= 0 || userName.indexOf("decker") >= 0 || userName.indexOf("flood") >= 0 || userName.indexOf("sarah steck") >= 0) {
+      paramSearch = paramSearch.replace(" my ", " Dulce Armendariz ");
+    }  else {
+      paramSearch = paramSearch.replace(" my ", " " + userName + " ");
+    }
+    paramSearch = " " + paramSearch + " ";
+    
+
+   var voteBlockMap = new Array();
+   for (var p = 0; p < 10; p++) {
+      var query = "select Contact__c, FID__c, Response_Value__c from Survey_Response__c where Survey_Question__r.Name like '%vote block%' and Contact__r.Account.Employer_Id__c = \'" + emid + "\' and FID__c like \'%" + p + "\'";
+      var records = sforce.connection.query(query);
+      var records0 = records.getArray('records'); 
+      for(var i=0;i < records0.length; i++){ 
+        voteBlockMap[records0[i].Contact__c] = records0[i].Response_Value__c; 
+      }      
+   }
+
+    var query = "SELECT Id, LastName, FirstName, MiddleName, Department, Title, Work_Status__c, Shift__c, Verbal_Assessment__c, Card_Assessment__c, GOTV_Vote_Yes_Petition__c,  GOTV_Assessment__c, Three_Touch_Count__c,   Three_Touch__c,   Three_Touch_VC__c,  Three_Touch_ST__c, MailingCity, HomePhone, MobilePhone, Owner_Name__c,     GOTV_Challenge__c, GOTV_Works_Eday_1__c,  GOTV_Works_Eday2__c , GOTV_Works_Night_Before_Eday1__c, Works_Night_Before_Eday2__c, GOTV_Gettable__c, GOTV_Exact_Vote_Time__c from Contact where In_Current_BU__c = true and Account.Employer_ID__c = \'" + emid + "\' ";
+    if (localStorage.getItem("mono_settings_sort") != null && localStorage.getItem("mono_settings_sort") == "first") {
+      query += " order by FirstName, MiddleName, LastName ";
+    } else {    
+      query += " order by LastName, FirstName, MiddleName ";
+    }
+     
+    var records = sforce.connection.query(query);
+    var records1 = new Array();
+    var records0 = records.getArray('records'); 
+
+    var re = new RegExp(" verbal[012345679]{1,9} ", "i");
+    var fverbal = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fverbal = reResult[0];
+      paramSearch = paramSearch.replace(re, " ");
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Verbal = " + fverbal.toLowerCase().replace("verbal", "") + "<br/>";
+    }    
+
+    var re = new RegExp(" card[012345679]{1,9} ", "i");
+    var fcard = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fcard = reResult[0];
+      paramSearch = paramSearch.replace(re, " ");  
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Card = " + fcard.toLowerCase().replace("card", "") + "<br/>";          
+    }    
+    
+    var re = new RegExp(" vyp[012345679G]{1,10} ", "i");
+    var fvyp = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fvyp = reResult[0];
+      paramSearch = paramSearch.replace(re, " "); 
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vote Yes Pet = " + fvyp.toLowerCase().replace("vyp", "") + "<br/>";             
+    }    
+    
+    var re = new RegExp(" gotv[012345679]{1,9} ", "i");
+    var fgotv = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fgotv = reResult[0];
+      paramSearch = paramSearch.replace(re, " "); 
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;GOTV = " + fgotv.toLowerCase().replace("gotv", "") + "<br/>";                       
+    }    
+    
+    var re = new RegExp(" challenge ", "i");
+    var fchallenge = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fchallenge = reResult[0];
+      paramSearch = paramSearch.replace(re, " ");   
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Challenge<br/>";                            
+    }   
+    
+    var re = new RegExp(" tt[0123]{1,4} ", "i");
+    var ftt = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      ftt = reResult[0];
+      paramSearch = paramSearch.replace(re, " ");         
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Three Touch = " + ftt.toLowerCase().replace("tt", "") + "<br/>";                                  
+    }      
+    
+    var re = new RegExp(" block[0ABCDEFGHIJKLMNOPQRSTUVWXYZ]{1,26} ", "i");
+    var fblock = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fblock = reResult[0];
+      paramSearch = paramSearch.replace(re, " ");  
+      //alert("fblock = " + fblock);  
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vote Block = " + fblock.toLowerCase().replace("block", "") + "<br/>";                                            
+    }     
+    
+    var re = new RegExp("\\bdepartment\\w+", "i");
+    var fdepartment = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fdepartment = reResult[0].toLowerCase();
+      paramSearch = paramSearch.replace(re, " ");  
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Departments = " + fdepartment.toLowerCase().replace("department", "").replace(/\\w/g, "_").replace(/-/g, "_").replace(/\\s/g, "_").replace(/ /g, "_") + "<br/>";                                            
+      //alert(fdepartment.toLowerCase().replace("department", "").replace(/\\w/g, "_"));      
+    }   
+      
+    var re = new RegExp(" organizer\\w+", "i");
+    var forganizer = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      forganizer = reResult[0];
+      paramSearch = paramSearch.replace(re, " "); 
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Organizer= " + forganizer.toLowerCase().replace("organizer", "").replace("_", " ").replace("_", " ") + "<br/>";                       
+    } 
+    
+    var re = new RegExp("\\bshift\\w+", "i");
+    var fshift = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fshift = reResult[0];
+      paramSearch = paramSearch.replace(re, " "); 
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Shift = " + fshift.toLowerCase().replace("shift", "").replace(/\\w/g, "_").replace(/-/g, "_").replace(/\\s/g, "_").replace(/ /g, "_") + "<br/>";                       
+    } 
+ 
+    var re = new RegExp("\\beday\\w+", "i");
+    var feday = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      feday = reResult[0];
+      paramSearch = paramSearch.replace(re, " "); 
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EDay Works = " + feday .toLowerCase().replace("eday", "").replace(/\\w/g, "_").replace(/-/g, "_").replace(/\\s/g, "_").replace(/ /g, "_") + "<br/>";                       
+    }     
+
+    var re = new RegExp("\\bchallenge\\w+", "i");
+    var fchallenge = null;
+    var reResult = re.exec(paramSearch);
+    if (reResult != null) {
+      fchallenge = reResult[0];
+      paramSearch = paramSearch.replace(re, " "); 
+      filterWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Challenges = " + fchallenge.toLowerCase().replace("challenge", "").replace(/\\w/g, "_").replace(/-/g, "_").replace(/\\s/g, "_").replace(/ /g, "_") + "<br/>";                       
+    }  
+    
+    
+    paramSearch = paramSearch.trim();
+    
+    //alert("search = _" +       paramSearch  + "_");            
+
+    
+    for(var i=0;i < records0.length; i++){ 
+      debugRecord = records0[i];
+      
+      if (records0[i].Three_Touch_VC__c != null && (records0[i].Three_Touch_VC__c == true || records0[i].Three_Touch_VC__c == "true")) {
+        vcMap[records0[i].Id] = true;
+      } else {
+        vcMap[records0[i].Id] = false;
+      }
+      if (records0[i].Three_Touch__c != null && (records0[i].Three_Touch__c == true || records0[i].Three_Touch__c == "true")) {
+        obMap[records0[i].Id] = true;
+      } else {
+        obMap[records0[i].Id] = false;
+      }
+      if (records0[i].Three_Touch_ST__c != null && (records0[i].Three_Touch_ST__c == true || records0[i].Three_Touch_ST__c == "true") ) {
+        //alert("found 3T ST = " + records0[i].Id); 
+        stMap[records0[i].Id] = true;
+      } else {
+        stMap[records0[i].Id] = false;
+      }      
+      if ( idSet.indexOf(records0[i].Id) < 0 ) {
+        idSet.push(idSet);
+      }
+      
+      if ((paramSearch == null || paramSearch.trim() == "" || paramSearch.trim().toLowerCase() == "null") && fverbal == null && fcard == null  && fvyp == null  && fgotv == null && fchallenge == null && fblock == null && ftt == null && fdepartment == null  && fshift == null && feday == null && fchallenge == null) {
+        if (records1.length == 0) {
+          //alert("adding because no search params....");
+        }
+        records1.push(records0[i]);
+      } else {
+        var matchPerson = false;
+        
+        var cverbal = 0;
+        if (records0[i].Verbal_Assessment__c != null) {
+          cverbal = parseInt(records0[i].Verbal_Assessment__c.substring(0, 1));
+        } else {
+          records0[i].Verbal_Assessment__c = "0. Not Assessed";
+        }
+        
+        var ccard = 0;
+        if (records0[i].Card_Assessment__c != null) {
+          ccard = parseInt(records0[i].Card_Assessment__c.substring(0, 1));
+        } else {
+          records0[i].Card_Assessment__c = "0. Not Assessed";
+        }
+        
+        var cvyp = 0;
+        if (records0[i].GOTV_Vote_Yes_Petition__c != null) {
+          cvyp = parseInt(records0[i].GOTV_Vote_Yes_Petition__c.substring(0, 1));
+        } else {
+          records0[i].GOTV_Vote_Yes_Petition__c = "0. Not Assessed";
+        }
+        
+        var cgotv = 0;
+        if (records0[i].GOTV_Assessment__c != null) {
+          cgotv = parseInt(records0[i].GOTV_Assessment__c.substring(0, 1));
+        } else {
+          records0[i].GOTV_Assessment__c = "0. Not Assessed";
+        }
+        
+        var cchallenge = null;
+        if (records0[i].GOTV_Challenge__c != null && records0[i].GOTV_Challenge__c != "" && records0[i].GOTV_Challenge__c != "null") {
+          cchallenge = records0[i].GOTV_Challenge__c.replace(/challenge/i, "").trim();
+        }
+        
+        var cblock = "0";
+        if (voteBlockMap[records0[i].Id] != null) {
+          cblock = voteBlockMap[records0[i].Id].substring(0, 1);
+        }
+        
+        var cdepartment = "unknown";
+        if (records0[i].Department != null && records0[i].Department != "" && records0[i].Department != "null") {
+          cdepartment = records0[i].Department.toLowerCase().trim().replace(/\\s/g, "_").replace(/ /g, "_").replace(/-/g, "_");
+        } 
+        
+        var cshift = "unknown";
+        if (records0[i].Shift__c != null && records0[i].Shift__c != "" && records0[i].Shift__c != "null") {
+          cshift = records0[i].Shift__c.toLowerCase().trim().replace(/\\s/g, "_").replace(/ /g, "_").replace(/-/g, "_");
+        } 
+        
+        var ctt = "";
+        if (records0[i].Three_Touch_Count__c != null && records0[i].Three_Touch_Count__c != "" && records0[i].Three_Touch_Count__c != "null") {
+          ctt = parseInt(records0[i].Three_Touch_Count__c);
+        }
+        
+        var corganizer = records0[i].Owner_Name__c;
+        
+        
+        if (paramSearch == null || paramSearch.trim() == "" || paramSearch.trim() == "null") {
+          matchPerson = true;
+        }
+        var terms = paramSearch.toLowerCase().split(" ");
+        var name = (records0[i].LastName + ", " + records0[i].FirstName + " " + records0[i].MiddleName + " " + records0[i].Department + " " + records0[i].Title + " " + records0[i].Work_Status__c + " "  + records0[i].Owner_Name__c).toLowerCase();    
+        for (var j = 0; j < terms.length; j++) {
+          if (terms[j].trim() != "" && terms[j].length > 3) {
+            if (name.indexOf(terms[j].substring(0, 3)) >= 0) {
+              matchPerson = true;
+            }
+          } else {
+            if (terms[j].trim() != "" && name.indexOf(terms[j]) >= 0) {          
+              matchPerson = true;
+            }          
+          }
+        }
+        if (matchPerson) {
+          var filterOut = false;
+          //
+          //
+          //filters
+          //
+          //
+          if (fverbal != null && fverbal.indexOf(cverbal) < 0) {
+            filterOut = true;
+          }
+          if (fcard != null && fcard.indexOf(ccard) < 0) {
+            filterOut = true;
+          }
+          
+          if (fvyp != null) {
+            if (fvyp.toUpperCase().indexOf("G") >= 0 && records0[i].GOTV_Gettable__c != true && records0[i].GOTV_Gettable__c != "true") {
+              if (fvyp.indexOf(cvyp) < 0) {
+                filterOut = true;
+              }
+            } else if (fvyp.toUpperCase().indexOf("G") < 0) {
+              if (fvyp.indexOf(cvyp) < 0) {
+                filterOut = true;
+              }            
+            }
+          }
+          
+          if (fgotv != null && fgotv.indexOf(cgotv) < 0) {
+            filterOut = true;
+          }
+          //alert(ftt);
+          if (ftt  != null && ftt.indexOf(ctt) < 0) {
+            filterOut = true;
+          } 
+
+          if (fblock != null && fblock.toLowerCase().replace("block", "").trim().toUpperCase().indexOf(cblock.trim().toUpperCase()) < 0 ) {
+            filterOut = true;
+          }          
+          if (forganizer != null && forganizer.toLowerCase().replace("organizer", "").replace("_", " ").replace("_", " ").trim().toUpperCase() != corganizer.trim().toUpperCase()) {
+            filterOut = true;
+          }     
+          
+          if (fdepartment != null && fdepartment.toLowerCase().indexOf(cdepartment) < 0) {
+            filterOut = true;
+          }   
+          
+          if (fshift != null && fshift.toLowerCase().indexOf(cshift) < 0) {
+            filterOut = true;
+          }             
+          
+          if (feday != null) {
+            var filterOut2 = true;
+            if (feday.indexOf("ed1") >= 0  && (records0[i].GOTV_Works_Eday_1__c == true || records0[i].GOTV_Works_Eday_1__c == "true")) {
+              filterOut2 = false;
+            }
+            if (feday.indexOf("ed2") >= 0  && (records0[i].GOTV_Works_Eday2__c == true ||  records0[i].GOTV_Works_Eday2__c == "true")) {
+              filterOut2 = false;
+            } 
+            if (feday.indexOf("nd1") >= 0  && (records0[i].GOTV_Works_Night_Before_Eday1__c == true || records0[i].GOTV_Works_Night_Before_Eday1__c == "true")) {
+              filterOut2 = false;
+            }  
+            if (feday.indexOf("nd2") >= 0  && (records0[i].Works_Night_Before_Eday2__c == true || records0[i].Works_Night_Before_Eday2__c == "true")) {
+              filterOut2 = false;
+            }   
+            if (feday.indexOf("nnn") >= 0) {
+              if (records0[i].GOTV_Works_Eday_1__c != true && records0[i].GOTV_Works_Eday2__c != true &&  records0[i].GOTV_Works_Night_Before_Eday1__c != true &&    records0[i].Works_Night_Before_Eday2__c != true && records0[i].GOTV_Works_Eday_1__c != "true" && records0[i].GOTV_Works_Eday2__c != "true" &&    records0[i].GOTV_Works_Night_Before_Eday1__c != "true" &&    records0[i].Works_Night_Before_Eday2__c != "true") {
+                filterOut2 = false;
+              }
+            }
+            if (filterOut2 == true) {
+              filterOut = true;
+            }                              
+          }    
+          
+          if (fchallenge != null) {
+            var filterOut2 = true; 
+            if (records0[i].GOTV_Challenge__c != null) {         
+              if (fchallenge.indexOf("uhw") >= 0  && records0[i].GOTV_Challenge__c.toLowerCase().indexOf("uhw") >= 0) {
+                filterOut2 = false; 
+              }
+              if (fchallenge.indexOf("emp") >= 0  && records0[i].GOTV_Challenge__c.toLowerCase().indexOf("employer") >= 0) {
+                filterOut2 = false;
+              } 
+              if (fchallenge.indexOf("brd") >= 0  && records0[i].GOTV_Challenge__c.toLowerCase().indexOf("board") >= 0) {
+                filterOut2 = false;
+              }   
+            } 
+            if (fchallenge.indexOf("unc") >= 0  && (records0[i].GOTV_Challenge__c == null || records0[i].GOTV_Challenge__c.trim() == "")) {
+              filterOut2 = false;
+            }    
+            if (filterOut2 == true) {
+              filterOut = true;
+            }                                                       
+          }              
+                                                   
+          if (!filterOut) {
+            if (records1.length == 0) {
+              //alert("fcard = " + fcard + ", ccard=" + ccard +"\n\n" + JSON.stringify(debugRecord));
+            }
+            incrementCounter([FILTER, TTCOUNT, "" + parseInt(records0[i].Three_Touch_Count__c)], 1);
+            if (records0[i].Three_Touch_ST__c == true || records0[i].Three_Touch_ST__c == "true") {
+              incrementCounter([FILTER, TTST], 1);
+            }
+            if (records0[i].Three_Touch_VC__c == true || records0[i].Three_Touch_VC__c == "true") {            
+              incrementCounter([FILTER, TTVC], 1);
+            }
+            if (records0[i].Three_Touch__c == true || records0[i].Three_Touch__c == "true") {               
+              incrementCounter([FILTER, TTOB], 1);
+            }
+            records1.push(records0[i]);
+          }          
+        }
+      }
+    }
+    
+    //search ordering
+    if (paramSearch != null && paramSearch.trim() != "" && paramSearch.trim().toLowerCase() != "null" && records1.length > 0) {
+      var orderedArray = new Array();
+      var foundArray = new Array();
+      var terms = paramSearch.toLowerCase().split(" ");
+      //alert("terms = " + JSON.stringify(terms));
+      
+      //all terms match
+      for(var i=0;i < records1.length; i++){ 
+        var foundCount = 0;
+        var name =   (records1[i].LastName + ", " + records1[i].FirstName  + " " +records1[i].MiddleName  + " " + records1[i].Department + " " + records1[i].Title + " " + records0[i].Work_Status__c + " "  + " " + records1[i].Owner_Name__c).toLowerCase(); 
+        if (i < 3) {
+          //alert("name = " + name);
+        }
+        for (var j = 0; j < terms.length; j++) {
+          if (i == 0) {
+            //alert("terms[" + j + "]=" + terms[j]);
+          }
+          if (name.indexOf(terms[j]) >= 0) {
+            foundCount++;
+          }
+        }
+        debugWriter += ("1. name = " + name + "; foundCount = " + foundCount + "; terms length=" + terms.length + "; " + JSON.stringify(records1[i]) + "<br/>");
+        if (foundCount == terms.length) {
+          orderedArray.push(records1[i]);
+          foundArray.push(records1[i].Id);
+        } 
+      }
+      //some terms match
+      for(var i=0;i < records1.length; i++){ 
+        var foundCount = 0;
+        var name =   (records1[i].LastName + ", " + records1[i].FirstName  + " " +records1[i].MiddleName  + " " + records0[i].Department + " " + records0[i].Title + " " + records0[i].Owner_Name__c).toLowerCase(); 
+        for (var j = 0; j < terms.length; j++) {
+          if (name.indexOf(terms[j]) >= 0) {
+            foundCount++;
+          }
+        }
+        debugWriter += ("2. name = " + name + "; foundCount = " + foundCount + "; terms length=" + terms.length + "; " + JSON.stringify(records1[i]) + "<br/>");        
+        if (foundCount > 0 && foundArray.indexOf(records1[i].Id) < 0) {
+          orderedArray.push(records1[i]);
+          foundArray.push(records1[i].Id);
+        } 
+      }
+      //all other partial matches
+      for(var i=0;i < records1.length; i++){ 
+        if (foundArray.indexOf(records1[i].Id) < 0) {
+          orderedArray.push(records1[i]);
+          foundArray.push(records1[i].Id);
+        } 
+      }
+      //alert("orderedArray length = " + orderedArray.length);
+      records1 = orderedArray;
+    }
+    
+    
+    //alert("record count = " + records1.length);
+
+
+    if (filterWriter != null && filterWriter != "") {
+      document.write("<font color=\"blue\"><b>Filters:</b> " + filterWriter + "</font><br/>");
+    }
+    if (paramSearch != null && paramSearch.trim() != "" && paramSearch.trim().toLowerCase() != "null") {
+      document.write("<font color=\"blue\"><b>Search:</b> " + paramSearch + "</b></font><br/>");      
+    }
+    document.write("<font color=\"green\"><b>Org Mode:</b> " + omodeDesc + "</font><br/>\n");
+    document.write("<br/>");
+    
+    if ( records1.length > 0) {
+    document.write("<table border=\"0\" cellpadding=\"5\">\n");
+    document.write("<tr valign=\"bottom\">\n");
+    if (omode == "ttob") {
+      document.write("<td bgcolor=\"#481C60\" align=\"center\">\n");
+      document.write("<font color=\"#FFFFFF\">TT<br/>Obsrvd?</font>");
+      document.write("</td>\n");
+    } else if (omode == "ttst") {
+      document.write("<td bgcolor=\"#481C60\" align=\"center\">\n");
+      document.write("<font color=\"#FFFFFF\">TT<br/>Staff</font>");
+      document.write("</td>\n");     
+    }
+    
+    if (omode == "ttst") {    
+      //alert("Showing count div");
+      $("#stCountDiv").show();
+    }
+ 
+    document.write("<td bgcolor=\"#481C60\" align=\"center\">\n");
+    document.write("<font color=\"#FFFFFF\">Name</font>");
+    document.write("</td>\n");
+    
+    if (omode == "standard") {
+      document.write("<td bgcolor=\"#481C60\" align=\"center\">\n");
+      document.write("<font color=\"#FFFFFF\">Assess</font>");
+      document.write("</td>\n");
+    }
+    if (omode != "ttob") {
+      document.write("<td bgcolor=\"#481C60\" align=\"center\">\n");
+      document.write("<font color=\"#FFFFFF\">Phone</font>");
+      document.write("</td>\n");
+    }
+    document.write("</tr>\n");
+    
+    //alert("outputting people.");
+    
+    for(var i=0;i < records1.length; i++){ 
+      debugRecord = records1[i];
+      var colCount = 0;
+
+      if (records1[i].MiddleName == null) {
+        records1[i].MiddleName = "";
+      }      
+      
+      document.write("<tr valign=\"top\">\n");
+      if (omode == "ttst") {
+        document.write("<td align=\"center\">");
+        document.write("<font size=\"-2\">ST:</font><br/><input ");
+        if (records1[i].Three_Touch_ST__c != null && (records1[i].Three_Touch_ST__c == true || records1[i].Three_Touch_ST__c == "true")) {
+         document.write(" checked ");
+        }
+        document.write(" onclick=\"updateTt(\'st" +  records1[i].Id  + "\')\" type=\"checkbox\"  id=\"st" +  records1[i].Id + "\">\n");          
+        document.write("<br/>&nbsp;<br/>");
+        document.write("<font size=\"-2\">VC:</font><br/><input  type=\"checkbox\" ");
+        if (records1[i].Three_Touch_VC__c != null && (records1[i].Three_Touch_VC__c == true || records1[i].Three_Touch_VC__c == "true")) {
+         document.write(" checked ");
+        } 
+        document.write("  onclick=\"updateTt(\'vc" +  records1[i].Id  + "\')\"  id=\"vc" +  records1[i].Id + "\">\n");  
+        document.write("<br/>");
+        document.write("<br/><font size=\"-2\">OB:</font><br/>");
+        if (records1[i].Three_Touch__c != null && (records1[i].Three_Touch__c == true || records1[i].Three_Touch__c == "true")) {
+           document.write("<font size=\"+2\">&#x2713</font>");      
+        }
+        document.write("</td>"); 
+        colCount++;       
+      } else if (omode == "ttob") {
+        document.write("<td align=\"center\"><font size=\"-2\">OB:</font><br/><input  type=\"checkbox\"  ");
+        if (records1[i].Three_Touch__c != null && (records1[i].Three_Touch__c == true || records1[i].Three_Touch__c == "true")) {
+         document.write(" checked ");
+        } 
+        document.write("  onclick=\"updateTt(\'ob" +  records1[i].Id  + "\')\" id=\"ob" +  records1[i].Id + "\">\n");          
+        document.write("</td>");
+        colCount++;        
+      }
+      
+      document.write("<td align=\"left\">\n");
+      document.write("<a href=\"javascript:navigateTo(\'/" + records1[i].Id + "\');\">");
+      var name =   toProperCase(records1[i].LastName + ", " + records1[i].FirstName  + " " +records1[i].MiddleName);       
+      if (localStorage.getItem("mono_settings_sort") != null && localStorage.getItem("mono_settings_sort") == "first") {
+         name =   toProperCase(records1[i].FirstName + " " +records1[i].MiddleName + " " + records1[i].LastName);
+      }
+      
+      document.write(name + "</a><br/>");      
+      document.write("<font size=\"-1\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(records1[i].Department) + "<br/>");
+      if (omode != "ttst") {
+        document.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(records1[i].Title)  + "<br/>");    
+      }       
+      document.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+      if (records1[i].Shift__c != null) {
+        document.write(records1[i].Shift__c);
+      } else {
+        document.write("Unknown Shift");
+      }
+      
+      if (omode != "ttst") {
+        document.write("<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+        if (records1[i].Work_Status__c != null) {
+          document.write(toProperCase(records1[i].Work_Status__c));
+        } else {
+          document.write("Unknown Work Status");
+        }
+      } else {
+        if (records1[i].GOTV_Exact_Vote_Time__c != null) {
+          var dsrc = records1[i].GOTV_Exact_Vote_Time__c; 
+          var month = parseInt(dsrc.substring(5,7));
+          month = month - 1;
+          //alert(dsrc + " = " + dsrc.substring(0,4) + "," +  + "," + dsrc.substring(8,10)+ "," +dsrc.substring(11,13)+ "," + dsrc.substring(14,16) + "," +  dsrc.substring(17,19) + "," + 0);
+          var d = new Date(dsrc.substring(0,4), month, dsrc.substring(8,10), dsrc.substring(11,13), dsrc.substring(14,16), dsrc.substring(17,19), 0);
+          var d2 = new Date(d.getTime() - 28800000);
+        
+          document.write("<br/>&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EVT: " + d2.toLocaleString());
+        } else {
+          document.write("<br/>&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EVT: ");
+        }
+      }
+      document.write("</font><br/>");            
+      document.write("</td>\n");
+      colCount++;
+        
+              
+      if (omode == "standard") {
+        document.write("<td align=\"left\"><font size=\"-1\"><br/>\n");
+        if (records1[i].Verbal_Assessment__c == null) {
+          records1[i].Verbal_Assessment__c = "0";
+        }
+        document.write("Verbal: " + records1[i].Verbal_Assessment__c.substring(0, 1) + "<br/>");     
+      
+        //if (records1[i].Card_Assessment__ c == null) {
+        //  records1[i].Card_Assessment__c = "0";
+        //}  
+        if (records1[i].Card_Assessment__c == null) {
+          records1[i].Card_Assessment__c = "0";    
+        }
+        document.write("Card: " + records1[i].Card_Assessment__c.substring(0, 1) + "<br/>");     
+      
+        if (records1[i].GOTV_Vote_Yes_Petition__c == null) {
+          records1[i].GOTV_Vote_Yes_Petition__c = "0";
+        }         
+        document.write("VYP: " + records1[i].GOTV_Vote_Yes_Petition__c.substring(0, 1) + "<br/>");     
+      
+        if (records1[i].GOTV_Assessment__c == null) {
+          records1[i].GOTV_Assessment__c = "0";
+        }         
+        document.write("GOTV: " + records1[i].GOTV_Assessment__c.substring(0, 1) + "<br/>");     
+      
+        document.write("Three Touch: " + parseInt(records1[i].Three_Touch_Count__c));   
+        if (parseInt(records1[i].Three_Touch_Count__c) > 0) {
+          document.write("&nbsp;&nbsp;&nbsp;(");
+          if (records1[i].Three_Touch_ST__c == true || records1[i].Three_Touch_ST__c == "true") {
+           document.write(" ST ");
+          }
+          if (records1[i].Three_Touch_VC__c == true || records1[i].Three_Touch_VC__c == "true") {
+           document.write(" VC ");
+          }
+          if (records1[i].Three_Touch__c == true || records1[i].Three_Touch__c == "true") {
+           document.write(" OB ");
+          }    
+          document.write(")");                          
+        }
+      
+        if (records1[i].GOTV_Challenge__c != null && records1[i].GOTV_Challenge__c != "") {
+          document.write("<br/>Challenge: " +records1[i].GOTV_Challenge__c.replace("Challenge", "").trim());   
+        }
+
+        document.write("<br/>Works EDay: ");
+        if (records1[i].GOTV_Works_Eday_1__c == true || records1[i].GOTV_Works_Eday_1__c == "true") {
+          document.write(" ED1 ");
+        }
+        if (records1[i].GOTV_Works_Eday2__c == true || records1[i].GOTV_Works_Eday2__c == "true") {
+          document.write(" ED2 ");
+        }
+        if (records1[i].GOTV_Works_Night_Before_Eday1__c == true || records1[i].GOTV_Works_Night_Before_Eday1__c == "true") {
+          document.write(" ND1 ");
+        }
+        if (records1[i].Works_Night_Before_Eday2__c == true || records1[i].Works_Night_Before_Eday2__c == "true") {
+          document.write(" ND2 ");
+        }  
+        document.write("<br/>Gettable: &nbsp;&nbsp;&nbsp;&nbsp;");                      
+        if (records1[i].GOTV_Gettable__c == true || records1[i].GOTV_Gettable__c == "true") {
+                   document.write(" &#x2713 ");  
+        }                              
+        document.write("</font></td>\n\n");
+        colCount++;
+                
+      }
+      if (omode != "ttob") {
+        document.write("<td align=\"center\">\n");
+        if (records1[i].MobilePhone!= null && records1[i].MobilePhone!= "" && records1[i].MobilePhone!= "null") {
+            var cell =  records1[i].MobilePhone;
+            var cleansedPhone ="";
+            for (var g = 0; g < cell.length; g++) {
+              if (DIGITS.indexOf(cell.substring(g, g+1)) >= 0) {
+                cleansedPhone += cell.substring(g, g+1);
+              }
+            } 
+          document.write("C: <a href=\"tel:" + cleansedPhone + "\">" + cleansedPhone + "</a><br/>");
+          document.write("<br/>");        
+        }
+        if (records1[i].HomePhone != null && records1[i].HomePhone != "" && records1[i].HomePhone != "null") {
+          var home =  records1[i].HomePhone;
+          var cleansedPhone ="";
+          for (var g = 0; g < home.length; g++) {
+            if (DIGITS.indexOf(home.substring(g, g+1)) >= 0) {
+              cleansedPhone += home.substring(g, g+1);
+            }
+          }         
+          document.write("H: <a href=\"tel:" + cleansedPhone + "\">" + cleansedPhone + "</a><br/>");
+        }
+        document.write("</td>\n");          
+        colCount++;
+      }
+
+        
+      
+      document.write("</tr>\n");
+      
+      document.write("<tr>\n");
+      document.write("<td colspan=\"" + colCount + " \" align=\"center\"><font size=\"-1\">");
+      if (omode != "ttob") {
+        document.write("<i>Owner: " + records1[i].Owner_Name__c + "</i>");
+      }
+      if (voteBlockMap[records1[i].Id] != null) {
+        document.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Block:&nbsp;" + voteBlockMap[records1[i].Id]);
+      } else {
+        document.write("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Block:&nbsp;Unassigned");
+      }
+      document.write("</font><br/><font size=\"-2\">_______________________________________________________________________</font></td>");
+      document.write("</tr>\n");
+      
+      
+      if (i > 0 && i % 10 == 0) {
+      
+            document.write("<tr>\n");
+
+            document.write("<td colspan=\"" + colCount + "\" align=\"center\">");
+            document.write("<table border=\"0\" cellpadding=\"5\" width=\"100%\"><tr><td align=\"center\">\n");
+            document.write("  <button class=\"btn btn-primary btn-block\" type=\"button\" onclick=\"window.location=\'#topofpage\'\">");
+            document.write("  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            document.write("  Back to Top");
+            document.write("  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            document.write("  </button>");    
+            document.write("  </td>");    
+            document.write("  <td colspan=\"1\" align=\"center\">");                 
+            document.write("  <button class=\"btn btn-primary btn-block\" type=\"button\" onclick=\"navigateTo(\'{! $Page.MONO_Browse}\')\">");
+            document.write("  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            document.write("  Browse");
+            document.write("  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            document.write("  </button>");
+            document.write("  </td>");
+            document.write("  <td colspan=\"1\" align=\"center\">");
+            document.write("  <button class=\"btn btn-primary btn-block\" type=\"button\" onclick=\"navigateTo(\'{! $Page.MONO_Search}\')\">");
+            document.write("  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            document.write("  Search");
+            document.write("  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            document.write("  </button>");
+            document.write("  </td>");
+            document.write("  </tr>\n");
+            document.write("  <tr>\n");
+            document.write("  <td colspan=\"3\" align=\"center\"><font size=\"-2\">_______________________________________________________________________</font></td>");
+            document.write("  </tr>\n");
+            document.write("</td></tr></table>\n");      
+      } 
+      
+      
+    }
+    document.write("</table>\n\n");
+    } else {
+    document.write("<font color=\"red\"><b>No results please try another search.</b></font>");
+    }
+    
+
+    
+} catch(e) { 
+
+   alert('An Error has occurred. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(debugRecord)); 
+ 
+}
+
+
+document.write("<br/>&nbsp;<br/>Generated on " + (new Date()).toLocaleString());
+document.getElementById("countDiv").innerHTML = "Count = " + records1.length;
+
+document.getElementById("tt0Div").innerHTML = getCounter([FILTER, TTCOUNT, "0"]) ;
+document.getElementById("tt1Div").innerHTML = getCounter([FILTER, TTCOUNT, "1"]) ;
+document.getElementById("tt2Div").innerHTML = getCounter([FILTER, TTCOUNT, "2"]) ;
+document.getElementById("tt3Div").innerHTML = getCounter([FILTER, TTCOUNT, "3"]) ;
+document.getElementById("ttstDiv").innerHTML = getCounter([FILTER, TTST]) ;
+document.getElementById("ttvcDiv").innerHTML = getCounter([FILTER, TTVC]) ;
+document.getElementById("ttobDiv").innerHTML = getCounter([FILTER, TTOB]) ;
+
+
+
+</script>
+
+
+
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+
+<script> 
+(function(){try{var a=navigator.userAgent;if((a.indexOf('Salesforce')!=-1)&&(a.indexOf('iPhone')!=-1||a.indexOf('iPad')!=-1)&&(a.indexOf('OS/8')!=-1||a.indexOf('OS 8')!=-1)&&(a.indexOf('Safari')==-1)){ 
+var s=document.createElement('style'); 
+s.innerHTML="html,html body{overflow: auto;-webkit-overflow-scrolling:touch;}body{position:absolute;left:0;right:0;top:0;bottom:0;}"; 
+document.getElementsByTagName('head')[0].appendChild(s);}}catch(e){}})(); 
+</script> 
+
+ 
+<div id="debugDiv"></div>
+<script> 
+//document.getElementById("debugDiv").innerHTML = debugWriter;
+
+$("#pleaseWait").hide();
+
+</script>
+</apex:page>

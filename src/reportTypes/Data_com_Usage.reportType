@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <baseObject></baseObject>
+    <category>admin</category>
+    <deployed>true</deployed>
+    <description>Data.com Usage</description>
+    <label>Data.com Usage</label>
+    <sections>
+        <masterLabel>Data.com Usage</masterLabel>
+    </sections>
+</ReportType>

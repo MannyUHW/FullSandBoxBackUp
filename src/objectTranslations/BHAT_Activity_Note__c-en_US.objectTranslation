@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BHAT Sub Category</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BHAT  Sub Categories</value>
+    </caseValues>
+    <fields>
+        <label><!-- Activity Note Description --></label>
+        <name>Activity_Note_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Code --></label>
+        <name>BHAT_Activity_Code__c</name>
+        <relationshipLabel><!-- BHAT  Sub Categories --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- SortOrder --></label>
+        <name>SortOrder__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sort Sequence --></label>
+        <name>Sort_Sequence__c</name>
+    </fields>
+    <fields>
+        <label><!-- Valid From Date --></label>
+        <name>Valid_From_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Valid Until Date --></label>
+        <name>Valid_Until_Date__c</name>
+    </fields>
+    <layouts>
+        <layout>BHAT Activity Note Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>BHAT ActivityNote Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

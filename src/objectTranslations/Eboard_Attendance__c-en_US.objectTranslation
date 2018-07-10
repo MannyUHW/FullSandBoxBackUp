@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Eboard Attendance</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Eboard Attendance</value>
+    </caseValues>
+    <fields>
+        <label><!-- Absence Reason --></label>
+        <name>Absence_Reason__c</name>
+    </fields>
+    <fields>
+        <help><!-- Unique Id; Concatenated of MemberId + &quot;-&quot; + Start Date of Mtg; 
+For example: MemberId 1234567 and Start Date: 04/18/2017
+1234567-04182017 --></help>
+        <label><!-- Attendance Id --></label>
+        <name>Attendance_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Attended --></label>
+        <name>Attended__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard Candidate --></label>
+        <name>Eboard_Candidate__c</name>
+        <relationshipLabel><!-- Eboard Attendance --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Eboard/Ecomm --></label>
+        <name>Eboard_Ecomm__c</name>
+        <relationshipLabel><!-- Eboard Attendance --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- End Date --></label>
+        <name>End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Excused --></label>
+        <name>Excused__c</name>
+    </fields>
+    <fields>
+        <label><!-- Executive Title --></label>
+        <name>Executive_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- FID --></label>
+        <name>FID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Instated To Office --></label>
+        <name>Instated_To_Office__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Title --></label>
+        <name>Job_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Meeting Date --></label>
+        <name>Meeting_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Meeting Type --></label>
+        <name>Meeting_Type__c</name>
+        <picklistValues>
+            <masterLabel>E Board Mtg</masterLabel>
+            <translation><!-- E Board Mtg --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>E Committee Mtg</masterLabel>
+            <translation><!-- E Committee Mtg --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Meeting --></label>
+        <name>Meeting__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name 2 --></label>
+        <name>Name_2__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the original response value when imported;Static value --></help>
+        <label><!-- Response Value Static --></label>
+        <name>Response_Value_Static__c</name>
+    </fields>
+    <fields>
+        <help><!-- Response Value - formula field; --></help>
+        <label><!-- Response --></label>
+        <name>Response__c</name>
+    </fields>
+    <fields>
+        <label><!-- Seat --></label>
+        <name>Seat__c</name>
+    </fields>
+    <fields>
+        <label><!-- Start Date --></label>
+        <name>Start_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Final status after the Meeting is completed. --></help>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the survey response record linked to Cvent; Need to be updated after the meeting is completed; API does a delete and insert on the survey response every time the cvent status change; --></help>
+        <label><!-- Survey Response --></label>
+        <name>Survey_Response__c</name>
+        <relationshipLabel><!-- Eboard Attendance --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Unexcused --></label>
+        <name>Unexcused__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unseated Date --></label>
+        <name>Unseated_Date__c</name>
+    </fields>
+    <layouts>
+        <layout>Eboard Attendance Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Vowel</startsWith>
+</CustomObjectTranslation>

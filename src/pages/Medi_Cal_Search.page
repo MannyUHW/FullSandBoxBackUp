@@ -1,0 +1,102 @@
+<apex:page sidebar="false" showHeader="false"  standardStylesheets="false">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"></meta>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+
+<div align="center">
+
+
+<table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.Medi_Cal_Enter_Survey}');"><img border="0" src="{!URLFOR($Resource.Lift_Up_2016)}"/></a>
+  </td>
+  <td align="center" width="25%">
+    &nbsp;
+  </td>
+  </tr>
+  </table>
+
+  <font size="+2"><div id="titleDiv"></div></font>
+<br>&nbsp;</br>
+
+<input size="40" id="searchterms"></input>
+  <br>&nbsp;</br>
+
+  <button class="btn btn-primary" type="submit" onclick="search();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_small.png')}"></img>
+  &nbsp;&nbsp;
+  Search
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+
+
+
+<script language="JavaScript">
+
+
+
+function search() {
+  var terms = document.getElementById("searchterms").value.toLowerCase().trim();
+  //alert("terms = " + terms);
+  if (terms == "") {
+    return;
+  }
+  navigateTo("{!$Page.Medi_Cal_List}?&search=" + encodeURIComponent(terms));
+}
+
+
+
+document.getElementById("searchterms").addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+        search();
+    }
+});
+  
+
+</script>
+
+<br>&nbsp;</br>
+
+
+<br>&nbsp;</br>
+
+<br>&nbsp;</br>
+        &copy; 2016 SEIU-UHW. All rights reserved.
+
+</div>
+
+</apex:page>

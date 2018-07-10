@@ -1,0 +1,1463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Contains E Board Candidates</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AAA_Ballot_No__c</fullName>
+        <externalId>false</externalId>
+        <label>AAA Ballot No</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Action_Needed__c</fullName>
+        <externalId>false</externalId>
+        <label>Action Needed</label>
+        <length>5000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Alternate_City__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate City</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alternate_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alternate_First_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate First Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alternate_Last_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate Last Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alternate_Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Alternate_State__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate State</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alternate_Street__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate Street</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alternate_Zip__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate Zip</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ballot_First_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Use_Alt_Name__c =TRUE,   Alternate_First_Name__c,  Member__r.FirstName )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Ballot First Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ballot_Last_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Use_Alt_Name__c =TRUE, Alternate_Last_Name__c, Member__r.LastName )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Ballot Last Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ballot_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Use_Alt_Name__c =TRUE,   Alternate_First_Name__c &amp; &apos; &apos; &amp;  Alternate_Last_Name__c,  Member__r.FirstName &amp; &apos; &apos; &amp; Member__r.LastName )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Ballot Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Best_Address__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Use_Alt_Address__c =TRUE,  Alternate_Street__c  &amp; &apos; &apos; &amp;  Alternate_City__c  &amp; &apos;, &apos; &amp;  Alternate_State__c  &amp; &apos; &apos; &amp;  Alternate_Zip__c ,  Member__r.MailingStreet &amp; &apos; &apos; &amp;  Member__r.MailingCity &amp; &apos;, &apos; &amp;  Member__r.MailingState &amp; &apos; &apos; &amp;  Member__r.MailingPostalCode )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Best Address</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Best_City__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Use_Alt_Address__c=TRUE,  Alternate_City__c ,  Member__r.MailingCity )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Best City</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Best_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Use_Alt_Email__c =TRUE,  Alternate_Email__c, Member__r.Email )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Best Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Best_Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Use_Alt_Phone__c =TRUE,   Alternate_Phone__c  ,  Member__r.Phone )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Best Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Best_State__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Use_Alt_Address__c=TRUE,   Alternate_State__c  ,   Member__r.MailingState  )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Best State</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Best_Street__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Use_Alt_Address__c=TRUE,  Alternate_Street__c ,  Member__r.MailingStreet )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Best Street</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Best_Zip__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Use_Alt_Address__c=TRUE,   Alternate_Zip__c ,  Member__r.MailingPostalCode  )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Best Zip</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Candidate_Office_Title__c</fullName>
+        <externalId>false</externalId>
+        <label>Candidate Office Title</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>President</fullName>
+                    <default>false</default>
+                    <label>President</label>
+                </value>
+                <value>
+                    <fullName>Vice President</fullName>
+                    <default>false</default>
+                    <label>Vice President</label>
+                </value>
+                <value>
+                    <fullName>Executive Committee-Union Wide</fullName>
+                    <default>false</default>
+                    <label>Executive Committee-Union Wide</label>
+                </value>
+                <value>
+                    <fullName>Executive Committee-Hospital</fullName>
+                    <default>false</default>
+                    <label>Executive Committee-Hospital</label>
+                </value>
+                <value>
+                    <fullName>Executive Committee-Kaiser</fullName>
+                    <default>false</default>
+                    <label>Executive Committee-Kaiser</label>
+                </value>
+                <value>
+                    <fullName>Ethics Committee-Hospital</fullName>
+                    <default>false</default>
+                    <label>Ethics Committee-Hospital</label>
+                </value>
+                <value>
+                    <fullName>Ethics Committee-Kaiser</fullName>
+                    <default>false</default>
+                    <label>Ethics Committee-Kaiser</label>
+                </value>
+                <value>
+                    <fullName>Finance Committee-Hospital</fullName>
+                    <default>false</default>
+                    <label>Finance Committee-Hospital</label>
+                </value>
+                <value>
+                    <fullName>Finance Committee-Kaiser</fullName>
+                    <default>false</default>
+                    <label>Finance Committee-Kaiser</label>
+                </value>
+                <value>
+                    <fullName>Executive Board-Hospital</fullName>
+                    <default>false</default>
+                    <label>Executive Board-Hospital</label>
+                </value>
+                <value>
+                    <fullName>Executive Board-Kaiser</fullName>
+                    <default>false</default>
+                    <label>Executive Board-Kaiser</label>
+                </value>
+                <value>
+                    <fullName>Executive Board-Hospital Retiree</fullName>
+                    <default>false</default>
+                    <label>Executive Board-Hospital Retiree</label>
+                </value>
+                <value>
+                    <fullName>Executive Board-Kaiser Retiree</fullName>
+                    <default>false</default>
+                    <label>Executive Board-Kaiser Retiree</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Candidate_Seated_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Candidate Seated Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Candidate_Seated__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Candidate Seated</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Candidate_Statement__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Is a candidate statement submitted with the form and petition? Or has it been submitted by email?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Is a candidate statement submitted with the form and petition? Or has it been submitted by email?</inlineHelpText>
+        <label>Candidate Statement</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Candidate_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Candidate Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>ECom</fullName>
+                    <default>false</default>
+                    <label>ECom</label>
+                </value>
+                <value>
+                    <fullName>EBoard</fullName>
+                    <default>false</default>
+                    <label>EBoard</label>
+                </value>
+                <value>
+                    <fullName>Union Wide</fullName>
+                    <default>false</default>
+                    <label>Union Wide</label>
+                </value>
+                <value>
+                    <fullName>Ethics</fullName>
+                    <default>false</default>
+                    <label>Ethics</label>
+                </value>
+                <value>
+                    <fullName>Financial</fullName>
+                    <default>false</default>
+                    <label>Financial</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Constituency_Name1__c</fullName>
+        <externalId>false</externalId>
+        <label>Constituency Name</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Constituency__c.Constituency_Year__c</field>
+                <operation>equals</operation>
+                <value>2017</value>
+            </filterItems>
+            <infoMessage>Enter Constituency for 2017 only.</infoMessage>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Constituency__c</referenceTo>
+        <relationshipLabel>Eboard Candidates</relationshipLabel>
+        <relationshipName>Eboard_Candidates</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Constituency__c</fullName>
+        <externalId>false</externalId>
+        <formula>Constituency_Name1__r.ConstituencyName__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Constituency</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contested__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Contested</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Coordinator__c</fullName>
+        <externalId>false</externalId>
+        <formula>Member__r.Account.Coordinator__r.FirstName &amp; &quot; &quot; &amp; Member__r.Account.Coordinator__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Coordinator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Date_Processed__c</fullName>
+        <description>Date processed by Membership</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date processed by Membership</inlineHelpText>
+        <label>Date Processed</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>District_2017__c</fullName>
+        <description>This is the current district (2017) from the Contact object.</description>
+        <externalId>false</externalId>
+        <formula>IF( Member__r.Employer1__c =&quot;SEIU-UHW&quot;, &quot;Union Wide&quot;, Member__r.District_Name_2017__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>District 2017</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>District__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>This is a lookup id from District - to preserve the data for history. The District 2017 is a formula field.</description>
+        <externalId>false</externalId>
+        <label>District</label>
+        <referenceTo>Constituency__c</referenceTo>
+        <relationshipLabel>Eboard Candidates (District)</relationshipLabel>
+        <relationshipName>Eboard_Candidates1</relationshipName>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Division_AA_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Division AA Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division_Director_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Division Director Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Member__r.Division_Type__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Eboard_Seat__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Current Occupied EBS (from EboardSeats Object)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Current Occupied EBS (from EboardSeats Object)</inlineHelpText>
+        <label>EBoard Seat</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>EBoardSeats__c.E_Board_Year__c</field>
+                <operation>equals</operation>
+                <value>2017</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>EBoardSeats__c</referenceTo>
+        <relationshipLabel>Eboard Candidates</relationshipLabel>
+        <relationshipName>Eboard_Candidates</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Elected__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISBLANK( Instated_To_Office__c ) , FALSE, TRUE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Elected</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Election_Committee_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Election Committee Comments</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Election_Date__c</fullName>
+        <description>Election Day</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Election Day</inlineHelpText>
+        <label>Election Date</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Email_Sent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Email Sent</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Employee_No__c</fullName>
+        <externalId>false</externalId>
+        <formula>Member__r.Employee_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Employee No</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employer_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Member__r.Employer_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Employer ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employer__c</fullName>
+        <externalId>false</externalId>
+        <formula>Member__r.Employer1__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Employer</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Executive_Title__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE( Candidate_Office_Title__c , &quot;President&quot;, &quot;President&quot;, 
+&quot;Vice President&quot;, &quot;Vice President&quot;,
+&quot;Executive Committee-Union Wide&quot;, &quot;Executive Committee - Union-wide&quot;,
+&quot;Executive Committee-Hospital&quot;, &quot;Executive Committee&quot;,
+&quot;Executive Committee-Kaiser&quot;, &quot;Executive Committee&quot;,
+&quot;Ethics Committee-Hospital&quot;, &quot;Ethics Officer&quot;,
+&quot;Ethics Committee-Kaiser&quot;, &quot;Ethics Officer&quot;,
+&quot;Finance Committee-Hospital&quot;, &quot;Finance Officer&quot;,
+&quot;Finance Committee-Kaiser&quot;, &quot;Finance Officer&quot;,
+&quot;Executive Board-Kaiser&quot;, &quot;Executive Board&quot;,
+&quot;Executive Board-Hospital&quot;, &quot;Executive Board&quot;,
+&quot;Executive Board-Hospital Retiree&quot;, &quot;Hospital Retiree&quot;,
+&quot;Executive Board-Kaiser Retiree&quot;, &quot;Kaiser Retiree&quot;,
+&quot;Unknown&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Executive Title</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>First_Time_Elected__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>First Time Elected</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Has_a_photo__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has a photo</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Instated_To_Office__c</fullName>
+        <description>help identify when seats are vacant since some seats are occupied by more than one person</description>
+        <externalId>false</externalId>
+        <inlineHelpText>help identify when seats are vacant since some seats are occupied by more than one person</inlineHelpText>
+        <label>Instated To Office</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Make_Candidate_Date__c</fullName>
+        <description>to be completed by Membership</description>
+        <externalId>false</externalId>
+        <inlineHelpText>to be completed by Membership</inlineHelpText>
+        <label>Make Candidate Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Make_Candidate__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>to be completed by Membership</description>
+        <externalId>false</externalId>
+        <inlineHelpText>to be completed by Membership</inlineHelpText>
+        <label>Make Candidate</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Member_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Member__r.MemberID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Member ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Member</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Eboard Candidates</relationshipLabel>
+        <relationshipName>Eboard_Candidates</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Membership_Employer_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>Member__r.Account.Membership_Employer_Id__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Membership Employer Id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Membership_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Membership Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Complete</fullName>
+                    <default>false</default>
+                    <label>Complete</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Need_Payment__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Need Payment</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Nomination_Form_Date_Received__c</fullName>
+        <externalId>false</externalId>
+        <label>Nomination Form Date Received</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Nomination_Form__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Is it included, completely filled out and signed?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Is it included, completely filled out and signed?</inlineHelpText>
+        <label>Nomination Form</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Nomination_Petition_Signed_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Nomination Petition Signed Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Nomination_Petition_Signed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>did nomineed(s) sign the petition? (must sign at least one petition)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>did nomineed(s) sign the petition? (must sign at least one petition)</inlineHelpText>
+        <label>Nomination Petition Signed</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Nomination_Petition__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Is it the correct petition for the office? Does it match the nomination form?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Is it the correct petition for the office? Does it match the nomination form?</inlineHelpText>
+        <label>Nomination Petition</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Nomination_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Nomination Status</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Qualified</fullName>
+                    <default>false</default>
+                    <label>Qualified</label>
+                </value>
+                <value>
+                    <fullName>Unqualified</fullName>
+                    <default>false</default>
+                    <label>Unqualified</label>
+                </value>
+                <value>
+                    <fullName>Not Processed</fullName>
+                    <default>true</default>
+                    <label>Not Processed</label>
+                </value>
+                <value>
+                    <fullName>Withdrawn</fullName>
+                    <default>false</default>
+                    <label>Withdrawn</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Number_Of_Signatures__c</fullName>
+        <externalId>false</externalId>
+        <label>Number Of Signatures</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Payment_Amount__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Photo_URL__c</fullName>
+        <externalId>false</externalId>
+        <label>Photo URL</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Photo__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK( Photo_URL__c  ), &quot;&quot;, IMAGE(Photo_URL__c,   Ballot_Name__c  ,150,150))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Photo</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Previous_Eboard_Seat__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Previous Occupied EBS (from EboardSeats Object)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Previous Occupied EBS (from EboardSeats Object)</inlineHelpText>
+        <label>Previous Eboard Seat</label>
+        <referenceTo>EBoardSeats__c</referenceTo>
+        <relationshipLabel>Eboard Candidates (Previous Eboard Seats)</relationshipLabel>
+        <relationshipName>Eboard_Candidates1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Processed_By__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Processed By</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Eboard_Candidates</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Qualified_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Qualified Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Reg_Dir_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>Member__r.Account.Regional_Director__r.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Reg Dir Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_Director_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Regional Director Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Removed_From_Office__c</fullName>
+        <externalId>false</externalId>
+        <label>Removed From Office</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Removed__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( NOT ISBLANK(Removed_From_Office__c) , TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Removed</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Resigned_From_Office__c</fullName>
+        <externalId>false</externalId>
+        <label>Resigned From Office</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Resigned_Removed_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AND(NOT ISBLANK(Removed_From_Office__c),ISBLANK( Resigned_From_Office__c )), Removed_From_Office__c,  IF(AND(NOT ISBLANK(Resigned_From_Office__c),ISBLANK( Removed_From_Office__c)), Resigned_From_Office__c, NULL) )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Resigned/Removed Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Resigned_Removed_Reason__c</fullName>
+        <externalId>false</externalId>
+        <label>Resigned/Removed Reason</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Resigned__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( NOT ISBLANK( Resigned_From_Office__c ) , TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Resigned</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Seat_Unseat__c</fullName>
+        <externalId>false</externalId>
+        <label>Seat/Unseat</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Seated</fullName>
+                    <default>false</default>
+                    <label>Seated</label>
+                </value>
+                <value>
+                    <fullName>Unseated</fullName>
+                    <default>false</default>
+                    <label>Unseated</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Signatures_Verified__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Signatures Verified</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Slate__c</fullName>
+        <externalId>false</externalId>
+        <label>Slate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Cedars-Sinai-UHW</fullName>
+                    <default>false</default>
+                    <label>Cedars-Sinai-UHW</label>
+                </value>
+                <value>
+                    <fullName>D7!</fullName>
+                    <default>false</default>
+                    <label>D7!</label>
+                </value>
+                <value>
+                    <fullName>Healthcare Justice</fullName>
+                    <default>false</default>
+                    <label>Healthcare Justice</label>
+                </value>
+                <value>
+                    <fullName>Independent</fullName>
+                    <default>false</default>
+                    <label>Independent</label>
+                </value>
+                <value>
+                    <fullName>SEIU-UHW MUST (Members United for Strength)</fullName>
+                    <default>false</default>
+                    <label>SEIU-UHW MUST (Members United for Strength)</label>
+                </value>
+                <value>
+                    <fullName>SEIU-UHW ‘TRIUMPH&apos; (Trust, Results, Integrity, Unity, Membership, Purpose, Honesty)</fullName>
+                    <default>false</default>
+                    <label>SEIU-UHW ‘TRIUMPH&apos; (Trust, Results, Integrity, Unity, Membership, Purpose, Honesty)</label>
+                </value>
+                <value>
+                    <fullName>SEIU UNITED Membership</fullName>
+                    <default>false</default>
+                    <label>SEIU UNITED Membership</label>
+                </value>
+                <value>
+                    <fullName>Team Batman</fullName>
+                    <default>false</default>
+                    <label>Team Batman</label>
+                </value>
+                <value>
+                    <fullName>Time For A Change</fullName>
+                    <default>false</default>
+                    <label>Time For A Change</label>
+                </value>
+                <value>
+                    <fullName>United Membership</fullName>
+                    <default>false</default>
+                    <label>United Membership</label>
+                </value>
+                <value>
+                    <fullName>We Are Your Voice</fullName>
+                    <default>false</default>
+                    <label>We Are Your Voice</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Elected__c = TRUE, IF( First_Time_Elected__c =TRUE, &quot;First Time Elected&quot;, &quot;Previously Elected&quot;), &quot;N/A&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Use_Alt_Address__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Use Alt Address</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Use_Alt_Email__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Use Alt Email</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Use_Alt_Name__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Use Alt Name</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Use_Alt_Phone__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Use Alt Phone</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Votes__c</fullName>
+        <description>records how many votes this person received, whether they won their election or not</description>
+        <externalId>false</externalId>
+        <inlineHelpText>records how many votes this person received, whether they won their election or not</inlineHelpText>
+        <label>Votes</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Eboard Candidate</label>
+    <listViews>
+        <fullName>All_Elected_Candidates</fullName>
+        <columns>Division__c</columns>
+        <columns>Division_Director_Email__c</columns>
+        <columns>Regional_Director_Email__c</columns>
+        <columns>Reg_Dir_Email__c</columns>
+        <columns>NAME</columns>
+        <columns>Ballot_Name__c</columns>
+        <columns>Instated_To_Office__c</columns>
+        <columns>Elected__c</columns>
+        <columns>Constituency_Name1__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Candidate_Office_Title__c</columns>
+        <columns>District_2017__c</columns>
+        <columns>Constituency__c</columns>
+        <columns>Slate__c</columns>
+        <columns>Action_Needed__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>notEqual</operation>
+            <value>EC-0009</value>
+        </filters>
+        <filters>
+            <field>Nomination_Status__c</field>
+            <operation>equals</operation>
+            <value>Qualified</value>
+        </filters>
+        <filters>
+            <field>Elected__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>All Elected Candidates</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Qualified_Eboard_Candidates</fullName>
+        <columns>District__c</columns>
+        <columns>NAME</columns>
+        <columns>Ballot_Name__c</columns>
+        <columns>Instated_To_Office__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Candidate_Office_Title__c</columns>
+        <columns>District_2017__c</columns>
+        <columns>Constituency_Name1__c</columns>
+        <columns>Nomination_Status__c</columns>
+        <columns>Action_Needed__c</columns>
+        <columns>Constituency__c</columns>
+        <columns>Email_Sent__c</columns>
+        <columns>Division__c</columns>
+        <columns>Slate__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>notEqual</operation>
+            <value>EC-0009</value>
+        </filters>
+        <filters>
+            <field>Nomination_Status__c</field>
+            <operation>equals</operation>
+            <value>Qualified</value>
+        </filters>
+        <label>All Qualified Eboard Candidates</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Removed_Resigned_Eboard</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND (4 OR 5)</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Ballot_Name__c</columns>
+        <columns>Instated_To_Office__c</columns>
+        <columns>Elected__c</columns>
+        <columns>Constituency_Name1__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Candidate_Office_Title__c</columns>
+        <columns>Division__c</columns>
+        <columns>District_2017__c</columns>
+        <columns>Constituency__c</columns>
+        <columns>Slate__c</columns>
+        <columns>Action_Needed__c</columns>
+        <columns>Resigned_Removed_Date__c</columns>
+        <columns>Division_Director_Email__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>notEqual</operation>
+            <value>EC-0009</value>
+        </filters>
+        <filters>
+            <field>Nomination_Status__c</field>
+            <operation>equals</operation>
+            <value>Qualified</value>
+        </filters>
+        <filters>
+            <field>Elected__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Removed__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Resigned__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>All Removed-Resigned Eboard</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>X2017_Vacancy_Election_1</fullName>
+        <columns>NAME</columns>
+        <columns>Ballot_Name__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Nomination_Status__c</columns>
+        <columns>Action_Needed__c</columns>
+        <columns>Candidate_Office_Title__c</columns>
+        <columns>District_2017__c</columns>
+        <columns>Constituency__c</columns>
+        <columns>Constituency_Name1__c</columns>
+        <columns>Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>notEqual</operation>
+            <value>EC-0009</value>
+        </filters>
+        <filters>
+            <field>Election_Date__c</field>
+            <operation>equals</operation>
+            <value>7/22/2017</value>
+        </filters>
+        <label>2017 Vacancy Election -1</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>X2017_Vacancy_Election_2</fullName>
+        <columns>NAME</columns>
+        <columns>Ballot_Name__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Nomination_Status__c</columns>
+        <columns>Action_Needed__c</columns>
+        <columns>Candidate_Office_Title__c</columns>
+        <columns>District_2017__c</columns>
+        <columns>Constituency__c</columns>
+        <columns>Constituency_Name1__c</columns>
+        <columns>Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>notEqual</operation>
+            <value>EC-0009</value>
+        </filters>
+        <filters>
+            <field>Election_Date__c</field>
+            <operation>equals</operation>
+            <value>10/28/2017</value>
+        </filters>
+        <label>2017 Vacancy Election -2</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>X2018_Vacancy_Election_1</fullName>
+        <columns>NAME</columns>
+        <columns>Ballot_Name__c</columns>
+        <columns>Elected__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Nomination_Status__c</columns>
+        <columns>Action_Needed__c</columns>
+        <columns>Candidate_Office_Title__c</columns>
+        <columns>District_2017__c</columns>
+        <columns>Constituency__c</columns>
+        <columns>Constituency_Name1__c</columns>
+        <columns>Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Election_Date__c</field>
+            <operation>equals</operation>
+            <value>3/31/2018</value>
+        </filters>
+        <label>2018 Vacancy Election - 1</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>X2018_Vacancy_Election_2</fullName>
+        <columns>NAME</columns>
+        <columns>Ballot_Name__c</columns>
+        <columns>Elected__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Nomination_Status__c</columns>
+        <columns>Action_Needed__c</columns>
+        <columns>Candidate_Office_Title__c</columns>
+        <columns>District_2017__c</columns>
+        <columns>Constituency__c</columns>
+        <columns>Constituency_Name1__c</columns>
+        <columns>Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Election_Date__c</field>
+            <operation>equals</operation>
+            <value>5/31/2018</value>
+        </filters>
+        <label>2018 Vacancy Election - 2</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>EC-{0000}</displayFormat>
+        <label>Eboard Candidate No</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Eboard Candidates</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Ballot_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Candidate_Office_Title__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Constituency__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Ballot_First_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Ballot_Last_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Candidate_Office_Title__c</lookupDialogsAdditionalFields>
+        <lookupFilterFields>NAME</lookupFilterFields>
+        <lookupFilterFields>Ballot_First_Name__c</lookupFilterFields>
+        <lookupFilterFields>Ballot_Last_Name__c</lookupFilterFields>
+        <lookupFilterFields>Candidate_Office_Title__c</lookupFilterFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Ballot_First_Name__c</searchFilterFields>
+        <searchFilterFields>Ballot_Last_Name__c</searchFilterFields>
+        <searchFilterFields>Candidate_Office_Title__c</searchFilterFields>
+        <searchResultsAdditionalFields>Ballot_First_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Ballot_Last_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Executive_Title__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Validation_Make_Candidate</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND ( (Make_Candidate__c =TRUE), OR(TEXT(Nomination_Status__c)=&apos;Unqualified&apos;,TEXT(Nomination_Status__c)=&apos;Not Processed&apos;) )</errorConditionFormula>
+        <errorDisplayField>Make_Candidate__c</errorDisplayField>
+        <errorMessage>Nomination status should be qualified.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validation_Make_Candidate2</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND ( (NOT ISBLANK( Make_Candidate_Date__c )), OR(TEXT(Nomination_Status__c)=&apos;Unqualified&apos;,TEXT(Nomination_Status__c)=&apos;Not Processed&apos;) )</errorConditionFormula>
+        <errorDisplayField>Make_Candidate_Date__c</errorDisplayField>
+        <errorMessage>Nomination status should be qualified.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

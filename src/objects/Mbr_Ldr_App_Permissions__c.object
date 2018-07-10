@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>BU_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>BU Count</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BU_Percent__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank( BU_Count__c ), 0, BU_Count__c /  Team_Account__r.BU_Count__c )</formula>
+        <label>BU Percent</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Coordinator__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Team_Account__r.Coordinator__c), &quot;Vacant&quot;,
+ Team_Account__r.Coordinator__r.FirstName &amp; &quot; &quot; &amp;  Team_Account__r.Coordinator__r.LastName 
+)</formula>
+        <label>Coordinator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Department__c</fullName>
+        <externalId>false</externalId>
+        <label>Department</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>text(Team_Account__r.Account_Group__c)</formula>
+        <label>Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mbr_Ldr_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Mbr_Ldr__r.FirstName &amp; &quot; &quot; &amp; Mbr_Ldr__r.LastName</formula>
+        <label>Mbr Ldr Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mbr_Ldr_Tier__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (Mbr_Ldr__r.Account.Name = &quot;SEIU-UHW&quot;, &quot;Staff&quot;, 
+text(Mbr_Ldr__r.Mbr_Ldr_App_Tier__c))</formula>
+        <label>Mbr Ldr Tier</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mbr_Ldr__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Mbr Ldr</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Mbr_Ldr_App_Permissions</relationshipLabel>
+        <relationshipName>Mbr_Ldr_App_Permissions</relationshipName>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Organizer__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank( Team_Account__r.Organizer_1__c ),
+&quot;Vacant&quot;,
+Team_Account__r.Organizer_1__r.FirstName &amp; &quot; &quot; &amp; Team_Account__r.Organizer_1__r.LastName
+)</formula>
+        <label>Organizer</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_Director__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Team_Account__r.Regional_Director__c), &quot;Vacant&quot;,
+ Team_Account__r.Regional_Director__r.FirstName &amp; &quot; &quot; &amp;  Team_Account__r.Regional_Director__r.LastName 
+)</formula>
+        <label>Regional Director</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shift__c</fullName>
+        <externalId>false</externalId>
+        <label>Shift</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Target_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>Target Count</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Target_Percent__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank( Target_Count__c ), 0, Target_Count__c /  Team_Account__r.BU_Count__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Target Percent</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Team_Account__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Team Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Mbr_Ldr_App_Permissions</relationshipLabel>
+        <relationshipName>Mbr_Ldr_App_Permissions</relationshipName>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Team_Employer_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Team_Account__r.Name</formula>
+        <label>Team Employer Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Team_Mbr_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Team_Mbr__r.FirstName &amp; &quot; &quot; &amp; Team_Mbr__r.LastName</formula>
+        <label>Team Mbr Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Team_Mbr__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Team Mbr</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Mbr_Ldr_App_Permissions (Team Mbr)</relationshipLabel>
+        <relationshipName>Mbr_Ldr_App_Permissions1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Worksite__c</fullName>
+        <externalId>false</externalId>
+        <label>Worksite</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Mbr Ldr App Permissions</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Mbr_Ldr_Name__c</columns>
+        <columns>Mbr_Ldr_Tier__c</columns>
+        <columns>Team_Employer_Name__c</columns>
+        <columns>Team_Mbr_Name__c</columns>
+        <columns>Worksite__c</columns>
+        <columns>Department__c</columns>
+        <columns>Shift__c</columns>
+        <columns>BU_Count__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Roger</fullName>
+        <columns>NAME</columns>
+        <columns>Mbr_Ldr_Name__c</columns>
+        <columns>Mbr_Ldr_Tier__c</columns>
+        <columns>Team_Employer_Name__c</columns>
+        <columns>Team_Mbr_Name__c</columns>
+        <columns>Worksite__c</columns>
+        <columns>Department__c</columns>
+        <columns>Shift__c</columns>
+        <columns>BU_Count__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Team_Employer_Name__c</field>
+            <operation>contains</operation>
+            <value>Roger</value>
+        </filters>
+        <label>Roger</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>MPR-{00000000}</displayFormat>
+        <label>Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Mbr Ldr App Permissions</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

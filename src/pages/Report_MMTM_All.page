@@ -1,0 +1,276 @@
+<apex:page sidebar="false" showHeader="false">
+<div align="center">
+  <font size="+2">Medi-Cal Matters to Me Report</font>
+
+<script language="JavaScript">
+document.write("<div align=\"center\"><i>Generated " + (new Date()) + "</i></div>");
+</script>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<br>&nbsp;</br>
+<div id="warningDiv"></div>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+var i = 0;
+
+try{ 
+
+    var records1 = new Array();
+    var distinctList = new Array();
+    
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    for (var i = 0; i < 10; i++) {
+      var query = "select Id, FID__c, Contact__r.Id, Contact_Name__c, Employer_Name__c, Alt_Person_Type__c, Contact__c, Contact__r.Department, Contact__r.Title, Contact__r.Shift__c, Collected_By__c, Collected_By_Name__c, Contact__r.COPE_Pledge__c, Region__c, Question_Name__c, Survey_Code__c, Response_Value__c, Division__c    from Survey_Response__c where ";
+      query += " (Division__c = \'Hospital\' OR Division__c = \'Kaiser\' OR Division__c = \'Nursing Home\' OR Division__c = \'Home Care\') and ";
+      query += " (Survey_Code__c=\'MMD\' OR Survey_Code__c=\'MM3\' OR Survey_Code__c=\'MM4\') and ";
+      query += " Response_Value__c != \'N. Cancel\' and ";
+      query += " (Contact__r.MemberId__c like \'%" + i + "\' ";
+      if (i== 0) {
+        query += " or Contact__c = null )";
+      } else {
+        query += " )";
+      }
+      query += " limit 2000";
+      
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records'); 
+    
+      //alert("query(" + i + ")=" + query + "\nlength=" +records0.length);
+    
+      if (records0.length >= 2000) {
+        document.getElementById("warningDiv").innerHTML = "<font color=\"red\"><b>Over 2000 records were found and these results have been cutoff.  Please contact your AA if you want to get a full list for your facilities.</b></font>";
+      }
+      records1 = records1.concat(records0);
+      
+      for (var j = 0; j < records0.length; j++) {
+        if (records0[j].Contact__c != null && distinctList.indexOf(records0[j].Contact__r.Id) < 0) {
+          distinctList.push(records0[j].Contact__r.Id);
+        }
+      }
+      
+    } 
+    document.getElementById("warningDiv").innerHTML = "Total Responses = " + records1.length + "<br/>Distinct Responders = " + distinctList.length;
+
+
+    var leaderList = new Array();   
+    var copeList = new Array();
+    
+    var countMap = new Array();
+    var divs = ["nursing home", "home care", "hospital", "kaiser"];
+    var rarray = ["mmd", "mm3", "mm4", "cope10", "leader"];
+    for (var x = 0; x < divs.length; x++) {
+      for (var y = 0; y < rarray .length; y++) {
+        var tkey = divs[x] + "~all~" + rarray[y];
+        countMap[tkey] = 0;
+      }    
+    }
+    
+    for(var i=0;i < records1.length; i++){ 
+
+      
+      for (var q = 0; q < 2; q++) {
+
+
+        var region = records1[i].Region__c;
+        if (region == null || region == "" || region == "null") {
+          records1[i].Region__c = "NORTH";
+        }      
+      
+        if (q == 0) {
+          region = "ALL";
+        }
+        
+        var ptype = "Member";
+        if ( records1[i].Alt_Person_Type__c != null && records1[i].Alt_Person_Type__c != "" && records1[i].Alt_Person_Type__c != "null") {
+          ptype = records1[i].Alt_Person_Type__c;
+          if (ptype != "Member") {
+            ptype = "Non-Member";
+          }
+        }
+      
+        var respKey = (records1[i].Division__c + "~" + region + "~" + records1[i].Survey_Code__c).toLowerCase();
+        if (i < 3) {
+          //alert("respKey = " + respKey);
+        }
+        
+
+        var count = 0;
+        if (countMap[respKey] != null) {
+          count = countMap[respKey];
+        }
+        count++;
+        countMap[respKey] = count;
+        
+        if (records1[i].Contact__c != null && copeList.indexOf(records1[i].Contact__r.Id) < 0)  {
+          var copeKey = (records1[i].Division__c + "~" + region + "~cope10").trim().toLowerCase();
+          var cope10Count = 0;
+          if (countMap[copeKey ] != null) {
+            cope10Count = countMap[copeKey ];
+          }
+          if (records1[i].Contact__c != null && records1[i].Contact__c != "" && records1[i].Contact__c != "null" && records1[i].Contact__r.COPE_Pledge__c >= 9.2) {
+            cope10Count++;
+          }
+          countMap[copeKey] = cope10Count;
+          copeList.push(records1[i].Contact__r.Id);
+        }
+        
+        
+        var leaderKey = (records1[i].Division__c + "~" + region + "~leader").trim().toLowerCase();
+        var leaderCount = 0;
+            
+        if (records1[i].Collected_By__c != null && records1[i].Collected_By__c != "" && records1[i].Collected_By__c != "null" && leaderList.indexOf(records1[i].Collected_By__c + "~" + region) < 0) {
+          leaderList.push(records1[i].Collected_By__c + "~" + region);  
+          if (countMap[leaderKey] != null) {
+            leaderCount = countMap[leaderKey];
+          }
+          leaderCount++;
+          countMap[leaderKey] = leaderCount;    
+        }
+      } 
+    }  
+    document.write("<table border=\"0\" cellpadding=\"10\">\n");
+    document.write("<tr valign=\"bottom\">\n");  
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"15%\"><font color=\"white\">Division</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"10%\"><font color=\"white\">Region</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"15%\"><font color=\"white\">Deliverables</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"15%\"><font color=\"white\">In District Visits</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"15%\"><font color=\"white\">Regional Visits</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"15%\"><font color=\"white\">Confirmed/<br/>Committed<br/>COPE $10+</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"15%\"><font color=\"white\">Leaders</font></td>\n");        
+    document.write("</tr>\n"); 
+    
+    var prefixes = ["nursing home~all", "home care~all", "hospital~all", "hospital~north", "hospital~south", "kaiser~all", "kaiser~north", "kaiser~south"];
+    for (var w = 0; w< prefixes.length; w++) {
+      var prefix = prefixes[w];
+      
+      var division = prefix.split("~")[0];
+      var region = prefix.split("~")[1];
+      
+      var s = "";
+      
+      s+= "<tr valign=\"top\">\n";
+      
+      s+= "<td align=\"left\"><b>";
+      if (region == "all") {
+        s += toProperCase(division);
+      }
+      s+= "</b></td>";
+      s+="\n\n"; 
+      
+      s+= "<td align=\"left\">";
+      if (region != "all") {
+        s += toProperCase(region);
+      }
+      s+= "</td>";
+      s+="\n\n";      
+       
+      s+= "<td align=\"center\">";
+      var commitKey = prefix + "~mmd";
+      var commitCount = 0;
+      if (countMap[commitKey] != null) {
+        commitCount = countMap[commitKey];
+      }
+      s += commitCount;
+      s+= "</td>";
+      s+="\n\n";      
+
+      s+= "<td align=\"center\">";
+      var nonMbrCommitKey = prefix + "~mm3";
+      var nonMbrCommitCount = 0;
+      if (countMap[nonMbrCommitKey] != null) {
+        nonMbrCommitCount = nonMbrCommitCount  + countMap[nonMbrCommitKey];
+      }     
+      s += nonMbrCommitCount;
+      s+= "</td>";
+      s+="\n\n";   
+      
+      s+= "<td align=\"center\">";
+      var sactoKey = prefix + "~mm4";
+      var sactoCount = 0;
+      if (countMap[sactoKey] != null) {
+        sactoCount = countMap[sactoKey];
+      }
+      s += sactoCount;
+      s+= "</td>";
+      s+="\n\n";      
+            
+      s+= "<td align=\"center\">";
+      var copeKey = prefix + "~cope10";
+      var copeCount = 0;
+      if (countMap[copeKey] != null) {
+        copeCount = countMap[copeKey];
+      }
+      s += copeCount;
+      s+= "</td>";
+      s+="\n\n"; 
+      
+      s+= "<td align=\"center\">";
+      var leaderKey = prefix + "~leader";
+      var leaderCount = 0;
+      if (countMap[leaderKey] != null) {
+        leaderCount = countMap[leaderKey];
+      }
+      s += leaderCount;
+      s+= "</td>";
+      s+="\n\n";             
+      
+      s+= "</tr>\n";    
+      
+      document.write(s);
+    }
+    var s ="";
+    s+= "<tr valign=\"middle\">\n";
+    s+= "<td colspan=\"2\" bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>Totals</b>";
+    s+= "</td>\n\n";
+    
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~mmd"] + countMap["home care~all~mmd"] + countMap["hospital~all~mmd"] + countMap["kaiser~all~mmd"]) + "</b>";
+    s+= "</td>\n\n";
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~mm3"] + countMap["home care~all~mm3"] + countMap["hospital~all~mm3"] + countMap["kaiser~all~mm3"]) +  "</b>";
+    s+= "</td>\n\n";    
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~mm4"] + countMap["home care~all~mm4"] + countMap["hospital~all~mm4"] + countMap["kaiser~all~mm4"]) + "</b>";
+    s+= "</td>\n\n";
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~cope10"] + countMap["home care~all~cope10"] + countMap["hospital~all~cope10"] + countMap["kaiser~all~cope10"]) + "</b>";
+    s+= "</td>\n\n";
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~leader"] + countMap["home care~all~leader"] + countMap["hospital~all~leader"] + countMap["kaiser~all~leader"]) + "</b>";
+    s+= "</td>\n\n";
+
+        
+    s+= "</tr>\n";
+    
+    document.write(s);
+    
+    document.write("</table>\n\n");
+    document.write("<br>&nbsp;</br>");    
+
+/*
+    for (var key in countMap) {
+      document.write(key + " = ");
+      document.write(countMap[key]);      
+      document.write("</br>");        
+    }
+*/
+
+
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i); 
+}
+
+</script>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+</apex:page>

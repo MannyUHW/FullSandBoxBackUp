@@ -1,0 +1,120 @@
+<apex:page sidebar="true" showheader="true">
+ 
+ <script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<div align="center">
+  <h1 id="h1Title">Consolidation Leader Lists</h1>
+  <font color="green"><div id="filterDiv"></div></font>
+<table>
+  <tr valign="top">
+    <td>
+        <div id="employerListDiv"></div>
+    </td>
+  </tr>
+</table>
+
+<script language="JavaScript">
+
+function nbSpaces(pSpaces) {
+  var spwriter = "";
+  for (var spdex = 0; spdex < pSpaces; spdex++) {
+    spwriter += "&nbsp;";
+  }
+  return spwriter;
+}
+
+    var rid = "{!$CurrentPage.parameters.rid}";
+    if (rid == null || rid == "") {
+      //default to report
+      rid = "00O0H0000078PJ1";
+    }
+    
+    var filter = "{!$CurrentPage.parameters.filter}";
+
+if (filter == null || filter == "null" || filter == "") {
+  filter = null;
+} else {
+  filter = filter.toLowerCase();
+  $("#filterDiv").html($("#filterDiv").html() + "<br/>Filter = " + toProperCase(filter) );
+}
+    
+try{ 
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    //alert("start");
+    //see if there was a previous value
+    var query = "select Id, Name, Account.Name, Executive_Body_Title__c  from Contact where Executive_Body_Title__c = \'Executive Committee\' ";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var ecommMap = {};
+    for(var i=0; i < records1.length; i++){ 
+      ecommMap[records1[i].Account.Name.toLowerCase()] = records1[i].Name;
+    }
+    
+    
+    var query = "select Id, Account_Group__c, Regional_Director__r.Name, Coordinator__r.Name, Organizer_1__r.Name, Name from Account where MO_Active__c = true and Regional_Director__c != null and (NOT Name like 'Pomona Valley%') and ( Account_Group__c = 'HOSPITAL' or Account_Group__c = 'KAISER' ) and BU_Count__c > 10 order by Account_Group__c, Regional_Director__r.Name, Coordinator__r.Name, Organizer_1__r.Name, Name ";
+  
+    //alert("query=" + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var lastDiv = "";
+    var lastRegDirector = "";
+    var lastCoordinator = "";
+    var lastOrganizer = "";
+
+    var emWriter = "";
+ 
+    for(var i=0;i<records1.length;i++){ 
+      
+      if (records1[i].Organizer_1__r == null) {
+        records1[i].Organizer_1__r = {};
+        records1[i].Organizer_1__r.Name = "Vacant";
+      }
+      if (records1[i].Coordinator__r == null) {
+        records1[i].Coordinator__r = {};
+        records1[i].Coordinator__r.Name = "Vacant";
+      }
+      if (filter == null || filter ==  records1[i].Account_Group__c.trim().toLowerCase()) { 
+        if (lastDiv != records1[i].Account_Group__c) {
+         emWriter += "<br/><b>" + toProperCase(records1[i].Account_Group__c) + "</b><br/>";
+        } 
+        if (lastRegDirector != records1[i].Regional_Director__r.Name) {
+          emWriter += "<br/>" + nbSpaces(16) + toProperCase(records1[i].Regional_Director__r.Name) + "<br/>";
+        } 
+        if (lastCoordinator != records1[i].Coordinator__r.Name) {
+          emWriter += "<br/>" + nbSpaces(32) + toProperCase(records1[i].Coordinator__r.Name) + "<br/>";
+        } 
+        if (lastOrganizer != records1[i].Organizer_1__r.Name) {
+          emWriter += "<br/>" + nbSpaces(48)  + toProperCase(records1[i].Organizer_1__r.Name) + "<br/>";
+        }                   
+        emWriter += "" + nbSpaces(64)  + "<a target=\"_BLANK\" href=\"https://uhw.lightning.force.com/one/one.app#/sObject/00O0H0000078PJ1UAM/view?fv0=" + records1[i].Name + "\">" + toProperCase(records1[i].Name) + "</a>";      
+        if (ecommMap[records1[i].Name.toLowerCase()] != null) {
+          emWriter += "" + nbSpaces(16)  + "(EComm: " + ecommMap[records1[i].Name.toLowerCase()] + ")";
+        }
+        emWriter += "<br/>\n";
+      }
+      lastDiv = records1[i].Account_Group__c;
+      lastRegDirector = records1[i].Regional_Director__r.Name;
+      lastCoordinator = records1[i].Coordinator__r.Name;
+      lastOrganizer = records1[i].Organizer_1__r.Name; 
+    } 
+
+  $("#employerListDiv").html(emWriter);
+
+} catch(e){ 
+  alert('An Error has Occured. Error:' +e); 
+}
+
+</script>
+
+</div>
+</apex:page>

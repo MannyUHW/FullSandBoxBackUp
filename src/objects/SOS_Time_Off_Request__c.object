@@ -1,0 +1,996 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <content>SOS_EDIT_TimeOffRequest</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>SOS_New_TimeOffRequest</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AA_Email__c</fullName>
+        <defaultValue>$User.AA_Email__c</defaultValue>
+        <externalId>false</externalId>
+        <label>AA Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Admin_Assistant__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Admin Assistant</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>SOS_Time_Off_Requests2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Approved_Rejectd_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Manager Approved/Rejectd Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Approved_Rejectd_by__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Approved/Rejectd by</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>SOS_Time_Off_Requests</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Employee Comments</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Cost_Center__c</fullName>
+        <externalId>false</externalId>
+        <label>Cost Center</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Department__c</fullName>
+        <externalId>false</externalId>
+        <label>Department</label>
+        <length>25</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Division</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employee_Name__c</fullName>
+        <defaultValue>$User.FirstName+&apos; &apos;+ $User.LastName</defaultValue>
+        <externalId>false</externalId>
+        <label>Employee Name</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employee_Number__c</fullName>
+        <defaultValue>$User.EmployeeNumber</defaultValue>
+        <externalId>false</externalId>
+        <label>Employee Number</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employee_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Employee Type</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Field_Director_Email__c</fullName>
+        <defaultValue>$User.Field_Director_Email__c</defaultValue>
+        <externalId>false</externalId>
+        <label>Field Director Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Field_Director_Name__c</fullName>
+        <defaultValue>$User.Field_Director_Name__c</defaultValue>
+        <externalId>false</externalId>
+        <label>Field Director Name</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Finance_Department_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Finance Department Notes</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Full_Day__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>If you select this total hours should be multiple of 8.</inlineHelpText>
+        <label>Full Day</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Graveyard_Shift__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Graveyard Shift</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>HR_Approved_Rejected_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>HR Approved/Rejected Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>HR_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>HR Comments</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>HR_Pending_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>HR Pending Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Is_Non_Exempt__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Non Exempt</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Quick_Sick_Leave__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Quick Sick Leave</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Manager_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Manager Comments</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Manager_Name__c</fullName>
+        <defaultValue>$User.SOS_Manager_Name__c</defaultValue>
+        <externalId>false</externalId>
+        <label>Manager Name</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager_Pending_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Manager Pending Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>SOS_Time_Off_Requests1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Mgr_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Manager.FirstName &amp; &quot; &quot; &amp; Owner:User.Manager.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Mgr Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NewManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Manager_Name__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NewManager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Over_Time_Hours__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Overtime Hours</label>
+        <precision>10</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Request_Submitted_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>DATEVALUE(CreatedDate)</formula>
+        <label>Date of Time off Requested Submitted</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Sick_Leave_Type__c</fullName>
+        <description>Sick leave type</description>
+        <externalId>false</externalId>
+        <label>Sick Leave Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Personal</fullName>
+                    <default>false</default>
+                    <label>Personal</label>
+                </value>
+                <value>
+                    <fullName>Family Sick Leave</fullName>
+                    <default>false</default>
+                    <label>Family Sick Leave</label>
+                </value>
+                <value>
+                    <fullName>FMLA</fullName>
+                    <default>false</default>
+                    <label>FMLA</label>
+                </value>
+                <value>
+                    <fullName>Workers’ comp</fullName>
+                    <default>false</default>
+                    <label>Workers’ comp</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>New</fullName>
+                    <default>true</default>
+                    <label>New</label>
+                </value>
+                <value>
+                    <fullName>Pending</fullName>
+                    <default>false</default>
+                    <label>Pending</label>
+                </value>
+                <value>
+                    <fullName>HR Pending</fullName>
+                    <default>false</default>
+                    <label>HR Pending</label>
+                </value>
+                <value>
+                    <fullName>HR/Div. Direcor Pending</fullName>
+                    <default>false</default>
+                    <label>HR/Div. Direcor Pending</label>
+                </value>
+                <value>
+                    <fullName>HR Approved</fullName>
+                    <default>false</default>
+                    <label>HR Approved</label>
+                </value>
+                <value>
+                    <fullName>Manager Pending</fullName>
+                    <default>false</default>
+                    <label>Manager Pending</label>
+                </value>
+                <value>
+                    <fullName>Approved</fullName>
+                    <default>false</default>
+                    <label>Approved</label>
+                </value>
+                <value>
+                    <fullName>Rejected</fullName>
+                    <default>false</default>
+                    <label>Rejected</label>
+                </value>
+                <value>
+                    <fullName>Revoked</fullName>
+                    <default>false</default>
+                    <label>Revoked</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Term_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Term_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Term Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Time_Off_Balance__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Time Off Balance</label>
+        <referenceTo>SOS_Time_Off_Balance__c</referenceTo>
+        <relationshipName>Time_Off_Requests</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Time_Off_Remaining_by_type__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE( Type__c , &apos;Vacation&apos;,IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;), TEXT(Time_Off_Balance__r.Vacation_Time_Remaining__c) + &apos; Hour(s)&apos;,  TEXT(Time_Off_Balance__r.Vacation_Time_Remaining__c/8) + &apos; Day(s)&apos;), &apos;Sick&apos;, IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Sick_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Sick_Time_Remaining__c/8) + &apos; Day(s)&apos;) ,&apos;Unpaid&apos;, IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Unpaid_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Unpaid_Time_Remaining__c/8) + &apos; Day(s)&apos;) ,&apos;Holiday work days&apos;,IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Holiday_work_days_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Holiday_work_days_Time_Remaining__c/8) + &apos; Day(s)&apos;) ,&apos;Relief&apos;, IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Relieve_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Relieve_Time_Remaining__c/8) + &apos; Day(s)&apos;) ,&apos;Birthday&apos;, IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Birthday_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Birthday_Time_Remaining__c/8) + &apos; Day(s)&apos;),&apos;Float&apos;, IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Float_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Float_Time_Remaining__c/8) + &apos; Day(s)&apos;) ,&apos;Bereavement&apos;, IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Bereavement_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Bereavement_Time_Remaining__c/8) + &apos; Day(s)&apos;),&apos;Jury Duty&apos;, IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Jury_Duty_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Jury_Duty_Time_Remaining__c/8) + &apos; Day(s)&apos;) ,&apos;Religious (OPEIU Only)&apos;,  IF(CONTAINS( Total_Hours_Requested_Hour_Day__c , &apos;Hour&apos;),TEXT(Time_Off_Balance__r.Religious_OPEIU_Only_Time_Remaining__c) + &apos; Hour(s)&apos;, TEXT(Time_Off_Balance__r.Religious_OPEIU_Only_Time_Remaining__c/8) + &apos; Day(s)&apos;),&apos;&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Time Off Remaining</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Differential_Hours__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Differential Hours</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Double_Over_Time_Hours__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Double Over Time Hours</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Hours_Reported__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Hours Reported</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Hours_Requested_Hour_Day__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Hours/Days Requested</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Hours_Requested__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Hours/Days Requested</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Regular_Over_Time_Hours__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Regular Over Time Hours</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Vacation</fullName>
+                    <default>false</default>
+                    <label>Vacation</label>
+                </value>
+                <value>
+                    <fullName>Sick</fullName>
+                    <default>false</default>
+                    <label>Sick</label>
+                </value>
+                <value>
+                    <fullName>Unpaid</fullName>
+                    <default>false</default>
+                    <label>Unpaid</label>
+                </value>
+                <value>
+                    <fullName>Holiday work days</fullName>
+                    <default>false</default>
+                    <label>Holiday work days</label>
+                </value>
+                <value>
+                    <fullName>Birthday</fullName>
+                    <default>false</default>
+                    <label>Birthday</label>
+                </value>
+                <value>
+                    <fullName>Float</fullName>
+                    <default>false</default>
+                    <label>Float</label>
+                </value>
+                <value>
+                    <fullName>Bereavement</fullName>
+                    <default>false</default>
+                    <label>Bereavement</label>
+                </value>
+                <value>
+                    <fullName>Jury Duty</fullName>
+                    <default>false</default>
+                    <label>Jury Duty</label>
+                </value>
+                <value>
+                    <fullName>Religious (OPEIU Only)</fullName>
+                    <default>false</default>
+                    <label>Religious (OPEIU Only)</label>
+                </value>
+                <value>
+                    <fullName>Overtime</fullName>
+                    <default>false</default>
+                    <label>Overtime</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Time Off Request / Overtime Request</label>
+    <listViews>
+        <fullName>All_Time_Off_Requests_Last_Year</fullName>
+        <columns>NAME</columns>
+        <columns>Employee_Name__c</columns>
+        <columns>Approved_Rejectd_by__c</columns>
+        <columns>Sick_Leave_Type__c</columns>
+        <columns>Type__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Cost_Center__c</columns>
+        <columns>Request_Submitted_Date__c</columns>
+        <columns>Employee_Type__c</columns>
+        <columns>HR_Approved_Rejected_Date__c</columns>
+        <columns>Manager__c</columns>
+        <columns>Manager_Name__c</columns>
+        <columns>Time_Off_Balance__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>LAST_YEAR</value>
+        </filters>
+        <label>All Time Off Requests Last Year</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>HR_Team</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>All_Time_Off_Requests_This_Year</fullName>
+        <columns>NAME</columns>
+        <columns>Employee_Name__c</columns>
+        <columns>Approved_Rejectd_by__c</columns>
+        <columns>Sick_Leave_Type__c</columns>
+        <columns>Type__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Cost_Center__c</columns>
+        <columns>Request_Submitted_Date__c</columns>
+        <columns>Employee_Type__c</columns>
+        <columns>HR_Approved_Rejected_Date__c</columns>
+        <columns>Manager__c</columns>
+        <columns>Manager_Name__c</columns>
+        <columns>Time_Off_Balance__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>equals</operation>
+            <value>COMMUNICATIONS</value>
+        </filters>
+        <label>All Time Off Requests This Year</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>HR_Team</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Employee</fullName>
+        <columns>NAME</columns>
+        <columns>Approved_Rejectd_by__c</columns>
+        <columns>Sick_Leave_Type__c</columns>
+        <columns>Type__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Request_Submitted_Date__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Employee_Type__c</columns>
+        <columns>HR_Approved_Rejected_Date__c</columns>
+        <columns>Employee_Name__c</columns>
+        <columns>Manager__c</columns>
+        <columns>Manager_Name__c</columns>
+        <columns>Time_Off_Balance__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Employee_Name__c</field>
+            <operation>contains</operation>
+            <value>Banuelos</value>
+        </filters>
+        <label>Employee</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>HR_Team</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>My_Time_Off_Requests</fullName>
+        <columns>NAME</columns>
+        <columns>Approved_Rejectd_by__c</columns>
+        <columns>Sick_Leave_Type__c</columns>
+        <columns>Type__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Cost_Center__c</columns>
+        <columns>Request_Submitted_Date__c</columns>
+        <columns>Employee_Type__c</columns>
+        <columns>HR_Approved_Rejected_Date__c</columns>
+        <columns>Employee_Name__c</columns>
+        <columns>Manager__c</columns>
+        <columns>Manager_Name__c</columns>
+        <columns>Time_Off_Balance__c</columns>
+        <filterScope>Mine</filterScope>
+        <label>My Time Off Requests</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>HR_Team</group>
+        </sharedTo>
+    </listViews>
+    <nameField>
+        <displayFormat>Req-{0000}</displayFormat>
+        <label>Time Off Request Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>SOS Time Off Requests</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Overtime_Request</fullName>
+        <active>true</active>
+        <description>To create overtime request.</description>
+        <label>Overtime Request</label>
+        <picklistValues>
+            <picklist>Sick_Leave_Type__c</picklist>
+            <values>
+                <fullName>FMLA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Family Sick Leave</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workers%E2%80%99 comp</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HR%2FDiv%2E Direcor Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Manager Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>Overtime</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Time_Off_Request</fullName>
+        <active>true</active>
+        <description>To create new time off request.</description>
+        <label>Time Off Request</label>
+        <picklistValues>
+            <picklist>Sick_Leave_Type__c</picklist>
+            <values>
+                <fullName>FMLA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Family Sick Leave</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Personal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Workers%E2%80%99 comp</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HR Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HR Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Manager Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Revoked</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type__c</picklist>
+            <values>
+                <fullName>Bereavement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Birthday</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Float</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Holiday work days</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Jury Duty</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Religious %28OPEIU Only%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sick</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unpaid</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Vacation</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Start_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>End_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Total_Hours_Requested__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <searchFilterFields>Type__c</searchFilterFields>
+        <searchFilterFields>Start_Date__c</searchFilterFields>
+        <searchFilterFields>End_Date__c</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>CREATED_DATE</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+    <validationRules>
+        <fullName>DateRangeExceededDays</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND((Total_Hours_Requested__c &gt; CASE(MOD( Start_Date__c - DATE(1985,6,24),7), 
+
+  0 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,2,2,3,3,4,4,5,5,5,6,5,1), 
+  1 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,2,2,3,3,4,4,4,5,4,6,5,1), 
+  2 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,2,2,3,3,3,4,3,5,4,6,5,1), 
+  3 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,2,2,2,3,2,4,3,5,4,6,5,1), 
+  4 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,1,2,1,3,2,4,3,5,4,6,5,1), 
+  5 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,0,2,1,3,2,4,3,5,4,6,5,0), 
+  6 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,1,2,2,3,3,4,4,5,5,6,5,0), 
+  999) 
+  + 
+  (FLOOR(( End_Date__c - Start_Date__c )/7)*5)), $User.Show_Balance_In_Days__c)</errorConditionFormula>
+        <errorDisplayField>Total_Hours_Requested__c</errorDisplayField>
+        <errorMessage>Total Days requested are exceeding the date range selected.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>DateRangeExceededHours</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND((Total_Hours_Requested__c &gt; 8 * CASE(MOD( Start_Date__c - DATE(1985,6,24),7), 
+
+  0 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,2,2,3,3,4,4,5,5,5,6,5,1), 
+  1 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,2,2,3,3,4,4,4,5,4,6,5,1), 
+  2 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,2,2,3,3,3,4,3,5,4,6,5,1), 
+  3 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,2,2,2,3,2,4,3,5,4,6,5,1), 
+  4 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,1,2,1,3,2,4,3,5,4,6,5,1), 
+  5 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,0,2,1,3,2,4,3,5,4,6,5,0), 
+  6 , CASE( MOD( End_Date__c - Start_Date__c ,7),1,1,2,2,3,3,4,4,5,5,6,5,0), 
+  999) 
+  + 
+  (FLOOR(( End_Date__c - Start_Date__c )/7)*5)), NOT($User.Show_Balance_In_Days__c))</errorConditionFormula>
+        <errorDisplayField>Total_Hours_Requested__c</errorDisplayField>
+        <errorMessage>Total Hours requested are exceeding the date range selected.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>NonExemptFullDay</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND(OR(MOD(Total_Hours_Requested__c  ,8)!=0,Total_Hours_Requested__c=0), NOT($User.Show_Balance_In_Days__c),Full_Day__c)</errorConditionFormula>
+        <errorDisplayField>Total_Hours_Requested__c</errorDisplayField>
+        <errorMessage>Total Hours Requested value should be multiples of 8 hours for full day request type.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>SOS</fullName>
+        <active>false</active>
+        <errorConditionFormula>Start_Date__c &gt;  End_Date__c</errorConditionFormula>
+        <errorDisplayField>End_Date__c</errorDisplayField>
+        <errorMessage>End Date value should be greater than or equal to Start Date.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Total_Hours_Requested_validation</fullName>
+        <active>false</active>
+        <errorConditionFormula>OR(Total_Hours_Requested__c = null, Total_Hours_Requested__c = 0)</errorConditionFormula>
+        <errorMessage>Please enter a valid input.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

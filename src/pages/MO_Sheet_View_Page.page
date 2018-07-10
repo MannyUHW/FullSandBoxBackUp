@@ -1,0 +1,488 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<i>To get this sheet into Excel, press CTRL + A to select all, then CTRL + C to copy, then open Excel, then CTRL + V to paste into Excel.</i><br></br>
+<br>&nbsp;</br>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+<script language="JavaScript">
+
+  sessionStorage.setItem("mo_last_page", window.location);
+
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emids = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnames = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").split(",");
+var cams = localStorage.getItem("mo_sync_cams").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+var deptBuMap = new Array();
+var allDepts = 0;
+var tempc = 0;
+var emDeptList = new Array();
+var deptCopeMap = new Array();
+var fidKeyMap = new Array();
+
+      for (var rr = 0; rr < localStorage.length; rr++) {
+        if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+          //var crecord = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+          var compressedContactArray = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+          var crecord = uncompressContact(compressedContactArray);
+
+          var dept = crecord.Department;
+          if (dept  == null || dept  == "" || dept  == "null") {
+            dept  = "Unknown";
+          }
+          
+          
+          if (isKaiserSouth(emnames[0])) {
+            dept = truncateWorksite(crecord.Worksite__c) + " - " + crecord.Department;
+          }
+          var emname = crecord.Account.Name;
+          var emdept = ("" + emname + "~" + dept).trim().toLowerCase();
+          if (emDeptList.indexOf(emdept) < 0) {
+            emDeptList.push(emdept);
+          }
+          
+          fidKeyMap[crecord.FID__c] = emdept;
+
+          var deptCount = 0;
+          if (deptBuMap[emdept] != null) {
+            deptCount = deptBuMap[emdept];
+          } else {
+            allDepts++;
+          }
+          if (crecord.In_Current_BU__c == true || crecord.In_Current_BU__c == "true" || crecord.In_Current_BU__c.toLowerCase().indexOf("true") >= 0) {
+            deptCount++;
+          }
+          deptBuMap[emdept] = deptCount;
+          tempc++;
+          
+          var cope = crecord.Cope_Amount__c;
+          if (crecord.COPE_Pledge__c != null || crecord.COPE_Pledge__c > 0) {
+             cope = crecord.COPE_Pledge__c;
+          }
+          var deptCope = 0;
+          if (deptCopeMap[emdept] != null) {
+            deptCope = deptCopeMap[emdept];
+          }
+          //only $10+ pledges, but we count 9.20 and up just in case
+          if (cope >= 9.2) {
+            deptCope++;
+          }
+          deptCopeMap[emdept] = deptCope;
+        }
+      }
+      //alert("person count = " + tempc);
+
+  var qList = new Array();
+  var qrList = new Array();
+  var deptSurvResponseMap = new Array();
+
+  try{ 
+
+      sforce.connection.sessionId = "{!$Api.Session_ID}";
+      var query = "SELECT Name, Allowed_Responses__c FROM Survey_Question__c where (";
+      for (var g = 0; g < qids.length; g++) {
+        if (g > 0) {
+          query += " OR "
+        }
+        query += " Id= \'" + qids[g] + "\' ";
+      }
+      query += ")";
+      //alert(query);
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records');  
+      for(var i=0;i<records0.length;i++){ 
+        qList.push(records0[i].Name);
+        var allowed = records0[i].Allowed_Responses__c.trim();
+        for (var j = 0; j < allowed.split("\n").length; j++) {
+          var qr = (records0[i].Name + "~"  + allowed.split("\n")[j].substring(0,1)).trim().toLowerCase();
+          qrList.push(qr);       
+        }
+      }
+
+  var contactCount = 0;
+  var contactWriter = "<table cellpadding=\"10\" width=\"100%\">\n";
+  contactWriter += "<tr valign=\"bottom\">\n";
+  contactWriter += "    <th>FID</th>\n";
+  contactWriter += "    <th>Name</th>\n";
+  contactWriter += "    <th>Employer</th>\n";  
+  contactWriter += "    <th>Department</th>\n";  
+  contactWriter += "    <th>Job Class</th>\n";    
+  contactWriter += "    <th>Shift</th>\n";      
+  contactWriter += "    <th>Home Phone</th>\n";      
+  contactWriter += "    <th>Cell Phone</th>\n";      
+  contactWriter += "    <th>COPE</th>\n";   
+  for (var qx = 0; qx < qList.length; qx++) {
+    contactWriter += "    <th>" + qList[qx] + "</th>\n";             
+  }
+  contactWriter += "</tr>\n\n\n\n";    
+  
+  var contactSurvMap = new Array();
+       
+    // query Salesforce using SOQL
+    var records1 = new Array();
+    for (var f = 0; f < 10; f++) {
+      var query = "SELECT Contact__c, Contact_Name__c, FID__c, Employer_Name__c, Contact__r.Department, Contact__r.Title, Alt_Person_Type__c, Alt_Phone__c, Alt_Phone_2__c, Question_Name__c, survey_question__r.Survey_Code__c, Response_Value__c FROM Survey_Response__c where (";
+      var emArray = emids;
+      for (var emdex = 0; emdex < emnames.length; emdex++) {
+        if (emnames[emdex].trim() != "") {
+          if (emdex > 0) {
+            query = query + " OR ";
+          } 
+          query = query + " Employer_Name__c='" + emnames[emdex].replace(/'/g, '\\\'') + "' ";         
+        }
+      }
+      query += ") AND (";
+      for (var g = 0; g < qids.length; g++) {
+        if (g > 0) {
+          query += " OR "
+        }
+        query += " Survey_Question__r.Id = \'" + qids[g] + "\' ";
+      }
+      query += ") and Name like \'%" + f + "\'";
+  
+      if (isKaiserSouth(emnames[0])) {
+        query = query.replace(/Contact__r\.Department/g, "Contact__r.Worksite__c, Contact__r.Department");
+      }
+  
+      //alert(query);  
+  
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records');  
+      records1 = records1.concat(records0);
+    }
+  
+    //alert("records1 length = " + records1.length);
+
+    var deptSurvResponseMap = new Array();
+    for(var i=0;i<records1.length;i++){ 
+
+      if (records1[i].Question_Name__c != null) {
+      //deptWriter += (JSON.stringify(records1[i]) + "<br/>");
+
+      if (records1[i].Department == null || records1[i].Department == "" || records1[i].Department == "null") {
+        records1[i].Department = "Unknown Department";
+      }
+      
+      if (records1[i].Worksite__c == null || records1[i].Worksite__c == "" || records1[i].Worksite__c == "null") {
+        records1[i].Worksite__c= "Unknown Worksite";
+      }
+
+      if (isKaiserSouth(records1[i].Employer_Name__c) && records1[i].Contact__c != null) {
+        records1[i].Department = truncateWorksite(records1[i].Worksite__c).replace("-", " ") + " - " + records1[i].Department;
+      }
+      
+      //alert(JSON.stringify(records1[i]));
+
+      
+      var emname = records1[i].Employer_Name__c;
+      var dept = records1[i].Department;
+      var survKey = ("" + emname + "~" + dept + "~" + records1[i].Question_Name__c + "~" + records1[i].Response_Value__c.substring(0,1)).trim().toLowerCase();
+      
+      if (records1[i].FID__c == null) {
+        contactWriter += "<tr valign=\"top\">\n";
+        contactWriter += "    <td align=\"center\">NA</td>\n";
+        contactWriter += "    <td>" + toProperCase(records1[i].Contact_Name__c) + "</td>\n";   
+        contactWriter += "    <td>" + toProperCase(records1[i].Employer_Name__c) + "</td>\n";          
+        contactWriter += "    <td>" + toProperCase(records1[i].Department) + "</td>\n";   
+        contactWriter += "    <td>" + records1[i].Alt_Person_Type__c + "</td>\n";                   
+        contactWriter += "    <td>&nbsp;</td>\n";           
+        
+        if (records1[i].Alt_Phone__c == null) {
+          records1[i].Alt_Phone__c = "";
+        }
+        if (records1[i].Alt_Phone_2__c== null) {
+          records1[i].Alt_Phone_2__c= "";
+        }
+                
+        contactWriter += "    <td align=\"center\">" + records1[i].Alt_Phone__c + "</td>\n";
+        contactWriter += "    <td align=\"center\">" + records1[i].Alt_Phone_2__c+ "</td>\n";                               
+        contactWriter += "    <td align=\"center\"></td>\n"; 
+        for (var qx = 0; qx < qList.length; qx++) {
+          if (qList[qx] == records1[i].Question_Name__c) {
+            contactWriter += "    <td  align=\"center\">" + records1[i].Response_Value__c.trim().substring(0,1) + "</td>\n";             
+          } else {
+            contactWriter += "    <td>&nbsp;</td>\n";             
+          }
+        }
+        contactWriter += "</tr>\n\n\n\n";    
+        contactCount++;  
+      } else {
+        var contactSurvKey = (records1[i].FID__c + "~" + records1[i].Question_Name__c).trim().toLowerCase()
+        contactSurvMap[contactSurvKey] = records1[i].Response_Value__c.trim().substring(0,1);
+      }
+      if (fidKeyMap[records1[i].FID__c] != null) {
+        //deptWriter += ("emdept from fid map = " + emdept);
+        survKey = ("" + fidKeyMap[records1[i].FID__c] + "~" + records1[i].Question_Name__c + "~" + records1[i].Response_Value__c.substring(0,1)).trim().toLowerCase();
+      }
+      
+      //deptWriter += (survKey + "<br/>___________________________________________________________________________________________________________<br/>");
+      
+      
+      
+      if (i < 10) {
+        //alert("survKey = " + survKey);
+      }
+      
+      
+      var qr = (records1[i].Question_Name__c + "~" + records1[i].Response_Value__c.substring(0,1)).trim().toLowerCase();
+      if (qrList.indexOf(qr) < 0) {
+        qrList.push(qr);
+      }
+      
+      var prevCount = 0;
+      if (deptSurvResponseMap[survKey] != null) {
+        prevCount = deptSurvResponseMap[survKey];
+      }
+      prevCount++;
+      deptSurvResponseMap[survKey] = prevCount;
+      //deptWriter += (survKey + "<br/>");
+      }
+  }
+  
+  //alert("contact survey map size = " + contactSurvMap.length);
+    
+  //write out the rest of the Contacts  
+  for (var rr = 0; rr < localStorage.length; rr++) {
+    if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+          //var crecord = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+          var compressedContactArray = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+          var crecord = uncompressContact(compressedContactArray);
+
+          var dept = crecord.Department;
+          if (dept  == null || dept  == "" || dept  == "null") {
+            dept  = "Unknown";
+          }
+          
+          if (crecord.MiddleName == null) {
+            crecord.MiddleName = "";
+          }
+          
+          if (isKaiserSouth(emnames[0])) {
+            dept = truncateWorksite(crecord.Worksite__c) + " - " + crecord.Department;
+          }
+          var emname = crecord.Account.Name;
+          
+        if (crecord.HomePhone == null) {
+          crecord.HomePhone = "";
+        }
+        if (crecord.MobilePhone == null) {
+          crecord.MobilePhone = "";
+        }
+
+        contactWriter += "<tr valign=\"top\">\n";
+        contactWriter += "    <td align=\"center\">" + crecord.FID__c + "</td>\n";
+        contactWriter += "    <td>" + toProperCase((crecord.LastName + ", " + crecord.FirstName +" " + crecord.MiddleName).trim()) + "</td>\n";   
+        contactWriter += "    <td>" + toProperCase(emname) + "</td>\n";          
+        contactWriter += "    <td>" + toProperCase(dept) + "</td>\n";   
+        contactWriter += "    <td>" + toProperCase(crecord.Title) + "</td>\n";                   
+        contactWriter += "    <td align=\"center\">" + crecord.Shift__c + "</td>\n";                   
+        contactWriter += "    <td>" + crecord.HomePhone + "</td>\n";
+        contactWriter += "    <td>" + crecord.MobilePhone + "</td>\n";   
+        
+        if (crecord.COPE_Pledge__c == null || crecord.COPE_Pledge__c == "" || crecord.COPE_Pledge__c == "null") {
+          crecord.COPE_Pledge__c = "";
+        }
+                           
+        contactWriter += "    <td>" + crecord.COPE_Pledge__c + "</td>\n";  
+        for (var qx = 0; qx < qList.length; qx++) {
+          var contactSurvKey = (crecord.FID__c + "~" + qList[qx]).trim().toLowerCase()
+          if (contactSurvMap[contactSurvKey] != null) {
+            contactWriter += "    <td align=\"center\">" + contactSurvMap[contactSurvKey] + "</td>\n";             
+          } else {
+            contactWriter += "    <td>&nbsp;</td>\n";             
+          }
+        }
+        contactWriter += "</tr>\n\n\n\n";  
+        contactCount++;
+          
+    }
+  }
+  contactWriter += "</table>\n\n\n\n\n\n\n\n";
+  contactWriter += "<br></br>";
+  contactWriter += "Person Count = " + contactCount;  
+  contactWriter += "<br></br>";  
+  
+  
+  qrList.sort();
+     
+  emDeptList.sort();
+
+  var deptWriter = "";
+
+  deptWriter += ("<table cellpadding=\"5\">");
+  deptWriter += ("<tr valign=\"bottom\">");
+  deptWriter += ("<td align=\"center\"><b>Employer</b></td>\n");
+  deptWriter += ("<td align=\"center\"><b>Department</b></td>\n");
+  deptWriter += ("<td align=\"center\"><b>BU Count</b></td>\n");  
+  deptWriter += ("<td align=\"center\"><b>COPE $10+ Count</b></td>\n");    
+  
+  
+  var lastq = "";
+  var nonZeroCount = 0;
+  for (var t = 0; t < qrList.length; t++) {   
+    var q = qrList[t].split("~")[0];
+    var r = qrList[t].split("~")[1];
+    if (t > 0 && q != lastq) {
+      nonZeroCount = 0;  
+      deptWriter += ("<td style=\"border-right:#000000;\" align=\"center\"><b>" + toProperCase(lastq) + ": No Response</b></td>");
+    }
+    deptWriter += ("<td align=\"center\"><b>" + toProperCase(q) + ": " + r.toUpperCase() + "</b></td>\n");
+
+    nonZeroCount++;
+    lastq = q;
+  }
+  if (lastq != "") {
+    deptWriter += ("<td align=\"center\"><b>" + toProperCase(lastq) + ": No Response</b></td>");
+  }
+  deptWriter += ("</tr>\n\n");
+
+  
+  for (var w = 0; w < emDeptList.length; w++) {
+    deptWriter += ("<tr valign=\"top\">\n");
+    var em = emDeptList[w].split("~")[0];
+    var dept = emDeptList[w].split("~")[1];
+    var cope10 = deptCopeMap[emDeptList[w]];
+    
+    deptWriter += ("<td align=\"left\">" + toProperCase(em) + "</td>\n");
+    deptWriter += ("<td align=\"left\">" + toProperCase(dept) + "</td>\n");
+    
+    var buCount = deptBuMap[emDeptList[w]];
+    
+    deptWriter += ("<td align=\"center\">" + buCount + "</td>\n");
+    
+    if (cope10 == null) {
+      deptWriter += ("<td align=\"center\">0,");
+    } else {
+      deptWriter += ("<td align=\"center\">" + cope10 + "</td>\n");
+    }
+    var lastq = "";
+    var nonZeroCount = 0;
+    for (var t = 0; t < qrList.length; t++) {   
+      
+      var q = qrList[t].split("~")[0];
+      var r = qrList[t].split("~")[1];
+      
+      if (t > 0 && q != lastq) {
+        var delta = (buCount - nonZeroCount);
+        if (delta < 0) {
+          delta = 0;
+        }
+        deptWriter += ("<td align=\"center\">" + delta + "</td>");      
+        nonZeroCount = 0;  
+      }
+      
+      
+      var ckey = (em  + "~" + dept + "~" + q + "~" + r).trim().toLowerCase();
+      
+      var ccount = 0;
+      if (deptSurvResponseMap[ckey] != null) {
+        ccount = deptSurvResponseMap[ckey];
+        deptWriter += ("<td align=\"center\">" + ccount + "</td>\n");
+      } else {
+        deptWriter += ("<td align=\"center\">0</td>\n");
+      }
+      
+      
+      nonZeroCount += ccount ;
+      lastq = q;
+    }  
+    if (lastq != "") {
+        var delta = (buCount - nonZeroCount);
+        if (delta < 0) {
+          delta = 0;
+        }
+        deptWriter += ("<td align=\"center\">" + (delta) + "</td>\n");
+    }
+    
+    deptWriter += ("</tr>\n\n");
+  }
+
+  
+    deptWriter += ("</table>");
+  
+  } catch(e){ 
+    alert('An Error has Occured. Error:' +e); 
+  }
+
+</script>
+<div align="center" id="showContactsBtnDiv">
+  <button class="btn btn-primary" type="submit"  onclick="showContacts();">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Show Contacts
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button>
+</div>
+
+<div align="center" id="showDeptsBtnDiv">
+  <button class="btn btn-primary" type="submit"  onclick="showDepts();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  Show Departments
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button>
+</div>
+
+<div id="deptDiv"></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="contactDiv"></div>
+<script language="JavaScript">
+document.getElementById("contactDiv").innerHTML = contactWriter;
+document.getElementById("deptDiv").innerHTML = deptWriter;
+
+
+function showContacts() {
+
+  $("#contactDiv").show();
+  $("#showContactsBtnDiv").hide();
+  $("#deptDiv").hide();
+  $("#showDeptsBtnDiv").show();
+  
+  return true;
+}
+
+function showDepts() {
+
+  $("#contactDiv").hide();
+  $("#showContactsBtnDiv").show();
+  $("#deptDiv").show();
+  $("#showDeptsBtnDiv").hide();
+  
+  return true;
+}
+
+showDepts();
+
+
+
+</script>
+
+</apex:page>

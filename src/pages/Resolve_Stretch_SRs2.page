@@ -1,0 +1,758 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Resolve Reach to Survey Responses</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+
+<script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+</head>
+<body>
+<div align="center">
+<font size="+2"><div id="titleDiv">Reconcile Stretch Questionnaire</div></font>
+<br>&nbsp;</br>
+ 
+ <!--
+ <button class="btn btn-lg btn-primary" type="submit" onclick="navigateBack()">Back</button>
+ -->
+ <button class="btn btn-lg btn-primary" type="submit" onclick="cannotRecon()">Cannot Recon</button> 
+ <button class="btn btn-lg btn-primary" type="submit" onclick="submitSurvey()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reconcile&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</button>
+<form id="resolveForm"> 
+<br>&nbsp;</br>
+<div id="infoDiv"></div>
+<br>&nbsp;</br>
+ 
+ <table cellpadding="7">
+ <tr valign="bottom">
+    <td bgcolor="#481C60" width="34%" align="center"><font color="white">Leader</font></td>
+    <td bgcolor="#481C60" width="33%" align="center"><font color="white">Member</font></td>
+    <td bgcolor="#481C60" width="33%" align="center"><font color="white">Nominee</font></td>    
+ </tr>
+ <tr valign="top">
+   <td><div id="leaderDiv"></div></td>
+   <td>
+   <font size="-1"><a href="javascript:toggleAlt();"><div align="center" id="toggleDiv"></div></a></font>
+   <div style="display: none;" id="altDiv">
+      <table border="0" width="100%">  
+      <tr valign="top">
+      <td align="right">  
+      First Name:
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td width="50%" align="left">
+      <input id="firstname"></input>
+      </td>
+      </tr>
+  
+      <tr valign="top">
+      <td  align="right">  
+      Middle Name:
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td width="50%" align="left">
+      <input id="middlename"></input>
+      </td>
+      </tr>
+  
+      <tr valign="top">
+      <td  align="right">  
+      Last Name:
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td width="50%" align="left">
+      <input id="lastname"></input>
+      </td>
+      </tr>
+
+  
+      <tr valign="top">
+      <td  align="right">  
+      Phone:
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td width="50%" align="left">
+      <input id="phone"></input>
+      </td>
+      </tr>
+
+      <tr valign="top">
+      <td  align="right">  
+      Email:
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td width="50%" align="left">
+      <input id="email"></input>
+      </td>
+      </tr>
+  
+      <tr valign="top">
+      <td  align="right">  
+      Person Type:
+      </td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td width="50%" align="left">
+      <select id="ptype">
+      <option></option>
+      <option>Member</option>
+      <option>Friend/Family of Member</option>
+      <option>Non-Member in Facility</option>
+      </select>
+      </td>
+      </tr>
+
+  
+     </table>
+   </div>
+   <div id="memberDiv"></div>
+   </td>   
+   <td><div id="nomineeDiv"></div></td>   
+ </tr>
+ </table>
+
+</form>
+<br>&nbsp;</br>
+
+<div id="debugDiv"></div>
+
+<br>&nbsp;</br>
+</div>
+<script language="JavaScript">
+$("#altDiv").hide();
+
+var TOGGLE1 = "If no Contact found, click<br/> here to create alt person record.";
+var TOGGLE2 = "Click here to search for Contacts.";
+var altmode = false;
+
+function scoreMatchName(pName, pContact) {
+  //alert("[scoreMatchName] start");
+  if (pName == null || pContact == null) {
+    return 0.0;
+  }
+  if (pContact.FirstName == null) {
+    pContact.FirstName = "Unknown";
+  }
+  if (pContact.LastName == null) {
+    pContact.LastName = "Unknown";
+  }  
+  //alert(pName + " vs. " + pContact.FirstName + " " + pContact.LastName);
+  var tokens = pName.toLowerCase().split(" ");
+  var firstName = pContact.FirstName.toLowerCase();
+  var lastName = pContact.LastName.toLowerCase();        
+  var hits = 0.0;
+  for (var k = 0; k < tokens.length; k++) {
+      var token = tokens[k];
+      if (token == firstName) {
+        hits = hits + 1.0;
+      } else if (token.length > 4 && firstName.length > 4 && token.substring(0,4) == firstName.substring(0, 4)) {
+        hits = hits + 0.5;          
+      } else if (token.length > 4 && firstName.length > 4 && (firstName.indexOf(token.substring(0,4)) > 0 || token.indexOf(firstName.substring(0,4)) > 0)) {
+        hits = hits + 0.25;          
+      }
+      if (token == lastName) {
+        hits = hits + 1.0;
+      } else if (token.length > 4 && lastName.length > 4 && token.substring(0,4) == lastName.substring(0, 4)) {
+        hits = hits + 0.5;          
+      } else if (token.length > 4 && lastName.length > 4 && (lastName.indexOf(token.substring(0,4)) > 0 || token.indexOf(lastName.substring(0,4)) > 0)) {
+        hits = hits + 0.25;          
+      }     
+  }
+  if (hits > 0.0) {
+    if (pContact.In_Current_BU__c != null && pContact.In_Current_BU__c == "false") {
+      hits = hits - 0.5;
+    }
+  }
+  if (hits < 0.0) {
+    hits = 0.0;
+  }
+  return hits;
+}
+
+function formatContact(pContact, pRadioName) {
+  if (pContact == null) {
+    return "";
+  }
+  //alert("[formatContact] start");
+  var cwriter = "<input type=\"radio\" name=\"" + pRadioName + "\" value=\"" + pContact.Id + "\">&nbsp;&nbsp;&nbsp;&nbsp;";
+  cwriter += "<b>" + pContact.LastName + ", " + pContact.FirstName;
+  if (pContact.MiddleName != null) {
+    cwriter += " " + pContact.MiddleName;
+  }
+  cwriter += "</b><br/><font size=\"-1\">\n";
+  cwriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + pContact.Account.Name + "<br/>\n";
+  cwriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + pContact.Department + "<br/>\n";
+  cwriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + pContact.Title + "</font></input><br/>\n";    
+  return cwriter;
+}
+
+
+
+var rcid = "{!$CurrentPage.parameters.rcid}";
+if (rcid == null || rcid == "null" || rcid == "") {
+  //rcid = "a1Hi0000002toFG";
+  query = " SELECT Id from Reach_Questionnaire__c where CreatedDate >= 2017-04-18T00:00:00.545-07:00  AND Questionnaire_Status__c = \'Not Evaluated\'  ";
+  sforce.connection.sessionId = "{!$Api.Session_ID}";    
+  var result = sforce.connection.query(query);
+  var records = result.getArray("records");
+  if (records.length == 0) {
+    alert("No unresolved Stretch Questionnaires are available.");
+  }
+  rcid = records[0].Id;
+}
+var lastRecord = null;
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";  
+
+//
+//  find Lost Timer Ids
+//
+var lostTimerContactSet = [];
+var query = "select Id, Staff_Contact_Id__c  from User where Staff_Contact_Id__c  != null and IsActive = true";
+var result = sforce.connection.query(query);
+var records = result.getArray("records");
+for (var i = 0; i < records.length; i++) {
+  lostTimerContactSet.push(records[i].Staff_Contact_Id__c.substring(0, 15));
+}
+var query = "select Id from Contact where Account.Name = \'SEIU-UHW\' ";
+var result = sforce.connection.query(query);
+var records = result.getArray("records");
+for (var i = 0; i < records.length; i++) {
+  var removeDex = lostTimerContactSet.indexOf(records[i].Id.substring(0, 15));
+  if(removeDex >= 0) {
+    lostTimerContactSet.splice(removeDex, 1);
+  } 
+}
+
+  
+var nomSqid = null;
+var query = " SELECT Id from Survey_Question__c where Survey_Code__c = \'S03\' ";
+var result = sforce.connection.query(query);
+var records = result.getArray("records");
+if (records.length == 0) {
+  alert("Can't find Survey Question for Stretch Leader Nomination. Please contact Data Group.");
+}
+nomSqid = records[0].Id;
+
+
+
+var cachedTurf = new Array();
+var cachedContacts = {};
+//alert(rcid);
+
+var reachRecord = null;
+
+function loadReconRecord(pRcid) {
+  try{   
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";  
+    var user = sforce.connection.getUserInfo();
+    var query = "SELECT Id, Name, Leader_Name__c, Member_Name__c, Leader_Employer__c, Leader_Employer__r.Name, Leader_Employer__r.Coordinator__c, Leader_Employer__r.Coordinator__r.Name, Leader_Employer__r.Organizer_1__c, Leader_Employer__r.Organizer_1__r.Name, Completion_Time__c, Source_Text__c,  Question_Election_Results__c, Question_Path_Forward__c, Member_Cell_Phone__c, Member_Email__c, CreatedDate from Reach_Questionnaire__c where CreatedDate < 2017-04-18T00:00:00.545-07:00 AND Id=\'" + pRcid + "\' ";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length > 0) {
+      navigateTo("/apex/Resolve_Reach_SRs?rcid=" + pRcid);
+    }
+
+    var query = "SELECT Id, Name, Leader_Name__c, Member_Name__c, Leader_Employer__c, Leader_Employer__r.Name, Leader_Employer__r.Coordinator__c, Leader_Employer__r.Coordinator__r.Name, Leader_Employer__r.Organizer_1__c, Leader_Employer__r.Organizer_1__r.Name, Completion_Time__c, Source_Text__c,  Question_Election_Results__c, Question_Path_Forward__c, Member_Cell_Phone__c, Member_Email__c, Nomination_1_Name__c, Questionnaire_Status__c from Reach_Questionnaire__c where CreatedDate >= 2017-04-18T00:00:00.545-07:00 AND Id=\'" + pRcid + "\' ";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    reachRecord = records[0];
+    lastRecord = reachRecord;
+    
+    var accountId = records[0].Leader_Employer__c;
+    var leaderName = records[0].Leader_Name__c;
+    var memberName = records[0].Member_Name__c;
+    var nomineeName = records[0].Nomination_1_Name__c;
+    var organizerId = records[0].Leader_Employer__r.Organizer_1__c;
+    var coordinatorId = records[0].Leader_Employer__r.Coordinator__c;
+    var employerName = records[0].Leader_Employer__r.Name;
+    var employerName2 = employerName.toLowerCase();
+    
+    var infoWriter = "Questionnaire Name/Id = " + records[0].Name + "<br/>";
+    infoWriter += "Coordinator = " + records[0].Leader_Employer__r.Coordinator__r.Name + "<br/>";
+    infoWriter += "Organizer = ";
+    if (records[0].Leader_Employer__r.Organizer_1__c != null) {
+      infoWriter += records[0].Leader_Employer__r.Organizer_1__r.Name;
+    } else {
+      infoWriter += "Vacant";    
+    }
+    infoWriter += "<br/>\n";
+    infoWriter += "Status = " + records[0].Questionnaire_Status__c;
+    $("#infoDiv").html(infoWriter);
+    
+    var leaderMap = [];
+    var leaderScoreMap = [];
+    var memberMap = [];
+    var memberScoreMap = [];
+    var nomineeMap = [];
+    var nomineeScoreMap = [];
+        
+    var scoreSet = new Array();
+    
+ 
+    for (var i = 0; i < 10; i++) {
+      var query = "SELECT Id, FID__c, Account.Id, FirstName, LastName, MiddleName, Account.Name, Department, Title, In_Current_BU__c, In_Current_BU_Override__c from Contact ";
+      query += " where ((Account.Coordinator__c = \'" + coordinatorId + "\' ";
+      if (employerName2.indexOf("centinela") == 0 && employerName2.indexOf("garden grove") == 0) {
+        query += " AND (In_Current_BU__c = true or In_Current_BU_Override__c != null) ";
+      }
+
+      var organizerIdSafe = "null";
+      if (organizerId != null) {
+        organizerIdSafe = "\'" + organizerId + "\'";
+      }
+
+      if (employerName2.indexOf("kaiser-roseville") == 0) {
+        query += "  AND (Account.Organizer_1__c = " + organizerIdSafe + " OR Account.Name like \'KAISER-ROSEVILLE%\' ) ";
+      } else if (employerName2.indexOf("kaiser-orange") == 0) {
+        query += "  AND (Account.Organizer_1__c = " + organizerIdSafe + " OR Account.Name like \'KAISER-ORANGE%\' ) ";
+      } else if (employerName2.indexOf("kaiser-lamc") == 0) {
+        query += "  AND (Account.Organizer_1__c = " + organizerIdSafe + " OR Account.Name like \'KAISER-LAMC%\' ) ";
+      } else if (employerName2.indexOf("kaiser-santa clara") == 0) {
+        query += " AND (Account.Organizer_1__c = " + organizerIdSafe + " OR Account.Name like \'KAISER-SANTA CLARA%\' ) ";        
+      } else if (employerName2.indexOf("stanford") == 0 || employerName2.indexOf("lucile packard") == 0  || employerName2.indexOf("lucille packard") == 0) {
+        query += " AND (Account.Organizer_1__c = " + organizerIdSafe + " OR Account.Name like \'STANFORD%\' OR Account.Name like \'%PACKARD%\' ) ";        
+      } else {
+        query += " AND Account.Organizer_1__c = " + organizerIdSafe + " ";      
+      }
+      
+      
+      query += ") OR Account.Name = \'SEIU-UHW\' ";
+      if (lostTimerContactSet.length > 0) {
+        for (var ltdex = 0; ltdex < lostTimerContactSet.length; ltdex++) {
+          query += " OR Id = \'" + lostTimerContactSet[ltdex] + "\' " ;         
+        }
+      }
+      query += " ) AND FID__c like \'%" + i + "\' ";
+      if (0 == 0) {
+        //$("#debugDiv").html($("#debugDiv").html() + "<br/>" + query);
+      }
+      var records = null;
+      if (cachedTurf != null && cachedTurf[0] == coordinatorId && cachedTurf[1] == organizerId ) {
+        records = cachedContacts["P" + i];
+      } else {
+        cachedTurf = null;
+        var result = sforce.connection.query(query);
+        var records = result.getArray("records");  
+        cachedContacts["P" + i] = records;    
+        if (i == 9) {
+          cachedTurf = [coordinatorId, organizerId];
+        }
+      }
+      //$("#debugDiv").html($("#debugDiv").html() + "<br/>Records Found = " + records.length);
+      for (var j = 0; j < records.length; j++) {
+        var mbrScore = scoreMatchName(memberName, records[j]);
+        //alert("member scored.");
+        var ldrScore = scoreMatchName(leaderName, records[j]);
+        //$("#debugDiv").html($("#debugDiv").html() + "<br/>j = " + j + " - " + mbrScore + ", " + ldrScore); 
+        //alert("leader scored.");
+        var nomScore = scoreMatchName(nomineeName, records[j]);
+                
+        if (mbrScore > 0.0 && records[j].Account.Name != 'SEIU-UHW') {
+          //alert("adding to member map...");        
+          var skey = "s" + (100000 - mbrScore);
+          if (scoreSet.indexOf(skey) < 0) {
+            scoreSet.push(skey);
+          }
+          memberMap[records[j].FID__c] = records[j];
+          memberScoreMap[records[j].FID__c] = skey;
+        }
+        if (ldrScore > 0.0) {
+          //alert("adding to leader map...");
+          var skey = "s" + (100000 - ldrScore );
+          if (scoreSet.indexOf(skey) < 0) {
+            scoreSet.push(skey);
+          }
+          leaderMap[records[j].FID__c] = records[j];
+          leaderScoreMap[records[j].FID__c] = skey;
+        }    
+        if (nomScore > 0.0  && records[j].Account.Name != 'SEIU-UHW') {
+          //alert("possible nom match = " + records[j].FirstName + " "  + records[j].LastName );
+          var skey = "s" + (100000 - nomScore );
+          if (scoreSet.indexOf(skey) < 0) {
+            scoreSet.push(skey);
+          }
+          nomineeMap[records[j].FID__c] = records[j];
+          nomineeScoreMap[records[j].FID__c] = skey;
+        }    
+      }
+    }
+    scoreSet.sort();
+    
+    //alert("sorted scores." + scoreSet.length + "\nleaderMap = " + leaderMap.length + "\n memberMap = " + memberMap.length);
+    
+    var finalLeadersList = new Array();
+    var finalMembersList = new Array();  
+    var finalNomineesList = new Array();  
+      
+    for (var i = 0; i < scoreSet.length; i++) {
+      var skey1 = scoreSet[i];
+      for (var fid in leaderMap) {
+        var skey2 = leaderScoreMap[fid];
+        if (skey2 == skey1) {
+          finalLeadersList.push(leaderMap[fid]);
+        }        
+      }
+      for (var fid in memberMap) {
+        var skey2 = memberScoreMap[fid];
+        if (skey2 == skey1) {
+          finalMembersList.push(memberMap[fid]);
+        }        
+      }      
+      for (var fid in nomineeMap) {
+        var skey2 = nomineeScoreMap[fid];
+        if (skey2 == skey1) {
+          finalNomineesList.push(nomineeMap[fid]);
+        }        
+      }       
+    }
+    
+    //alert("outputting results... " + finalLeadersList.length + ", " + finalMembersList.length );
+    
+    //
+    // output Members and Leaders
+    //
+    if (employerName == null) {
+      employerName = "Unknown";
+    }
+    var lwriter = "Matches for <u>" + leaderName + "</u>,<br/> " + toProperCase(employerName)  + ":<br/>&nbsp;<br/>";
+    for (var i = 0; i < finalLeadersList.length; i++) {
+      if (i >= 10) {
+        break;
+      }
+      //alert(JSON.stringify(finalLeadersList[i]));
+      lwriter += formatContact(finalLeadersList[i], "leaderOption");
+    }
+    if (finalLeadersList.length == 0) {
+      lwriter += "<i>No Matching Leaders Found</i>";
+    }    
+    $("#leaderDiv").html(lwriter);
+    var mwriter =  "Matches for <u>" + memberName + "</u><br/>&nbsp;<br/>";
+    for (var i = 0; i < finalMembersList.length; i++) {
+      if (i >= 10) {
+        break;
+      }
+      mwriter += formatContact(finalMembersList[i], "memberOption");
+    }
+    if (finalMembersList.length == 0) {
+      mwriter += "<i>No Matching Members Found</i>";
+    }
+    $("#memberDiv").html(mwriter);
+        
+    var ntokens = reachRecord.Member_Name__c.split(" ");
+    if (ntokens.length >= 3) {
+      $("#lastname").val(reachRecord.Member_Name__c.substring(ntokens[0].length + ntokens[1].length + 2).trim());
+      $("#middlename").val(ntokens[1]); 
+      $("#firstname").val(ntokens[0]);  
+    } else if (ntokens.length == 2) {
+      $("#lastname").val(ntokens[1]); 
+      $("#firstname").val(ntokens[0]); 
+    } else {
+      $("#firstname").val(reachRecord.Member_Name__c);  
+    }
+    $("#phone").val(reachRecord.Member_Cell_Phone__c);
+    $("#email").val(reachRecord.Member_Email__c);
+    $("#toggleDiv").html(TOGGLE1);
+    $("#altDiv").hide();
+    altmode = false;
+    $("#memberDiv").show(); 
+    
+    //
+    // nominee stuff
+    //
+    var nwriter = "Matches for <u>" + nomineeName + "</u>,<br/> " + toProperCase(employerName)  + ":<br/>&nbsp;<br/>";
+    nwriter += "<input name=\"nomineeOption\" value=\"NOT_FOUND\" type=\"radio\">&nbsp;&nbsp;&nbsp;&nbsp;<b>Not Found</b><br><font size=\"-1\"><br>\n";
+    for (var i = 0; i < finalNomineesList.length; i++) {
+      if (i >= 10) {
+        break;
+      }
+      //alert(JSON.stringify(finalNomineesList[i]));
+      nwriter += formatContact(finalNomineesList[i], "nomineeOption");
+    }
+    if (finalNomineesList.length == 0) {
+      nwriter += "<i>No Matching Nominees Found</i>";
+    }    
+    $("#nomineeDiv").html(nwriter);
+        
+  } catch(e) { 
+    alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+  } 
+}
+
+function submitSurvey(pAlt) {
+  var ldrId = $("input[name=leaderOption]:checked").val();
+  var mbrId = null;
+
+  var nomId = $("input[name=nomineeOption]:checked").val();
+  var nomResponse = "M";
+  var nomCount = 0.0; 
+  try{ 
+    if (nomId == null || nomId == "") {
+      alert("Must select a nominee to continue.");
+      return false;
+    } else if (nomId == "NOT_FOUND") {
+      //ignore
+    } else {
+      var query = " SELECT Id, Contact__c, Response_Value__c, Add_Info_Numeric__c from Survey_Response__c where Survey_Question__c = \'" + nomSqid + "\' and Contact__c = \'" + nomId + "\' ";
+      sforce.connection.sessionId = "{!$Api.Session_ID}";    
+      var result = sforce.connection.query(query);
+      var records = result.getArray("records");
+      if (records.length == 0) {
+        //alert("No previous Nomination Survey Responses....");
+      } else {
+        //nomCount = parseFloat(records[0].Add_Info_Numeric__c);    
+        nomResponse = records[0].Response_Value__c.trim().substring(0, 1);
+      }  
+      var query = "SELECT Id from Reach_Questionnaire__c where Questionnaire_Status__c like \'%member%\' and CreatedDate >= 2017-04-18T00:00:00.545-07:00 And Nomination_1_Contact__c = \'" + nomId + "\' ";
+      var result = sforce.connection.query(query);
+      var records = result.getArray("records");
+      nomCount = records.length;      
+    }
+
+    var altlast = null;
+    var altmiddle = null;
+    var altfirst = null;
+    var altemid = null;
+    var altptype = null;     
+    var altphone = null;     
+    var altemail = null;  
+
+    //alert("toggle div = " + $("#toggleDiv").html() + "\nalt mode = " + altmode);
+    if (altmode == false) {
+      mbrId = $("input[name=memberOption]:checked").val();
+      altlast = null;
+      altmiddle = null;
+      altfirst = null;
+      altemid = null;
+      altptype = null;     
+      altphone = null;     
+      altemail = null;  
+    } else {
+      //alert("alt person info!");
+      mbrId = null;
+      altlast = $("#lastname").val();
+      altmiddle = $("#middlename").val();
+      altfirst = $("#firstname").val();
+      altemid = reachRecord.Leader_Employer__c;
+      altptype = $("#ptype").val();    
+      if (altptype == null || altptype == "") {
+        alert("Please enter an Alt Person Type.");
+        return false;
+      } 
+      altphone = $("#phone").val();     
+      altemail = $("#email").val();
+    }
+    
+ 
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";  
+    var query = "SELECT Id from Survey_Question__c where Survey_Code__c = \'S02\' ";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");  
+    var qid = records[0].Id;
+    
+
+    //
+    //  create Survey Response record
+    //        
+    var responses = []; 
+    var response = new sforce.SObject("Survey_Response__c"); 
+    if (mbrId != null) {
+      response.Contact__c = mbrId;
+    } else {
+      response.Alt_Last_Name__c = altlast;
+      response.Alt_First_Name__c = altfirst;
+      response.Alt_Middle_Name__c = altmiddle;                 
+      response.Alt_Employer__c = altemid;
+      response.Alt_Email__c = altemail;        
+      response.Alt_Phone__c = altphone;                            
+      response.Alt_Person_Type__c = altptype; 
+    }
+    response.Collected_By__c = ldrId;
+    response.Survey_Question__c = qid;
+    response.Collected_Datetime__c = reachRecord.Completion_Time__c;
+    response.Response_Value__c = "yes";    
+    response.Comments__c = JSON.stringify(reachRecord);
+    response.Add_Info__c = reachRecord.Question_Election_Results__c + ";" + reachRecord.Question_Path_Forward__c;
+    responses.push(response); 
+       
+    if (nomId != "NOT_FOUND") {
+      var response2 = new sforce.SObject("Survey_Response__c");    
+      response2.Contact__c = nomId;
+      response2.Survey_Question__c = nomSqid;
+      response2.Response_Value__c = nomResponse;
+      response2.Add_Info__c = (nomCount + 1.0);
+      responses.push(response2);            
+    }
+    //alert(JSON.stringify(response));
+
+
+    
+    var results = null;
+    results = sforce.connection.create(responses); 
+  
+    if (results[0].getBoolean("success") == false) {
+      alert("Failed to create Survey Response.  Please contact Data Group.  Debug info: " + JSON.stringify(results));
+    }
+    //alert("Debug SR Results = " + JSON.stringify(results));
+  
+    var srid = results[0].id;
+ 
+    //alert("srid = " + srid);
+ 
+    //
+    //  tie Reach Questionnaire record to Survey Response record
+    //    
+    var rrecords = []; 
+    var rrecord = new sforce.SObject("Reach_Questionnaire__c"); 
+    rrecord.Id = reachRecord.Id;
+    rrecord.Survey_Response__c = srid;
+    rrecord.Unable_to_Resolve__c = false;
+    if (nomId != null && nomId != "NOT_FOUND") {
+      rrecord.Nomination_1_Contact__c = nomId;
+    }
+    rrecords.push(rrecord); 
+    var results = null;
+    results = sforce.connection.update(rrecords); 
+        
+    
+    //alert("Questionnaire update results = " + JSON.stringify(results));
+ 
+    //alert(JSON.stringify(results));
+
+    loadNext();
+    
+  } catch(e) { 
+    alert('Reconcile.  An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+  }     
+}
+
+function loadNext() {
+
+  try{  
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";  
+
+    var query = "SELECT Id from Reach_Questionnaire__c where CreatedDate >= 2017-04-18T00:00:00.545-07:00 AND Id != \'" + rcid + "\' AND Questionnaire_Status__c = \'Not Evaluated\' ";
+    if (cachedTurf != null) {
+      var coordinatorId = cachedTurf[0];
+      var organizerId = cachedTurf[1];      
+      query += " AND Leader_Employer__r.Coordinator__c = \'" + coordinatorId + "\' AND ";
+      var organizerIdSafe = "null";
+      if (organizerId != null) {
+        organizerIdSafe = "\'" + organizerId + "\'";
+      }
+      query += " Leader_Employer__r.Organizer_1__c = " + organizerIdSafe + " ";
+    }
+    //alert(query);
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");  
+    var nextRcid = null;
+    if (records.length == 0) {
+      query = "SELECT Id from Reach_Questionnaire__c where CreatedDate >= 2017-04-18T00:00:00.545-07:00 AND Id != \'" + rcid + "\' AND Questionnaire_Status__c = \'Not Evaluated\' ";
+      result = sforce.connection.query(query);
+      records = result.getArray("records"); 
+      if (records.length == 0) {
+        alert("All Reach Questionnaires have been evaluated.");
+        navigateTo("/");
+      }
+      cachedTurf = null;
+      nextRcid = records[0].Id;
+    } else {
+      nextRcid = records[0].Id;
+    }
+    rcid = nextRcid;
+    loadReconRecord(nextRcid );
+  } catch(e) { 
+    alert('LoadNext.  An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+  }  
+}
+
+function cannotRecon() {
+  var comments = prompt("Why are we unable to reconcile?");
+  if (comments == null) {
+    return false;
+  }
+  try{  
+  
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}"; 
+    var rrecords = []; 
+    var rrecord = new sforce.SObject("Reach_Questionnaire__c"); 
+    rrecord.Id = reachRecord.Id;
+    rrecord.Unable_to_Resolve__c = true;
+    rrecord.Resolve_Comments__c = comments;
+    rrecords.push(rrecord); 
+    var results = null;
+    results = sforce.connection.update(rrecords);     
+    
+    loadNext();
+     
+  } catch(e) { 
+    alert('Cannot Reconcile.  An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+  }  
+}
+
+loadReconRecord(rcid);
+
+//
+// alt person functionality
+//
+
+function toggleAlt() {
+  if (altmode == false) {
+    $("#toggleDiv").html(TOGGLE2);
+    $("#altDiv").show();
+    $("#memberDiv").hide();
+    altmode = true;    
+  } else {
+    $("#toggleDiv").html(TOGGLE1);
+    $("#altDiv").hide();
+    $("#memberDiv").show(); 
+    altmode = false; 
+  }
+}
+
+
+
+</script>
+</body>
+</html>
+</apex:page>

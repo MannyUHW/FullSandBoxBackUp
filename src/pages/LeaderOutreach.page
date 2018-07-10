@@ -1,0 +1,880 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="LeaderOutreachController">
+    <html>
+    <head>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+        <style>
+
+            #LeaderTitle {
+                width:89%;
+                float:left;
+            }
+
+            .first-name-div {
+                clear: both;
+                margin-top: 29px;
+            }
+
+            .last-name-div {
+                margin-top: 11px;
+            }
+
+            .submit {
+                display: block;
+                background: #4a2c7d;
+                color: #fede00;
+                border: none;
+                padding: 10px 20px;
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+                cursor: pointer;
+                width: 99%;
+                margin-top: 20px;
+                font-size: 1.2em;
+            }
+
+            .reset {
+                display: inline-block;
+                background: #4a2c7d;
+                color: #fede00;
+                border: none;
+                padding-top: 10px;
+                padding-bottom: 10px;
+                -moz-border-radius: 2px;
+                border-radius: 2px;
+                cursor: pointer;
+                width: 90px;
+                margin-top: 17px;
+                font-size: 1.2em;
+            }
+
+            .img-div {
+                margin-top: 5px;
+            }
+
+            .Q {
+                color:#57687a;
+                font-style: italic;
+                font-size: 1.5em;
+            }
+
+            .question1 {
+                float: left;
+                display: inline-block;
+            }
+
+            .questionTA {
+                width: 1104px;
+                height: 114px;
+            }
+
+            #fakeForm {
+                background-color: white;
+                width: 1130px;
+                padding-left: 10px;
+                padding-top: 10px;
+            }
+
+            .question-div {
+                background-color: #f0eff5;
+                padding:5px;
+                border:1px solid blue;
+                margin-top: 6px;
+                margin-bottom: 6px;
+            }
+
+            .radiobutton {
+                width: 30px;
+            }
+
+            .radiotext {
+                /*
+                                font-size: 15px;
+                                vertical-align: middle;
+                */
+            }
+
+            .getfield {
+                width:1110px;
+            }
+
+            .box-main {
+                background-color: #EFEFEF;
+                padding-top: 30px;
+                padding-bottom: 30px;
+            }
+
+            .no-show {
+                display:none;
+            }
+
+            .show {
+                display:block;
+            }
+
+            .cellClass1 {
+                margin-right:15px !important;
+                text-align: right;
+            }
+
+            .modalDialog {
+                position: fixed;
+                font-family: Arial, Helvetica, sans-serif;
+                top: 100px;
+                left: 50px;
+                width: 80%;
+                height: 80%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 99999;
+                opacity: 0.8;
+                pointer-events: none;
+            }
+
+            .modalDialog > div {
+                width: 400px;
+                position: relative;
+                margin: 10% auto;
+                padding: 5px 20px 13px 20px;
+                border-radius: 10px;
+                background: #fff;
+                background: -moz-linear-gradient(#fff, #999);
+                background: -webkit-linear-gradient(#fff, #999);
+                background: -o-linear-gradient(#fff, #999);
+            }
+
+            body {
+                font-size: 1.5em;
+                font-family: 'Lato', sans-serif;
+                padding : 10px ;
+            }
+
+            .SelectList {
+                margin: 1px;
+                padding: 1px;
+                display: inline-block;
+                width: 430px;
+            }
+
+            #EmployersSelectList {
+                width: 400px;
+                background-color: white;
+            }
+
+            .red-dot {
+                color:red;
+                font-size: 20px;
+            }
+
+        </style>
+
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.jquery311slimmin}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Bootstrap337Zip,'bootstrap.min.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Bootstrap337Zip,'bootstrap.min.css')}"/>
+
+    </head>
+    <body>
+
+    <div class="container-fluid box-main">
+        <div class="container center-block">
+            <div class="row">
+                <div class="col-form col-lg-12">
+                    <form name="main-form" id="form-english" class="no-show">
+                        <div id="LeaderTitle">
+                            <h2>Leader</h2>
+                        </div>
+                        <button id="reset_E" name="reset" class="btn reset" type="button">Reset</button>
+                        <div class="first-name-div">
+                            <label for="leader_first_name_E">First Name <span class="red-dot"> *</span></label>
+                        </div>
+                        <div>
+                            <input class="getfield" id="leader_first_name_E" maxlength="40" name="leader_first_name" size="20" type="text" autofocus="true"></input>
+                        </div>
+                        <div class="last-name-div">
+                            <label for="leader_last_name_E">Last Name <span class="red-dot"> *</span></label>
+                        </div>
+                        <div>
+                            <input class="getfield" id="leader_last_name_E" maxlength="80" name="leader_last_name" size="20" type="text"></input>
+                        </div>
+                        <h3>Member's Facility<span class="red-dot"> *</span></h3>
+                        <div class="SelectList">
+                            <select id="EmployersSelectList_E"></select>
+                        </div>
+                        <h2>Member</h2>
+                        <div>
+                            <label for="member_first_name_E">First Name<span class="red-dot"> *</span></label>
+                            <div>
+                                <input class="getfield" id="member_first_name_E" maxlength="40" name="member_first_name" size="20" type="text"></input>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="member_last_name_E">Last Name<span class="red-dot"> *</span></label>
+                            <div>
+                                <input class="getfield" id="member_last_name_E" maxlength="80" name="member_last_name" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <div id="img1_E" class="img-div">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImages,'img1.jpg')}" alt="November election results"></img>
+                        </div>
+
+                        <div class="question-div">
+                            <label class="Q" for="question1_E">Q1. How do you think the November election results will affect you?<span class="red-dot"> *</span></label>
+                            <br/>
+                            <label>
+                                <input type="radio" name="question1_E" class="radiobutton" value="Negatively">Negatively</input>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="question1_E" class="radiobutton" value="Positively">Positively</input>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="question1_E" class="radiobutton" value="Won't affect me">Won't affect me</input>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="question1_E" class="radiobutton" value="Don't know">Don't know</input>
+                            </label>
+                        </div>
+
+                        <div id="img2_E">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImages,'img2.jpg')}" ></img>
+                        </div>
+
+                        <div id="img3_E">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImages,'img3.jpg')}" ></img>
+                        </div>
+
+                        <div id="img4_E">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImages,'img4.jpg')}"></img>
+                        </div>
+
+                        <div id="img5_E">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImages,'img5.jpg')}"></img>
+                        </div>
+
+                        <div class="question-div">
+                            <label class="Q" for="question2">Q2. How will huge healthcare cuts affect you?<span class="red-dot"> *</span></label>
+                            <br/>
+                            <textarea id="question2_E" name="question2" class="questionTA" cols="75" rows="5"></textarea>
+                        </div>
+
+                        <div id="img6_E">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImages,'img6.jpg')}"></img>
+                        </div>
+
+                        <div class="question-div">
+                            <label class="Q" for="question3">Q3. How will losing your union affect you?</label>
+                            <br/>
+                            <textarea id="question3_E" name="question3" class="questionTA" cols="75" rows="5"></textarea>
+                        </div>
+
+                        <div id="img7_E">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImages,'img7.jpg')}"></img>
+                        </div>
+
+                        <div class="question-div">
+                            <label class="Q" for="question4">Q4. Do you think we as a union should fight to stop healthcare cuts and attacks on workers?<span class="red-dot"> *</span></label>
+                            <br/>
+                            <label>
+                                <input type="radio" name="question4_E" class="radiobutton" value="Strongly agree">Strongly agree</input>
+                            </label>
+                            <label>
+                                <input type="radio" name="question4_E" class="radiobutton" value="Somewhat agree">Somewhat agree</input>
+                            </label>
+                            <label>
+                                <input type="radio" name="question4_E" class="radiobutton" value="Somewhat disagree">Somewhat disagree</input>
+                            </label>
+                            <label>
+                                <input type="radio" name="question4_E" class="radiobutton" value="Strongly disagree">Strongly disagree</input>
+                            </label>
+                        </div>
+
+                        <div id="img8_E">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImages,'img8.jpg')}"></img>
+                        </div>
+
+                        <div>
+                            <label for="member-email_E">Member's Email<span class="red-dot"> *</span></label>
+                            <div>
+                                <input class="getfield" id="member-email_E" name="member-email" maxlength="40" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="member-cell-phone_E">Member's Cell Phone<span class="red-dot"> *</span></label>
+                            <div>
+                                <input class="getfield" id="member-cell-phone_E" name="member-cell-phone" maxlength="40" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="member-department_E">Member's Department</label>
+                            <div>
+                                <input class="getfield" id="member-department_E" name="member-department" maxlength="40" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="member-empid_E">Member's Employee ID</label>
+                            <div>
+                                <input class="getfield" id="member-empid_E" name="member-empid" maxlength="40" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <button id="submit_E" name="submit" class="btn btn-default submit" type="button">Submit</button>
+                    </form>
+
+                    <form name="main-form" id="form-spanish" class="no-show">
+                        <div id="LeaderTitle">
+                            <h2>Líder</h2>
+                        </div>
+                        <button id="reset_S" name="reset" class="btn reset" type="button">Reiniciar</button>
+                        <div class="first-name-div">
+                            <label for="leader_first_name_S">Nombre<span class="red-dot"> *</span></label>
+                        </div>
+                        <div>
+                            <input class="getfield" id="leader_first_name_S" maxlength="40" name="leader_first_name" size="20" type="text" autofocus="true"></input>
+                        </div>
+                        <div class="last-name-div">
+                            <label for="leader_last_name_S">Apellido<span class="red-dot"> *</span></label>
+                        </div>
+                        <div>
+                            <input class="getfield" id="leader_last_name_S" maxlength="80" name="leader_last_name" size="20" type="text"></input>
+                        </div>
+                        <h3>Nombre de la instalación el miembro<span class="red-dot"> *</span></h3>
+                        <div class="SelectList">
+                            <select id="EmployersSelectList_S"></select>
+                        </div>
+                        <h2>Miembro</h2>
+                        <div>
+                            <label for="member_first_name_S">Nombre<span class="red-dot"> *</span></label>
+                            <div>
+                                <input class="getfield" id="member_first_name_S" maxlength="40" name="member_first_name" size="20" type="text"></input>
+                            </div>
+                        </div>
+                        <div>
+                            <label for="member_last_name_S">Apellido<span class="red-dot"> *</span></label>
+                            <div>
+                                <input class="getfield" id="member_last_name_S" maxlength="80" name="member_last_name" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <div id="img1_S" class="img-div">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImagesSpanish,'img1.jpg')}" alt="November election results"></img>
+                        </div>
+
+                        <div class="question-div">
+                            <label class="Q" for="question1">Q1. ¿Cómo piensa que le afectarán a usted los resultados de las elecciones de noviembre?<span class="red-dot"> *</span></label>
+                            <br/>
+                            <label>
+                                <input type="radio" name="question1_S" class="radiobutton" value="Negatively">Negativamente</input>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="question1_S" class="radiobutton" value="Positively">Positivamente</input>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="question1_S" class="radiobutton" value="Won't affect me">No me afectarán</input>
+                            </label>
+
+                            <label>
+                                <input type="radio" name="question1_S" class="radiobutton" value="Don't know">No sé</input>
+                            </label>
+                        </div>
+
+                        <div id="img2_S">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImagesSpanish,'img2.jpg')}" ></img>
+                        </div>
+
+                        <div id="img3_S">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImagesSpanish,'img3.jpg')}" ></img>
+                        </div>
+
+                        <div id="img4_S">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImagesSpanish,'img4.jpg')}"></img>
+                        </div>
+
+                        <div id="img5_S">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImagesSpanish,'img5.jpg')}"></img>
+                        </div>
+
+                        <div class="question-div">
+                            <label class="Q" for="question2">Q2. ¿Cómo le afectarían a usted los inmensos recortes a la atención médica?<span class="red-dot"> *</span></label>
+                            <br/>
+                            <textarea id="question2_S" name="question2_S" class="questionTA" cols="75" rows="5"></textarea>
+                        </div>
+
+                        <div id="img6_S">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImagesSpanish,'img6.jpg')}"></img>
+                        </div>
+
+                        <div class="question-div">
+                            <label class="Q" for="question3">Q3. ¿Cómo le afectaría a usted perder su unión?</label>
+                            <br/>
+                            <textarea id="question3_S" name="question3_S" class="questionTA" cols="75" rows="5"></textarea>
+                        </div>
+
+                        <div id="img7_S">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImagesSpanish,'img7.jpg')}"></img>
+                        </div>
+
+                        <div class="question-div">
+                            <label class="Q" for="question4">Q4. ¿Piensa usted que, como unión, nosotros deberíamos luchar para impedir los recortes a la atención médica y los ataques contra los trabajadores?<span class="red-dot"> *</span></label>
+                            <br/>
+                            <label>
+                                <input type="radio" name="question4_S" class="radiobutton" value="Strongly agree">Totalmente de acuerdo</input>
+                            </label>
+                            <label>
+                                <input type="radio" name="question4_S" class="radiobutton" value="Somewhat agree">Parcialmente de acuerdo</input>
+                            </label>
+                            <label>
+                                <input type="radio" name="question4_S" class="radiobutton" value="Somewhat disagree">Parcialmente en desacuerdo</input>
+                            </label>
+                            <label>
+                                <input type="radio" name="question4_S" class="radiobutton" value="Strongly disagree">Totalmente en desacuerdo</input>
+                            </label>
+                        </div>
+
+                        <div id="img8_S">
+                            <img src="{!URLFOR($Resource.LeaderOutreachImagesSpanish,'img8.jpg')}"></img>
+                        </div>
+
+                        <div>
+                            <label for="member-email_S">Correo electrónico del miembro<span class="red-dot"> *</span></label>
+                            <div>
+                                <input class="getfield" id="member-email_S" name="member-email" maxlength="40" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="member-cell-phone_S">Teléfono celular del miembro<span class="red-dot"> *</span></label>
+                            <div>
+                                <input class="getfield" id="member-cell-phone_S" name="member-cell-phone" maxlength="40" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="member-department_S">Departamento celular del miembro</label>
+                            <div>
+                                <input class="getfield" id="member-department_S" name="member-department" maxlength="40" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="member-empid_S">Identificación del empleado del miembro</label>
+                            <div>
+                                <input class="getfield" id="member-empid_S" name="member-empid_S" maxlength="40" size="20" type="text"></input>
+                            </div>
+                        </div>
+
+                        <button id="submit_S" name="submit" class="btn btn-default submit" type="button">Submit</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ModalLoadingDiv" class="modalDialog no-show">
+        <div>
+            <h2>Loading data...</h2>
+        </div>
+    </div>
+
+    </body>
+
+    <script type="text/javascript">
+        'use strict';
+
+        function employersHandler(e) {
+            selectedEmpId = e.target.value;
+        }
+
+        function init() {
+            sessionId     = "{!$Api.Session_ID}";
+            userId        = "{!$User.Id}";
+            userFirstName = "{!$User.FirstName}";
+            userLastName  = "{!$User.LastName}";
+            divParam      = "{!$CurrentPage.parameters.div}"   || '';
+            langParam     = "{!$CurrentPage.parameters.lang}"  || '';
+            debugParam    = "{!$CurrentPage.parameters.debug}" || '';
+            updateTxArray = [];
+            empDataArray  = [];
+            empMap        = {};
+            selectedEmpId = 0;
+
+            divParam   = divParam.toLowerCase();
+            langParam  = langParam.toLowerCase();
+            debugParam = debugParam.toLowerCase();
+
+            spanishForm     = document.getElementById('form-spanish');
+            englishForm     = document.getElementById('form-english');
+            modalLoadingDiv = document.getElementById('ModalLoadingDiv');
+
+            if(langParam) {
+                if(langParam == 'english') {
+                    englishForm.setAttribute('class', 'show');
+                    assignControls('E');
+                    assignButtons('E');
+                }
+                else {
+                    spanishForm.setAttribute('class', 'show');
+                    assignControls('S');
+                    assignButtons('S');                }
+            }
+            else {
+                englishForm.setAttribute('class', 'show');
+                assignControls('E');
+                assignButtons('E');
+            }
+            employersDropdown.addEventListener("change",employersHandler,false);
+            addOption(employersDropdown,'Employers',0);
+            submitButton.addEventListener("click",saveResponse,false);
+            resetButton.addEventListener("click",reset,false);
+        }
+
+        function assignControls(suffix) {
+            leaderFirstName  = document.getElementById('leader_first_name_' + suffix);
+            leaderLastName   = document.getElementById('leader_last_name_'  + suffix);
+            memberFirstName  = document.getElementById('member_first_name_' + suffix);
+            memberLastName   = document.getElementById('member_last_name_'  + suffix);
+            empId            = selectedEmpId;
+            answer1          = getRadioValue('question1_'           + suffix);
+            answer2          = document.getElementById('question2_' + suffix);
+            answer3          = document.getElementById('question3_' + suffix);
+            answer4          = getRadioValue('question4_'           + suffix);
+            memberEmail      = document.getElementById('member-email_'      + suffix);
+            memberCellPhone  = document.getElementById('member-cell-phone_' + suffix);
+            memberDepartment = document.getElementById('member-department_' + suffix);
+            memberEmpid      = document.getElementById('member-empid_'      + suffix);
+        }
+
+        function assignButtons(suffix) {
+            employersDropdown = document.getElementById('EmployersSelectList_' + suffix);
+            submitButton      = document.getElementById('submit_' + suffix);
+            resetButton       = document.getElementById('reset_'  + suffix);
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = 'Missing';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function addOption(dropDown,name,id) {
+            var opt = document.createElement("option");
+            opt.text  = name;
+            opt.value = id;
+            dropDown.add(opt, null);
+        }
+
+        function processAccounts(results) {
+            return new Promise(function (resolve, reject) {
+                let len, rec, i;
+                let empId, empName, region, division, ampPos,empNameA,empNameB;
+                len = results.length;
+                if(len > 0) {
+                    for (i = 0; i < len; i++) {
+                        empId    = empName = region = division = '';
+                        rec      = results[i];
+                        empId    = rec.Id;
+                        region   = rec.Region__c;
+                        division = rec.Account_Group__c;
+                        empName  = rec.Name.toLowerCase();
+                        ampPos   = empName.indexOf('amp;');
+                        if(ampPos != -1) {
+                            empNameB = empName.substr(0,ampPos);
+                            empNameA = empName.substr(ampPos+4);
+                            empName  = empNameB + empNameA;
+                        }
+                        empName = toProperCase(empName);
+                        if(divParam) {
+                            if(divParam.toLowerCase() == division.toLowerCase()) {
+                                addOption(employersDropdown, empName, empId);
+                                empMap[empId] = {Id:empId,Name:empName,Region:region,Division:division};
+                            }
+                        }
+                        else {
+                            addOption(employersDropdown, empName, empId);
+                            empMap[empId] = {Id:empId,Name:empName,Region:region,Division:division};
+                        }
+
+                    }
+                }
+                showLoadingMsg(false);
+                resolve('ok');
+            });
+        }
+
+        function getAccountData() {
+            return new Promise(function (resolve, reject) {
+                LeaderOutreachController.getAccountData( (result, event) => {
+                    if (event.status)
+                        resolve(result);
+                    else
+                        reject(result);
+                });
+            });
+        }
+
+        function spawn(generatorFunc) {
+            function continuer(verb, arg) {
+                var result;
+                try {
+                    result = generator[verb](arg);
+                } catch (err) {
+                    return Promise.reject(err);
+                }
+                if (result.done) {
+                    return result.value;
+                } else {
+                    return Promise.resolve(result.value).then(onFulfilled, onRejected);
+                }
+            }
+            var generator = generatorFunc();
+            var onFulfilled = continuer.bind(continuer, "next");
+            var onRejected = continuer.bind(continuer, "throw");
+            return onFulfilled();
+        }
+
+        function showLoadingMsg(show) {
+
+            if(show) // modal window fake
+            {
+                console.log('showLoadingMsg - show');
+                modalLoadingDiv.setAttribute('class', 'modalDialog');
+            }
+            else {
+                console.log('showLoadingMsg - hide');
+                modalLoadingDiv.setAttribute('class', 'no-show');
+            }
+
+        }
+
+        function setRadio(radioName) {
+            let radios = document.getElementsByName(radioName);
+            radios[1].checked = true;
+        }
+
+        function resetRadio(radioName) {
+            let radios = document.getElementsByName(radioName);
+            let selectedValue = '';
+            for (var i = 0; i < radios.length; i++) {
+                radios[i].checked=false;
+            }
+        }
+
+        function getRadioValue(radioName) {
+            let radios = document.getElementsByName(radioName);
+            let selectedValue = '';
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    selectedValue = radios[i].value;
+                    break;
+                }
+            }
+            return selectedValue;
+        }
+
+        function reset() {
+            memberFirstName.value  = '';
+            memberLastName.value   = '';
+            answer2.value          = '';
+            answer3.value          = '';
+            memberEmail.value      = '';
+            memberCellPhone.value  = '';
+            memberDepartment.value = '';
+            memberEmpid.value      = '';
+            if(langParam == 'spanish') {
+                resetRadio('question1_S');
+                resetRadio('question4_S');
+            }
+            else {
+                resetRadio('question1_E');
+                resetRadio('question4_E');
+            }
+            selectedEmpId = 0;
+            employersDropdown.selectedIndex = 0;
+        }
+
+        function setTestData() {
+            leaderFirstName.value  = 'Graham';
+            leaderLastName.value   =  'Smith';
+            memberFirstName.value  = 'Jake';
+            memberLastName.value   = 'Decker';
+            answer2.value          = 'Answer to Q2.';
+            answer3.value          = 'Answer to Q3.';
+            memberEmail.value      = 'member@test.com';
+            memberCellPhone.value  = '456 435 5453';
+            memberDepartment.value = 'A&E';
+            memberEmpid.value      = '123456';
+            employersDropdown.selectedIndex = 3;
+            if(langParam == 'spanish') {
+                setRadio('question1_S');
+                setRadio('question4_S');
+            }
+            else {
+                setRadio('question1_E');
+                setRadio('question4_E');
+            }
+        }
+
+        function saveResponse() {
+            let missedList,missedArray = [];
+            let answer1Tx,answer2Tx,answer3Tx,answer4Tx,memberEmailTx,memberCellPhoneTx,memberDepartmentTx,memberEmpidTx;
+            let leaderFirstNameTx,leaderLastNameTx,memberFirstNameTx,memberLastNameTx,empIdTx;
+            let leaderOutreachTx;
+
+            updateTxArray = [];
+
+            if(leaderFirstName.value == '')
+                missedArray.push("Leader First Name");
+            else
+                leaderFirstNameTx = leaderFirstName.value;
+
+            if(leaderFirstName.value == '')
+                missedArray.push("Leader Last Name");
+            else
+                leaderLastNameTx = leaderLastName.value;
+
+            if(selectedEmpId == 0)
+                missedArray.push("Facility");
+            else
+                empIdTx = selectedEmpId;
+
+            if(memberFirstName.value == '')
+                missedArray.push("Member First Name");
+            else
+                memberFirstNameTx = memberFirstName.value;
+
+            if(memberLastName.value == '')
+                missedArray.push("Member Last Name");
+            else
+                memberLastNameTx = memberLastName.value;
+
+            if(langParam == 'spanish') {
+                answer1 = getRadioValue('question1_S');
+                answer4 = getRadioValue('question4_S');
+            }
+            else {
+                answer1 = getRadioValue('question1_E');
+                answer4 = getRadioValue('question4_E');
+            }
+
+            if(answer1 == '')
+                missedArray.push("question1");
+            else
+                answer1Tx = answer1;
+
+            if (answer2.value == '')
+                missedArray.push("question2");
+            else
+                answer2Tx = answer2.value;
+
+            if (answer3.value == '')
+                missedArray.push("question3");
+            else
+                answer3Tx = answer3.value;
+
+            if(answer4 == '')
+                missedArray.push("question4");
+            else
+                answer4Tx = answer4;
+
+            if(memberEmail.value == '' || memberEmail.value.indexOf('@') == -1 )
+                missedArray.push("Member Email");
+            else
+                memberEmailTx = memberEmail.value;
+
+            if(memberCellPhone.value == '')
+                missedArray.push("Member Cell Phone");
+            else
+                memberCellPhoneTx = memberCellPhone.value;;
+
+            if(memberDepartment.value != '')
+                memberDepartmentTx = memberDepartment.value;
+
+            if(memberEmpid.value != '')
+                memberEmpidTx = memberEmpid.value;
+
+            if(missedArray.length > 0) {
+                missedList = missedArray.join();
+                if(langParam == 'spanish')
+                    alert('Por favor, complete toda la informacion requerida y responda todas las preguntas. Usted ha omitido...'  + missedList);
+                else
+                    alert('Please enter required fields and answer all questions.\nYou skipped ' + missedList);
+            }
+            else {
+                leaderOutreachTx = {};
+                leaderOutreachTx.LeaderFirstName  = leaderFirstNameTx;
+                leaderOutreachTx.LeaderLastName   = leaderLastNameTx;
+                leaderOutreachTx.memberFirstName  = memberFirstNameTx;
+                leaderOutreachTx.memberLastName   = memberLastNameTx;
+                leaderOutreachTx.empId            = empIdTx;
+                leaderOutreachTx.Answer1          = answer1Tx;
+                leaderOutreachTx.Answer2          = answer2Tx;
+                leaderOutreachTx.Answer3          = answer3Tx;
+                leaderOutreachTx.Answer4          = answer4Tx;
+                leaderOutreachTx.memberEmail      = memberEmailTx;
+                leaderOutreachTx.memberDepartment = memberDepartmentTx;
+                leaderOutreachTx.memberCellPhone  = memberCellPhoneTx;
+                leaderOutreachTx.memberEmpid      = memberEmpidTx;
+                updateTxArray.push(JSON.stringify(leaderOutreachTx));
+                updateSalesforce();
+            }
+        }
+
+        function updateSalesforce() {
+            return new Promise(function(resolve, reject) {
+                LeaderOutreachController.updateLeaderOutreach(updateTxArray, (result, event) => {
+                    if(result.length == 0) {
+                        alert('Saved to Salesforce');
+                        resolve(result);
+                    }
+                    else {
+                        let eType  = event.type;
+                        let eMsg   = event.message;
+                        let eWhere = event.where;
+                        alert('Save error - ' + result[0]);
+                        console.log(eType);
+                        console.log(eMsg);
+                        if(eWhere != undefined) console.log(eWhere);
+                        reject(event);
+                    }
+                });
+            });
+        }
+
+        var answer1, answer2, answer3, answer4, memberEmail, memberCellPhone, memberDepartment, memberEmpid;
+        var leaderFirstName,leaderLastName,memberFirstName,memberLastName,empId;
+        var empMap;
+        var selectedEmpId,submitButton,resetButton,updateTxArray;
+        var accountData,empDataArray;
+        var employersDropdown,modalLoadingDiv,englishForm,spanishForm;
+        var sessionId,userId,userFirstName,userLastName,divParam,langParam,debugParam;
+
+        // ***************** Main Program Entry *****************
+        init();
+        if(debugParam == 'true') setTestData();
+        showLoadingMsg(true);
+
+        spawn(function *() {
+            accountData = yield getAccountData();
+            yield processAccounts(accountData);
+        });
+
+    </script>
+    </html>
+</apex:page>

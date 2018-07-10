@@ -1,0 +1,359 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{!URLFOR($Resource.mo_assets, '/mo_assetsicons/mo144.png')}"></link>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{!URLFOR($Resource.mo_assets, '/mo_assetsicons/mo114.png')}"></link>
+      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{!URLFOR($Resource.mo_assets, '/mo_assetsicons/mo72.png')}"></link>
+                    <link rel="apple-touch-icon-precomposed" href="{!URLFOR($Resource.mo_assets, '/mo_assetsicons/mo57.png')}"></link>
+                                   <link rel="shortcut icon" href="{!URLFOR($Resource.mo_assets, '/mo_assetsicons/mo32.png')}"></link>
+                                   
+    <title>SEIU-UHW Mobile Organizer</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+</head>
+
+  <body>
+  <div align="center">
+  <table border="0"> 
+  <tr valign="top">
+  <td align="center">
+  <div align="center">
+    <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_main_medium.png')}"></img><br></br>
+
+  
+  <table cellpadding="10">
+  <tr valign="top">
+  <td align="left">
+  Employers:
+  <font size="-2">
+    <div id="divEms"></div>
+  </font>
+  </td>
+  <td align="left">
+  Surveys:
+  <font size="-2">
+    <div id="divSurvs"></div>
+  </font>
+  </td>
+    
+  </tr>
+  </table>
+  
+  <script language="JavaScript">
+  
+    var emNames = localStorage.getItem("mo_sync_emnames");
+    var syncTs = localStorage.getItem("mo_last_sync");
+    var emids = localStorage.getItem("mo_sync_emids");
+    var questions = localStorage.getItem("mo_sync_questions");
+
+    var camIds = JSON.parse(localStorage.getItem("mo_sync_cams"));
+
+    var lastRecord = null;
+
+
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    //
+    //  check if one of the current campaign is a Petition management campaign
+    //    
+    var petitionCampaign = false;
+    try {
+      var query = "select Petition_Campaign__c from UHW_Campaign__c where ";
+      for (var cdex = 0; cdex < camIds.length; cdex++) {
+        if (cdex > 0) {
+          query += " OR ";
+        }
+        query += " Id=\'" + camIds[cdex] + "\' ";
+      }
+      var result = sforce.connection.query(query); 
+      var records1 = result.getArray('records');     
+      for (var rdex = 0; rdex < records1.length; rdex++) {
+        lastRecord = records1[rdex];
+        if (records1[rdex].Petition_Campaign__c == "true") {
+          petitionCampaign = true;
+        }
+      }
+    } catch(e) { 
+       alert('An Error has Occured. Error:' +e + "\n" + JSON.stringify(lastRecord)); 
+    }  
+
+    var userEmail = ("{!($User.Email)}").toLowerCase();
+    
+    //if (userEmail.indexOf("bborcherding") < 0) {
+    //  navigateTo("{! $Page.MO_Downtime_Page}");
+    //}
+    
+
+    
+    var currentTs = (new Date()).getTime();
+    //alert(currentTs);
+    if (emNames == null || emNames == "") {
+      navigateTo("{! $Page.MO_Choose_Page}");
+    //
+    //  TEMPORARY LOGIC FOR NEW ORGANIZING
+    //
+    } else if (emNames.toUpperCase().indexOf("HI-DESERT") >= 0) {
+      navigateTo("{!$Page.MONO_Main_Page}");
+     
+    } else if (currentTs - syncTs > (24 * 60 * 60 * 1000) || syncTs < 1436566833978) {
+      //alert("Mobile Organizer will be temporarily unavailable from noon to 12:30 pm Pacific time on Friday, July 10th.  If you have any questions or concerns please contact Ben Borcherding or Sarah Steck.");
+      navigateTo("{! $Page.MO_Sync_Page}?emids=" + emids);
+    }
+    
+
+    
+    var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+    
+    document.getElementById("divEms").innerHTML = toProperCase(emNames.replace(/,/g, "<br/>"));
+    document.getElementById("divSurvs").innerHTML = questions.replace(/,/g, "<br/>");    
+    
+
+    
+  </script>
+  
+  </div>
+  
+   
+  <br></br>
+  <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_Dashboard_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/dashboard_small.png')}"></img>
+  &nbsp;&nbsp;
+  Dashboard
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  <button class="btn btn-lg btn-primary btn-block" type="submit"   onclick="navigateTo('{! $Page.MO_Browse_Landing_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/list_small.png')}"></img>
+  &nbsp;&nbsp;
+  Browse
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  <button class="btn btn-lg btn-primary btn-block" type="submit"  onclick="navigateTo('{! $Page.MO_Search_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_small.png')}"></img>
+  &nbsp;&nbsp;
+  Search
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+  <div id="June2ndBusDiv">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_June_2nd_Bus}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/bus_small.png')}"></img>
+  &nbsp;&nbsp;
+  June 2nd Buses
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  </div>
+  
+  <div id="MinWageDiv">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_Signatures_Report}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/politics_small.png')}"></img>
+  &nbsp;&nbsp;
+  Signatures Dashboard
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  </div>
+  
+    <div id="ExecCompDiv">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_Exec_Comp_Dashboard}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/politics_small.png')}"></img>
+  &nbsp;&nbsp;
+  Exec Comp Dashboard
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  </div>
+  
+  <div id="StretchNomineeDiv">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_Stretch_Nominees}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/stretch_small.png')}"></img>
+  &nbsp;&nbsp;
+  Stretch Nominees
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  </div>
+
+  <div id="ConsolidationDiv">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_Manage_Teams}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/stretch_small.png')}"></img>
+  &nbsp;&nbsp;
+  Manage Teams
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  </div>
+  
+  <div id="PetitionDiv">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.PetitionTracking}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/sign_small.png')}"></img>
+  &nbsp;&nbsp;
+  Petitions
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  </div>
+  
+      <div id="ElectionShiftsDiv">
+    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_Election_Dashboard}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/politics_small.png')}"></img>
+  &nbsp;&nbsp;
+  Political Shifts
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  </div>
+  
+    <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_Leaders_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/leaders_small.png')}"></img>
+  &nbsp;&nbsp;
+  Leaders
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+  
+  <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="navigateTo('{! $Page.MO_Enter_Survey_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/survey_small.png')}"></img>
+  &nbsp;&nbsp;
+  Enter Survey
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+  
+    <button class="btn btn-lg btn-primary btn-block" type="submit"  onclick="navigateTo('{! $Page.MO_Resp_List_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/az_small.png')}"></img>
+  &nbsp;&nbsp;
+  Response Lists
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+  <button class="btn btn-lg btn-primary btn-block" type="submit"  onclick="navigateTo('{! $Page.MO_Choose_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/sync_small.png')}"></img>
+  &nbsp;&nbsp;
+  Change Sync
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+    
+<!--
+    <button class="btn btn-lg btn-primary btn-block" type="submit">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="mo_assets/images/feedback_small.png">
+  &nbsp;
+  Chatter
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+  -->
+
+  <div id="SheetDiv">
+  <button class="btn btn-lg btn-primary btn-block" type="submit"  onclick="navigateTo('{! $Page.MO_Sheet_View_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/sheet_small.png')}"></img>
+  &nbsp;&nbsp;
+  Sheet View
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+    <button class="btn btn-lg btn-primary btn-block" type="submit"  onclick="navigateTo('{! $Page.MO_MCLs_Page}');">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mcl_small.png')}"></img>
+  &nbsp;&nbsp;
+  MCLs
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+  </div>
+  
+  <br></br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <br></br>
+  <button class="btn btn-lg btn-primary btn-block" type="submit"  onclick="navigateTo('/_ui/core/chatter/ui/ChatterPage');">Back to Salesforce</button><br></br>
+  
+  
+  
+  </td>
+  </tr>
+  </table>
+  <br>&nbsp;</br>
+        &copy; 2017 SEIU-UHW. All rights reserved.
+  </div>
+  
+<script language="JavaScript">
+
+    sessionStorage.setItem("mo_from_manage_teams", null);
+    sessionStorage.getItem("mo_enter_survey_rselect", null);
+
+    
+    if (qcodes.indexOf("D02") < 0) {
+      //document.getElementById("ConsolidationDiv").innerHTML = "";
+    }
+    
+    if (petitionCampaign == false) {
+      document.getElementById("PetitionDiv").innerHTML = "";
+    }
+    
+    if (qcodes.indexOf("S03") < 0) {
+      document.getElementById("StretchNomineeDiv").innerHTML = "";
+    }
+    if (qcodes.indexOf("J2A") < 0) {
+      document.getElementById("June2ndBusDiv").innerHTML = "";
+    }
+    if (qcodes.indexOf("P15") < 0) {
+        document.getElementById("MinWageDiv").innerHTML = "";
+    } else {
+      //only show for Kaiser and Community, blank out for Hospitals
+      if (emNames.toLowerCase().indexOf("kaiser") < 0 && emNames.toLowerCase().indexOf("community") < 0) {
+        document.getElementById("MinWageDiv").innerHTML = "";
+      }
+    }
+    
+    
+    if (qcodes.indexOf("P6S") < 0) {
+        document.getElementById("ExecCompDiv").innerHTML = "";    
+    }
+    
+    if (localStorage.getItem("mo_sync_shifts_code") == null || localStorage.getItem("mo_sync_shifts_code") == "") {
+      document.getElementById("ElectionShiftsDiv").innerHTML = "";
+    }
+    
+    if ((sforce != null && sforce.one) || navigator.userAgent.toLowerCase().indexOf("ios") >= 0) {
+      document.getElementById("SheetDiv").innerHTML = "";
+    }
+
+
+
+</script>  
+  
+    </body>
+</html>
+
+
+</apex:page>

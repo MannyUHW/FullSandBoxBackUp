@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>SOFA Job</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>SOFA Jobs</value>
+    </caseValues>
+    <fields>
+        <label><!-- Count Start --></label>
+        <name>CountStart__c</name>
+    </fields>
+    <fields>
+        <label><!-- Count Stop --></label>
+        <name>CountStop__c</name>
+    </fields>
+    <fields>
+        <label><!-- Count --></label>
+        <name>Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Count --></label>
+        <name>JobCount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Errors --></label>
+        <name>JobErrors__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Id --></label>
+        <name>JobId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Items Total --></label>
+        <name>JobItemsTotal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Items --></label>
+        <name>JobItems__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Start --></label>
+        <name>JobStart__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Status --></label>
+        <name>JobStatus__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Stop --></label>
+        <name>JobStop__c</name>
+    </fields>
+    <fields>
+        <label><!-- ObjectAPIName --></label>
+        <name>ObjectAPIName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Soql --></label>
+        <name>Soql__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,191 @@
+<apex:page sidebar="false" showHeader="false"  standardStylesheets="false">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"></meta>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+
+<div align="center">
+
+
+<table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.Medi_Cal_Enter_Survey}');"><img border="0" src="{!URLFOR($Resource.Lift_Up_2016)}"/></a>
+  </td>
+  <td align="center" width="25%">
+    &nbsp;
+  </td>
+  </tr>
+  </table>
+
+  <font size="+2"><div id="titleDiv">Medi-Cal Stories</div></font>
+<br>&nbsp;</br>
+
+
+  <button class="btn btn-primary" type="submit" onclick="search();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_small.png')}"></img>
+  &nbsp;&nbsp;
+  Enter New Survey
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  <br>&nbsp;</br>
+
+
+
+<script language="JavaScript">
+var debugRecord = null;
+try {
+   // query Salesforce using SOQL
+   sforce.connection.sessionId = "{!$Api.Session_ID}";
+   var user = sforce.connection.getUserInfo();
+   var userName = user.userName;
+   var query = "SELECT ID, Name, Division, Title from User WHERE User.username=\'" + userName + "\'";
+   var result = sforce.connection.query(query);
+   var records = result.getArray("records");
+   if (records.length != 1) throw "unable to find user";
+   var uid = records[0].Id;
+   var userFullName = records[0].Name;
+   var title = records[0].Title;
+   var division = records[0].Division;
+   var division2 = division.toLowerCase();
+   
+   var query = "Select Id, Name, Division__c, Employer_Name__c, Contact_Name__c, Home_Phone__c, Mobile_Phone__c, Interviewer__c, Interviewer__r.Name, Interviewer__r.HomePhone, Interviewer__r.MobilePhone, Interviewer__r.Department, Interviewer__r.COPE_Pledge__c, Kidney_Disease__c, Coordinator_Reviewed__c, IsMember__c, MediCal_Last_5_Years__c, Count_Me_In__c, Coordinator__c, Organizer__c, Owner.Name from MediCal_Story__c order by Division__c, Coordinator__c, Organizer__c";
+   var records = sforce.connection.query(query);
+   var records0 = records.getArray('records');
+   var idArray = new Array();   
+   alert(records0.length);
+   if (records0.length ==0) {
+     document.write("<font color=\"orange\">No Medi-Cal Stories found.</font>");
+   } else {
+     var reportWriter = "<table cellpadding=\"7\">";
+     reportWriter  += "<tr valign=\"bottom\">";
+     reportWriter  += "<td width=\"40%\" align=\"center\" bgcolor=\"#481C60\"><font color=\"white\">Interviewee</font></td>\n";  
+     reportWriter  += "<td width=\"40%\" align=\"center\" bgcolor=\"#481C60\"><font color=\"white\">Interviewer</font></td>\n";  
+     reportWriter  += "<td align=\"center\" bgcolor=\"#481C60\"><font color=\"white\">Coord<br/>Rvw?</font></td>\n";       
+     reportWriter  += "</tr>";
+     for (var b = 0; b < 4; b++) {
+       for (var i=0;i < records0.length; i++){
+         debugRecord = records0[i];
+         if (records0[i].Coordinator__c == null) {
+           records0[i].Coordinator__c = "Vacant";
+         }
+         if (records0[i].Organizer__c == null) {
+           records0[i].Organizer__c = "Vacant";
+         }         
+         var doOutput = false;
+         if (b == 0 && userFullName.toLowerCase() == records0[i].Owner.Name.toLowerCase()) {
+           doOutput = true;
+         } else if (b == 1 && (userFullName.toLowerCase() == records0[i].Coordinator__c.toLowerCase() || userFullName.toLowerCase() == records0[i].Organizer__c.toLowerCase())) {
+           doOutput = true;
+         } else if (b == 2 && division2 == records0[i].Division__c.toLowerCase())  {
+           doOutput = true;
+         } else {
+           doOutput = true;
+         }
+         if (doOutput && records0[i].Interviewer__c != null && idArray.indexOf(records0[i].Id) < 0) {
+           idArray.push(records0[i].Id);
+           reportWriter  += "<tr valign=\"top\">\n";
+           reportWriter  += ("<td>");
+           reportWriter  += "<a href=\"javascript:navigateTo(\'{! $Page.Medi_Cal_Enter_Survey}?msname=" + records0[i].Name + "\');\">";
+           reportWriter  += records0[i].Contact_Name__c;
+           reportWriter  += "</a><br/>";
+           reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Is Medi-Cal?&nbsp;";
+           if (records0[i].MediCal_Last_5_Years__c == true) {
+             reportWriter  += "&#x2713;";
+           }
+           reportWriter  += "<br/>";
+           if (records0[i].Mobile_Phone__c != null) {
+             reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H:&nbsp;" + records0[i].Mobile_Phone__c+ "<br/>";
+           }
+           
+                      
+           if (records0[i].Home_Phone__c != null) {
+             reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H:&nbsp;" + records0[i].Home_Phone__c + "<br/>";
+           }
+           reportWriter  += ("</td>\n");
+           reportWriter  += ("<td>");
+           reportWriter  += records0[i].Interviewer__r.Name + "<br/>";
+           reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Orgzr:&nbsp;" + records0[i].Organizer__c + "<br/>";           
+           reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + records0[i].Employer_Name__c + "<br/>";
+           reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + records0[i].Interviewer__r.Department + "<br/>";           
+           if (records0[i].Mobile_Phone__c != null) {
+             reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H:&nbsp;" + records0[i].Mobile_Phone__c+ "<br/>";
+           }  
+           if (records0[i].Home_Phone__c != null) {
+             reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H:&nbsp;" + records0[i].Home_Phone__c + "<br/>";
+           }
+           var cope = 0.0;
+           if (records0[i].Interviewer__r.COPE_Pledge__c != null) {
+             cope = parseInt(records0[i].Interviewer__r.COPE_Pledge__c);
+           }            
+           reportWriter  += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H:&nbsp;COPE:&nbsp;$" + cope.toFixed(2);
+           reportWriter  += ("</td>\n");
+           reportWriter  += ("<td align=\"center\">");
+           if (records0[i].Coordinator_Reviewed__c == true) {
+             reportWriter  += "<font size=\"+2\">&#x2713;</font>";
+           }
+           reportWriter  += ("</td>\n");
+           reportWriter  += ("</tr>\n\n");                                            
+         }
+       }
+       reportWriter += "</table>";   
+     }
+     if (idArray.length > 0) {
+       document.write(reportWriter);
+     } else {
+       document.write("<font color=\"orange\">No Medi-Cal Stories found.</font>");
+     }
+   }
+   
+} catch(e) { 
+
+   alert('An Error has occurred. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(debugRecord)); 
+ 
+}   
+   
+</script>
+
+<br>&nbsp;</br>
+
+
+<br>&nbsp;</br>
+
+<br>&nbsp;</br>
+        &copy; 2016 SEIU-UHW. All rights reserved.
+
+</div>
+
+</apex:page>

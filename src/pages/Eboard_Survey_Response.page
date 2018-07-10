@@ -1,0 +1,334 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">google.load('visualization', '1', {packages:['table']}); </script>
+        <apex:includeScript value="{!$Resource.FileSaver}" />
+
+        <style>
+
+            #OrgDiv table th:nth-child(1) {
+                background-color: #95BFCC;
+                text-align:left;
+                width: 150px;
+            }
+
+            #OrgDiv table th:nth-child(2) {
+                background-color: #95BFCC;
+                text-align:right;
+                width: 150px;
+            }
+
+            #SummaryDiv table th:nth-child(1) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+            #SummaryDiv table th:nth-child(2) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+
+            #SummaryDiv table th:nth-child(3) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+
+            #SummaryDiv table th:nth-child(4) {
+                background-color: lightblue;
+                text-align:right;
+                width: 150px;
+            }
+
+            #SummaryDiv table th:nth-child(5) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(1) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+            #DetailDiv table th:nth-child(2) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(3) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(4) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(5) {
+                background-color: lightblue;
+                text-align:left;
+                width: 150px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+    <script type="text/javascript">
+
+        function phoneFormat(s) {
+            var s1;
+            if(s == null || s == '')
+                s1 = 'n/a';
+            else
+                s1 = s.replace('-','');
+            s1 = s1.replace(' ','');
+            s1 = s1.replace('(','');
+            s1 = s1.replace(')','');
+            s1 = s1.substr(0,3) + '-' + s1.substr(3,3) + '-' + s1.substr(6);
+            return s1;
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = '';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function loadResponses() {
+            var responseQuery = "SELECT Collected_By_Name__c,Contact_Name__c,Coordinator__c,Employer_Name__c,Organizer_1__c,Add_Info_Numeric__c FROM Survey_Response__c WHERE Survey_Code__c = 'P15' ORDER BY Collected_By_Name__c ASC NULLS FIRST";
+            //    try {
+            var responseResults = sforce.connection.query(responseQuery);
+            processResponses(responseResults);
+            //    }
+            //    catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processResponses(results) {
+            var records;
+            var collectedByName;
+            var contactName;
+            var coordinator;
+            var employerName;
+            var organizer;
+            var sigCount;
+            var sigNum;
+
+            responseMap = {};
+
+            records = results.getArray('records');
+            for (i = 0; i < records.length; i++) {
+                coordinator     = toProperCase(records[i].Coordinator__c);
+                organizer       = toProperCase(records[i].Organizer_1__c);
+                collectedByName = toProperCase(records[i].Collected_By_Name__c);
+                contactName     = toProperCase(records[i].Contact_Name__c);
+                employerName    = toProperCase(records[i].Employer_Name__c);
+                sigCount        = records[i].Add_Info_Numeric__c;
+                sigNum = parseInt(sigCount);
+
+                if(!responseMap[coordinator])
+                    responseMap[coordinator] = {};
+
+                if(!responseMap[coordinator][organizer])
+                    responseMap[coordinator][organizer] = {};
+
+                if(!responseMap[coordinator][organizer][collectedByName])
+                    responseMap[coordinator][organizer][collectedByName] = {Count:1};
+                else
+                    responseMap[coordinator][organizer][collectedByName].Count++;
+
+                responseTableData.addRow([coordinator, organizer, collectedByName, contactName, sigNum, employerName]);
+            }
+            responseTableData.sort([{column: 0}, {column: 1},{column: 2}]);
+            responseTable.draw(responseTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+
+            responseArray = Object.keys(responseMap);
+
+            var ptr;
+            var coordinatorKey;
+            var organizerKey;
+            var collectorKey;
+            var coordinatorLvlResp;
+            var organizerLvlResp;
+            var collectorCnt;
+
+            for (ptr = 0; ptr < responseArray.length; ptr++) {
+                coordinatorKey     = responseArray[ptr];
+                coordinatorLvlResp = responseMap[coordinatorKey];
+                orgCnt = 0;
+                for (organizerKey in coordinatorLvlResp) {
+                    organizerLvlResp =  responseMap[coordinatorKey][organizerKey];
+                    for (collectorKey in organizerLvlResp) {
+                        collectorCnt =  responseMap[coordinatorKey][organizerKey][collectorKey].Count;
+                        orgCnt += collectorCnt;
+                        summaryTableData.addRow([coordinatorKey, organizerKey, collectorKey, collectorCnt]);
+                    }
+                    organizerTableData.addRow([organizerKey, orgCnt]);
+                }
+            }
+            organizerTableData.sort([{column: 0}]);
+            organizerTable.draw(organizerTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+
+            summaryTableData.sort([{column: 0}, {column: 1},{column: 2}]);
+            summaryTable.draw(summaryTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+        }
+
+        function setStatus(pSuffix,pLabel,pText) {
+            var statTField           = 'statusText'  + pSuffix;
+            var statLField           = 'statusLabel' + pSuffix;
+            var statTFieldId         = document.getElementById(statTField);
+            var statLFieldId         = document.getElementById(statLField);
+            statTFieldId.value       = pText;
+            statLFieldId.textContent = pLabel;
+        }
+
+        function initTables() {
+
+            organizerTable = new google.visualization.Table(orgDiv);
+            organizerTableData = new google.visualization.DataTable();
+            organizerTableData.addColumn('string', 'Organizer');
+            organizerTableData.addColumn('number', 'Leader Count');
+
+            responseTable = new google.visualization.Table(detailDiv);
+            responseTableData = new google.visualization.DataTable();
+            responseTableData.addColumn('string', 'Coordinator');
+            responseTableData.addColumn('string', 'Organizer');
+            responseTableData.addColumn('string', 'Collected By');
+            responseTableData.addColumn('string', 'Contact');
+            responseTableData.addColumn('number', 'Signature Count');
+            responseTableData.addColumn('string', 'Employer');
+
+            summaryTable = new google.visualization.Table(summaryDiv);
+            summaryTableData = new google.visualization.DataTable();
+            summaryTableData.addColumn('string', 'Coordinator');
+            summaryTableData.addColumn('string', 'Organizer');
+            summaryTableData.addColumn('string', 'Collected By');
+            summaryTableData.addColumn('number', 'Leader Count');
+        }
+
+        function exportData() {
+            var successful;
+            var colCount;
+            var rowCount;
+            var colPtr;
+            var rowPtr;
+
+            var cell;
+            var fileSaveAs;
+            var result;
+
+            now           = new Date();
+            localDateTime = (now.toLocaleString());
+            nowDate       = (now.toDateString());
+
+            fileSaveAs    = 'EboardResponsesTo_P15.txt';
+
+            output   = 'Counts by Eboard for Responses to P15 Survey\n';
+            output  += 'data current as of ' + localDateTime + '\n\n';
+            output  += 'Summary by Organizer:\n';
+            exportTable(organizerTableData);
+
+            output  += 'Summary by Coordinator/Organizer/Eboard Member or Leader:\n';
+            exportTable(summaryTableData);
+
+            output  += 'Detail by Coordinator/Organizer/Eboard Member or Leader:\n';
+            exportTable(responseTableData);            var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+
+            var saveTest = saveAs(blob, fileSaveAs);
+        }
+
+        function saveBlob(blob,file) {
+            saveAs(blob, file);
+        }
+
+        function exportTable(tableName) {
+            colCount = tableName.getNumberOfColumns();
+            rowCount = tableName.getNumberOfRows();
+            for (colPtr = 0; colPtr < colCount; colPtr++) {
+                output += tableName.getColumnLabel(colPtr) + '\t';
+            }
+            output += '\n';
+
+            for (rowPtr = 0; rowPtr < rowCount; rowPtr++) {
+                for (colPtr = 0; colPtr < colCount; colPtr++) {
+                    cell = tableName.getValue(rowPtr, colPtr);
+                    if (cell)
+                        output += cell + '\t';
+                    else
+                        output += '\t';
+                }
+                output += '\n';
+            }
+            output += '\n\n';
+
+        }
+        // ***************** Globals *****************
+
+        var organizerTable     = {};
+        var organizerTableData = [];
+        var responseTableData  = [];
+        var responseTable      = {};
+        var summaryTableData   = [];
+        var summaryTable       = {};
+        var responseMap        = {};
+        var responseArray      = [];
+        var orgDiv;
+        var summaryDiv;
+        var detailDiv;
+        var exportButton;
+        var output;
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            orgDiv     = document.getElementById('OrgDiv');
+            summaryDiv = document.getElementById('SummaryDiv');
+            detailDiv  = document.getElementById('DetailDiv');
+
+            initTables();
+            loadResponses();
+
+            exportButton = document.getElementById("ExportButton");
+            exportButton.addEventListener("click", exportData, false);
+
+        });
+
+    </script>
+    <div id="title"><h1>Counts by Eboard for Responses to P15 Survey</h1></div>
+
+    <h4 style="clear:both;">Version 0.1</h4>
+    <hr/>
+
+    <div>
+        <input id="ExportButton" style="padding: 5px;margin-top:10px;" type="Button" value="Export"></input>
+    </div>
+
+    <h2> Summary by Organizer</h2>
+    <div  id = "OrgDiv"></div>
+    <hr/>
+    <h2> Summary by Coordinator/Organizer/Eboard Member or Leader</h2>
+    <div  id = "SummaryDiv"></div>
+    <hr/>
+    <h2> Detail by Coordinator/Organizer/Eboard Member or Leader</h2>
+    <div  id = "DetailDiv"></div>
+    </body>
+</apex:page>

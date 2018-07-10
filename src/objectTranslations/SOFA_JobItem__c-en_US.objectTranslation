@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>SOFA Job Item</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>SOFA Job Items</value>
+    </caseValues>
+    <fields>
+        <label><!-- Count Start --></label>
+        <name>CountStart__c</name>
+    </fields>
+    <fields>
+        <label><!-- Count Stop --></label>
+        <name>CountStop__c</name>
+    </fields>
+    <fields>
+        <label><!-- Count --></label>
+        <name>Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldAPIName --></label>
+        <name>FieldAPIName__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldFormula --></label>
+        <name>FieldFormula__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldIsCalculated --></label>
+        <name>FieldIsCalculated__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldIsCreatable --></label>
+        <name>FieldIsCreatable__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldIsCustom --></label>
+        <name>FieldIsCustom__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldIsFilterable --></label>
+        <name>FieldIsFilterable__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldIsUpdateable --></label>
+        <name>FieldIsUpdateable__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldLength --></label>
+        <name>FieldLength__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldName --></label>
+        <name>FieldName__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldType --></label>
+        <name>FieldType__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Errors --></label>
+        <name>JobErrors__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Id --></label>
+        <name>JobId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Items Total --></label>
+        <name>JobItemsTotal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Items --></label>
+        <name>JobItems__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Status --></label>
+        <name>JobStatus__c</name>
+    </fields>
+    <fields>
+        <label><!-- ObjectAPIName --></label>
+        <name>ObjectAPIName__c</name>
+    </fields>
+    <fields>
+        <label><!-- SOFA JobId --></label>
+        <name>SOFA_JobId__c</name>
+        <relationshipLabel><!-- SOFA Job Items --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

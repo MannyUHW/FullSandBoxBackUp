@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BusinessHoursSettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <businessHours>
+        <active>true</active>
+        <default>true</default>
+        <fridayEndTime>00:00:00.000Z</fridayEndTime>
+        <fridayStartTime>00:00:00.000Z</fridayStartTime>
+        <mondayEndTime>00:00:00.000Z</mondayEndTime>
+        <mondayStartTime>00:00:00.000Z</mondayStartTime>
+        <name>Default</name>
+        <saturdayEndTime>00:00:00.000Z</saturdayEndTime>
+        <saturdayStartTime>00:00:00.000Z</saturdayStartTime>
+        <sundayEndTime>00:00:00.000Z</sundayEndTime>
+        <sundayStartTime>00:00:00.000Z</sundayStartTime>
+        <thursdayEndTime>00:00:00.000Z</thursdayEndTime>
+        <thursdayStartTime>00:00:00.000Z</thursdayStartTime>
+        <timeZoneId>America/Los_Angeles</timeZoneId>
+        <tuesdayEndTime>00:00:00.000Z</tuesdayEndTime>
+        <tuesdayStartTime>00:00:00.000Z</tuesdayStartTime>
+        <wednesdayEndTime>00:00:00.000Z</wednesdayEndTime>
+        <wednesdayStartTime>00:00:00.000Z</wednesdayStartTime>
+    </businessHours>
+    <holidays>
+        <activityDate>2015-03-31</activityDate>
+        <description>CESAR CHAVEZ’S BIRTHDAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CESAR CHAVEZ’S 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-03-31</activityDate>
+        <description>CESAR CHAVEZ’S BIRTHDAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CESAR CHAVEZ’S BIRTHDAY 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-03-31</activityDate>
+        <description>CESAR CHAVEZ’S BIRTHDAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CESAR CHAVEZ’S BIRTHDAY 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-03-30</activityDate>
+        <description>CESAR CHAVEZ’S BIRTHDAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CESAR CHAVEZ’S BIRTHDAY 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2014-12-25</activityDate>
+        <description>CHRISTMAS DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CHRISTMAS DAY</name>
+    </holidays>
+    <holidays>
+        <activityDate>2014-12-25</activityDate>
+        <description>CHRISTMAS DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CHRISTMAS DAY 2014</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-12-25</activityDate>
+        <businessHours>Default</businessHours>
+        <description>CHRISTMAS DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CHRISTMAS DAY 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-12-26</activityDate>
+        <description>CHRISTMAS DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CHRISTMAS DAY 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-12-25</activityDate>
+        <description>CHRISTMAS DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CHRISTMAS DAY 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-12-25</activityDate>
+        <description>CHRISTMAS DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>CHRISTMAS DAY 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-11-27</activityDate>
+        <businessHours>Default</businessHours>
+        <description>DAY AFTER THANKSGIVING</description>
+        <isRecurring>false</isRecurring>
+        <name>DAY AFTER THANKSGIVING 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-11-25</activityDate>
+        <description>DAY AFTER THANKSGIVING</description>
+        <isRecurring>false</isRecurring>
+        <name>DAY AFTER THANKSGIVING 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-11-24</activityDate>
+        <description>DAY AFTER THANKSGIVING</description>
+        <isRecurring>false</isRecurring>
+        <name>DAY AFTER THANKSGIVING 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-11-23</activityDate>
+        <description>DAY AFTER THANKSGIVING</description>
+        <isRecurring>false</isRecurring>
+        <name>DAY AFTER THANKSGIVING 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-07-03</activityDate>
+        <description>INDEPENDENCE DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>INDEPENDENCE DAY 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-07-04</activityDate>
+        <businessHours>Default</businessHours>
+        <description>INDEPENDENCE DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>INDEPENDENCE DAY 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-07-04</activityDate>
+        <description>INDEPENDENCE DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>INDEPENDENCE DAY 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-07-04</activityDate>
+        <description>INDEPENDENCE DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>INDEPENDENCE DAY 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-09-07</activityDate>
+        <description>LABOR DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>LABOR DAY 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-09-05</activityDate>
+        <businessHours>Default</businessHours>
+        <description>LABOR DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>LABOR DAY 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-09-04</activityDate>
+        <description>LABOR DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>LABOR DAY 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-09-03</activityDate>
+        <description>LABOR DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>LABOR DAY 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2014-01-20</activityDate>
+        <description>MARTIN LUTHER KING, JR’s BIRTHDAY</description>
+        <isRecurring>false</isRecurring>
+        <name>MARTIN LUTHER KING, JR’s BIRTHDAY</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-01-18</activityDate>
+        <businessHours>Default</businessHours>
+        <description>MARTIN LUTHER KING, JR’s BIRTHDAY</description>
+        <isRecurring>false</isRecurring>
+        <name>MARTIN LUTHER KING, JR’s BIRTHDAY 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-01-16</activityDate>
+        <description>MARTIN LUTHER KING, JR’s BIRTHDAY</description>
+        <isRecurring>false</isRecurring>
+        <name>MARTIN LUTHER KING, JR’s BIRTHDAY 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-01-15</activityDate>
+        <description>MARTIN LUTHER KING, JR’s BIRTHDAY</description>
+        <isRecurring>false</isRecurring>
+        <name>MARTIN LUTHER KING, JR’s BIRTHDAY 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-05-25</activityDate>
+        <description>MEMORIAL DAY 2015</description>
+        <isRecurring>false</isRecurring>
+        <name>MEMORIAL DAY 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-05-30</activityDate>
+        <description>MEMORIAL DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>MEMORIAL DAY 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-05-29</activityDate>
+        <description>MEMORIAL DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>MEMORIAL DAY 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-05-28</activityDate>
+        <description>MEMORIAL DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>MEMORIAL DAY 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-01-19</activityDate>
+        <description>MARTIN LUTHER KING, 2015</description>
+        <isRecurring>false</isRecurring>
+        <name>MLK 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-01-01</activityDate>
+        <description>NEW YEAR&apos;S DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>NEW YEAR&apos;S DAY</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-01-01</activityDate>
+        <businessHours>Default</businessHours>
+        <description>NEW YEAR&apos;S DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>NEW YEAR&apos;S DAY 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-01-02</activityDate>
+        <description>NEW YEAR&apos;S DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>NEW YEAR&apos;S DAY 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-01-01</activityDate>
+        <description>NEW YEAR&apos;S DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>NEW YEAR&apos;S DAY 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2013-01-01</activityDate>
+        <description>New Year</description>
+        <isRecurring>false</isRecurring>
+        <name>New Year</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-02-16</activityDate>
+        <description>PRESIDENTS’ DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>PRESIDENTS’ DAY 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-02-15</activityDate>
+        <businessHours>Default</businessHours>
+        <description>PRESIDENTS’ DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>PRESIDENTS’ DAY 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-02-20</activityDate>
+        <description>PRESIDENTS’ DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>PRESIDENTS’ DAY 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-02-19</activityDate>
+        <description>PRESIDENTS’ DAY</description>
+        <isRecurring>false</isRecurring>
+        <name>PRESIDENTS’ DAY 2018</name>
+    </holidays>
+    <holidays>
+        <activityDate>2015-11-26</activityDate>
+        <businessHours>Default</businessHours>
+        <description>THANKSGIVING</description>
+        <isRecurring>false</isRecurring>
+        <name>THANKSGIVING 2015</name>
+    </holidays>
+    <holidays>
+        <activityDate>2016-11-24</activityDate>
+        <description>THANKSGIVING</description>
+        <isRecurring>false</isRecurring>
+        <name>THANKSGIVING 2016</name>
+    </holidays>
+    <holidays>
+        <activityDate>2017-11-23</activityDate>
+        <description>THANKSGIVING</description>
+        <isRecurring>false</isRecurring>
+        <name>THANKSGIVING 2017</name>
+    </holidays>
+    <holidays>
+        <activityDate>2018-11-22</activityDate>
+        <description>THANKSGIVING</description>
+        <isRecurring>false</isRecurring>
+        <name>THANKSGIVING 2018</name>
+    </holidays>
+</BusinessHoursSettings>

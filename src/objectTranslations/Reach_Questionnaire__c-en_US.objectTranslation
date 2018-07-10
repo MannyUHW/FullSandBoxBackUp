@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Reach Questionnaire</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Reach Questionnaires</value>
+    </caseValues>
+    <fields>
+        <label><!-- Bargaining Assessment --></label>
+        <name>Bargaining_Assessment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Budget and Job Security --></label>
+        <name>Bargaining_Budget_and_Job_Security__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Current Health Benefits --></label>
+        <name>Bargaining_Current_Health_Benefits__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Fair Disclipline --></label>
+        <name>Bargaining_Fair_Disclipline__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Help Win Contract --></label>
+        <name>Bargaining_Help_Win_Contract__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Important Issues --></label>
+        <name>Bargaining_Important_Issues__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Is Leader --></label>
+        <name>Bargaining_Is_Leader__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Leader Type --></label>
+        <name>Bargaining_Leader_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Nom Comments --></label>
+        <name>Bargaining_Nom_Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Nom Department --></label>
+        <name>Bargaining_Nom_Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Nom Job --></label>
+        <name>Bargaining_Nom_Job__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Nom Name --></label>
+        <name>Bargaining_Nom_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Nom Shift --></label>
+        <name>Bargaining_Nom_Shift__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Patient Care Comments --></label>
+        <name>Bargaining_Patient_Care_Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Patient Care --></label>
+        <name>Bargaining_Patient_Care__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Patients at Risk --></label>
+        <name>Bargaining_Patients_at_Risk__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Pay Comp Other Hosps --></label>
+        <name>Bargaining_Pay_Comp_Other_Hosps__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Pay Competitive --></label>
+        <name>Bargaining_Pay_Competitive__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Priority 1 --></label>
+        <name>Bargaining_Priority_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Priority 2 --></label>
+        <name>Bargaining_Priority_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Priority 3 --></label>
+        <name>Bargaining_Priority_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Priority 4 --></label>
+        <name>Bargaining_Priority_4__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Priority 5 --></label>
+        <name>Bargaining_Priority_5__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Priority 6 --></label>
+        <name>Bargaining_Priority_6__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Priority 7 --></label>
+        <name>Bargaining_Priority_7__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Priority 8 --></label>
+        <name>Bargaining_Priority_8__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Respect Seniority --></label>
+        <name>Bargaining_Respect_Seniority__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Retirement Matching --></label>
+        <name>Bargaining_Retirement_Matching__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Staffing Comments --></label>
+        <name>Bargaining_Staffing_Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Staffing --></label>
+        <name>Bargaining_Staffing__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Steward Release --></label>
+        <name>Bargaining_Steward_Release__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Union Info Preference --></label>
+        <name>Bargaining_Union_Info_Preference__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Work Satisfaction --></label>
+        <name>Bargaining_Work_Satisfaction__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Workload --></label>
+        <name>Bargaining_Workload__c</name>
+    </fields>
+    <fields>
+        <label><!-- Building --></label>
+        <name>Building__c</name>
+    </fields>
+    <fields>
+        <help><!-- use in Consolidation Survey 2017 --></help>
+        <label><!-- COPE Contribution --></label>
+        <name>COPE_Contribution__c</name>
+    </fields>
+    <fields>
+        <label><!-- Completion Time --></label>
+        <name>Completion_Time__c</name>
+    </fields>
+    <fields>
+        <help><!-- Use in Consolidation Survey; If answer is NO, cell and email are provided. --></help>
+        <label><!-- Contact Information Correct --></label>
+        <name>Contact_Information_Correct__c</name>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes</masterLabel>
+            <translation><!-- Yes --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Coordinator Name --></label>
+        <name>Coordinator_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Duplicate --></label>
+        <name>Duplicate__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer Name --></label>
+        <name>Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ethnic Group --></label>
+        <name>Ethnic_Group__c</name>
+    </fields>
+    <fields>
+        <label><!-- Floor --></label>
+        <name>Floor__c</name>
+    </fields>
+    <fields>
+        <label><!-- Language Code --></label>
+        <name>Language_Code__c</name>
+        <picklistValues>
+            <masterLabel>EN</masterLabel>
+            <translation><!-- EN --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ES</masterLabel>
+            <translation><!-- ES --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Leader Employer --></label>
+        <name>Leader_Employer__c</name>
+        <relationshipLabel><!-- Reach Questionnaires --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Leader Name --></label>
+        <name>Leader_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manually Created --></label>
+        <name>Manually_Created__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Alt Phone --></label>
+        <name>Member_Alt_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Cell Phone --></label>
+        <name>Member_Cell_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Department --></label>
+        <name>Member_Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Email --></label>
+        <name>Member_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Employee Id --></label>
+        <name>Member_Employee_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Facility --></label>
+        <name>Member_Facility__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Home Zip Code --></label>
+        <name>Member_Home_Zip_Code__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member ID --></label>
+        <name>Member_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Job --></label>
+        <name>Member_Job__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Name --></label>
+        <name>Member_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Shift --></label>
+        <name>Member_Shift__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nomination 1 Contact --></label>
+        <name>Nomination_1_Contact__c</name>
+        <relationshipLabel><!-- Reach Questionnaires --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Nomination 1 Name --></label>
+        <name>Nomination_1_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer Name --></label>
+        <name>Organizer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Question Election Results --></label>
+        <name>Question_Election_Results__c</name>
+        <picklistValues>
+            <masterLabel>Don&apos;t know</masterLabel>
+            <translation><!-- Don&apos;t know --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Negatively</masterLabel>
+            <translation><!-- Negatively --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Positively</masterLabel>
+            <translation><!-- Positively --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Won&apos;t affect me</masterLabel>
+            <translation><!-- Won&apos;t affect me --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Question Healthcare Cuts --></label>
+        <name>Question_Healthcare_Cuts__c</name>
+    </fields>
+    <fields>
+        <label><!-- Question Losing Union --></label>
+        <name>Question_Losing_Union__c</name>
+    </fields>
+    <fields>
+        <label><!-- Question Path Forward --></label>
+        <name>Question_Path_Forward__c</name>
+        <picklistValues>
+            <masterLabel>Somewhat agree</masterLabel>
+            <translation><!-- Somewhat agree --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Somewhat disagree</masterLabel>
+            <translation><!-- Somewhat disagree --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Strongly agree</masterLabel>
+            <translation><!-- Strongly agree --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Strongly disagree</masterLabel>
+            <translation><!-- Strongly disagree --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Questionnaire Duration --></label>
+        <name>Questionnaire_Duration__c</name>
+    </fields>
+    <fields>
+        <label><!-- Questionnaire Status --></label>
+        <name>Questionnaire_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Recon Page --></label>
+        <name>Recon_Page__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reg Director Name --></label>
+        <name>Reg_Director_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Region --></label>
+        <name>Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resolve Comments Extended --></label>
+        <name>Resolve_Comments_Extended__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resolve Comments --></label>
+        <name>Resolve_Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sex --></label>
+        <name>Sex__c</name>
+        <picklistValues>
+            <masterLabel>Female</masterLabel>
+            <translation><!-- Female --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Male</masterLabel>
+            <translation><!-- Male --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Signed Membership Card --></label>
+        <name>Signed_Membership_Card__c</name>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes</masterLabel>
+            <translation><!-- Yes --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Source Text --></label>
+        <name>Source_Text__c</name>
+    </fields>
+    <fields>
+        <label><!-- Start Time --></label>
+        <name>Start_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Stretch Status --></label>
+        <name>Stretch_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Survey Response --></label>
+        <name>Survey_Response__c</name>
+        <relationshipLabel><!-- Reach Questionnaires --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Unable to Resolve --></label>
+        <name>Unable_to_Resolve__c</name>
+    </fields>
+    <fields>
+        <label><!-- Version --></label>
+        <name>Version__c</name>
+    </fields>
+    <fields>
+        <label><!-- Years of Service --></label>
+        <name>Years_of_Service__c</name>
+    </fields>
+    <layouts>
+        <layout>Reach Questionnaire Layout</layout>
+        <sections>
+            <label><!-- Bargaining --></label>
+            <section>Bargaining</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Member --></label>
+            <section>Member</section>
+        </sections>
+        <sections>
+            <label><!-- Questionnaire --></label>
+            <section>Questionnaire</section>
+        </sections>
+        <sections>
+            <label><!-- Source --></label>
+            <section>Source</section>
+        </sections>
+        <sections>
+            <label><!-- Turf --></label>
+            <section>Turf</section>
+        </sections>
+        <sections>
+            <label><!-- Workflow --></label>
+            <section>Workflow</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

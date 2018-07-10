@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>GOTV Email Recipients</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>GOTV Email Recipients</value>
+    </caseValues>
+    <fields>
+        <label><!-- Default --></label>
+        <name>Default__c</name>
+    </fields>
+    <fields>
+        <label><!-- PlanType --></label>
+        <name>PlanType__c</name>
+    </fields>
+    <fields>
+        <label><!-- User --></label>
+        <name>User__c</name>
+        <relationshipLabel><!-- GOTV Email Recipients --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

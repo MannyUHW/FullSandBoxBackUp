@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customObject>true</customObject>
+    <description>BoothForce
+Areas/Zones represent a hpysical grouping of Booths.  These can be used to group booths and assign specific shift times to booths in a particular are.</description>
+    <mobileReady>false</mobileReady>
+    <motif>Custom50: Big top</motif>
+</CustomTab>

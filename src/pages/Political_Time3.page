@@ -1,0 +1,1051 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.jquery_2_1_3_min}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jQueryUiMinZip2,'jquery-ui.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.agGridMinZip400,'ag-grid.min.js')}"/>
+        <apex:includeScript value="{!$Resource.FileSaver}"/>
+
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.theme.min.css')}"/>
+
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">google.load('visualization', '1', {packages:['table']}); </script>
+
+        <style>
+
+            #FinalDiv table th:nth-child(1) {
+                text-align:left;
+                width: 220px;
+            }
+
+            #FinalDiv table th:nth-child(2) {
+                text-align:left;
+                width: 300px;
+            }
+
+            #DetailSummaryDiv table th:nth-child(1) {
+                text-align:left;
+                width: 234px;
+            }
+
+            #ExportButton {
+                margin-top: 5px;
+                width: 121px;
+                height: 27px;
+            }
+
+            #Eb1 {
+                display: inline-block;
+                float: left;
+            }
+
+            #Eb2 {
+                background-color: lightsalmon;
+                font-size: 2em;
+                margin-left: 46%;
+            }
+
+            body {
+                max-width: 1385px;
+            }
+
+            .section {
+                height: 40px;
+                background-color: lightsalmon;
+                font-size: 2em;
+                text-align: center;
+            }
+
+            #FinalDiv, #DetailSummaryDiv, #DetailWeeklyDiv, #DetailDiv {
+                border : 1px solid green;
+            }
+
+            #StatusDiv {
+                float: left;
+                height: 224px;
+                width: 20%;
+                background-color: #DDE9DD;
+            }
+
+            #QueryStatus {
+                display: inline-block;
+            }
+
+            #QueryButton {
+                font-size: 1.1em;
+            }
+
+            #ControlsContainer {
+                background-color: aliceblue;
+                height: 33px;
+                padding-top: 14px;
+            }
+
+            #label1 {
+                font-size: 1.1em;
+                margin-left: 10%;
+            }
+
+            #label2 {
+                font-size: 1.1em;
+                color:lightsalmon;
+            }
+
+            #label3 {
+                font-size: 1.1em;
+                color:lightsalmon;
+            }
+
+            .DescCheckBoxLabel {
+                padding-left: 5px;
+            }
+
+            .checkboxInput {
+                margin-top: 3px;
+                margin-left: 6px;
+            }
+
+            .DescCheckboxDiv {
+                padding-left: 2px;
+                padding-top: 2px;
+                margin-left: 10px;
+                margin-bottom: 2px;
+                float: left;
+                width: 458px;
+                height: 21px;
+            }
+
+            .TitleDesc {
+                text-align: center;
+                font-size: 1.1em;
+                font-weight: bold;
+                margin-top: 5px;
+                padding-top: 3px;
+                padding-bottom: 2px;
+                clear: both;
+            }
+
+            #PoliticalTime {
+                float:left;
+                margin-left: 0px;
+                margin-right: 0px;
+                width: 80%;
+                background-color: linen;
+                height: 132px;
+                min-height: 224px;
+            }
+
+            <!-- Not using this at moment  might come back in future version. -->
+            #NonPoliticalTime {
+                display: none;
+                margin-left:6px;
+                margin-right: 6px;
+                background-color: lightcyan;
+            }
+
+            #ContentDiv {
+                border:1px solid lightsalmon;
+                margin-top: 1px;
+                margin-left: 1px;
+            }
+
+            #title {
+                font-size: 22px;
+                float: left;
+                width: 750px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+    <script type="text/javascript">
+
+        function myCallback() {
+            alert('one tick');
+            ticks++;
+            now           = new Date();
+            localDateTime = (now.toLocaleTimeString());
+            queryStatus.innerHTML = 'Tick ' + ticks;
+        }
+
+        function findPoliticalTime(){
+            var d1;
+            var d2;
+            var s1;
+            var s2;
+            var test;
+
+            statusDiv.innerHTML = '';
+
+            d1 = $("#startDatePicker").datepicker("getDate");
+            d2 = $("#endDatePicker").datepicker("getDate");
+
+            if(d1 == null || d2 == null) {
+                alert('Please enter a date range');
+                return;
+            }
+
+            if(twoWeekCheck.checked) {
+                test = dateDiffInDays(d1,d2) +1;
+                if(test != 14) {
+                    if(test == 1)
+                        alert("Your date range is for 1 day - Please enter a 2 week period or uncheck the option.");
+                    else
+                        alert("Your date range is for " + test + " days - Please enter a 2 week period or uncheck the option.");
+
+                    return;
+                }
+            }
+
+            intervalID = window.setInterval(myCallback, 1000);
+
+            s1 = d1.toISOString();
+            s2 = d2.toISOString();
+            startDateStr = s1.substr(0,10);
+            endDateStr   = s2.substr(0,10);
+
+            var queryStr = " SELECT EEID__c,Name_EEID__c FROM BHAT_Activity__c WHERE Activity_Note_Name__c In (" + checkString + ") AND " +
+                    " WeekStartDate__c >= " + startDateStr + " AND WeekStartDate__c <= " + endDateStr;
+
+            queryStatus.innerHTML = 'Searching ';
+            statusMsg('Step 1 : ' + 'Searching ');
+            sforce.connection.query(queryStr, {onSuccess : processPolTimeFind, onFailure : failure, timeout: 600000 });
+
+//            try {
+//                var queryResults = sforce.connection.query(query);
+//                processPolTimeFind(queryResults);
+//            }
+//            catch(e) {alert('An error occurred retrieving from BHAT_Activity__c: ' + e.faultstring);}
+        }
+
+        function failure(error) {
+            alert("An error has occurred " + error);
+        }
+
+        function processPolTimeFind(results) {
+            var processedAll;
+            var processedCnt;
+            var polTimeRecords;
+            var rec;
+            var eeid;
+            var name;
+            var i;
+
+            var recCnt;
+            var uniqueIdCnt;
+            var batCnt;
+
+            nameArray = [];
+            eeidArray = [];
+            eeidMap = {};
+            polRecCount = 0;
+            uniqueIdCnt = 0;
+            recCnt = 0;
+            batCnt = 0;
+            stepCnt = 0;
+            exportButton.disabled = true;
+
+            polTimeRecords = results.getArray('records');
+            for (i = 0; i < polTimeRecords.length; i++) {
+                recCnt++;
+                eeid = polTimeRecords[i].EEID__c;
+                name = polTimeRecords[i].Name_EEID__c;
+                if (!eeidMap[eeid]) {
+                    eeidMap[eeid] = name;
+                    eeidArray.push("'" + eeid + "'");
+                    nameArray.push("'" + name + "'");
+                    uniqueIdCnt++;
+                }
+            }
+
+            if (results.queryLocator) {
+                batCnt++;
+                sforce.connection.queryMore(result.queryLocator, {onSuccess: processPolTimeFind, onFailure: failure, timeout: 600000});
+            }
+            else {
+                resetTables();
+                if (uniqueIdCnt > 0) {
+                    if (batCnt > 0)
+                        statusMsg('Search complete (batch count : ' + batCnt + ')');
+
+                    if (uniqueIdCnt > 1) {
+                        statusStr = 'Found ' + uniqueIdCnt + ' People';
+                        queryStatus.innerHTML = statusStr;
+                    }
+
+                    else
+                        statusMsg('Found 1 Person');
+
+                    statusMsg('Step 2 - Retrieving details');
+debugger;
+                    loadSalary();
+                    loadDetail();
+                }
+                else {
+                    window.clearInterval(intervalID);
+                    queryStatus.innerHTML += 'No one found';
+                    statusMsg('No one found');
+                }
+            }
+        }
+
+        function resetTables() {
+            // Clear any previous results
+            if (detailTableData.getNumberOfRows() > 0) {
+                detailTableData.removeRows(0, detailTableData.getNumberOfRows());
+                detailTable.clearChart();
+            }
+
+            if (finalTableData.getNumberOfRows() > 0) {
+                finalTableData.removeRows(0, finalTableData.getNumberOfRows());
+                finalTable.clearChart();
+            }
+
+            if (detailWeeklyTableData.getNumberOfRows() > 0) {
+                detailWeeklyTableData.removeRows(0, detailWeeklyTableData.getNumberOfRows());
+                detailWeeklyTable.clearChart();
+            }
+
+            if (detailSummaryTableData.getNumberOfRows() > 0) {
+                detailSummaryTableData.removeRows(0, detailSummaryTableData.getNumberOfRows());
+                detailSummaryTable.clearChart();
+            }
+
+        }
+
+        function loadSalary() {
+            var empIdList;
+            var query;
+
+            eeidList = eeidArray.join();
+            query = " SELECT Bi_Weekly_Wage__c,Employee_ID__c,Name,Title " +
+                    " FROM User " +
+                    " WHERE Employee_ID__c IN ( " + eeidList + ")";
+
+            statusMsg('Step 3 - Retrieving salary data');
+            sforce.connection.query(query, {onSuccess : processSalary, onFailure : failure, timeout: 600000 });
+            // var queryResults = sforce.connection.query(query);
+            // processSalary(queryResults);
+        }
+
+        function processSalary(results){
+            var records;
+            var biWeeklyWage;
+            var employeeId;
+            var employeeName;
+            var employeeTitle;
+
+            salaryMap = {};
+
+            records = results.getArray('records');
+            for (i = 0; i < records.length; i++) {
+                biWeeklyWage  = records[i].Bi_Weekly_Wage__c;
+                employeeId    = records[i].Employee_ID__c;
+                employeeName  = records[i].Name;
+                employeeTitle = records[i].Title;
+
+                if(!salaryMap[employeeId])
+                    salaryMap[employeeId] = {Name:employeeName, Title:employeeTitle, BiWeeklyWage:biWeeklyWage};
+            }
+        }
+
+        function loadDetail() {
+            var nameList;
+            var query;
+
+            nameList = nameArray.join();
+
+            query = " SELECT Activity_Date__c,Activity_Note_Name__c,BHAT_Activity_Note_Other__c,BHAT_Activity_Code__r.Name,BHAT_Code_and_Short_Desc__c,EEID__c,Details__c,Hours_Spent__c,Name_EEID__c,WeekStartDate__c " +
+                    " FROM BHAT_Activity__c " +
+                    " WHERE WeekStartDate__c  >= " + startDateStr + " AND WeekStartDate__c <= " + endDateStr + " AND Name_EEID__c IN ( " + nameList + ") " +
+                    " ORDER BY WeekStartDate__c,Activity_Date__c,Name_EEID__c,BHAT_Activity_Code__r.Name";
+
+            sforce.connection.query(query, {onSuccess : processDetail, onFailure : failure, timeout: 600000 });
+            //var queryResults = sforce.connection.query(query);
+            //processDetail(queryResults);
+        }
+
+        function processDetail(results){
+            var processedAll;
+            var processedCnt;
+            var records;
+            var rec;
+            var eeid;
+            var name;
+            var i;
+
+            var activity;
+            var total;
+            var politicalActivity;
+            var politicalActivityTotal;
+            var politicalActivityTotalPC;
+            var politicalActivityInKind;
+            var politicalActivityCheck;
+
+            var activityDate;
+            var activityNoteName;
+            var approvedBy;
+            var approvedDate;
+            var bhatActivityNoteOther;
+            var bhatActivityCode;
+            var bhatCodeAndShortDesc;
+            var details;
+            var hoursSpent;
+            var nameEEID;
+            var weekStartDate;
+
+            var politicalTotal;
+            var otherTotal;
+            var weekDetalTotal;
+
+            var recCnt;
+            var uniqueIdCnt;
+            var batCnt;
+            var politicalPC;
+            var otherPC;
+            var biWeeklyWage;
+            var politicalInKind;
+            var periodSummaryRow;
+            var periodTotal;
+            var periodRecords;
+
+            detailMap            = {};
+            periodMap            = {};
+            politicalActivityMap = {};
+            otherActivityMap     = {};
+            catMap               = {};
+            nameArray            = [];
+            polRecCount          = 0;
+            uniqueIdCnt          = 0;
+            recCnt               = 0;
+            batCnt               = 0;
+
+            statusMsg('Step 4 - Retrieving time data');
+            queryStatus.innerHTML = statusStr + ' Record count: 0 (batch count: 0)';
+            var detailWeekMap = {};
+
+            records = results.getArray('records');
+            for (i = 0; i < records.length; i++) {
+                recCnt++;
+                activityDate          = records[i].Activity_Date__c;
+                activityNoteName      = records[i].Activity_Note_Name__c;
+                bhatActivityNoteOther = records[i].BHAT_Activity_Note_Other__c;
+                bhatActivityCode      = records[i].BHAT_Activity_Code__r.Name;
+                bhatCodeAndShortDesc  = records[i].BHAT_Code_and_Short_Desc__c;
+                details               = records[i].Details__c;
+                hoursSpent            = parseFloat(records[i].Hours_Spent__c);
+                eeid                  = records[i].EEID__c;
+                nameEEID              = records[i].Name_EEID__c;
+                weekStartDate         = records[i].WeekStartDate__c;
+
+                detailTableData.addRow([activityDate, nameEEID, hoursSpent, details, activityNoteName, bhatActivityNoteOther,bhatActivityCode, bhatCodeAndShortDesc, weekStartDate]);
+
+                if (!detailWeekMap[weekStartDate + nameEEID + activityNoteName])
+                    detailWeekMap[weekStartDate + nameEEID + activityNoteName] = {WeekStartDate:weekStartDate,EEID:eeid,NameEEID:nameEEID,Activity:activityNoteName,Total:hoursSpent};
+                else
+                    detailWeekMap[weekStartDate + nameEEID + activityNoteName].Total += hoursSpent;
+            }
+
+            if (results.queryLocator) {
+                batCnt++;
+                sforce.connection.queryMore(result.queryLocator, {onSuccess : processDetail, onFailure : failure, timeout: 600000 });
+            }
+            else {
+                formatDetail();
+            }
+        }
+
+        function formatDetail() {
+
+            queryStatus.innerHTML = statusStr + ' Record count: ' + number_format(recCnt) + ' (batch count: ' + batCnt + ')';
+
+            statusMsg('Step 5 - Populating detail table');
+            numFormatter.format(detailTableData, 2);
+            detailTable.draw(detailTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+
+            for(mapKey in detailWeekMap) {
+                rec = detailWeekMap[mapKey];
+                weekStart = rec.WeekStartDate;
+                nameEEID  = rec.NameEEID;
+                activity  = rec.Activity
+                total     = rec.Total
+                detailWeeklyTableData.addRow([weekStart, nameEEID, activity, total]);
+
+                if(!periodMap[nameEEID])
+                    periodMap[nameEEID] = {EEID:rec.EEID};
+
+                if(checkedMap[activity]) {
+                    if(!periodMap[nameEEID][activity])
+                        periodMap[nameEEID][activity] = {Total:total};
+                    else
+                        periodMap[nameEEID][activity].Total += total;
+                }
+                else {
+                    if(!periodMap[nameEEID]['Other'])
+                        periodMap[nameEEID]['Other'] = {Total:total};
+                    else
+                        periodMap[nameEEID]['Other'].Total += total;
+                }
+            }
+
+            numFormatter.format(detailWeeklyTableData, 3);
+            statusMsg('Step 6 - Populating weekly table');
+            detailWeeklyTable.draw(detailWeeklyTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+
+            nameSummaryMap = {};
+            var periodSummaryMap = {};
+            statusMsg('Step 7 - Calculating percentages');
+            for(mapKey in periodMap) {
+                periodRecords    = periodMap[mapKey];
+                eeid             = periodRecords.EEID;
+                periodTotalHours = 0.0;
+                periodPolitical  = 0.0;
+                periodOther      = 0.0;
+                for(key in periodRecords) {
+                    if(key != 'EEID') {
+                        rec = periodRecords[key];
+                        periodTotalHours += rec.Total;
+
+                        if(checkedMap[key])
+                            periodPolitical += rec.Total;
+                        else
+                            periodOther     += rec.Total;
+                    }
+                }
+
+                periodPoliticalPC  = (periodPolitical / periodTotalHours) * 100;
+                periodOtherPC      = (periodOther     / periodTotalHours) * 100;
+                biWeeklyWage       = parseFloat(salaryMap[eeid].BiWeeklyWage);
+
+                if(biWeeklyWage > 0)
+                    politicalInKind = biWeeklyWage  * (periodPoliticalPC / 100);
+                else
+                    politicalInKind = 0.0;
+
+                periodSummaryMap[mapKey] = {
+                    PeriodPolitical   : periodPolitical,
+                    PeriodOther       : periodOther,
+                    PeriodTotalHours  : periodTotalHours,
+                    PeriodPoliticalPC : periodPoliticalPC,
+                    PeriodOtherPC     : periodOtherPC,
+                    BiWeeklyWage      : biWeeklyWage,
+                    PoliticalInKind   : politicalInKind};
+
+                detailSummaryTableData.addRow([mapKey,periodPolitical,periodOther,periodTotalHours,periodPoliticalPC,periodOtherPC,biWeeklyWage,politicalInKind]);
+            }
+
+            // Format all except 1st two columns as numbers:
+            var colCount = detailSummaryTableData.getNumberOfColumns() -1;
+            for(i=1;i<=colCount;i++) {
+                numFormatter.format(detailSummaryTableData, i);
+            }
+
+            statusMsg('Step 8 - Populating Summary table');
+            detailSummaryTable.draw(detailSummaryTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+
+            statusMsg('Step 9 - Populating Final table');
+            for(mapKey in periodMap) {
+                periodRecords = periodMap[mapKey];
+                eeid = periodRecords.EEID;
+                for (key in periodRecords) {
+                    if (key != 'EEID') {
+                        if (checkedMap[key]) {
+                            psmRec = periodSummaryMap[mapKey];
+                            politicalActivity = periodRecords[key];
+                            politicalActivityTotal = politicalActivity.Total;
+                            politicalActivityTotalPC = (politicalActivityTotal / psmRec.PeriodTotalHours) * 100;
+                            politicalActivityInKind = psmRec.BiWeeklyWage * (politicalActivityTotalPC / 100);
+                            finalTableData.addRow([mapKey, key, politicalActivityTotal, politicalActivityTotalPC, politicalActivityInKind]);
+                        }
+                    }
+                }
+            }
+
+            numFormatter.format(finalTableData, 2);
+            numFormatter.format(finalTableData, 3);
+            numFormatter.format(finalTableData, 4);
+            finalTable.draw(finalTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+            statusMsg('Step 10 - Finished');
+            exportButton.disabled = false;
+
+            window.clearInterval(intervalID);
+        }
+
+        function loadBHATcodes() {
+            var query = " SELECT Name, Activity_Note_Description__c,BHAT_Activity_Code__c, BHAT_Activity_Code__r.Name, BHAT_Activity_Code__r.Full_Activity_Name__c,BHAT_Activity_Code__r.Short_Description__c " +
+                    " FROM BHAT_Activity_Note__c Order By BHAT_Activity_Code__r.Full_Activity_Name__c, Activity_Note_Description__c  ";
+            var queryResults = sforce.connection.query(query);
+
+            processBHATcodes(queryResults);
+        }
+
+        function loadBHATdesciptions() {
+
+            var query = " SELECT Name,Full_Activity_Name__c FROM BHAT_Activity_Code__c ORDER BY Full_Activity_Name__c ASC NULLS FIRST ";
+
+            try {
+                var queryResults = sforce.connection.query(query);
+                processBHATdesciptions(queryResults);
+            }
+            catch(e) {alert('An error occurred retrieving from BHAT_Activity_Code__c: ' + e.faultstring);}
+        }
+
+        function processBHATdesciptions(results){
+            var rec;
+            var i;
+            var bhatRecords;
+            var bhatName;
+            var bhatDesc;
+            var bhatCode;
+
+            bhatDescMap = {};
+
+            bhatRecords = results.getArray('records');
+            for (i = 0; i < bhatRecords.length; i++) {
+                bhatDesc = bhatRecords[i].Full_Activity_Name__c;
+                bhatCode = bhatRecords[i].Name;
+
+                if(!bhatDescMap[bhatCode])
+                    bhatDescMap[bhatCode] = {Desc:bhatDesc};
+            }
+        }
+
+        function processBHATcodes(results){
+            var rec;
+            var i;
+            var noteDesc;
+            var bhatRecords;
+            var bhatCode;
+            var bhatName;
+            var bhatDesc;
+            var bhatKey;
+
+            bhatMap = {};
+
+            bhatRecords = results.getArray('records');
+            for (i = 0; i < bhatRecords.length; i++) {
+                noteDesc = bhatRecords[i].Name;
+                bhatCode = bhatRecords[i].BHAT_Activity_Code__r.Name,
+                        bhatName = bhatRecords[i].BHAT_Activity_Code__r.Full_Activity_Name__c,
+                        bhatDesc = bhatRecords[i].BHAT_Activity_Code__r.Short_Description__c
+                bhatKey  = JSON.stringify(noteDesc);
+
+                if(!bhatMap[bhatCode])
+                    bhatMap[bhatCode] = {};
+
+                if(!bhatMap[bhatCode][noteDesc])
+                    bhatMap[bhatCode][noteDesc] = {Code: bhatCode, Name: bhatName, Desc: noteDesc, ShortDesc:bhatDesc};
+            }
+        }
+
+        function populateDivs() {
+            var code;
+            var mapKey;
+            var desc;
+
+            for (codeMapKey in bhatDescMap) {
+                desc = bhatDescMap[codeMapKey].Desc;
+                descTitle = makeTitle(desc);
+
+                if(codeMapKey == 'C')
+                    politicalTime.appendChild(descTitle);
+                //        else
+                //            nonPoliticalTime.appendChild(descTitle);
+
+                for (mapKey in bhatMap[codeMapKey]) {
+                    newCB = makeCheckBox(mapKey);
+                    if(codeMapKey == 'C')
+                        politicalTime.appendChild(newCB);
+                    //        else
+                    //            nonPoliticalTime.appendChild(newCB);
+                }
+            }
+        }
+
+        function makeCheckBox(pLabel) {
+            var newDiv;
+            var newCheckBox;
+            var checkBoxLabel;
+
+            newDiv            = document.createElement('div');
+            checkBoxLabel     = document.createElement("Label");
+            newCheckBox       = document.createElement('input');
+            newCheckBox.type  = 'checkbox';
+            newCheckBox.id    = pLabel;
+            newCheckBox.value = pLabel;
+
+            checkBoxLabel.setAttribute("for", pLabel);
+            checkBoxLabel.innerHTML = pLabel;
+            checkBoxLabel.setAttribute('class', 'DescCheckBoxLabel');
+
+            // ToDo: Parameterize these initial checks:
+            if(pLabel == 'Medi-Cal Ballot Measure - Talking to Public' || pLabel == 'Minimum Wage Ballot Measure - Talking to Public')
+                newCheckBox.checked = true;
+
+            newDiv.appendChild(newCheckBox);
+            newDiv.appendChild(checkBoxLabel);
+            newDiv.setAttribute('class', 'DescCheckboxDiv');
+
+            return newDiv;
+        }
+
+        function statusMsg(pMsg) {
+            var msgDiv;
+            var msgTN;
+
+            stepCnt ++;
+            msgDiv = document.createElement('div');
+            msgTN  = document.createTextNode(pMsg);
+            msgDiv.appendChild(msgTN);
+            msgDiv.setAttribute('class', 'StatusMsg');
+            statusDiv.appendChild(msgDiv);
+        }
+
+        function makeTitle(pLabel) {
+            var descDiv;
+            var descTN;
+
+            descDiv = document.createElement('div');
+            descTN  = document.createTextNode(pLabel);
+            descDiv.appendChild(descTN);
+            descDiv.setAttribute('class', 'TitleDesc');
+
+            return descDiv;
+        }
+
+        function checksOK() {
+            var i;
+            var checks;
+            var userChecked;
+            var category;
+
+            checkedMap  = {};
+            userChecked = [];
+            checkString = '';
+            checks = politicalTime.getElementsByTagName('input');
+
+            for(i=0;i<checks.length;i++) {
+                if(checks[i].checked) {
+                    category = checks[i].value;
+                    userChecked.push("'" + category + "'");
+                    checkedMap[category] = category;
+                }
+            }
+
+            if(userChecked.length > 0) {
+                checkString = userChecked.join();
+                return true;
+            }
+            else
+                return false;
+        }
+
+        function exportClickListener(event) {
+            exportData();
+        }
+
+        function queryClickListener(event) {
+            if(checksOK())
+                findPoliticalTime();
+            else
+                alert('Please select at least 1 Worker Politics category to report on');
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = '';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function initTables() {
+
+            finalTable     = new google.visualization.Table(finalDiv);
+            finalTableData = new google.visualization.DataTable();
+            finalTableData.addColumn('string', 'Name, EEID');
+            finalTableData.addColumn('string', 'Political Activity');
+            finalTableData.addColumn('number', 'Political Hours');
+            finalTableData.addColumn('number', 'Political %');
+            finalTableData.addColumn('number', 'In-Kind $');
+
+            detailSummaryTable     = new google.visualization.Table(detailSummaryDiv);
+            detailSummaryTableData = new google.visualization.DataTable();
+            detailSummaryTableData.addColumn('string', 'Name, EEID');
+            detailSummaryTableData.addColumn('number', 'Political Total');
+            detailSummaryTableData.addColumn('number', 'Other Total');
+            detailSummaryTableData.addColumn('number', 'Period Total');
+            detailSummaryTableData.addColumn('number', '% Political Time');
+            detailSummaryTableData.addColumn('number', '% Other Time');
+            detailSummaryTableData.addColumn('number', 'BiWeeklyWage');
+            detailSummaryTableData.addColumn('number', 'In-Kind $');
+
+            detailWeeklyTable     = new google.visualization.Table(detailWeeklyDiv);
+            detailWeeklyTableData = new google.visualization.DataTable();
+            detailWeeklyTableData.addColumn('string', 'WeekStart');
+            detailWeeklyTableData.addColumn('string', 'Name, EEID');
+            detailWeeklyTableData.addColumn('string', 'Activity');
+            detailWeeklyTableData.addColumn('number', 'Total');
+
+            detailTable     = new google.visualization.Table(detailDiv);
+            detailTableData = new google.visualization.DataTable();
+            detailTableData.addColumn('string', 'Date');
+            detailTableData.addColumn('string', 'Name');
+            detailTableData.addColumn('number', 'Hours');
+            detailTableData.addColumn('string', 'Details');
+            detailTableData.addColumn('string', 'Note Name');
+            detailTableData.addColumn('string', 'Note');
+            detailTableData.addColumn('string', 'Code');
+            detailTableData.addColumn('string', 'Code + Short Desc');
+            detailTableData.addColumn('string', 'Week Start');
+
+        }
+
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        // Found at http://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript/15289883#15289883
+        function dateDiffInDays(a, b) {
+            // a and b are javascript Date objects
+            // Discard the time and time-zone information.
+            var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+            var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+            return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+        }
+
+        function exportData() {
+            var successful;
+            var colCount;
+            var rowCount;
+            var colPtr;
+            var rowPtr;
+            var output;
+            var cell;
+
+            now           = new Date();
+            localDateTime = (now.toLocaleTimeString());
+            nowDate       = (now.toDateString());
+
+            output  = 'Political Time \n';
+            output += 'BHAT Data as of \t' + nowDate + ", " + localDateTime + "\n\n";
+
+            colCount = finalTableData.getNumberOfColumns()-1;
+            rowCount = finalTableData.getNumberOfRows()-1;
+            for(colPtr=0;colPtr<colCount;colPtr++) {
+                output += finalTableData.getColumnLabel(colPtr) + '\t';
+            }
+            output += '\n';
+
+            for(rowPtr=0;rowPtr<rowCount;rowPtr++) {
+                for(colPtr=0;colPtr<colCount;colPtr++) {
+                    cell = finalTableData.getValue(rowPtr,colPtr);
+                    if(cell)
+                        output += cell + '\t';
+                    else
+                        output += '\t';
+                }
+                output += '\n';
+            }
+            output += '\n\n';
+
+            var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "PoliticalTime.txt");
+        }
+
+        // ***************** Globals *****************
+        var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+        var eeidMap              = {};
+        var bhatMap              = {};
+        var bhatDescMap          = {};
+        var salaryMap            = {};
+        var detailMap            = {};
+        var weeklyMap            = {};
+        var periodMap            = {};
+        var checkedMap           = {};
+
+        var detailTableData      = [];
+        var detailTable          = {};
+
+        var detailSummaryTableData  = [];
+        var detailSummaryTable      = {};
+
+        var now;
+        var localDateTime;
+        var nowDate;
+
+        var debugDiv;
+        var queryDiv;
+        var detailDiv;
+        var finalDiv;
+        var detailSummaryDiv;
+        var detailWeeklyDiv;
+
+        var retrieved;
+        var recCnt;
+
+        var queryButton;
+        var exportButton;
+        var checkString;
+        var rowCount;
+
+        var politicalTime;
+        var nonPoliticalTime;
+
+        var startDateStr;
+        var endDateStr;
+        var nameArray;
+        var eeidArray;
+        var queryStatus;
+        var twoWeekCheck;
+
+        var nameSummaryMap;
+        var statusStr;
+        var stepCnt;
+        var intervalID;
+        var ticks = 0;
+
+        // ***************** Main Program Entry *****************
+
+        // Known issues: Selecting Approved_By__c,Approved_Date__c from BHAT_Activity__c give errors when logged in as Rick Singleton, even though his profile is BHAT Reviewer.
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            sforce.debug = true;
+            sforce.debug.trace = true;
+
+            queryButton      = document.getElementById("QueryButton");
+            exportButton     = document.getElementById("ExportButton");
+            politicalTime    = document.getElementById("PoliticalTime");
+            nonPoliticalTime = document.getElementById("NonPoliticalTime");
+            detailDiv        = document.getElementById("DetailDiv");
+            detailSummaryDiv = document.getElementById("DetailSummaryDiv");
+
+            finalDiv         = document.getElementById("FinalDiv");
+            detailWeeklyDiv  = document.getElementById("DetailWeeklyDiv");
+            queryStatus      = document.getElementById("QueryStatus");
+            statusDiv        = document.getElementById("StatusDiv");
+            twoWeekCheck     = document.getElementById("2weekPeriodCB");
+
+            queryButton.addEventListener("click",queryClickListener, false);
+            exportButton.addEventListener("click",exportClickListener, false);
+            numFormatter     = new google.visualization.NumberFormat({pattern: '#,##0.00'});
+
+            loadBHATdesciptions();
+            loadBHATcodes();
+            initTables();
+            populateDivs();
+
+            rowCount     = 0;
+            clickCnt     = 0;
+            retrieved    = false;
+            currentInput = 'FieldsChosen';
+
+            $("#startDatePicker").datepicker(
+                    {
+                        changeMonth : true,
+                        changeYear  : true,
+                        yearRange   : '2012:2020',
+                        dateFormat  : 'mm/dd/yy',
+                        defaultDate : new Date("10/01/2015")
+                    });
+
+            $("#endDatePicker").datepicker(
+                    {
+                        changeMonth : true,
+                        changeYear  : true,
+                        yearRange   : '2012:2020',
+                        dateFormat  : 'mm/dd/yy',
+                        defaultDate : new Date("10/31/2015")
+                    });
+
+        });
+
+    </script>
+
+    <div class="section" >Political Time - Find All time for anyone with Specified categories, for period given</div>
+    <!-- id="title"
+    <div id="version">Version 0.3</div>
+    -->
+    <hr/>
+
+    <div  id = "ContentDiv">
+
+        <div id="ControlsContainer">
+            <label for="2weekPeriodCB" id="label1">Period is for 2 weeks</label>
+            <input id="2weekPeriodCB" type="checkbox"></input>
+
+            <label for="startDatePicker" id="label2">Start Date</label>
+            <input  id="startDatePicker" type="text"></input>
+
+            <label for="endDatePicker" id="label3">End Date</label>
+            <input  id="endDatePicker" type="text"></input>
+
+            <input id="QueryButton" type="Button" value="Execute Query"></input>
+            <div   id="QueryStatus"></div>
+        </div>
+
+        <div id="PoliticalTime"></div>
+        <div id="NonPoliticalTime"></div>
+
+        <div id="StatusDiv"></div>
+
+        <div style="clear:both;background-color: lightsalmon;">
+            <div id="Eb1">
+                <input id="ExportButton" type="Button" value="Export" disabled="true"></input>
+            </div>
+            <div id="Eb2">
+                Final result
+            </div>
+        </div>
+        <div id="FinalDiv"></div>
+
+        <div class="section" >Detail data Summarized by Person </div>
+        <div id="DetailSummaryDiv"></div>
+
+        <div class="section" >Detail data Summarized by Person, Week, Activity </div>
+        <div id="DetailWeeklyDiv"></div>
+
+        <div class="section" >Detail Data</div>
+        <div id="DetailDiv"></div>
+
+    </div>
+    </body>
+</apex:page>

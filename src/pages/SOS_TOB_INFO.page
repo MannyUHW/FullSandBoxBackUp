@@ -1,0 +1,44 @@
+<apex:page standardController="SOS_Time_Off_Balance__c" extensions="SOS_TOB_Controller">
+    <style>
+    .test1{
+    width:500px;
+    height:500px;
+    }
+    </style>
+    <apex:form >
+        <apex:pageBlock >
+            <center><apex:outputlabel style="font-weight:bold">“YTD balance is only a summary.  Please request current accrual report from the HR department.”</apex:outputlabel></center>
+            <apex:pageBlockSection title="Estimated Balance as of Date: {!lastLoaded}" collapsible="false"/>
+            <apex:pageBlockSection >
+                <apex:pageBlockSection title="{!IF(!showBalanceInDays, 'Time off Balance in Hours', 'Time off Balance in Days')}" collapsible="false" columns="1">
+                    <apex:pageBlockSection >
+                        <apex:outputtext value="{!vacationRem}" label="Vacation"/>                 
+                        <apex:outputtext value="{!SickRem}" label="Sick"/>
+                        <!-- <apex:outputtext value="{!RelieveRem}" label="Relief"/>  -->   
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection >                        
+                        <apex:outputtext value="{!FloatRem}" label="Float"/>
+                        <apex:outputtext value="{!HolidayRem}" label="Holiday"/>
+                        <apex:outputtext value="{!ReligiousRem}" label="Religious OPEIU Only"/>
+                    </apex:pageBlockSection>
+                </apex:pageBlockSection>
+                
+                <!-- <apex:pageBlockSection title="{!IF(isNonExempt, 'Time Off Taken in Hours', 'Time Off Taken in Days')}" collapsible="false" columns="1">                        
+                    <apex:pageBlockSection >
+                        <apex:outputtext value="{!vacationAprv}" label="Vacation"/>                 
+                        <apex:outputtext value="{!SickAprv}" label="Sick"/>
+                        <apex:outputtext value="{!UnpaidAprv}" label="Unpaid"/>
+                        <apex:outputtext value="{!RelieveAprv}" label="Relief"/>    
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection >
+                        <apex:outputtext value="{!BirthdayAprv}" label="Birthday"/>
+                        <apex:outputtext value="{!FloatAprv}" label="Float"/>
+                        <apex:outputtext value="{!HolidayAprv}" label="Holiday"/>
+                        <apex:outputtext value="{!ReligiousAprv}" label="Religious OPEIU Only"/>
+                    </apex:pageBlockSection>                   
+                </apex:pageBlockSection>
+                -->
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

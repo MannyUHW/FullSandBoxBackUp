@@ -1,0 +1,714 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+<html>
+    <head>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <apex:includeScript value="{!$Resource.agGridEnterpriseMin429}"/>
+
+        <style>
+
+            #SaveAsCsvButton {
+                margin-left: 316px;
+            }
+
+            #MbrGridDiv {
+                height: 600px;
+                clear: both;
+                margin-top: 4px;
+            }
+
+            .right-align {
+                text-align: right;
+            }
+
+            .center-align {
+                text-align: center;
+            }
+
+           .hide {
+                display:none;
+            }
+
+            .show {
+                display:block;
+            }
+
+            .modalDialog {
+                position: fixed;
+                font-family: Arial, Helvetica, sans-serif;
+                top: 100px;
+                left: 50px;
+                width: 80%;
+                height: 80%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 99999;
+                opacity: 0.8;
+                pointer-events: none;
+            }
+
+            .modalDialog > div {
+                width: 400px;
+                position: relative;
+                margin: 10% auto;
+                padding: 5px 20px 13px 20px;
+                border-radius: 10px;
+                background: #fff;
+                background: -moz-linear-gradient(#fff, #999);
+                background: -webkit-linear-gradient(#fff, #999);
+                background: -o-linear-gradient(#fff, #999);
+            }
+
+            body {
+                font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+                font-size: 14px;
+                padding : 10px ;
+            }
+
+           .hdr {
+                color: #d1d1d1;
+                background-color: #9B4FE1;
+                padding-left: 6px;
+                padding-top: 2px;
+                font-weight: 600;
+                font-size: 24px;
+            }
+
+           .disp {
+                display: inline-block;
+                color: #2012b0;
+                margin-left: 1px;
+                padding-left: 1px;
+                font-weight: normal;
+                font-size: 10px;
+            }
+
+            #ResultsDiv {
+                display: none;
+                margin-left: 10px;
+                margin-right: 10px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                max-height: 500px;
+                overflow-y: scroll;
+                padding-left: 10px;
+                padding-top: 10px;
+                
+                margin-bottom: 20px;
+                background-color: white;
+                border: 1px solid #e3e3e3;
+                border-radius: 4px;
+                -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+                box-shadow: inset 0 1px 1px rgba(0,0,0,.05);                
+            }
+
+            #section1 {
+                color:#d1d1d1;
+                background-color: #9B4FE1;
+                margin-top: 4px;
+                margin-bottom: 4px;
+                padding-top: 3px;
+                padding-bottom: 3px;
+                padding-left: 5px;
+            }
+
+            #section2 {
+                color:blue;
+                background-color: white;
+                margin-top: 4px;
+                margin-bottom: 4px;
+                padding-top: 3px;
+                padding-bottom: 3px;
+                padding-left: 5px;
+            }
+
+            #section3 {
+                margin-top: 4px;
+                margin-bottom: 4px;
+                padding-top: 3px;
+                padding-bottom: 3px;
+                padding-left: 5px;                
+            }
+
+            #section4 {
+                height: 300px;
+                background-color: #723881;
+            }
+
+            #SenateInput, #AssemblyInput {
+                color:blue;
+                width: 60px;
+                padding-left: 5px;
+                padding-right: 1px;
+                margin-right: 21px;
+            }
+
+            #SurveyInput {
+                color:blue;
+                width: 396px;
+                padding-left: 5px;
+                padding-right: 1px;
+                margin-right: 21px;
+            }
+            
+             /* removes outline dots from button when it gets focus */
+            :focus {outline:none;}
+            ::-moz-focus-inner {border:0;}
+
+            #RetrieveBtn {
+                color: blue;
+            }
+
+            #RetrieveBtn:hover {
+                background-color: blue;
+                color:white;
+            }
+
+            #ResetBtn {
+                margin-right: 20px;
+                float: right;
+                color: indianred;
+            }
+
+            #ResetBtn:hover {
+                background-color: rgba(205,92,92,0.6);
+                color:white;
+            }
+
+            #LoadingDiv {
+                display: inline-block;
+                overflow: auto;
+            }
+
+        </style>
+
+        <apex:includeScript value="{!$Resource.MomentJs}"/>
+
+        <apex:includeScript value="{!$Resource.jquery311slimmin}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Bootstrap337Zip,'bootstrap.min.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Bootstrap337Zip,'bootstrap.min.css')}"/>
+        <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono"/>
+
+    </head>
+    <body>
+
+    <div class="container-fluid box-main">
+        <div class="container center-block">
+            <div class="row">
+                <div class="col-form col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="hdr">
+                                Find Members by Senate/Assembly Districts, by Survey Responses, or Both.
+                            </div>
+                            <div id="section1">
+                                <label>Senate District</label>
+                                <input id="SenateInput" type="number"  min="0" max="40" step="1"></input>
+
+                                <label>Assembly District</label>
+                                <input id="AssemblyInput" type="number" min="0" max="80" step="1"></input>
+
+                                <label>List of Survey Codes</label>
+                                <input id="SurveyInput" type="text" placeholder="e.g. GS6,WWH,WTP,WWI,P6S,J02"></input>
+                            </div>
+                            <div id="section2">
+                                <button id="RetrieveBtn"  class="btn" type="button">Retrieve</button>
+                                <div id="LoadingDiv" class="hide"> 
+                                    <apex:image id="LoadingGif" value="{!$Resource.loadingGif}" styleClass="LoadingGif" width="50" height="50"/>
+                                </div>
+                                <label  id="ResponseDisp"    class="disp"></label>
+                                <input  id="SaveAsCsvButton" class="btn hide" type="Button" value="Save as .csv"></input>
+                                <button id="ResetBtn"        class="btn" type="button">Reset</button>
+                            </div>
+
+                            <div id="section3">
+                                <div id="MbrGridDiv"        class="ag-fresh"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="ModalLoadingDiv" class="modalDialog hide">
+        <div>
+            <h2>Loading data...</h2>
+        </div>
+    </div>
+
+    </body>
+
+    <script type="text/javascript">
+        'use strict';
+
+        function reset() {
+            if(shownBefore) mbrGridOptions.api.destroy();
+
+            responseDisp.innerHTML = '';
+            surveyInput.value      = '';
+            senateInput.value      = 0;
+            assemblyInput.value    = 0;
+            shownBefore            = false;
+            saveAsCsvButton.classList.remove('hide');
+            saveAsCsvButton.classList.add('hide');
+        }
+
+        function displayGrids() {
+
+            if(shownBefore) 
+                mbrGridOptions.api.destroy();
+            else shownBefore = true;
+
+            mbrGridOptions = {
+                columnDefs: mbrColumnDefs,
+                rowData: mbrArray,
+                enableSorting: true,
+                suppressCellSelection: true,
+                suppressMenuColumnPanel: true,
+                suppressMenuFilterPanel: false,
+                suppressMenuMainPanel: true
+            };
+            new agGrid.Grid(mbrGridDiv,  mbrGridOptions);
+
+        }
+
+
+        // found at http://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
+        function replaceAll(str, find, replace) {
+            return str.replace(new RegExp(find, 'g'), replace);
+        }
+
+        function getData(e) {
+
+            mbrArray       = [];
+            surveyArray    = [];
+            let codeArray  = [];
+            let surveyRaw   = surveyInput.value;
+            surveyList      = replaceAll(surveyRaw,  "'", "");
+            surveyList      = replaceAll(surveyList, '"', '');
+            codeArray       = surveyList.split(',');
+
+            codeArray.forEach(function(item) {
+                if(item) surveyArray.push(item);
+            });
+
+            let surveyCodes = "'" + surveyArray.join("','") + "'";
+            if(surveyArray.length>0)
+               loadResponses(surveyCodes);
+
+            let district     = senateInput.value;
+            let districtStr  = '00' + district;
+            let len          = districtStr.length;
+            let districtStr2 = districtStr.substr(len-2,2);
+
+            let assembly     = assemblyInput.value;
+            let assemblyStr  = '00' + assembly;
+            let len2         = assemblyStr.length;
+            let assemblyStr2 = assemblyStr.substr(len2-2,2);
+
+            loadMbrs(districtStr2,assemblyStr2);
+            initAgGrid();
+            displayGrids();
+
+         }
+        
+        function resetHandler(e) {
+            reset();
+        }
+
+        function init() {
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            mbrMap          = {};
+            mbrArray        = [];
+
+            senateInput     = document.getElementById('SenateInput');
+            assemblyInput   = document.getElementById('AssemblyInput');
+            surveyInput     = document.getElementById('SurveyInput');
+            mbrGridDiv      = document.getElementById('MbrGridDiv');
+
+            shownBefore     = false;
+            userId          = "{!$User.Id}";
+            userFirstName   = "{!$User.FirstName}";
+            userLastName    = "{!$User.LastName}";
+            shownBefore     = false;
+            ampTerm         = '&' + 'amp;'; // > broswer weirdness!
+            aptTerm         = '&' + '#39;';
+            loadingDiv      = document.getElementById('LoadingDiv');
+            responseDisp    = document.getElementById('ResponseDisp');
+            retrieveButton  = document.getElementById('RetrieveBtn');
+            resetButton     = document.getElementById('ResetBtn');
+            saveAsCsvButton = document.getElementById('SaveAsCsvButton');
+            retrieveButton.addEventListener("click",getData,false);
+            resetButton.addEventListener("click",resetHandler,false);
+            saveAsCsvButton.addEventListener("click", saveAsCsv, false);
+
+            senateInput.value   = 0;
+            assemblyInput.value = 0;
+
+        }
+
+        function saveAsCsv() {
+            let fileName = 'MbrData.csv';
+            mbrGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function clean(s) {
+            let i,ampPos,aptPos,sB,sA,s1,s2;
+            s1 = s;
+            ampPos = s.indexOf(ampTerm);
+            if(ampPos != -1) {
+                sB  = s.substr(0,ampPos);
+                sA  = s.substr(ampPos+5);
+                s1  = sB + '&' + sA;
+            }
+            s2 = s1;
+            aptPos = s1.indexOf(aptTerm);
+            if(aptPos != -1) {
+                sB  = s1.substr(0,aptPos);
+                sA  = s1.substr(aptPos+5);
+                s2  = sB + "'" + sA;
+            }
+            return s2;
+        }
+
+        function toProperCase(s) {
+            // My version - handles hyphenated names correctly :)
+            let s1,s2;
+            if(s == null)
+                s2 = '';
+            else {
+                s1 = s.trim().toLowerCase();
+                s2 = clean(s1);
+                s2 = s2.replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+            }
+            return s2;
+        }
+
+        function showLoadingMsg(show) {
+            if(show) // modal window fake
+                modalLoadingDiv.setAttribute('class', 'modalDialog');
+            else
+                modalLoadingDiv.setAttribute('class', 'hide');
+        }
+
+        function loadMbrs(district,assembly) {
+            let aCode = parseInt(assembly,10);
+            let dCode = parseInt(district,10);
+
+            if(aCode != 0 || dCode != 0) {
+                loadingDiv.classList.remove('hide');
+                retrieveButton.innerHTML = 'Loading...';
+
+                let where = ' AND ( ';
+                if( dCode != 0)
+                    where += `Pol_St_Senate_District__c = '${district}'`;
+
+                if( aCode != 0) {
+                    if(dCode != 0)  where += ' OR ';
+                    where += `Pol_St_Assembly_District__c = '${assembly}'`
+                }
+                where += ' )';
+                let senateQuery = `SELECT Account.Account_Group__c,Account.Id,Account.Name,Coordinator__c,Department,Email,FirstName,HomePhone,Id,LastName,MailingCity,MailingPostalCode,MailingStreet,MiddleName,MobilePhone,Organizer_1__c,Phone,Pol_St_Assembly_District__c,Pol_St_Senate_District__c,Shift__c,Title,Worksite__c FROM Contact WHERE In_Current_BU__c = true ${where}`;
+                console.log(senateQuery);            
+//              try {
+                    let senateResults = sforce.connection.query(senateQuery);
+                    processSenateMbrs(senateResults);
+//              }
+//              catch (e) {alert('An error occurred retrieving Senate District Members ' + e.faultstring);}
+            }
+        }
+
+        function loadResponses(list) {
+
+            loadingDiv.classList.remove('hide');
+            retrieveButton.innerHTML = 'Loading...';
+
+//          let responseQuery = `SELECT Contact__r.Id,Survey_Code__c,Response_Value__c FROM Survey_Response__c WHERE Survey_Code__c In ('${surveyList}') `;
+//           let responseQuery = `SELECT Contact__r.Id, Contact__r.Account.Id, Coordinator__c, Contact__r.Department, Contact__r.Email, Contact__r.FirstName, Contact__r.HomePhone, Contact__r.In_Current_BU__c, Contact__r.LastName, Contact__r.MailingCity, Contact__r.MailingPostalCode, Contact__r.MailingStreet, Contact__r.MiddleName, Contact__r.MobilePhone, Contact__r.Organizer_1__c, Contact__r.Phone, Contact__r.Pol_St_Assembly_District__c, Contact__r.Pol_St_Senate_District__c, Contact__r.Shift__c, Contact__r.Title, Contact__r.Worksite__c, Survey_Code__c, Response_Value__c 
+//                                FROM Survey_Response__c WHERE Contact__r.In_Current_BU__c = true AND Survey_Code__c In (${list}) `;
+
+            let responseQuery = `SELECT Survey_Code__c, Response_Value__c, Division__c,Employer_Name__c,Department__c,Coordinator__c, Organizer_1__c, 
+                                 Contact__r.Id, Contact__r.Email, Contact__r.FirstName, Contact__r.HomePhone, Contact__r.LastName, Contact__r.MailingCity, Contact__r.MailingPostalCode, Contact__r.MailingStreet, Contact__r.MiddleName, Contact__r.MobilePhone, Contact__r.Phone, Contact__r.Pol_St_Assembly_District__c, Contact__r.Pol_St_Senate_District__c, Contact__r.Shift__c, Contact__r.Title, Contact__r.Worksite__c
+                                 FROM Survey_Response__c WHERE Contact__r.In_Current_BU__c = true AND Survey_Code__c In (${list}) `;
+
+            console.log(responseQuery);
+//            try {
+                var responseResults = sforce.connection.query(responseQuery);
+                processResponses(responseResults);
+//            }
+//            catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processSenateMbrs(results) {
+            let processedAll = false;
+            let i,rec,records,recCnt,batCnt,contactId,surveyCode,surveyResponse;
+            let mapKey,codeKey,response,mbrObj;
+            let division,accountId,accountName,coordinator,department,email,firstName,homePhone,id,lastName,mailingCity,mailingZip,mailingStreet,middleName,mobilePhone,organizer,phone,polStAssemblyDistrict,polStSenateDistrict,shift,title,worksite;
+
+            recCnt = batCnt = 0;
+            while (!processedAll) {
+                records = results.getArray('records');
+                for (i = 0; i < records.length; i++) {
+                    rec = records[i];
+                    recCnt++;
+                    if ('Account' in rec) { 
+                        if(rec.Account) {
+                            accountId   = rec.Account.Id;
+                            accountName = toProperCase(rec.Account.Name);
+                            division    = rec.Account.Account_Group__c;
+                        }
+                    }
+                    department              = toProperCase(rec.Department)      || '';
+                    email                   = rec.Email                         || '';
+                    coordinator             = rec.Coordinator__c                || '';
+                    firstName               = rec.FirstName                     || '';
+                    homePhone               = rec.HomePhone                     || '';
+                    id                      = rec.Id                            || '';
+                    lastName                = rec.LastName                      || '';
+                    mailingStreet           = toProperCase(rec.MailingStreet)   || '';                    
+                    mailingCity             = toProperCase(rec.MailingCity)     || '';
+                    mailingZip              = rec.MailingPostalCode             || '';
+                    middleName              = rec.MiddleName                    || '';
+                    mobilePhone             = rec.MobilePhone                   || '';
+                    organizer               = rec.Organizer_1__c                || '';
+                    phone                   = rec.Phone                         || '';
+                    polStAssemblyDistrict   = rec.Pol_St_Assembly_District__c   || '';
+                    polStSenateDistrict     = rec.Pol_St_Senate_District__c     || '';
+                    shift                   = toProperCase(rec.Shift__c)        || '';
+                    title                   = toProperCase(rec.Title)           || '';
+                    worksite                = toProperCase(rec.Worksite__c)     || '';
+
+                    mbrObj = {
+                        Id:id,
+                        LastName:lastName,
+                        FirstName:firstName,
+                        MiddleName:middleName,
+                        AccountName:accountName,
+                        AccountId:accountId,
+                        Division:division,
+                        Department:department,
+                        Title:title,
+                        Shift:shift,
+                        Worksite:worksite,
+                        Coordinator:coordinator,
+                        Organizer:organizer,
+                        Email:email,
+                        Phone:phone,                        
+                        HomePhone:homePhone,
+                        MobilePhone:mobilePhone,
+                        MailingCity:mailingCity,
+                        MailingZip:mailingZip,
+                        MailingStreet:mailingStreet,
+                        MiddleName:middleName,
+                        MobilePhone:mobilePhone,
+                        PolStAssemblyDistrict:polStAssemblyDistrict,
+                        PolStSenateDistrict:polStSenateDistrict
+                    };
+                    if(surveyArray) {
+                        surveyArray.forEach(function(item) {
+                            mbrObj[item] = '';
+                        });
+                    }
+                    mbrArray.push(mbrObj);
+                }
+
+                if (results.done == 'true')
+                    processedAll = true;
+                else {
+                    batCnt++;
+                    responseDisp.innerHTML = '(batch count: ' + batCnt.toLocaleString() + ' )';
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+            }
+
+console.log('debug...', recCnt);
+
+            if(recCnt > 0 ) {
+                responseDisp.innerHTML = 'Records: ' + recCnt.toLocaleString();
+                saveAsCsvButton.classList.remove('hide');
+            }
+            else
+                saveAsCsvButton.classList.add('hide');    
+
+            loadingDiv.classList.add('hide');
+            retrieveButton.innerHTML = 'Retrieve';
+
+        }
+
+        function processResponses(results) {
+            let processedAll = false;
+            let i,rec,records,recCnt,batCnt,contactId,surveyCode,surveyResponse;
+            let mapKey,codeKey,response,mbrObj;
+            let division,accountId,accountName,coordinator,department,email,firstName,homePhone,id,lastName,mailingCity,mailingZip,mailingStreet,middleName,mobilePhone,organizer,phone,polStAssemblyDistrict,polStSenateDistrict,shift,title,worksite;
+            let nonMbrCnt = 0;
+
+            // let responseQuery = `SELECT Survey_Code__c, Response_Value__c, Division__c,Employer_Name__c,Department__c,Coordinator__c, Organizer_1__c, 
+            //                      Contact__r.Id, Contact__r.Email, Contact__r.FirstName, Contact__r.HomePhone, Contact__r.LastName, Contact__r.MailingCity, Contact__r.MailingPostalCode, Contact__r.MailingStreet, Contact__r.MiddleName, Contact__r.MobilePhone, Contact__r.Phone, Contact__r.Pol_St_Assembly_District__c, Contact__r.Pol_St_Senate_District__c, Contact__r.Shift__c, Contact__r.Title, Contact__r.Worksite__c
+            //                      FROM Survey_Response__c WHERE Contact__r.In_Current_BU__c = true AND Survey_Code__c In (${list}) `;
+
+            recCnt = batCnt = 0;
+            while (!processedAll) {
+                records = results.getArray('records');
+                for (i = 0; i < records.length; i++) {
+                    recCnt++;
+                    rec            = records[i];
+                    accountName    = toProperCase(rec.Employer_Name__c);
+                    division       = rec.Division__c;
+                    department     = toProperCase(rec.Department__c);
+                    surveyCode     = rec.Survey_Code__c;
+                    surveyResponse = rec.Response_Value__c;
+                    contactId      = 'NonMbr';
+                    accountId      = 'none';
+
+                    if ('Contact__r' in rec) { 
+                        if(rec.Contact__r) {
+                            contactId             = rec.Contact__r.Id;
+                            lastName              = rec.Contact__r.LastName                     || '';
+                            firstName             = rec.Contact__r.FirstName                    || '';
+                            email                 = rec.Contact__r.Email                        || '';
+                            phone                 = rec.Contact__r.Phone                        || '';                    
+                            homePhone             = rec.Contact__r.HomePhone                    || '';
+                            mailingStreet         = toProperCase(rec.Contact__r.MailingStreet)  || '';
+                            mailingCity           = toProperCase(rec.Contact__r.MailingCity)    || '';
+                            mailingZip            = rec.Contact__r.MailingPostalCode            || '';
+                            middleName            = rec.Contact__r.MiddleName                   || '';
+                            mobilePhone           = rec.Contact__r.MobilePhone                  || '';
+                            polStAssemblyDistrict = rec.Contact__r.Pol_St_Assembly_District__c  || '';
+                            polStSenateDistrict   = rec.Contact__r.Pol_St_Senate_District__c    || '';
+                            shift                 = toProperCase(rec.Contact__r.Shift__c)       || '';
+                            title                 = toProperCase(rec.Contact__r.Title)          || '';
+                            worksite              = toProperCase(rec.Contact__r.Worksite__c)    || '';
+
+                            if ('Account' in rec.Contact__r) { 
+                                if(rec.Contact__r.Account) {
+                                    accountId   = rec.Contact__r.Account.Id;
+                                }
+                            }
+                        }
+                    }
+
+                    if(contactId != 'NonMbr') {
+                        if(!mbrMap[contactId]) {
+                            mbrObj = {
+                                Id:id,
+                                LastName:lastName,
+                                FirstName:firstName,
+                                MiddleName:middleName,
+                                AccountName:accountName,
+                                AccountId:accountId,
+                                Division:division,
+                                Department:department,
+                                Title:title,
+                                Shift:shift,
+                                Worksite:worksite,
+                                Coordinator:coordinator,
+                                Organizer:organizer,
+                                Email:email,
+                                Phone:phone,                        
+                                HomePhone:homePhone,
+                                MobilePhone:mobilePhone,
+                                MailingCity:mailingCity,
+                                MailingZip:mailingZip,
+                                MailingStreet:mailingStreet,
+                                MiddleName:middleName,
+                                MobilePhone:mobilePhone,
+                                PolStAssemblyDistrict:polStAssemblyDistrict,
+                                PolStSenateDistrict:polStSenateDistrict
+                            };
+                            if(surveyArray) {
+                                surveyArray.forEach(function(item) {
+                                    mbrObj[item] = '';
+                                });
+                            }
+                            mbrMap[contactId] = mbrObj;
+                        }
+                        mbrMap[contactId][surveyCode] = surveyResponse;
+                    }
+                    else nonMbrCnt++;
+                }
+
+                if (results.done == 'true')
+                    processedAll = true;
+                else {
+                    batCnt++;
+                    responseDisp.innerHTML = '(batch count: ' + batCnt.toLocaleString() + ' )';
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+            }
+
+            if(recCnt > 0 ) {
+                responseDisp.innerHTML = 'Records: ' + recCnt.toLocaleString();
+                saveAsCsvButton.classList.remove('hide');
+            }
+            else
+                saveAsCsvButton.classList.add('hide'); 
+
+            responseDisp.innerHTML = 'Records: ' + recCnt.toLocaleString();
+            for(mapKey in mbrMap) {
+                mbrObj = mbrMap[mapKey];
+                mbrArray.push(mbrObj);
+            }
+
+console.log('nonMbrCnt',nonMbrCnt);
+            loadingDiv.classList.add('hide');
+            retrieveButton.innerHTML = 'Retrieve';
+        }
+
+        function initAgGrid() {
+
+            agGrid.LicenseManager.setLicenseKey("United_Healthcare_Workers_West_10-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+
+//                {headerName: 'accountId',             field: 'AccountId',             width:  80},
+//                {headerName: 'ContactId',             field: 'ContactId',             width:  80}
+
+            mbrColumnDefs = [
+                {headerName: 'Division',              field: 'Division',              width: 120},
+                {headerName: 'Employer',              field: 'AccountName',           width: 300},
+                {headerName: 'First Name',            field: 'FirstName',             width: 130},
+                {headerName: 'Middle',                field: 'MiddleName',            width:  80},
+                {headerName: 'Last Name',             field: 'LastName',              width: 130},
+                {headerName: 'Department',            field: 'Department',            width: 200},
+                {headerName: 'Title',                 field: 'Title',                 width: 200},
+                {headerName: 'Shift',                 field: 'Shift',                 width:  80},
+                {headerName: 'Phone',                 field: 'Phone',                 width: 130},                
+                {headerName: 'Home Phone',            field: 'HomePhone',             width: 130},
+                {headerName: 'Cell Phone',            field: 'MobilePhone',           width: 130},
+                {headerName: 'Email',                 field: 'Email',                 width: 180},
+                {headerName: 'Street',                field: 'MailingStreet',         width: 150},
+                {headerName: 'City',                  field: 'MailingCity',           width: 150},
+                {headerName: 'Zip',                   field: 'MailingZip',            width:  80},
+                {headerName: 'Coordinator',           field: 'Coordinator',           width: 160},
+                {headerName: 'Organizer',             field: 'Organizer',             width: 160},
+                {headerName: 'Senate',                field: 'PolStSenateDistrict',   width: 100, cellClass: 'center-align'},
+                {headerName: 'Assembly',              field: 'PolStAssemblyDistrict', width: 100, cellClass: 'center-align'},
+                {headerName: 'Work site',             field: 'Worksite',              width: 200}
+            ];
+
+            if(surveyArray) {
+                surveyArray.forEach(function(item) {
+                    mbrColumnDefs.push({headerName: item, field: item, width: 130, cellClass: 'center-align'});
+                });
+            }
+
+            initialSort = [
+                {colId: 'ContactId',  sort: 'asc'},
+                {colId: 'SurveyCode', sort: 'asc'}
+            ];
+        }
+
+        var senateInput, assemblyInput, surveyInput, surveyArray, surveyList, responseDisp, loadingDiv,mbrGridDiv;
+        var mbrMap, mbrColumnDefs, initialSort;
+        var retrieveButton,resetButton,mbrArray,mbrGridOptions;
+        var sessionId,userId,userFirstName,userLastName,shownBefore,ampTerm,aptTerm;
+        var shownBefore,saveAsCsvButton;
+
+        // ***************** Main Program Entry *****************
+        init();
+
+        </script>
+    </html>
+</apex:page>

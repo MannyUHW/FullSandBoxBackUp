@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Time Off Request / Overtime Request</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>SOS Time Off Requests</value>
+    </caseValues>
+    <fields>
+        <label><!-- AA Email --></label>
+        <name>AA_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Admin Assistant --></label>
+        <name>Admin_Assistant__c</name>
+        <relationshipLabel><!-- SOS Time Off Requests (Admin Assistant) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Manager Approved/Rejectd Date --></label>
+        <name>Approved_Rejectd_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Approved/Rejectd by --></label>
+        <name>Approved_Rejectd_by__c</name>
+        <relationshipLabel><!-- SOS Time Off Requests (Approved/Rejectd by) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Employee Comments --></label>
+        <name>Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cost Center --></label>
+        <name>Cost_Center__c</name>
+    </fields>
+    <fields>
+        <label><!-- Department --></label>
+        <name>Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employee Name --></label>
+        <name>Employee_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employee Number --></label>
+        <name>Employee_Number__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employee Type --></label>
+        <name>Employee_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- End Date --></label>
+        <name>End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Field Director Email --></label>
+        <name>Field_Director_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Field Director Name --></label>
+        <name>Field_Director_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Finance Department Notes --></label>
+        <name>Finance_Department_Notes__c</name>
+    </fields>
+    <fields>
+        <help><!-- If you select this total hours should be multiple of 8. --></help>
+        <label><!-- Full Day --></label>
+        <name>Full_Day__c</name>
+    </fields>
+    <fields>
+        <label><!-- Graveyard Shift --></label>
+        <name>Graveyard_Shift__c</name>
+    </fields>
+    <fields>
+        <label><!-- HR Approved/Rejected Date --></label>
+        <name>HR_Approved_Rejected_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- HR Comments --></label>
+        <name>HR_Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- HR Pending Date --></label>
+        <name>HR_Pending_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Non Exempt --></label>
+        <name>Is_Non_Exempt__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Quick Sick Leave --></label>
+        <name>Is_Quick_Sick_Leave__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager Comments --></label>
+        <name>Manager_Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager Name --></label>
+        <name>Manager_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager Pending Date --></label>
+        <name>Manager_Pending_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager --></label>
+        <name>Manager__c</name>
+        <relationshipLabel><!-- SOS Time Off Requests (Manager) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Mgr Name --></label>
+        <name>Mgr_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- NewManager --></label>
+        <name>NewManager__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Overtime Hours --></label>
+        <name>Over_Time_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date of Time off Requested Submitted --></label>
+        <name>Request_Submitted_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sick Leave Type --></label>
+        <name>Sick_Leave_Type__c</name>
+        <picklistValues>
+            <masterLabel>FMLA</masterLabel>
+            <translation><!-- FMLA --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Family Sick Leave</masterLabel>
+            <translation><!-- Family Sick Leave --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Personal</masterLabel>
+            <translation><!-- Personal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Workers’ comp</masterLabel>
+            <translation><!-- Workers’ comp --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Start Date --></label>
+        <name>Start_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Approved</masterLabel>
+            <translation><!-- Approved --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HR Approved</masterLabel>
+            <translation><!-- HR Approved --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HR Pending</masterLabel>
+            <translation><!-- HR Pending --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HR/Div. Direcor Pending</masterLabel>
+            <translation><!-- HR/Div. Direcor Pending --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Manager Pending</masterLabel>
+            <translation><!-- Manager Pending --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>New</masterLabel>
+            <translation><!-- New --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pending</masterLabel>
+            <translation><!-- Pending --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Rejected</masterLabel>
+            <translation><!-- Rejected --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Revoked</masterLabel>
+            <translation><!-- Revoked --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Term Date --></label>
+        <name>Term_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Time Off Balance --></label>
+        <name>Time_Off_Balance__c</name>
+        <relationshipLabel><!-- SOS Time Off Requests --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Time Off Remaining --></label>
+        <name>Time_Off_Remaining_by_type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Differential Hours --></label>
+        <name>Total_Differential_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Double Over Time Hours --></label>
+        <name>Total_Double_Over_Time_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Hours Reported --></label>
+        <name>Total_Hours_Reported__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Hours/Days Requested --></label>
+        <name>Total_Hours_Requested_Hour_Day__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Hours/Days Requested --></label>
+        <name>Total_Hours_Requested__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Regular Over Time Hours --></label>
+        <name>Total_Regular_Over_Time_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Bereavement</masterLabel>
+            <translation><!-- Bereavement --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Birthday</masterLabel>
+            <translation><!-- Birthday --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Float</masterLabel>
+            <translation><!-- Float --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Holiday work days</masterLabel>
+            <translation><!-- Holiday work days --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Jury Duty</masterLabel>
+            <translation><!-- Jury Duty --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Overtime</masterLabel>
+            <translation><!-- Overtime --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Religious (OPEIU Only)</masterLabel>
+            <translation><!-- Religious (OPEIU Only) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sick</masterLabel>
+            <translation><!-- Sick --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unpaid</masterLabel>
+            <translation><!-- Unpaid --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Vacation</masterLabel>
+            <translation><!-- Vacation --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>SOS_Time Off Request Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- New Time Off Request --></label>
+            <section>New Time Off Request</section>
+        </sections>
+        <sections>
+            <label><!-- Notes --></label>
+            <section>Notes</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <description><!-- To create overtime request. --></description>
+        <label><!-- Overtime Request --></label>
+        <name>Overtime_Request</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- To create new time off request. --></description>
+        <label><!-- Time Off Request --></label>
+        <name>Time_Off_Request</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Total Days requested are exceeding the date range selected. --></errorMessage>
+        <name>DateRangeExceededDays</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Total Hours requested are exceeding the date range selected. --></errorMessage>
+        <name>DateRangeExceededHours</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Total Hours Requested value should be multiples of 8 hours for full day request type. --></errorMessage>
+        <name>NonExemptFullDay</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- End Date value should be greater than or equal to Start Date. --></errorMessage>
+        <name>SOS</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please enter a valid input. --></errorMessage>
+        <name>Total_Hours_Requested_validation</name>
+    </validationRules>
+</CustomObjectTranslation>

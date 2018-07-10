@@ -1,0 +1,2340 @@
+<apex:page controller="ctrlr_rpt" docType="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="false" readOnly="true">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<div ng-controller="rptCtrl"  ng-app="app">
+<div class="panel-group">
+<div class="panel panel-default">
+    <form class="form-inline">
+        <div class="form-group">
+            <div class="col-md-6 col-xs-6">
+    <button id="rpt_all" class="btn btn-primary" type="button" data-ng-disabled="myForm.$invalid" ng-click="myForm.$invalid=true;reportall()">
+        Run Report
+    </button>
+            </div>
+            <div class="col-md-6 col-xs-6">
+            <select id="pickrpt" ng-model="report_typelist.item" class="form-control"
+                ng-options="item.id as item.name for item in report_typelist">
+            </select>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="panel panel-default panel-primary" ng-show="reportran">
+    <div class="panel-heading text-center">
+      <h3 class="panel-title">All Petition Reports</h3>
+    </div>    
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search Ledger" ng-model="searchAll"></input>
+        <span class="input-group-addon" ng-click="searchAll = ''">X</span>
+    </div>
+    <div class="panel-body" >
+    <div class="row" ng-show="All_Divshow">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed">
+            <caption>Divisions</caption>
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='LdrsActive'; reverseSort_div = !reverseSort_div">Leaders Active</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='total_pets'; reverseSort_div = !reverseSort_div">Total Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='ckin_qty'; reverseSort_div = !reverseSort_div">Total Checked In</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='pets_active'; reverseSort_div = !reverseSort_div">Active Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='brn_qty'; reverseSort_div = !reverseSort_div">Petitions Burnt</a>
+                    </th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>% Goal</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_div | orderBy:[orderByField_div,'SortNum','Divname']:reverseSort_div | filter:searchAll as filteredDiv" >
+                    <td><a ng-click="changeSearch(row.Divname)">
+                        {{row.Divname}}</a>
+                    </td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.LdrsActive}}</td>
+                    <td style="text-align:right;">{{row.total_pets | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;" ng-class="{'warning-class': row.bad_sigs / (row.bad_sigs + row.valid_sigs) >= '.25', 'default-color': row.bad_sigs / (row.bad_sigs + row.valid_sigs) < '.25'}">{{row.bad_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs/row.Goal | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.Goal | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="1">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'LdrsActive') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'ckout_qty') - gettotal(filteredDiv,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'brn_qty') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'valid_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'valid_sigs')/(gettotal(filteredDiv,'valid_sigs')+gettotal(filteredDiv,'bad_sigs')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'bad_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'bad_sigs')/(gettotal(filteredDiv,'valid_sigs')+gettotal(filteredDiv,'bad_sigs')) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'valid_sigs')/gettotal(filteredDiv,'Goal') | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredDiv,'Goal') | number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    <div class="row" ng-show="All_rdshow">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed ">
+            <caption>Regions</caption>
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th>Regional Director</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>
+                        <a href="#" ng-click="orderByField_rd='LdrsActive'; reverseSort_rd = !reverseSort_rd">Leaders Active</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_rd='total_pets'; reverseSort_rd = !reverseSort_rd">Total Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_rd='ckin_qty'; reverseSort_rd = !reverseSort_rd">Total Checked In</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_rd='pets_active'; reverseSort_rd = !reverseSort_rd">Active Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_rd='brn_qty'; reverseSort_rd = !reverseSort_rd">Petitions Burnt</a>
+                    </th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>% Goal</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_reg | orderBy:[orderByField_rd,'division','Divname']:reverseSort_rd | filter:searchAll as filteredRD" >
+                    <td><a ng-click="changeSearch(row.division)">
+                        {{row.division}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.Divname)">
+                        {{row.Divname}}</a>
+                    </td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.LdrsActive | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.total_pets | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active  | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty | number : fractionSize}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;" ng-class="{'warning-class': row.bad_sigs / (row.bad_sigs + row.valid_sigs) >= '.25', 'default-color': row.bad_sigs / (row.bad_sigs + row.valid_sigs) < '.25'}">{{row.bad_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;" >{{row.valid_sigs/row.Goal | percentage:1}}</td>
+                    <td style="text-align:right;" >{{row.Goal | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="2">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'LdrsActive') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'ckout_qty') - gettotal(filteredRD,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'brn_qty') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'valid_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'valid_sigs')/(gettotal(filteredRD,'valid_sigs')+gettotal(filteredRD,'bad_sigs')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'bad_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'bad_sigs')/(gettotal(filteredRD,'valid_sigs')+gettotal(filteredRD,'bad_sigs')) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'valid_sigs')/gettotal(filteredRD,'Goal') | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD,'Goal') | number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    <div class="row" ng-show="All_cdshow">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed ">
+            <caption>Coordinators</caption>
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th>Regional Director</th>
+                    <th>Coordinator</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>
+                        <a href="#" ng-click="orderByField_cd='LdrsActive'; reverseSort_cd = !reverseSort_cd">Leaders Active</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_cd='total_pets'; reverseSort_cd = !reverseSort_cd">Total Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_cd='ckin_qty'; reverseSort_cd = !reverseSort_cd">Total Checked In</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_cd='pets_active'; reverseSort_cd = !reverseSort_cd">Active Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_cd='brn_qty'; reverseSort_cd = !reverseSort_cd">Petitions Burnt</a>
+                    </th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>% Goal</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_cd | orderBy:[orderByField_cd,'division','rdname','Divname']:reverseSort_cd | filter:searchAll as filteredCD" >
+                    <td><a ng-click="changeSearch(row.division)">
+                        {{row.division}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.rdname)">
+                        {{row.rdname}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.Divname)">
+                        {{row.Divname}}</a>
+                    </td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.LdrsActive | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.total_pets | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active  | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;" ng-class="{'warning-class': row.bad_sigs / (row.bad_sigs + row.valid_sigs) >= '.25', 'default-color': row.bad_sigs / (row.bad_sigs + row.valid_sigs) < '.25'}">{{row.bad_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs/row.Goal | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.Goal | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="3">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'LdrsActive') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'ckout_qty') - gettotal(filteredCD,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'brn_qty') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'valid_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'valid_sigs')/(gettotal(filteredCD,'valid_sigs')+gettotal(filteredCD,'bad_sigs')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'bad_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'bad_sigs')/(gettotal(filteredCD,'valid_sigs')+gettotal(filteredCD,'bad_sigs')) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'valid_sigs')/gettotal(filteredCD,'Goal') | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD,'Goal') | number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    <div class="row" ng-show="All_repshow">
+        <div class="table-responsive" id="stfwrap">
+        <table class="table table-bordered table-condensed">
+            <caption>Staff</caption>
+            <thead>
+                <tr class="default-color;">
+                    <th>Division</th>
+                    <th>Regional Director</th>
+                    <th>Coordinator</th>
+                    <th>Staff</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>
+                        <a href="#" ng-click="orderByField_stf='LdrsActive'; reverseSort_stf = !reverseSort_stf">Leaders Active</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_stf='total_pets'; reverseSort_stf = !reverseSort_stf">Total Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_stf='ckin_qty_tot'; reverseSort_stf = !reverseSort_stf">Total Checked In</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_stf='pets_active'; reverseSort_stf = !reverseSort_stf">Active Staff Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_stf='pets_active_mbr'; reverseSort_stf = !reverseSort_stf">Active Member Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_stf='brn_qty_tot'; reverseSort_stf = !reverseSort_stf">Petitions Burnt</a>
+                    </th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>% Goal</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_rep | orderBy:[orderByField_stf,'division','rdname','cdname','sortKey','Divname']:reverseSort_stf | filter:searchAll:string as filteredREP" >
+                    <td><a ng-click="changeSearch(row.division)">
+                        {{row.division}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.rdname)">
+                        {{row.rdname}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.cdname)">
+                        {{row.cdname}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.Divname)">
+                        {{row.Divname}}</a>
+                    </td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.LdrsActive | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckout_qty + row.ckout_qty_mbr - row.ckout_qty_from - row.ckout_qty_from_mbr | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty_tot | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active_mbr | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty_tot | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs_tot | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs_tot / (row.bad_sigs_tot + row.valid_sigs_tot) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs_tot | number : fractionSize}}</td>
+                    <td style="text-align:right;" ng-class="{'warning-class': row.bad_sigs_tot / (row.bad_sigs_tot + row.valid_sigs_tot) >= '.25', 'default-color': row.bad_sigs / (row.bad_sigs + row.valid_sigs) < '.25'}">{{row.bad_sigs_tot / (row.bad_sigs_tot + row.valid_sigs_tot) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs_tot/row.Goal | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.Goal | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="4">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'LdrsActive') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'ckout_qty') + gettotal(filteredREP,'ckout_qty_mbr') - gettotal(filteredREP,'ckout_qty_from') - gettotal(filteredREP,'ckout_qty_from_mbr') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'ckin_qty_tot') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'pets_active_mbr') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'brn_qty_tot') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'valid_sigs_tot') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'valid_sigs_tot')/(gettotal(filteredREP,'valid_sigs_tot')+gettotal(filteredREP,'bad_sigs_tot')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'bad_sigs_tot') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'bad_sigs_tot')/(gettotal(filteredREP,'valid_sigs_tot')+gettotal(filteredREP,'bad_sigs_tot')) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'valid_sigs_tot')/gettotal(filteredREP,'Goal') | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP,'Goal') | number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    <div class="row" ng-show="All_memshow">
+        <div class="table-responsive" id="memwrap">
+        <table class="table table-bordered table-condensed">
+            <caption>Members</caption>
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th>Regional Director</th>
+                    <th>Coordinator</th>
+                    <th>Rep</th>
+                    <th>Member</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>
+                        <a href="#" ng-click="orderByField_mbr='total_pets'; reverseSort_mbr = !reverseSort_mbr">Total Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_mbr='ckin_qty'; reverseSort_mbr = !reverseSort_mbr">Total Checked In</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_mbr='pets_active'; reverseSort_mbr = !reverseSort_mbr">Active Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_mbr='brn_qty'; reverseSort_mbr = !reverseSort_mbr">Petitions Burnt</a>
+                    </th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_mem | orderBy:[orderByField_mbr,'division','rdname','cdname','repname','Divname']:reverseSort_mbr | filter:searchAll as filteredMEM" >
+                    <td><a ng-click="changeSearch(row.division)">
+                        {{row.division}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.rdname)">
+                        {{row.rdname}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.cdname)">
+                        {{row.cdname}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.repname)">
+                        {{row.repname}}</a>
+                    </td>
+                    <td><a ng-click="changeSearch(row.Divname)">
+                        {{row.Divname}}</a>
+                    </td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.ckout_qty - row.ckout_qty_from | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active  | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;" ng-class="{'warning-class': row.bad_sigs / (row.bad_sigs + row.valid_sigs) >= '.25', 'default-color': row.bad_sigs / (row.bad_sigs + row.valid_sigs) < '.25'}">{{row.bad_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="5">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredMEM,'ckout_qty') - gettotal(filteredMEM,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM,'brn_qty') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredMEM,'valid_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM,'valid_sigs')/(gettotal(filteredMEM,'valid_sigs')+gettotal(filteredMEM,'bad_sigs')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM,'bad_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM,'bad_sigs')/(gettotal(filteredMEM,'valid_sigs')+gettotal(filteredMEM,'bad_sigs')) | percentage:1}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    </div>
+    <div class="panel-footer panel-primary">
+        Report Date : {{date | date:'medium'}}
+    </div>
+</div>
+<div class="panel panel-default panel-primary" ng-show="reportran_divs">
+    <div class="panel panel-heading text-center">
+      <h3 class="panel-title">Division Petition Report</h3>
+    </div>
+    <div class="panel panel-body">
+    <div class="row">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='LdrsActive'; reverseSort_div = !reverseSort_div">Leaders Active</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='total_pets'; reverseSort_div = !reverseSort_div">Total Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='ckin_qty'; reverseSort_div = !reverseSort_div">Total Checked In</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='pets_active'; reverseSort_div = !reverseSort_div">Active Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_div='brn_qty'; reverseSort_div = !reverseSort_div">Petitions Burnt</a>
+                    </th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>% Goal</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_div | orderBy:[orderByField_div,'Divname']:reverseSort_div ">
+                    <td>{{row.Divname}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.LdrsActive | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckout_qty - row.ckout_qty_from | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active  | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty | number : fractionSize}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs/row.Goal | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.Goal | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="1">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(data_div,'LdrsActive') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(data_div,'ckout_qty') - gettotal(data_div,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(data_div,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(data_div,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(data_div,'brn_qty') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(data_div,'valid_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(data_div,'valid_sigs')/(gettotal(data_div,'valid_sigs')+gettotal(data_div,'bad_sigs')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(data_div,'bad_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(data_div,'bad_sigs')/(gettotal(data_div,'valid_sigs')+gettotal(data_div,'bad_sigs')) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(data_div,'valid_sigs')/gettotal(data_div,'Goal') | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(data_div,'Goal') | number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    </div>
+    <div class="panel-footer panel-primary">
+        Report Date : {{date | date:'medium'}}
+    </div>
+</div>
+<div class="panel panel-default panel-primary" ng-show="reportran_regs">
+    <div class="panel panel-heading text-center">
+      <h3 class="panel-title">Regional Petition Report</h3>
+    </div>
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search Ledger" ng-model="searchregdir"></input>
+        <span class="input-group-addon" ng-click="searchregdir = ''">X</span>
+    </div>
+    <div class="panel panel-body">
+    <div class="row">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed ">
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th>Regional Director</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Leaders Active</th>
+                    <th>Total Petitions</th>
+                    <th>Total Checked In</th>
+                    <th>
+                        <a href="#" ng-click="orderByField_rd='pets_active'; reverseSort_rd = !reverseSort_rd">Active Petitions</a>
+                    </th>
+                    <th>Petitions Burnt</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>% Goal</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_reg | orderBy:[orderByField_rd,'division','Divname']:reverseSort_rd | filter:searchregdir as filteredRD_sep">
+                    <td>{{row.division}}</td>
+                    <td>{{row.Divname}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.LdrsActive | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckout_qty - row.ckout_qty_from | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active  | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty | number : fractionSize}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs/row.Goal | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.Goal | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="2">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'LdrsActive') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'ckout_qty') - gettotal(filteredRD_sep,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'brn_qty') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'valid_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'valid_sigs')/(gettotal(filteredRD_sep,'valid_sigs')+gettotal(filteredRD_sep,'bad_sigs')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'bad_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'bad_sigs')/(gettotal(filteredRD_sep,'valid_sigs')+gettotal(filteredRD_sep,'bad_sigs')) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'valid_sigs')/gettotal(filteredRD_sep,'Goal') | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredRD_sep,'Goal') | number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    </div>
+    <div class="panel-footer panel-primary">
+        Report Date : {{date | date:'medium'}}
+    </div>
+</div>
+<div class="panel panel-default panel-primary" ng-show="reportran_coords">
+    <div class="panel panel-heading text-center">
+      <h3 class="panel-title">Coordinator Petition Report</h3>
+    </div>
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search Ledger" ng-model="searchcoord"></input>
+        <span class="input-group-addon" ng-click="searchcoord = ''">X</span>
+    </div>
+    <div class="panel panel-body">
+    <div class="row">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed ">
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th>Regional Director</th>
+                    <th>Coordinator</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Leaders Active</th>
+                    <th>Total Petitions</th>
+                    <th>Total Checked In</th>
+                    <th>
+                        <a href="#" ng-click="orderByField_cd='pets_active'; reverseSort_cd = !reverseSort_cd">Active Petitions</a>
+                    </th>
+                    <th>Petitions Burnt</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>% Goal</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_cd | orderBy:[orderByField_cd,'division','rdname','Divname']:reverseSort_cd | filter:searchcoord as filteredCD_sep">
+                    <td>{{row.division}}</td>
+                    <td>{{row.rdname}}</td>
+                    <td>{{row.Divname}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.LdrsActive | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckout_qty - row.ckout_qty_from | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active  | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs/row.Goal | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.Goal | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="3">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'LdrsActive') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'ckout_qty') - gettotal(filteredCD_sep,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'brn_qty') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'valid_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'valid_sigs')/(gettotal(filteredCD_sep,'valid_sigs')+gettotal(filteredCD_sep,'bad_sigs')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'bad_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'bad_sigs')/(gettotal(filteredCD_sep,'valid_sigs')+gettotal(filteredCD_sep,'bad_sigs')) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'valid_sigs')/gettotal(filteredCD_sep,'Goal') | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredCD_sep,'Goal') | number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    </div>
+    <div class="panel-footer panel-primary">
+        Report Date : {{date | date:'medium'}}
+    </div>
+</div>
+<div class="panel panel-default panel-primary" ng-show="reportran_others">
+    <div class="panel panel-heading text-center">
+      <h3 class="panel-title">Staff and Member Petition Reports</h3>
+    </div>
+    <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search Ledger" ng-model="searchmemrep"></input>
+        <span class="input-group-addon" ng-click="searchmemrep = ''">X</span>
+    </div>
+    <div class="panel panel-body">
+    <div class="row">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed ">
+            <caption>Staff</caption>
+            <thead>
+                <tr class="default-color;">
+                    <th>Division</th>
+                    <th>Regional Director</th>
+                    <th>Coordinator</th>
+                    <th>Staff</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Leaders Active</th>
+                    <th>Total Petitions</th>
+                    <th>Total Checked In</th>
+                    <th>
+                        <a href="#" ng-click="orderByField_stf='pets_active'; reverseSort_stf = !reverseSort_stf">Active Staff Petitions</a>
+                    </th>
+                    <th>
+                        <a href="#" ng-click="orderByField_stf='pets_active'; reverseSort_stf = !reverseSort_stf">Active Member Petitions</a>
+                    </th>
+                    <th>Petitions Burnt</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>% Goal</th>
+                    <th>Goal</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_rep | orderBy:[orderByField_stf,'division','rdname','cdname','sortKey','Divname']:reverseSort_stf | filter:searchmemrep as filteredREP_sep" >
+                    <td>{{row.division}}</td>
+                    <td>{{row.rdname}}</td>
+                    <td>{{row.cdname}}</td>
+                    <td>{{row.Divname}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.LdrsActive | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckout_qty + row.ckout_qty_mbr - row.ckout_qty_from - row.ckout_qty_from_mbr | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty_tot | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active_mbr | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty_tot | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs_tot | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs_tot / (row.bad_sigs_tot + row.valid_sigs_tot) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs_tot | number : fractionSize}}</td>
+                    <td style="text-align:right;" ng-class="{'warning-class': row.bad_sigs_tot / (row.bad_sigs_tot + row.valid_sigs_tot) >= '.25', 'default-color': row.bad_sigs / (row.bad_sigs + row.valid_sigs) < '.25'}">{{row.bad_sigs_tot / (row.bad_sigs_tot + row.valid_sigs_tot) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs_tot/row.Goal | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.Goal | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="4">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'LdrsActive') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'ckout_qty') + gettotal(filteredREP_sep,'ckout_qty_mbr') - gettotal(filteredREP_sep,'ckout_qty_from') - gettotal(filteredREP_sep,'ckout_qty_from_mbr') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'ckin_qty_tot') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'pets_active_mbr') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'brn_qty_tot') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'valid_sigs_tot') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'valid_sigs_tot')/(gettotal(filteredREP_sep,'valid_sigs_tot')+gettotal(filteredREP_sep,'bad_sigs_tot')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'bad_sigs_tot') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'bad_sigs_tot')/(gettotal(filteredREP_sep,'valid_sigs_tot')+gettotal(filteredREP_sep,'bad_sigs_tot')) | percentage:1}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'valid_sigs_tot')/gettotal(filteredREP_sep,'Goal') | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredREP_sep,'Goal') | number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="table-responsive" id="exportable">
+        <table class="table table-bordered table-condensed ">
+            <caption>Members</caption>
+            <button ng-click="exportDataMem_v2('data_mem')">Export Members</button>
+            <button export-to-csv="true">Download</button>
+            <thead>
+                <tr>
+                    <th>Division</th>
+                    <th>Regional Director</th>
+                    <th>Coordinator</th>
+                    <th>Rep</th>
+                    <th>Member</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Total Petitions</th>
+                    <th>Total Checked In</th>
+                    <th>
+                        <a href="#" ng-click="orderByField_mbr='pets_active'; reverseSort_mbr = !reverseSort_mbr">Active Petitions</a>
+                    </th>
+                    <th>Petitions Burnt</th>
+                    <th bgcolor="#481C60"></th>
+                    <th>Valid Signatures</th>
+                    <th>% Valid</th>
+                    <th>Invalid Signatures</th>
+                    <th>% Invalid</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in data_mem | orderBy:[orderByField_mbr,'division','rdname','cdname','repname','Divname']:reverseSort_mbr | filter:searchmemrep as filteredMEM_sep" ng-click="changeSearch(row)">
+                    <td>{{row.division}}</td>
+                    <td>{{row.rdname}}</td>
+                    <td>{{row.cdname}}</td>
+                    <td>{{row.repname}}</td>
+                    <td>{{row.Divname}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.ckout_qty - row.ckout_qty_from | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.pets_active | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                    <td style="text-align:right;">{{row.valid_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.valid_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                    <td style="text-align:right;">{{row.bad_sigs | number : fractionSize}}</td>
+                    <td style="text-align:right;" ng-class="{'warning-class': row.bad_sigs / (row.bad_sigs + row.valid_sigs) >= '.25', 'default-color': row.bad_sigs / (row.bad_sigs + row.valid_sigs) < '.25'}">{{row.bad_sigs / (row.bad_sigs + row.valid_sigs) | percentage:1}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="5">Totals :</th>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredMEM_sep,'ckout_qty') - gettotal(filteredMEM_sep,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM_sep,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM_sep,'pets_active') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM_sep,'brn_qty') | number : fractionSize}}</td>
+                <td bgcolor="#481C60"></td>
+                <td style="text-align:right;">{{gettotal(filteredMEM_sep,'valid_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM_sep,'valid_sigs')/(gettotal(filteredMEM_sep,'valid_sigs')+gettotal(filteredMEM_sep,'bad_sigs')) | percentage:1}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM_sep,'bad_sigs') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(filteredMEM_sep,'bad_sigs')/(gettotal(filteredMEM_sep,'valid_sigs')+gettotal(filteredMEM_sep,'bad_sigs')) | percentage:1}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    </div>
+    <div class="panel-footer panel-primary">
+        Report Date : {{date | date:'medium'}}
+    </div>
+</div>
+</div>
+<div class="panel panel-default panel-primary" ng-show="report_invtry">
+    <div class="panel panel-heading text-center">
+      <h3 class="panel-title">Office Bucket Inventory Report</h3>
+    </div>
+    <div class="panel panel-body">
+    <div class="row">
+        <div class="table-responsive">
+        <table class="table table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th>Office</th>
+                    <th>Printed</th>
+                    <th>Received</th>
+                    <th>Returned</th>
+                    <th>Distributed</th>
+                    <th>Burned</th>
+                    <th>Check Ins?</th>
+                    <th>Remainder</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="row in ofc_rows | orderBy:Divname">                    
+                    <td><a style="display: block;" ng-href="/00O0H000006h5tR?pv0={{row.Div}}&pv1={{row.Div}}">
+                            {{row.Divname}}
+                        </a>
+                    </td>
+                    <td style="text-align:right;">{{row.PQuantity__c | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.SQuantity__c | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.RQuantity__c | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckout_qty_from | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.brn_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckin_qty | number : fractionSize}}</td>
+                    <td style="text-align:right;">{{row.ckout_qty + row.rtn_qty - row.ckout_qty_from - row.ckin_qty - row.brn_qty | number : fractionSize}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr style="border-top: solid black;">
+                <th id="total" colspan="1">Totals :</th>
+                <td style="text-align:right;">{{gettotal(ofc_rows,'PQuantity__c') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(ofc_rows,'SQuantity__c') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(ofc_rows,'RQuantity__c') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(ofc_rows,'ckout_qty_from') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(ofc_rows,'brn_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(ofc_rows,'ckin_qty') | number : fractionSize}}</td>
+                <td style="text-align:right;">{{gettotal(ofc_rows,'ckout_qty') + gettotal(ofc_rows,'rtn_qty') - gettotal(ofc_rows,'ckout_qty_from') - gettotal(ofc_rows,'ckin_qty') - gettotal(ofc_rows,'brn_qty')| number : fractionSize}}</td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>
+    </div>
+    </div>
+</div>
+</div>
+   <apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+   <apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+   <apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+   <apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+   <apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+   <apex:includeScript value="//ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.js"/>
+   <script src="/soap/ajax/38.0/connection.js" type="text/javascript"></script>
+   <script src="/soap/ajax/38.0/apex.js" type="text/javascript"></script>
+<script>
+    //https://www.paulirish.com/2010/duck-punching-with-jquery/    
+(function($){
+
+    var _old = $.unique;
+
+    $.unique = function(arr){
+
+        // do the default behavior only if we got an array of elements
+        if (!!arr[0].nodeType){
+            return _old.apply(this,arguments);
+        } else {
+            // reduce the array to contain no dupes via grep/inArray
+            return $.grep(arr,function(v,k){
+                return $.inArray(v,arr) === k;
+            });
+        }
+    };
+})(jQuery);
+
+    var app = angular.module('app', []);
+    
+    app.filter('percentage', ['$filter', function ($filter) {
+      return function (input, decimals) {
+        return $filter('number')(input * 100, decimals) + '%';
+      };
+    }]);
+    app.directive('exportToCsv',function(){
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var el = element[0];
+            element.bind('click', function(e){
+                var table = e.target.nextElementSibling;
+                var csvString = '';
+                for(var i=0; i<table.rows.length;i++){
+                    var rowData = table.rows[i].cells;
+                    for(var j=0; j<rowData.length;j++){
+                        csvString = csvString + rowData[j].innerHTML + ",";
+                    }
+                    csvString = csvString.substring(0,csvString.length - 1);
+                    csvString = csvString + "\n";
+                }
+                csvString = csvString.substring(0, csvString.length - 1);
+                var a = $('<a/>', {
+                    style:'display:none',
+                    href:'data:application/octet-stream;base64,'+btoa(csvString),
+                    download:'emailStatistics.csv'
+                }).appendTo('body')
+                a[0].click()
+                a.remove();
+            });
+        }
+    }
+    });
+
+    app.controller('rptCtrl', function($scope,$rootScope) {
+        $scope.safeApply = function(fn) {
+          var phase = this.$root.$$phase;
+          if(phase == '$apply' || phase == '$digest') {
+            if(fn && (typeof(fn) === 'function')) {
+              fn();
+            }
+          } else {
+            this.$apply(fn);
+          }
+        }
+
+        $scope.exportDataMem_v2 = function(tableString){
+            const items = $scope[tableString];
+            const replacer = (key, value) => value === null ? "" : value; // specify how you want to handle null values here
+            const header = Object.keys(items[0]);
+            let csv = items.map(row => header.map(fieldName => JSON.stringify(row[fieldName], replacer)).join(','));
+            csv.unshift(header.join("\",\""));
+            csv = csv.join("\r\n");
+            console.log(csv)
+            //var encodedUri = encodeURI(csv);
+            //window.open(encodedUri);
+        }
+        $scope.exportDataMembers = function () {
+            angular.forEach(datainput, function(row) {
+                console.log(row);
+                //var line = row.join("\",\"");
+                lineArray.push(line);
+            });            
+            var csvContent = lineArray.join("\n");
+            console.log(csvContent);
+            var encodedUri = encodeURI(csvContent);
+            console.log(encodedUri);
+            //window.open(encodedUri);
+        }
+
+        $scope.pristineShow = function(){
+            $scope.reportran = false;
+            $scope.reportran_divs = false;
+            $scope.reportran_regs = false;
+            $scope.reportran_coords = false;
+            $scope.reportran_others = false; 
+            $scope.report_invtry = false;
+        }
+        $scope.init = function(){
+            $scope.pristineShow();
+            $scope.searchAll = "";
+            $scope.date = new Date();
+            //make sure goals are set in the scope
+            //starting with dynamic goals for Kaiser/Hospital
+            $scope.goals = {!daJSONGoals};
+            //then adding on the static goals for Organizing/Community
+            $scope.includeStaticGoals();
+            $scope.includeWhiteList();
+            $scope.pldata_result = [];
+            $scope.orderByField_div = 'SortNum';
+            $scope.orderByField_rd = 'division';
+            $scope.orderByField_cd = 'division';
+            $scope.orderByField_stf = 'division';
+            $scope.orderByField_mbr = 'division';
+            $scope.reverseSort_div = false;
+            $scope.reverseSort_rd = false;
+            $scope.reverseSort_cd = false;
+            $scope.reverseSort_stf = false;
+            $scope.reverseSort_mbr = false;
+        }
+
+        $scope.report_typelist =
+        [
+            {id:"all",name:"All"},
+            {id:"divs",name:"Divisions"},
+            {id:"regs",name:"Regions"},
+            {id:"coords",name:"Coordinators"},
+            {id:"others",name:"Staff + Members"},
+            {id:"inventory",name:"Office Inventory"}
+        ];
+
+        $scope.report_typelist.item = "all";
+
+        $scope.changeSearch = function(str_value){
+            $scope.searchAll = str_value;
+        }
+
+        $scope.$watch('report_typelist.item',function(newValue, oldValue){
+            console.log('report type changed to:',newValue,' from: ',oldValue);
+            $scope.pristineShow();
+            $scope.reportshow(newValue);
+        }, true);
+        $scope.$watch('filteredDiv', function(newValue, oldValue){
+            var ttl_new = $scope.gettotal(newValue,"ckout_qty");
+            if(ttl_new > 0){
+                $scope.All_Divshow = true;
+            }
+            else{
+                $scope.All_Divshow = false;
+            }
+        }, true);
+        $scope.$watch('filteredRD', function(newValue, oldValue){
+            var ttl_new = $scope.gettotal(newValue,"ckout_qty");
+            if(ttl_new > 0){
+                $scope.All_rdshow = true;
+            }
+            else{
+                $scope.All_rdshow = false;
+            }
+        }, true);
+        $scope.$watch('filteredCD', function(newValue, oldValue){
+            var ttl_new = $scope.gettotal(newValue,"ckout_qty");
+            if(ttl_new > 0){
+                $scope.All_cdshow = true;
+            }
+            else{
+                $scope.All_cdshow = false;
+            }
+        }, true);
+        $scope.$watch('filteredREP', function(newValue, oldValue){
+            var ttl_1 = $scope.gettotal(newValue,"ckout_qty");
+            var ttl_2 = $scope.gettotal(newValue,"ckout_qty_mbr");
+            var ttl_new = ttl_1 + ttl_2;
+            if(ttl_new > 0){
+                $scope.All_repshow = true;
+            }
+            else{
+                $scope.All_repshow = false;
+            }
+        }, true);
+        $scope.$watch('filteredMEM', function(newValue, oldValue){
+            var ttl_new = $scope.gettotal(newValue,"ckout_qty");
+            if(ttl_new > 0){
+                $scope.All_memshow = true;
+            }
+            else{
+                $scope.All_memshow = false;
+            }
+        }, true);
+
+        $scope.reportshow = function(rpt_type){            
+            if(rpt_type==="all"){
+                $scope.reportran = true;
+            }
+            else if(rpt_type==="divs"){
+                $scope.reportran_divs = true;
+            }
+            else if(rpt_type==="regs"){
+                $scope.reportran_regs = true;
+            }
+            else if(rpt_type==="coords"){
+                $scope.reportran_coords = true;
+            }
+            else if(rpt_type==="others"){
+                $scope.reportran_others = true;
+            }
+            else if(rpt_type==="inventory"){
+                $scope.report_invtry = true;
+            }
+        }
+
+        $scope.reportall = function(){
+            $scope.init();
+            $scope.getdata();
+            //$scope.chunk_dataQuery();
+            $scope.reportshow($scope.report_typelist.item);
+
+        };
+
+        $scope.goalsLists_static = [
+            {division:"Kaiser",rdid:"005i0000002Negx",rd_cid:"003i000000ofExM",rdname:"Claudia Rodriguez",cdid:"005i0000005NrRy",cd_cid:"003i000002GpfFa",cdname:"Chante Barnes-Warner",rep_cid:"003i000002GpfFa",repname:"Chante Barnes-Warner",hasGoal:false},
+            {division:"Kaiser",rdid:"005i0000002Negx",rd_cid:"003i000000ofExM",rdname:"Claudia Rodriguez",cdid:"005i0000005NrRy",cd_cid:"003i000002GpfFa",cdname:"Chante Barnes-Warner",rep_cid:"003i000000ofEx1",repname:"Cynthia Paredes-Alvarado",hasGoal:false},
+            {division:"Kaiser",rdid:"005i0000001QqeO",rd_cid:"003i000000ofExK",rdname:"Mylka Rodriguez",cdid:"VCKSR1",cd_cid:"VCKSR1",cdname:"Vacant (Kaiser1)",rep_cid:"0030H00004sHLlP",repname:"Jessica Scholar",hasGoal:false},
+            {division:"Kaiser",rdid:"005i0000001QqeO",rd_cid:"003i000000ofExK",rdname:"Mylka Rodriguez",cdid:"VCKSR1",cd_cid:"VCKSR1",cdname:"Vacant (Kaiser1)",rep_cid:"003i000000ofExS",repname:"Mark Ruggiero",hasGoal:true},
+            {division:"Kaiser",rdid:"005i0000001QqeO",rd_cid:"003i000000ofExK",rdname:"Mylka Rodriguez",cdid:"VCKSR1",cd_cid:"VCKSR1",cdname:"Vacant (Kaiser1)",rep_cid:"003i000000ofEhA",repname:"Robin Blake",hasGoal:true},
+            {division:"Kaiser",rdid:"005i0000001QqeO",rd_cid:"003i000000ofExK",rdname:"Mylka Rodriguez",cdid:"VCKSR1",cd_cid:"VCKSR1",cdname:"Vacant (Kaiser1)",rep_cid:"0030H00004tJAAR",repname:"Shawna Brown",hasGoal:true},
+            {division:"Hospital",rdid:"005i0000002NcEj",rd_cid:"003i000000ofExX",rdname:"Ryn (Kathryn) Schneider",cdid:"VCHPL1",cd_cid:"VCHPL1",cdname:"Vacant (Hospital1)",rep_cid:"003i000000ofEhI",repname:"Adan Cabral",hasGoal:false},
+            {division:"Hospital",rdid:"005i0000002NcEj",rd_cid:"003i000000ofExX",rdname:"Ryn (Kathryn) Schneider",cdid:"VCHPL1",cd_cid:"VCHPL1",cdname:"Vacant (Hospital1)",rep_cid:"0030H00004m22dt",repname:"Freya Hughes",hasGoal:false},
+            {division:"Other Staff",rdid:"005i0000002NdD8",rd_cid:"003i000000ofExf",rdname:"Triana Silton",cdid:"005i0000002NehR",cd_cid:"003i000000ofEhe",cdname:"Veronica Chavez",rep_cid:"003i000000ofEhe",repname:"Veronica Chavez",hasGoal:false},
+            {division:"Hospital",rdid:"005i0000002NcCv",rd_cid:"003i000000ofEh8",rdname:"Noemi Beas Aguirre",cdid:"005i0000008MgCC",cd_cid:"003i000004NYT6t",cdname:"Pearson Woods",rep_cid:"0030H00004pssFH",repname:"Esmie Grubbs",hasGoal:false},
+            {division:"Community",rdid:"005i0000001Oc2X",rd_cid:"003i0000025ORRY",rdname:"Hortencia Armendariz",cdid:"005i0000002NcEY",cd_cid:"003i000000ofEx5",cdname:"Elliott Petty",rep_cid:"003i000000ofEhU",repname:"Arturo Castellanos",hasGoal:true},
+            {division:"Community",rdid:"005i0000001Oc2X",rd_cid:"003i0000025ORRY",rdname:"Hortencia Armendariz",cdid:"005i0000002NcEY",cd_cid:"003i000000ofEx5",cdname:"Elliott Petty",rep_cid:"003i000002NeE2V",repname:"Bianca Garza",hasGoal:true},
+            {division:"Community",rdid:"005i0000001Oc2X",rd_cid:"003i0000025ORRY",rdname:"Hortencia Armendariz",cdid:"005i0000002NcEY",cd_cid:"003i000000ofEx5",cdname:"Elliott Petty",rep_cid:"003i000002t1j01",repname:"Maria Cervantes",hasGoal:true},
+            {division:"Community",rdid:"005i0000001Oc2X",rd_cid:"003i0000025ORRY",rdname:"Hortencia Armendariz",cdid:"005i0000002NcEY",cd_cid:"003i000000ofEx5",cdname:"Elliott Petty",rep_cid:"003i000000ofEx5",repname:"Elliott Petty",hasGoal:false},
+            {division:"Community",rdid:"005i0000001Oc2X",rd_cid:"003i0000025ORRY",rdname:"Hortencia Armendariz",cdid:"005i0000002NcEY",cd_cid:"003i000000ofEx5",cdname:"Elliott Petty",rep_cid:"003i000002NeN4h",repname:"Blanca Perez",hasGoal:true},
+            {division:"Community",rdid:"005i0000001Oc2X",rd_cid:"003i0000025ORRY",rdname:"Hortencia Armendariz",cdid:"005i0000002NcEY",cd_cid:"003i000000ofEx5",cdname:"Elliott Petty",rep_cid:"003i000000ofExC",repname:"Mariaelena Querales",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000003r0DkW",repname:"Jane Najera",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000002NeTbM",repname:"Axel Polanco",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000000ofEhT",repname:"Carlos Castaneda",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000000ofExA",repname:"Greg Price",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000000ofEib",repname:"Norma Parada Cortez",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000002NeSUm",repname:"Olga Martinez",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000000ofEjJ",repname:"Phoua Lee",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000000ofEij",repname:"Rolando Gutierrez",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000000ofEiK",repname:"Sanjanette Fowler",hasGoal:true},
+            {division:"Community",rdid:"005i0000002NdEJ",rd_cid:"003i000000ofEy1",rdname:"Ben Tracey",cdid:"005i0000002PGtQ",cd_cid:"003i000000ofEi9",cdname:"Lisbeth Espinosa",rep_cid:"003i000000ofExm",repname:"Sofiya Starikova",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002Neh2",cd_cid:"003i000003r06d3",cdname:"Jorge Rivera",rep_cid:"003i000003xjy8q",repname:"Gema Ortiz",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002Neh2",cd_cid:"003i000003r06d3",cdname:"Jorge Rivera",rep_cid:"003i000003r06d3",repname:"Jorge Rivera",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002Neh2",cd_cid:"003i000003r06d3",cdname:"Jorge Rivera",rep_cid:"003i000004CMpWT",repname:"Eleana Soto",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000006pYYy",cd_cid:"003i000002wyz5U",cdname:"Dulce Armedariz",rep_cid:"0030H00004mNGUh",repname:"Myra Guerrero",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000006pYYy",cd_cid:"003i000002wyz5U",cdname:"Dulce Armedariz",rep_cid:"003i0000025ORQx",repname:"Michael Paulson",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000006pYYy",cd_cid:"003i000002wyz5U",cdname:"Dulce Armedariz",rep_cid:"003i000003xjy7d",repname:"Jonathan Kim",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000006pYYy",cd_cid:"003i000002wyz5U",cdname:"Dulce Armedariz",rep_cid:"003i000002wyz5U",repname:"Dulce Armedariz",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002Neh3",cd_cid:"003i000000ofEhW",cdname:"Lisbeth Castillo",rep_cid:"003i000000ofEhW",repname:"Lisbeth Castillo",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002Neh3",cd_cid:"003i000000ofEhW",cdname:"Lisbeth Castillo",rep_cid:"003i000004dotrn",repname:"Kevin Luong",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002Neh3",cd_cid:"003i000000ofEhW",cdname:"Lisbeth Castillo",rep_cid:"003i000004CMqCI",repname:"Samuel Elliott",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002Neh3",cd_cid:"003i000000ofEhW",cdname:"Lisbeth Castillo",rep_cid:"003i000004XKP5m",repname:"Eleni Johnson",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i000000ofEjT",repname:"Maggie Maria Macias",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i000004gg2WQ",repname:"Megan Archer",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i000000ofEyH",repname:"Anouh Vang",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i000000ofExx",repname:"Lynda Temple",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i0000025ORRK",repname:"Melissa Calvin",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i000000ofEy6",repname:"Shanrika Turney",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i000000ofEjk",repname:"Tina McClain",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i000002tbSzQ",repname:"Dominique Ingram",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"0030H00004oiUdl",repname:"Rafael Lopez-Gomez",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"0030H00004pq1Ab",repname:"Amelia Bunch",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"0030H00004mNGUC",repname:"Awais Khalid",hasGoal:true},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"003i000000n8QeV",repname:"Cass Gualvez",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000001PmHh",cd_cid:"003i000000ofEyH",cdname:"Anouh Vang",rep_cid:"0030H00004sKYuG",repname:"Jessen Fox",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002NehJ",cd_cid:"003i000000ofEhd",cdname:"Sadot Quintana Chavez",rep_cid:"003i000000ofEhd",repname:"Sadot Quintana Chavez",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002NehJ",cd_cid:"003i000000ofEhd",cdname:"Sadot Quintana Chavez",rep_cid:"0030H00004irik5",repname:"Aurora Chihuahua",hasGoal:false},
+            {division:"Organizing",rdid:"005i0000001PmHh",rd_cid:"003i000000ofEyH",rdname:"Anouh Vang",cdid:"005i0000002NehJ",cd_cid:"003i000000ofEhd",cdname:"Sadot Quintana Chavez",rep_cid:"003i000004ExQIH",repname:"Natasha Vargas",hasGoal:false}
+        ];
+
+
+        $scope.includeWhiteList = function(){
+            var gLength = $scope.goals.length;
+            for(var i = 0; i<gLength; i++){
+                //console.log($scope.goals[i].repname + " with goal? " + $scope.goals[i]["hasGoal"]);
+                var hasGoal = $scope.goals[i]["hasGoal"];
+                if(hasGoal && $scope.goals[i]["rep_cid"] !== null){
+                    var cid = $scope.goals[i]["rep_cid"].substring(0,15);
+                    var name = $scope.goals[i]["repname"];
+                    var whitelist_line = new Object();
+                    whitelist_line.cid = cid;
+                    whitelist_line.name = name;
+                    $scope.goals_Organizers_WhiteList.push(whitelist_line);
+                }                
+            }
+        }
+
+        $scope.includeStaticGoals = function(){
+            //includes static goals in goal table (currently housing
+            //dynamic goals already at this point)
+            var gLength = $scope.goalsLists_static.length;
+            for(var i = 0; i < gLength; i++){
+                var thisline = $scope.goalsLists_static[i];
+                if(typeof thisline === "object"){
+                    $scope.goals.push(thisline);
+                }
+            }
+            //clean up the null entries since I am constructing this
+            //and I do not have to deal with the missing data later.
+            //keeping rep names null but I want to fill
+            //out all missing coordinators with regional directors
+            //then i can just count all repnames on each level - simple!
+            //except in the case where an account has a blank coordinator 
+            //then there are two separate coordinators for one hierarchy;
+            //one of which is the director.
+            //so that's why I maybe should just be pruning the entire row on any missing data
+            var newgoals = [];
+            var iLength = $scope.goals.length;
+            for(var i = 0; i < iLength; i++){
+                if($scope.goals[i].rdname && $scope.goals[i].repname){
+                    var thisrow = $scope.goals[i];
+                    console.log(thisrow);
+                    if(thisrow.hasGoal === undefined){
+                        thisrow.hasGoal = true;
+                    }
+                    if(!thisrow.cdname){
+                        thisrow.cdname = "Vacant";
+                        thisrow.cd_cid = "Vacant" + thisrow.rd_cid;  //doesn't account for two vacant coordinators under same regional director
+                        newgoals.push(thisrow);
+                    }
+                    else{
+                        newgoals.push(thisrow);
+                    }
+                }
+            }
+            $scope.goals = newgoals;
+        }
+
+        $scope.get_Hierarchy_LookupRepCID = function(rep_cid){
+            var fin = new Object();
+            if(rep_cid !== undefined){
+                var iLength = $scope.goals.length;
+                for(var i = 0; i < iLength; i++){
+                    var goalline = $scope.goals[i];
+                    var goal_repcid = goalline["rep_cid"];
+                    if(goal_repcid !== undefined && goal_repcid !== null){
+                        if(goal_repcid.length > 15){
+                            goal_repcid = goal_repcid.substring(0,15);
+                        }
+                    }
+                    if(rep_cid.indexOf(goal_repcid) > -1 ){
+                        fin = goalline;
+                    }
+                }
+            }
+            return fin;
+        }
+
+        $scope.goals_byDirector = {
+                "005i0000002Negx":14080,    //Claudia
+                "005i0000001QqeO":14080,    //Mylka
+                "005i0000002NcE6":11520,    //Vicki
+                "005i0000002NehG":5400,     //Grisell
+                "005i0000002NcCv":9600,     //Noemi
+                "005i0000002NcEj":10200,    //Ryn
+                "005i0000002NdEJ":9423,    //Ben
+                "005i0000001Oc2X":5235,     //Hortencia
+                "005i0000001PmHh":5000      //Anouh
+            };
+        $scope.goals_byCoordinator = {
+                "005i0000005NrRy":3840,     //Chante Barnes-Warner
+                "VCHPL1":0,         //Hospital Vacant Coordinator
+                "VCKSR1":3840,      //Kaiser Vacant Coordinator
+                "005i0000005S2qK":5120,     //Kimberly Martin
+                "005i0000002NcDV":5120,     //Mary Corson
+                "005i0000002NegG":5120,     //Carlos Hernandez
+                "005i0000001Ob74":5120,     //Mindy Sturge
+                //"005i0000002NcCx":3840,     //Robin Blake (now vacant)
+                "005i0000002NdB5":3840,     //Ana Guardado
+                "005i0000001Qm2Z":3840,     //Fola Afariogun
+                "005i0000002NcEc":3840,     //Hector Rivera
+                "005i0000008N9sC":2400,     //Catherine Balbas
+                "005i0000002NcCo":3000,     //Linda Arnold
+                "005i0000005P0Nk":3000,     //Bennie Tinson
+                "005i0000002NcEk":3000,     //Ferdinand Silerio
+                "005i0000008MgCC":3600,     //Pearson Woods
+                "005i0000006IhPL":3000,     //Chung Park
+                "005i0000001Pn6D":3600,     //Jean Cronin
+                "005i0000002NcDy":2400,     //Mark Hall
+                "005i0000008MC3K":1200,     //Roland Becht
+                "005i0000002PGtQ":9423,    //Lisbeth Espinosa
+                "005i0000002NcEY":5235,     //Elliot Petty
+                "005i0000001PmHh":2331,     //Anouh Vang
+                "005i0000006pYYy":999,      //Dulce Armendariz
+                "005i0000002Neh2":666,      //Jorge Rivera
+                "005i0000002Neh3":999       //Lisbeth Castillo
+            }; 
+
+        $scope.goals_Organizers_WhiteList = 
+            [
+                {cid:"003i000002zPfJW",name:"Myriam Juarez (Inzunza)"},
+                //{cid:"003i0000041iZXP",name:"Judith Bustamante"},
+                //{cid:"003i000000ofEx1",name:"Cynthia Paredes-Alvarado"}
+            ];
+        //exceptions of members who are under new organizing, but effectively in another division because reasons
+        //this list assigns the proper rep and the proper division instead the organizing hierarchy things
+        $scope.mbrs_unlisted = 
+            [
+                {division:"HOSPITAL",rep_cid:"003i000003vF9cb",repname:"Janet Linsalato",mbr_cid:"0030H00004kdEAX",mbr_name:"Terra L. Cramer"},
+                {division:"KAISER",rep_cid:"003i000000ofEgq",repname:"Refu Aguilera",mbr_cid:"0030H00004kddmx",mbr_name:"Natasha Lynch"},
+                {division:"KAISER",rep_cid:"003i000004XGV9G",repname:"Kelly Anthony",mbr_cid:"003i00000152ly6",mbr_name:"Mustafaa Tyehimba"},
+                {division:"KAISER",rep_cid:"003i000004XGV9G",repname:"Kelly Anthony",mbr_cid:"003i0000017a2lY",mbr_name:"Elissa Underwood"},
+                {division:"KAISER",rep_cid:"003i000004XGV9G",repname:"Kelly Anthony",mbr_cid:"003i00000152q4f",mbr_name:"Edvin Hakopian"},
+                {division:"HOSPITAL",rep_cid:"003i000003vF9cb",repname:"Janet Linsalato",mbr_cid:"003i000003B88RU",mbr_name:"Kevin Lee"}
+            ];
+
+        $scope.mbrs_ckUnlisted = function(cid){
+            var iLength = $scope.mbrs_unlisted.length;
+            for(var i = 0; i < iLength; i++){
+                var thisrow = $scope.mbrs_unlisted[i];
+                var thiscid = thisrow.mbr_cid;
+                if(cid.indexOf(thiscid) > -1 || thiscid.indexOf(cid) > -1){
+                    return thisrow;
+                }
+            }
+        }
+
+        $scope.goalsTargetPerRep_tableobject = {
+            "Hospital":600,
+            "Community":1047,
+            "Kaiser":1280,
+            "Organizing":333
+        };
+
+        $scope.gettotal = function(datainput,field){
+            var total = 0;
+            angular.forEach(datainput, function(row) {
+                if(typeof row[field] === "number"){
+                    total += parseInt(row[field],10);
+                }
+            });            
+            return total;
+        }
+
+        $scope.get_propData_FromObj = function(obj,prop2match){
+            for(var prop in obj){
+                if(obj.hasOwnProperty(prop)){
+                    if(prop2match.indexOf(prop) > -1){
+                        return obj[prop];
+                    }
+                }
+            }
+        }
+
+        $scope.get_LeadersActive = function(mbr_input, lvl, divname){
+            //this function used to pull member counts from
+            //members table according to report hierarchy
+            var mLength = mbr_input.length;
+            var total = 0;
+            for(var i=0; i<mLength;i++){
+                if(mbr_input[i][lvl] !== undefined && mbr_input[i][lvl] !== null){
+                    var ck_div = mbr_input[i][lvl].substring(0,15);
+                    if(divname.indexOf(ck_div) > -1 ){
+                        total += 1;
+                    }
+                }
+            }
+            return total;
+        }
+
+        $scope.makeTable_Aggregate = function(input,from){
+            var merge = $scope.mergeTables_v2(input,from);
+            var mLength = merge.length;
+            console.log(from);
+            if(merge[0] === undefined){
+                alert("undefined table merge - check console output");
+                console.log(merge);
+            }
+
+            var goals_byDivision = {
+                "Hospital":{Goal:24000,SortOrdr:1},
+                "Other Staff":{Goal:0,SortOrdr:2},
+                "Community":{Goal:15700,SortOrdr:1},
+                "Kaiser":{Goal:36800,SortOrdr:1},
+                "Organizing":{Goal:5000,SortOrdr:1},
+                "Org. Development Dept":{Goal:0,SortOrdr:3},
+                "Political":{Goal:0,SortOrdr:3}
+            };
+                               
+            var goal_byDirector = $scope.goals_byDirector;
+
+            returnArray = new Array();
+            if(merge[0].not_div > -1){
+                for(var prop in goals_byDivision){
+                    if (goals_byDivision.hasOwnProperty(prop)){
+                        var row = new Object();
+                        for(var i = 0; i < mLength; i++){
+                            if(merge[i].Div === prop.toUpperCase()){
+                                row = merge[i];
+                                row.Goal = goals_byDivision[prop]["Goal"];
+                                row.SortNum = goals_byDivision[prop]["SortOrdr"];
+                                row.LdrsActive = $scope.get_LeadersActive($scope.data_mem,"division",row.Divname);
+                                var qty = 0;
+                                if(parseInt(row.ckout_qty,10) > 0){
+                                    qty = parseInt(row.ckout_qty,10);
+                                }
+
+                                var qty_f = 0;
+                                if(parseInt(row.ckout_qty_from,10) > 0){
+                                    qty_f = parseInt(row.ckout_qty_from,10);
+                                }
+                                row.total_pets = qty - qty_f;
+                                row.valid_perc = 0;                                
+                                if(row.ckout_qty_from === undefined){
+                                 row.ckout_qty_from = 0;
+                                }
+                                row.pets_active = row.ckout_qty - row.ckin_qty - row.brn_qty - row.ckout_qty_from;
+                            }
+                        }
+                        if(row.Div !== prop.toUpperCase()){
+                            row.Div = prop;
+                            row.Goal = goals_byDivision[prop];
+                        }
+                        returnArray.push(row);
+                    }
+                }
+            }
+            else if(merge[0].isrd){
+                var lvl_str = "rdname";
+                for(var i = 0; i < mLength; i++){
+                    merge[i].Goal = $scope.get_propData_FromObj(goal_byDirector,merge[i].Div);
+                    merge[i].LdrsActive = $scope.get_LeadersActive($scope.data_mem,"rdid",merge[i].Div.substring(0,15));
+                    merge[i].total_pets = merge[i].ckout_qty - merge[i].ckout_qty_from;
+                    if(merge[i]["ckout_qty_from"] === undefined){
+                       merge[i]["ckout_qty_from"] = 0;
+                    }
+                    var qty = 0;
+                    if(parseInt(merge[i].ckout_qty,10) > 0){ 
+                        qty = parseInt(merge[i].ckout_qty,10);
+                    }
+                    var qty_f = 0;
+                    if(parseInt(merge[i].ckout_qty_from,10) > 0){
+                        qty_f = parseInt(merge[i].ckout_qty_from,10);
+                    }
+                    merge[i].total_pets = qty - qty_f;
+                    merge[i]["pets_active"] = merge[i]["ckout_qty"] - merge[i]["ckin_qty"] - merge[i]["brn_qty"] - merge[i]["ckout_qty_from"];
+                    returnArray.push(merge[i]);
+                }
+            }
+            else if(merge[0].iscd){
+                var lvl_str = "cdname";
+                for(var i = 0; i < mLength; i++){
+                    merge[i].Goal = $scope.get_propData_FromObj($scope.goals_byCoordinator,merge[i].Div);
+                    merge[i].LdrsActive = $scope.get_LeadersActive($scope.data_mem,"cdid",merge[i].Div.substring(0,15));
+                    var qty = 0;
+                    if(parseInt(merge[i].ckout_qty,10) > 0){ 
+                        qty = parseInt(merge[i].ckout_qty,10);
+                    }
+                    var qty_f = 0;
+                    if(parseInt(merge[i].ckout_qty_from,10) > 0){
+                        qty_f = parseInt(merge[i].ckout_qty_from,10);
+                    }
+                    merge[i].total_pets = qty - qty_f;
+                    if(merge[i]["ckout_qty_from"] === undefined){
+                       merge[i]["ckout_qty_from"] = 0;
+                    }
+                    merge[i]["pets_active"] = merge[i]["ckout_qty"] - merge[i]["ckin_qty"] - merge[i]["brn_qty"] - merge[i]["ckout_qty_from"];
+                    returnArray.push(merge[i]);
+                }
+            }
+            else{
+                returnArray = merge;
+            }
+            console.log(returnArray);
+            return returnArray;
+        }
+
+        $scope.get_repData = function(indArr, rep2match){
+            var arrLength = indArr.length;
+            var finalObject = new Object();
+            for(var i = 0; i < arrLength; i++){
+                var ind_rep = indArr[i]["rep_cid"]
+                if(ind_rep === rep2match){
+                    var goal_obj = $scope.get_Hierarchy_LookupRepCID(ind_rep);
+                    finalObject["Divname"] = indArr[i]["repname"];
+                    finalObject["division"] = indArr[i]["division"];
+                    finalObject["rdid"] = goal_obj["rdid"];
+                    finalObject["rd_cid"] = goal_obj["rd_cid"];
+                    finalObject["rdname"] = goal_obj["rdname"];
+                    finalObject["cdid"] = goal_obj["cdid"];
+                    finalObject["cd_cid"] = goal_obj["cd_cid"];
+                    finalObject["cdname"] = goal_obj["cdname"];
+                }
+            }
+            return finalObject;
+        }
+
+        $scope.makeTable_reps = function(input){
+            var missedreps = new Array();
+            var staff = new Array();
+            var membr = new Array();
+            var office = new Array();
+            var uniqReps = $scope.uniqArr(input,"rep_cid");
+            var repLength = uniqReps.length;
+            var iLength = input.length;
+            //populate zero row for missing rep to rollup members to staff table
+            //[TODO]:verify this is working and accurate
+            for(var i = 0; i < repLength; i++){
+                var reprow = new Object();
+                for(var j = 0; j < iLength; j++){
+                    if(uniqReps[i] === input[j].Div){
+                        reprow = input[j];
+                    }
+                    if(uniqReps[i] === input[j].rep_cid){
+                        var memrow = input[j];
+                    }
+                }
+                if(reprow.Div === undefined){                       
+                    reprow = Object.assign({}, memrow);                                           
+                    reprow["Div"] = uniqReps[i];
+                    //apply rest of missing rep info
+                    var temprep = $scope.get_repData(input,uniqReps[i]);
+                    reprow["Divname"] = temprep["Divname"];
+                    reprow["division"] = temprep["division"];
+                    reprow["rdid"] = temprep["rdid"];
+                    reprow["rd_cid"] = temprep["rd_cid"];
+                    reprow["rdname"] = temprep["rdname"];
+                    reprow["cdid"] = temprep["cdid"];
+                    reprow["cd_cid"] = temprep["cd_cid"];
+                    reprow["cdname"] = temprep["cdname"];
+                    reprow["uhwtype"] = "Staff";
+                    //console.log(reprow);
+                    if(memrow !== undefined){
+                        reprow["rdid"] = memrow["rdid"];
+                        reprow["rd_cid"] = memrow["rd_cid"];
+                        reprow["rdname"] = memrow["rdname"];
+                        reprow["cdid"] = memrow["cdid"];
+                        reprow["cd_cid"] = memrow["cd_cid"];
+                        reprow["cdname"] = memrow["cdname"];
+                    }
+                    for(var k in reprow){
+                        if(typeof reprow[k] === "number"){
+                            reprow[k] = 0;
+                        }
+                    }
+                    //include missing rep here for rep table data inclusion
+                    missedreps.push(reprow);                       
+                }                
+            }
+
+            var full_List = input.concat(missedreps);                       
+            var fLength = full_List.length;
+            for(var i=0;i<fLength;i++){
+                if(full_List[i].Divname !== undefined){
+                       var ck_log = false;
+                    if(full_List[i].Divname.indexOf("Lynda Temple") > -1){
+                        ck_log = true;
+                        //console.log(full_List[i]);
+                        //console.log($scope.get_Hierarchy_LookupRepCID(full_List[i]["rep_cid"]));
+                    }
+                }
+
+                if(full_List[i].uhwtype === "Staff"){
+                    var hasGoal = false;
+                    var isCd = false;
+                    var div = full_List[i].Div.substring(0,15);
+                    if(full_List[i].cd_cid !== undefined){
+                        if(full_List[i].cd_cid.indexOf(div) > -1){
+                            isCd = true
+                            hasGoal = false;
+                        }
+                    }
+                    if(isCd){
+                        full_List[i].sortKey = 1;
+                    }
+                    else{
+                        full_List[i].sortKey = 2;
+                    }
+                    
+                    var orgLength = $scope.goals_Organizers_WhiteList.length;
+                    for(var k = 0; k < orgLength; k++){
+                        if(div.indexOf($scope.goals_Organizers_WhiteList[k]["cid"]) > -1 ){
+                            hasGoal = true;
+                        }
+                    }
+                    if(hasGoal){
+                        full_List[i].Goal = $scope.goalsTargetPerRep_tableobject[full_List[i].division];
+                    }
+                    else{
+                        full_List[i].Goal = 0;
+                    }
+                    if(full_List[i].division.indexOf("Office Bucket") > -1){
+                        console.log(full_List[i]);
+                    }
+                    full_List[i].valid_sigs_mbr = 0;
+                    full_List[i].bad_sigs_mbr = 0;
+                    full_List[i].ckin_qty_mbr = 0;
+                    full_List[i].brn_qty_mbr = 0;
+                    full_List[i].ckout_qty_mbr = 0;
+                    full_List[i].pets_active_mbr = 0;
+                    full_List[i].ckout_qty_from_mbr = 0;
+                    full_List[i].valid_sigs_tot = 0;
+                    full_List[i].bad_sigs_tot = 0;
+                    full_List[i].ckin_qty_tot = 0;
+                    full_List[i].brn_qty_tot = 0;
+                    full_List[i].ckout_qty_tot = 0;
+                    for(var j=0;j<fLength;j++){
+                        if(full_List[j].uhwtype !== "Staff" && full_List[j].rep_cid === div){
+                            full_List[i].valid_sigs_mbr += full_List[j].valid_sigs;
+                            full_List[i].bad_sigs_mbr += full_List[j].bad_sigs;
+                            full_List[i].ckin_qty_mbr += full_List[j].ckin_qty;
+                            full_List[i].brn_qty_mbr += full_List[j].brn_qty;
+                            full_List[i].ckout_qty_mbr += full_List[j].ckout_qty;  
+                            if(full_List[j].ckout_qty_from !== undefined){
+                                full_List[i].ckout_qty_from_mbr += parseInt(full_List[j].ckout_qty_from,10);
+                                full_List[i].pets_active_mbr += full_List[j].ckout_qty - full_List[j].ckin_qty - full_List[j].brn_qty - full_List[j].ckout_qty_from;
+                            }
+                            else{
+                                full_List[i].pets_active_mbr += full_List[j].ckout_qty - full_List[j].ckin_qty - full_List[j].brn_qty;
+                            }
+                        }
+                    }
+                    full_List[i].ckin_qty_tot = full_List[i].ckin_qty + full_List[i].ckin_qty_mbr;
+                    full_List[i].bad_sigs_tot = full_List[i].bad_sigs + full_List[i].bad_sigs_mbr;
+                    full_List[i].valid_sigs_tot = full_List[i].valid_sigs + full_List[i].valid_sigs_mbr;
+                    full_List[i].brn_qty_tot = full_List[i].brn_qty + full_List[i].brn_qty_mbr;
+                    full_List[i].ckout_qty_tot = full_List[i].ckout_qty + full_List[i].ckout_qty_mbr;
+                    if(full_List[i]["ckout_qty_from"] === undefined){
+                        full_List[i]["ckout_qty_from"] = 0;
+                    }
+                    full_List[i]["pets_active"] = full_List[i]["ckout_qty"] - full_List[i]["ckin_qty"] - full_List[i]["brn_qty"] - full_List[i]["ckout_qty_from"];
+                    if(full_List[i].division.indexOf("Office Bucket") > -1){
+                        office.push(full_List[i]);
+                    }
+                    else{
+                        staff.push(full_List[i]);
+                    }
+                }
+                else if(typeof full_List[i] === "object"){
+                    //members handled here
+                    if(full_List[i]["ckout_qty_from"] === undefined){
+                        full_List[i]["ckout_qty_from"] = 0;
+                    }
+                    full_List[i]["pets_active"] = full_List[i]["ckout_qty"] - full_List[i]["ckin_qty"] - full_List[i]["brn_qty"] - full_List[i]["ckout_qty_from"];                    
+                    full_List[i]["total_pets"] = full_List[i]["ckout_qty"] - full_List[i]["ckout_qty_from"];
+                    membr.push(full_List[i]);
+                }
+            }
+            var staff_length = staff.length;
+            for(var i = 0; i < staff_length; i++){
+                staff[i]["LdrsActive"] = $scope.get_LeadersActive(membr,"rep_cid",staff[i].Div.substring(0,15));
+                staff[i]["total_pets"] = staff[i]["ckout_qty"] - staff[i]["ckout_qty_from"] + staff[i]["ckout_qty_mbr"] - staff[i]["ckout_qty_from_mbr"];
+            }
+            console.log(staff);
+            return[staff,membr, office];
+        }
+
+        $scope.get_hierarchyObject = function(divname){
+            var hie_obj = 
+                {
+                    Other:
+                        {
+                            DIV:"OTHER STAFF",
+                            RD:{Name:"Triana Silton",Staff_Contact_Id__c:"003i000000ofExf",Id:"005i0000002NdD8"},
+                            CD:{Name:"Other Staff",Staff_Contact_Id__c:"ABC123",Id:"ABC123"}
+                        },
+                    POL:
+                        {
+                            DIV:"POLITICAL",
+                            RD:{Name:"Arianna Jimenez",Staff_Contact_Id__c:"003i000000n8QeK",Id:"005i0000002NegC"},
+                            CD:{Name:"Political Coordinator",Staff_Contact_Id__c:"PPP1234",Id:"PPP1234"}
+                        },
+                    ORG:
+                        {
+                            DIV:"ORG. DEVELOPMENT DEPT",
+                            RD:{Name:"Triana Silton",Staff_Contact_Id__c:"003i000000ofExf",Id:"005i0000002NdD8"},
+                            CD:{Name:"Other Staff",Staff_Contact_Id__c:"1234",Id:"1234"}
+                        }
+                };
+            var finObj = hie_obj["Other"];
+            for(var prop in hie_obj){
+                if(divname.indexOf(prop) > -1){
+                    finObj = hie_obj[prop];
+                }
+            }
+            return finObj;
+        }
+
+        $scope.makeTables = function(input){
+            var ckin = new Array();
+            var brn = new Array();
+            var ckout = new Array();
+            var rtn = new Array();
+            var other = new Array();
+            var iLength = input.length;
+            for(var i = 0;i<iLength;i++){
+                var newObjectRow = new Object();
+                var mbr_Unlist_to = false;
+                var mbr_Unlist_from = false;
+                       var toname = "";
+                       var tocid = "";
+                       var fromname = "";
+                       var fromcid = "";
+                       var dLog = false;
+                       
+                if(input[i]["Transferred_To__r"] !== undefined){
+                    newObjectRow["To_Rep__r"] = {};
+                    tocid = input[i]["Transferred_To__c"];
+                    var checkunlisted_mbrs = $scope.mbrs_ckUnlisted(tocid);
+                       if(checkunlisted_mbrs){
+                           mbr_Unlist_to = true;
+                       }
+                }
+                if(input[i]["Transferred_From__r"] !== undefined){
+                    newObjectRow["From_Rep__r"] = {};
+                    fromcid = input[i]["Transferred_From__c"];
+                    var checkunlisted_mbrs = $scope.mbrs_ckUnlisted(fromcid);
+                       if(checkunlisted_mbrs){
+                           mbr_Unlist_from = true;
+                       }
+                }                       
+                if(toname === "Alondrea Y Hampton" || fromname === "Alondrea Y Hampton"){
+                       dLog = true;
+                       console.log(input[i]);
+                }
+                if(input[i].Transfer_Type__c !== undefined){
+                    var ttype = input[i].Transfer_Type__c;
+                    
+                    //some line level adjustments to the data
+                    //and cleaning organizing data in this section
+                    //because they are special snowflakes
+                    var org_index = "ORGANIZING";
+                    var com_index = "COMMUNITY";
+                    if(input[i]["Transferred_From__r"] !== undefined){
+                        newObjectRow["Transferred_From__r"] = input[i]["Transferred_From__r"];
+                        newObjectRow["Transferred_From__c"] = input[i]["Transferred_From__c"].substring(0,15);
+                        if(!mbr_Unlist_from){
+                            newObjectRow["From_Division__c"] = input[i]["From_Division__c"];
+                        }
+                        else{
+                            //console.log(newObjectRow);
+                        }
+                        if(input[i]["Transferred_From__r"]["Account"]["Organizer_1__r"] !== undefined){
+                            newObjectRow["From_Rep__r"] = newObjectRow["Transferred_From__r"]["Account"]["Organizer_1__r"];
+                            if(input[i]["From_Rep__r"] !== undefined && input[i]["From_Rep__r"]["Staff_Contact_Id__c"] !== undefined){
+                                newObjectRow["From_Rep__r"]["Staff_Contact_Id__c"] = input[i]["From_Rep__r"]["Staff_Contact_Id__c"].substring(0,15);
+                            }
+                        }
+                        else if(input[i]["Transferred_From__r"]["Division_Type__c"] === "Staff"){
+                            newObjectRow["From_Rep__r"] = input[i]["Transferred_From__r"];
+                            newObjectRow["From_Rep__r"]["Staff_Contact_Id__c"] = input[i]["Transferred_From__c"];
+                            if(newObjectRow["From_Division__c"] === undefined){
+                                newObjectRow["From_Division__c"] = newObjectRow["From_Rep__r"]["Department"];
+                            }
+                        }
+                        
+                        if(input[i]["From_Division__c"].indexOf(org_index) > -1){
+                            newObjectRow.From_Division__c = org_index;
+                            if(input[i]["Transferred_From__r"]["Division_Type__c"] !== "Staff"){
+                                newObjectRow["From_Rep__r"] = input[i]["Transferred_From__r"]["Owner"];
+                                if(newObjectRow["From_Rep__r"] !== undefined && newObjectRow["From_Rep__r"]["Staff_Contact_Id__c"] !== undefined){
+                                    newObjectRow["From_Rep__r"]["Staff_Contact_Id__c"] = newObjectRow["From_Rep__r"]["Staff_Contact_Id__c"].substring(0,15);
+                               }
+                            }
+                            else{
+                                newObjectRow["From_Rep__r"] = input[i]["Transferred_From__r"];
+                            }
+                        }
+                        var goal_obj = $scope.get_Hierarchy_LookupRepCID(newObjectRow["From_Rep__r"]["Staff_Contact_Id__c"]);
+                        if(dLog){
+                            console.log(goal_obj);
+                        }
+                        if(input[i]["From_Coordinator__r"] === undefined){
+                            //populate missing coordinator for proper numbers on aggregations
+                            newObjectRow["From_Coordinator__r"] = {};
+                            if(goal_obj !== undefined){
+                                newObjectRow["From_Coordinator__r"]["Name"] = goal_obj["cdname"];
+                                newObjectRow["From_Coordinator__r"]["Staff_Contact_Id__c"] = goal_obj["cd_cid"];
+                                newObjectRow["From_Coordinator__c"] = goal_obj["cdid"];
+                                newObjectRow["From_Coordinator__r"]["Id"] = goal_obj["cdid"];
+                                if(goal_obj["division"] !== undefined){
+                                    newObjectRow["From_Division__c"] = goal_obj["division"].toUpperCase();
+                                }
+                            }
+                            else{
+                                newObjectRow["From_Coordinator__r"]["Name"] = "Vacant";
+                                //newObjectRow["From_Coordinator__r"]["Staff_Contact_Id__c"];
+                                newObjectRow["From_Coordinator__c"] = 0;
+                                //newObjectRow["From_Coordinator__r"]["Id"];
+                            }
+                        }
+                        else{
+                            newObjectRow["From_Coordinator__r"] = input[i]["From_Coordinator__r"];
+                            newObjectRow["From_Coordinator__c"] = input[i]["From_Coordinator__c"].substring(0,15);
+                            newObjectRow["From_Coordinator__r"]["Id"] = newObjectRow["From_Coordinator__c"];
+                        }
+                        if(input[i]["From_Division__c"].indexOf(com_index) > -1){
+                            if(newObjectRow["From_Rep__r"]["Id"] === undefined){
+                                newObjectRow["From_Rep__r"] = newObjectRow["From_Coordinator__r"];
+                            }
+                        }
+                        if(input[i]["From_Regional_Director__r"] === undefined){
+                            //populate missing reg director for proper numbers on aggregations
+                            newObjectRow["From_Regional_Director__r"] = {};
+                            if(goal_obj !== undefined){
+                                newObjectRow["From_Regional_Director__r"]["Name"] = goal_obj["rdname"];
+                                newObjectRow["From_Regional_Director__r"]["Staff_Contact_Id__c"] = goal_obj["rd_cid"];
+                                newObjectRow["From_Regional_Director__c"] = goal_obj["rdid"];
+                                newObjectRow["From_Regional_Director__r"]["Id"] = goal_obj["rdid"];
+                                if(goal_obj["division"] !== undefined){
+                                    newObjectRow["From_Division__c"] = goal_obj["division"].toUpperCase();
+                                }
+                            }
+                        }
+                        else{
+                            newObjectRow["From_Regional_Director__r"] = input[i]["From_Regional_Director__r"];
+                            newObjectRow["From_Regional_Director__c"] = input[i]["From_Regional_Director__c"].substring(0,15);
+                            newObjectRow["From_Regional_Director__r"]["Id"] = newObjectRow["From_Regional_Director__c"];
+                        }
+                    }
+                    if(input[i]["Transferred_To__r"] !== undefined){
+                        newObjectRow["Transferred_To__r"] = input[i]["Transferred_To__r"];
+                        newObjectRow["Transferred_To__c"] = input[i]["Transferred_To__c"].substring(0,15);
+                        if(!mbr_Unlist_to){
+                            newObjectRow["To_Division__c"] = input[i]["To_Division__c"];
+                        }
+                        else{
+                            //console.log(newObjectRow);
+                        }
+                        
+                        if(input[i]["Transferred_To__r"]["Account"]["Organizer_1__r"] !== undefined){
+                            newObjectRow["To_Rep__r"] = input[i]["Transferred_To__r"]["Account"]["Organizer_1__r"];
+                            if(newObjectRow["To_Rep__r"] !== undefined && newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"] !== undefined){
+                                newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"] = newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"].substring(0,15);
+                            }
+                        }
+                        else if(input[i]["Transferred_To__r"]["Division_Type__c"] === "Staff"){
+                            newObjectRow["To_Rep__r"] = input[i]["Transferred_To__r"];
+                            newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"] = input[i]["Transferred_To__c"];
+                            if(newObjectRow["To_Division__c"] === undefined){
+                                newObjectRow["To_Division__c"] = newObjectRow["To_Rep__r"]["Department"];
+                            }
+                        }
+                        if(input[i]["To_Division__c"].indexOf(org_index) > -1){
+                            newObjectRow.To_Division__c = org_index;
+                            if(input[i]["Transferred_To__r"]["Division_Type__c"] !== "Staff"){
+                                newObjectRow["To_Rep__r"] = input[i]["Transferred_To__r"]["Owner"];
+                                if(newObjectRow["To_Rep__r"] !== undefined && newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"] !== undefined){
+                                    newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"] = newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"].substring(0,15);
+                                }
+                            }
+                            else{
+                                newObjectRow["To_Rep__r"] = input[i]["Transferred_To__r"];
+                            }
+                        }
+                        var goal_obj_to = $scope.get_Hierarchy_LookupRepCID(newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"]);
+                        if(dLog){
+                            console.log(goal_obj_to);                                    
+                        }
+                        if(input[i]["To_Coordinator__r"] === undefined){
+                            //populate missing coordinator for proper numbers on aggregations
+                            newObjectRow["To_Coordinator__r"] = {};
+                            if(goal_obj_to !== undefined){
+                                newObjectRow["To_Coordinator__r"]["Name"] = goal_obj_to["cdname"];
+                                newObjectRow["To_Coordinator__r"]["Staff_Contact_Id__c"] = goal_obj_to["cd_cid"];
+                                newObjectRow["To_Coordinator__c"] = goal_obj_to["cdid"];
+                                newObjectRow["To_Coordinator__r"]["Id"] = goal_obj_to["cdid"];
+                                if(goal_obj_to["division"] !== undefined){
+                                    newObjectRow["To_Division__c"] = goal_obj_to["division"].toUpperCase();
+                                }
+                            }
+                            else{
+                                newObjectRow["To_Coordinator__r"]["Name"] = "Vacant";
+                                newObjectRow["To_Coordinator__c"] = 0;
+                            }
+                        }
+                        else{
+                            newObjectRow["To_Coordinator__r"] = input[i]["To_Coordinator__r"];
+                            newObjectRow["To_Coordinator__c"] = input[i]["To_Coordinator__c"].substring(0,15);
+                            newObjectRow["To_Coordinator__r"]["Id"] = newObjectRow["To_Coordinator__c"];
+                        }
+                        if(input[i]["To_Division__c"].indexOf(com_index) > -1){
+                            if(newObjectRow["To_Rep__r"]["Id"] === undefined){
+                                newObjectRow["To_Rep__r"] = newObjectRow["To_Coordinator__r"];
+                            }
+                        }
+                        if(input[i]["To_Regional_Director__r"] === undefined){
+                            //populate missing reg director for proper numbers on aggregations
+                            newObjectRow["To_Regional_Director__r"] = {};
+                            if(goal_obj_to !== undefined){
+                                newObjectRow["To_Regional_Director__r"]["Name"] = goal_obj_to["rdname"];
+                                newObjectRow["To_Regional_Director__r"]["Staff_Contact_Id__c"] = goal_obj_to["rd_cid"];
+                                newObjectRow["To_Regional_Director__c"] = goal_obj_to["rdid"];
+                                newObjectRow["To_Regional_Director__r"]["Id"] = goal_obj_to["rdid"];
+                                if(goal_obj_to["division"] !== undefined){                                    
+                                    newObjectRow["To_Division__c"] = goal_obj_to["division"].toUpperCase();
+                                }
+                            }
+                        }
+                        else{
+                            newObjectRow["To_Regional_Director__r"] = input[i]["To_Regional_Director__r"];
+                            newObjectRow["To_Regional_Director__c"] = input[i]["To_Regional_Director__c"].substring(0,15);
+                            newObjectRow["To_Regional_Director__r"]["Id"] = newObjectRow["To_Regional_Director__c"];
+                        }
+                    }
+                    for(var prop in newObjectRow){
+                        //make all ids 15 digits so they dont duplicate or miss with the manually input ids
+                        if(prop.indexOf("__c") > -1 && prop.indexOf("Division") === -1 && prop.indexOf("Transfer_Type") === -1){
+                            if(newObjectRow[prop] !== undefined && newObjectRow[prop] !== null){ 
+                                 if(newObjectRow[prop].length > 15){
+                                    newObjectRow[prop] = newObjectRow[prop].substring(0,15);
+                                 }
+                            }
+                        }
+                        if(prop.indexOf("Division") > -1){
+                            var divname = newObjectRow[prop];
+                            var items = ["COMMUNITY","ORGANIZING","KAISER","HOSPITAL","OFFICE BUCKET","CHECK-IN","BURNED"];
+                            var div_ok = false;
+                            var itemLength = items.length;
+                            for(var j = 0; j < itemLength; j++){
+                                var item = items[j];
+                                if (divname.indexOf(item) > -1){
+                                    div_ok = true;
+                                }
+                            }
+                            if (!(div_ok)){
+                               if(dLog){
+                                    console.log(prop);
+                                    console.log(input[i]);
+                                    console.log(newObjectRow);
+                               }
+                               var other_obj = $scope.get_hierarchyObject(divname.substring(0,3));
+                               var os_obj_rd = other_obj["RD"];
+                               var os_obj_cd = other_obj["CD"];
+                               //stamping other staff division here
+                               newObjectRow[prop] = other_obj["DIV"];
+                               //checking proper field for regional director + coordinator stamp
+                               var regdir_str = "From_Regional_Director__c";
+                               var coord_str = "From_Coordinator__c";
+                               if(prop.indexOf("From") === -1){
+                                   regdir_str = regdir_str.replace(/From/,"To");
+                                   coord_str = coord_str.replace(/From/,"To");
+                               }
+                               newObjectRow[regdir_str] = os_obj_rd["Id"];
+                               newObjectRow[regdir_str.replace(/__c/,"__r")] = os_obj_rd;
+                               newObjectRow[coord_str] = os_obj_cd["Id"];                                
+                               newObjectRow[coord_str.replace(/__c/,"__r")] = os_obj_cd;
+                            }
+                        }
+                    }
+                    //more edits on data row
+                    //if(input[i]["Transferred_From__r"] !== undefined){}
+                    //if(input[i]["Transferred_To__r"] !== undefined){}
+                    //get_Hierarchy_LookupRepCID
+                    if(mbr_Unlist_from){
+                        var checkunlisted_mbrs = $scope.mbrs_ckUnlisted(input[i]["Transferred_From__c"]);
+                        if(checkunlisted_mbrs){
+                            //console.log(checkunlisted_mbrs);
+                            newObjectRow["From_Rep__r"]["Staff_Contact_Id__c"] = checkunlisted_mbrs.rep_cid;
+                            var all_hierarchy = $scope.get_Hierarchy_LookupRepCID(checkunlisted_mbrs.rep_cid);
+                            //console.log(all_hierarchy);
+                            newObjectRow["From_Coordinator__c"] = all_hierarchy["cdid"].substring(0,15);
+                            newObjectRow["From_Coordinator__r"]["Id"] = all_hierarchy["cdid"].substring(0,15);
+                            newObjectRow["From_Coordinator__r"]["Name"] = all_hierarchy["cdname"];
+                            newObjectRow["From_Regional_Director__c"] = all_hierarchy["rdid"].substring(0,15);
+                            newObjectRow["From_Regional_Director__r"]["Id"] = all_hierarchy["rdid"].substring(0,15);
+                            newObjectRow["From_Regional_Director__r"]["Name"] = all_hierarchy["rdname"];
+                            newObjectRow["From_Rep__r"]["Name"] = checkunlisted_mbrs.repname;
+                            newObjectRow["From_Rep__r"]["Id"] = "";
+                            newObjectRow["From_Division__c"] = checkunlisted_mbrs.division;
+                        }
+                    }
+                    if(mbr_Unlist_to){
+                        var checkunlisted_mbrs = $scope.mbrs_ckUnlisted(input[i]["Transferred_To__c"]);
+                        if(checkunlisted_mbrs){
+                            //console.log(checkunlisted_mbrs);
+                            newObjectRow["To_Rep__r"]["Staff_Contact_Id__c"] = checkunlisted_mbrs.rep_cid;
+                            var all_hierarchy = $scope.get_Hierarchy_LookupRepCID(checkunlisted_mbrs.rep_cid);
+                            //console.log(all_hierarchy);
+                            newObjectRow["To_Coordinator__c"] = all_hierarchy["cdid"].substring(0,15);
+                            newObjectRow["To_Coordinator__r"]["Id"] = all_hierarchy["cdid"].substring(0,15);
+                            newObjectRow["To_Coordinator__r"]["Name"] = all_hierarchy["cdname"];
+                            newObjectRow["To_Regional_Director__c"] = all_hierarchy["rdid"].substring(0,15);
+                            newObjectRow["To_Regional_Director__r"]["Id"] = all_hierarchy["rdid"].substring(0,15);
+                            newObjectRow["To_Regional_Director__r"]["Name"] = all_hierarchy["rdname"];
+                            newObjectRow["To_Rep__r"]["Name"] = checkunlisted_mbrs.repname;
+                            newObjectRow["To_Rep__r"]["Id"] = "";
+                            newObjectRow["To_Division__c"] = checkunlisted_mbrs.division;
+                        }
+                    }
+                    
+
+                    newObjectRow.xfrtype = ttype.substring(0,1);
+                    newObjectRow.Quantity__c = input[i].Quantity__c;
+                    newObjectRow.Valid_Signatures__c = input[i].Valid_Signatures__c;
+                    newObjectRow.Bad_Signatures__c = input[i].Bad_Signatures__c;
+
+                    if(ttype === "O. Check-In to Operations" ){
+                        newObjectRow.ttype = "ckin";
+                        ckin.push(newObjectRow);
+                    }
+                    else if(ttype === "X. Burned" ){
+                        newObjectRow.ttype = "brn";
+                        brn.push(newObjectRow);
+                    }
+                    else if(ttype.indexOf("Check-Out") > -1){
+                        newObjectRow.ttype = "ckout";
+                        if(newObjectRow.Transferred_From__c === newObjectRow.Transferred_To__c){
+                            console.log("self checkout");
+                            console.log(newObjectRow);
+                        }
+                        else{
+                            ckout.push(newObjectRow);
+                        }
+                    }                    
+                    else if(ttype.indexOf("Printed") > -1){
+                        newObjectRow.ttype = "ckout"
+                        ckout.push(newObjectRow);
+                    }
+                    else if(ttype.indexOf("Returned") > -1 ){
+                        newObjectRow.ttype = "ckout";
+                        ckout.push(newObjectRow);
+                    }
+                    else{
+                        newObjectRow.ttype = "other";
+                        other.push(newObjectRow);
+                    }
+                }
+            }
+            return [ckin, brn, ckout, other];
+        }
+
+        $scope.mergeTables_v2 = function(tablesArr,from_field){
+            var tableFinal = new Array();
+            var iLength = tablesArr.length;
+            for (var i = 0; i < iLength; i++) {
+                if(tablesArr[i].length > 0){
+                    var field = from_field;
+                    if(tablesArr[i][0].ttype === "ckout"){
+                        field = from_field.replace(/From/,"To");
+                        var aggrow = $scope.aggdiv(tablesArr[i],field);
+                        var jLength = aggrow.length;
+                        for(var j = 0; j < jLength; j++){
+                           var row = new Object();
+                           row.Div = aggrow[j][field];
+                           if(aggrow[j].not_div > -1){
+                               row.Divname = aggrow[j][field].replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+                           }
+                           else if(row.Div !== "null"){
+                               row.Divname = aggrow[j][field.replace(/__c/,"__r")]["Name"];
+                               row["division"] = aggrow[j]["division"];
+                               row["uhwtype"] = aggrow[j]["Transferred_To__r"]["Division_Type__c"];
+                               row["rep_cid"] = aggrow[j]["To_Rep__r"]["Staff_Contact_Id__c"];
+                               if(row["rep_cid"] !== undefined){
+                                   row["rep_cid"] = row["rep_cid"].substring(0,15);
+                               }
+                               if(!aggrow[j]["isrd"] && aggrow[j]["To_Regional_Director__r"] !== undefined){
+                                   row["rdname"] = aggrow[j]["To_Regional_Director__r"]["Name"];
+                                   row["rd_cid"] = aggrow[j]["To_Regional_Director__r"]["Staff_Contact_Id__c"];
+                                   if(row["rd_cid"] !== undefined){
+                                       row["rd_cid"] = row["rd_cid"].substring(0,15);
+                                   }
+                                   row["rdid"] = aggrow[j]["To_Regional_Director__r"]["Id"];
+                               }
+                               if(!aggrow[j]["iscd"] && !aggrow[j]["isrd"]){
+                                   row["repname"] = aggrow[j]["To_Rep__r"]["Name"];
+                                   if(aggrow[j]["To_Coordinator__r"] !== undefined){
+                                       row["cdname"] = aggrow[j]["To_Coordinator__r"]["Name"];
+                                       row["cd_cid"] = aggrow[j]["To_Coordinator__r"]["Staff_Contact_Id__c"];
+                                       if(row["cd_cid"] !== undefined){
+                                           row["cd_cid"] = row["cd_cid"].substring(0,15);
+                                       }
+                                       row["cdid"] = aggrow[j]["To_Coordinator__r"]["Id"];
+                                   }
+                               }
+                           }
+                           if(row.Div !== "null"){
+                               var str_qty = aggrow[j]["ttype"].concat("_qty");
+                               row[str_qty] = aggrow[j]["Quantity__c"];
+                               var xfrtypes = aggrow[j]["xfrtypes"].replace(/undefined/,"");
+                               xfrtypes = xfrtypes.substring(0,xfrtypes.length - 1);
+                               var xfr_list = xfrtypes.split(';');
+                               xfr_list = $.unique(xfr_list);
+                               for(var k=0; k<xfr_list.length;k++){
+                                   var xfrstr_qty = xfr_list[k].concat("Quantity__c");
+                                   row[xfrstr_qty] = aggrow[j][xfrstr_qty];
+                               }                                                      
+                               var ppl_qty = aggrow[j]["ttype"].concat("_ppl");
+                               row[ppl_qty] = aggrow[j]["ppl"]
+                               row["not_div"] = aggrow[j]["not_div"];
+                               row["iscd"] = aggrow[j]["iscd"];
+                               row["isrd"] = aggrow[j]["isrd"];
+                               row["valid_sigs"] = 0;
+                               row["bad_sigs"] = 0;
+                               row["ckin_qty"] = 0;
+                               row["brn_qty"] = 0;
+                               tableFinal.push(row);
+                           }
+                        }
+                    }
+                }
+            }
+            for (var i = 0;i < tablesArr.length;i++ ){
+                if(tablesArr[i].length > 0){             
+                    var rtn_bool = false;
+                    var aggrow = $scope.aggdiv(tablesArr[i],from_field);
+                    var jLength = tableFinal.length;
+                    for(var j = 0; j < jLength; j++){
+                        for(var k = 0; k < aggrow.length; k++){
+                            if(tableFinal[j].Div === aggrow[k][from_field]){                                    
+                                var str_qty = aggrow[k]["ttype"].concat("_qty");                       
+                                var ppl_qty = aggrow[k]["ttype"].concat("_ppl");
+                                tableFinal[j][ppl_qty] = aggrow[k]["ppl"];
+                                //  /^hello/.test(str)
+                                if(aggrow[k].ttype === "ckout"){
+                                    str_qty += "_from";
+                                }
+                                tableFinal[j][str_qty] = 0;
+                                if(aggrow[k]["Quantity__c"] > 0){
+                                    tableFinal[j][str_qty] = aggrow[k]["Quantity__c"];
+                                }
+                                if(aggrow[k]["Valid_Signatures__c"] > 0){
+                                    tableFinal[j]["valid_sigs"] = aggrow[k]["Valid_Signatures__c"];
+                                }
+                                if(aggrow[k]["Bad_Signatures__c"] > 0){
+                                    tableFinal[j]["bad_sigs"] = aggrow[k]["Bad_Signatures__c"];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return tableFinal;
+        }
+
+        $scope.uniqArr = function(a,fieldname){
+            var temp = {};
+            for(i in a){
+                var y = a[i][fieldname];
+                temp[y] = true;
+            }
+            var x = Object.keys(temp);
+            var index = x.indexOf("undefined");
+            if(index > -1){
+                x.splice(index,1);
+            }
+            return x;
+        }
+
+        $scope.aggdiv = function(ck,field_subtot){
+            var agg = new Array();
+            var not_div = field_subtot.indexOf("Division");
+            var not_from = field_subtot.indexOf("From");
+            var iscd = (field_subtot.indexOf("Coordinator")>-1);
+            var isrd = (field_subtot.indexOf("Regional_Director")>-1);
+            var divs = $scope.uniqArr(ck,field_subtot);
+            var divLength = divs.length;
+            for(var x = 0;x < divLength; x++){
+                if(typeof divs[x] == "string"){
+                    var r = new Object();
+                    r[field_subtot] = divs[x];
+
+                    r.Quantity__c = 0;
+                    r.Valid_Signatures__c = 0;
+                    r.Bad_Signatures__c = 0;
+                    r.ppl = 0;
+
+                    r.isrd = isrd;
+                    r.iscd = iscd;
+                    r.not_div = not_div;
+                    r.not_from = not_from;
+
+                    var div = "";
+                    var ttype = "";
+
+                    for(var i = 0;i<ck.length;i++){
+                        if(ck[i][field_subtot] !== undefined){
+                        //console.log(ck[i]);
+                        var qty_num = 0;
+                        if(parseInt(ck[i].Quantity__c,10) > 0){
+                            qty_num = parseInt(ck[i].Quantity__c,10);
+                        }
+                        var xfrtype = ck[i].xfrtype;
+                        var div_ck = "";
+                        var tab_ck = "";
+                        if(not_div > -1){
+                            div_ck = divs[x].toUpperCase();
+                            tab_ck = ck[i][field_subtot].toUpperCase();
+                        }
+                        else{
+                            div_ck = divs[x];
+                            tab_ck = ck[i][field_subtot];
+                        }
+                        if(div_ck === tab_ck){
+                            var xfrtype_qty = xfrtype.concat("Quantity__c");
+                            if(r[xfrtype_qty] === undefined){
+                                r[xfrtype_qty] = 0;
+                            }
+                            r[xfrtype_qty] += qty_num;
+                            if(xfrtype !== undefined){
+                                r["xfrtypes"] += xfrtype.concat(";");
+                            }
+                            r.Quantity__c += qty_num;
+                            r.Valid_Signatures__c += parseInt(ck[i].Valid_Signatures__c, 10);
+                            r.Bad_Signatures__c += parseInt(ck[i].Bad_Signatures__c,10);
+                            r.ppl += 1;
+                            ttype = ck[i].ttype;
+                            var repfieldname = "From_Rep__r";
+                            var rdfieldname = "From_Regional_Director__r";
+                            var cdfieldname = "From_Coordinator__r";
+                            var uhwfieldname = "Transferred_From__r";
+                            var divfieldname = "From_Division__c";
+                            var field_subtot_obj = field_subtot.replace(/__c/,"__r");
+                            if(not_div === -1){
+                                r[field_subtot_obj] = ck[i][field_subtot_obj];
+                                if(not_from === -1){
+                                    divfieldname = divfieldname.replace(/From/,"To");
+                                    rdfieldname = rdfieldname.replace(/From/,"To");
+                                    cdfieldname = cdfieldname.replace(/From/,"To");
+                                    uhwfieldname = uhwfieldname.replace(/From/,"To");
+                                    repfieldname = repfieldname.replace(/From/,"To");
+                                }
+                                div = ck[i][divfieldname];
+                                if(ck[i][cdfieldname] !== undefined && cdfieldname !== field_subtot_obj){
+                                    r[cdfieldname] = ck[i][cdfieldname];
+                                }
+                                if(ck[i][rdfieldname] !== undefined && rdfieldname !== field_subtot_obj){
+                                    r[rdfieldname] = ck[i][rdfieldname];
+                                }
+                                r[uhwfieldname] = ck[i][uhwfieldname];
+                                r[repfieldname] = ck[i][repfieldname];
+                            }
+                        }
+                        }
+                    }
+                    r["division"] = div.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+                    r["ttype"] = ttype;
+                    agg.push(r);
+                }
+            }
+            return agg;
+        }
+
+        $scope.process_data2bindings = function(dataset){
+            var tablesArr = $scope.makeTables(dataset);
+            //rep  & members tables
+            var individuals = $scope.makeTable_Aggregate(tablesArr,"Transferred_From__c");
+            //make members table roll up with reps
+            var stf_memdata = $scope.makeTable_reps(individuals);
+            $scope.data_rep = stf_memdata[0];
+            $scope.data_mem = stf_memdata[1];
+            $scope.ofc_rows = stf_memdata[2];
+            //divison table)
+            $scope.data_div  = $scope.makeTable_Aggregate(tablesArr,"From_Division__c");
+            //region table
+            $scope.data_reg = $scope.makeTable_Aggregate(tablesArr,"From_Regional_Director__c");
+            //coordinator table
+            $scope.data_cd = $scope.makeTable_Aggregate(tablesArr,"From_Coordinator__c");
+            $scope.myForm.$invalid = false;
+            $scope.$apply();
+        }
+
+        $scope.chunk_size = 2000;
+        
+        $scope.handleResult = function(result, event) {
+            // handle a batch here
+            console.log(result);
+            var rLength = result.length;
+            for(var i=0;i<rLength;i++){
+                $scope.pldata_result.push(result[i]);
+            }            
+            // do more
+            if(result.length===$scope.chunk_size){
+                var lastIndex = $scope.chunk_size - 1;
+                {!$RemoteAction.ctrlr_rpt.pl_getRecords}(result[lastIndex].Id,$scope.handleResult);
+            }
+            else{
+                $scope.process_data2bindings($scope.pldata_result);
+            }
+            
+            console.log($scope.pldata_result.length);            
+        }
+
+        //{!$RemoteAction.ctrlr_rpt.pl_getRecords}(null,$scope.handleResult);
+    
+        $scope.getdata = function() {
+            Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.ctrlr_rpt.pl_getRecords}',null,$scope.handleResult);            
+        }
+
+        //enter app here
+        $scope.init();
+
+
+    });
+</script>
+    <style>
+th {
+    background-color: white;
+    border-bottom: 1px solid black;
+    border-top: 1px solid black;
+}
+#stfwrap {
+    float: left;
+    overflow: auto;
+    height: 347px;
+    border: 1px solid black;
+}
+#memwrap {
+    float: left;
+    overflow: auto;
+    height: 347px;
+    border: 1px solid black;
+}
+.default-color{
+  background-color: white;
+}
+
+.warning-class {
+  background-color: red;
+}
+    </style>
+            <script>
+                <!--request for sticky table headers fulfilled with some jQuery and CSS-->
+document.getElementById("stfwrap").addEventListener("scroll",function(){
+   var translate = "translate(0,"+this.scrollTop+"px)";
+   this.querySelector("thead").style.transform = translate;
+});
+document.getElementById("memwrap").addEventListener("scroll",function(){
+   var translate = "translate(0,"+this.scrollTop+"px)";
+   this.querySelector("thead").style.transform = translate;
+});
+            </script>
+</apex:page>

@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Employer</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Employers</value>
+    </caseValues>
+    <fields>
+        <label><!-- Account Group --></label>
+        <name>Account_Group__c</name>
+        <picklistValues>
+            <masterLabel>Allies</masterLabel>
+            <translation><!-- Allies --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Community</masterLabel>
+            <translation><!-- Community --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Home Care</masterLabel>
+            <translation><!-- Home Care --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hospital</masterLabel>
+            <translation><!-- Hospital --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Kaiser</masterLabel>
+            <translation><!-- Kaiser --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>New Organizing</masterLabel>
+            <translation><!-- New Organizing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Nursing Home</masterLabel>
+            <translation><!-- Nursing Home --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Partner Organization</masterLabel>
+            <translation><!-- Partner Organization --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Politician</masterLabel>
+            <translation><!-- Politician --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Staff</masterLabel>
+            <translation><!-- Staff --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Account Id 18char --></label>
+        <name>Account_Id_18char__c</name>
+    </fields>
+    <fields>
+        <label><!-- Active --></label>
+        <name>Active__c</name>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes</masterLabel>
+            <translation><!-- Yes --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Assessment Stage --></label>
+        <name>Assessment_Stage__c</name>
+        <picklistValues>
+            <masterLabel>Card</masterLabel>
+            <translation><!-- Card --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Closed - No Longer Operating</masterLabel>
+            <translation><!-- Closed - No Longer Operating --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Contract Negotiation</masterLabel>
+            <translation><!-- Contract Negotiation --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>GOTV</masterLabel>
+            <translation><!-- GOTV --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Holding Pattern</masterLabel>
+            <translation><!-- Holding Pattern --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not a Target</masterLabel>
+            <translation><!-- Not a Target --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Probing</masterLabel>
+            <translation><!-- Probing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pursing Residuals, UHW Reps S&amp;T</masterLabel>
+            <translation><!-- Pursing Residuals, UHW Reps S&amp;T --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Represented by UHW</masterLabel>
+            <translation><!-- Represented by UHW --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unevaluated</masterLabel>
+            <translation><!-- Unevaluated --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Verbal</masterLabel>
+            <translation><!-- Verbal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Vote Yes Petition</masterLabel>
+            <translation><!-- Vote Yes Petition --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- BU Count --></label>
+        <name>BU_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- BU Union - BOC --></label>
+        <name>BU_Union_BOC__c</name>
+    </fields>
+    <fields>
+        <label><!-- BU Union - Professional --></label>
+        <name>BU_Union_Professional__c</name>
+    </fields>
+    <fields>
+        <label><!-- BU Union - RN --></label>
+        <name>BU_Union_RN__c</name>
+    </fields>
+    <fields>
+        <label><!-- BU Union - S&amp;M --></label>
+        <name>BU_Union_SM__c</name>
+    </fields>
+    <fields>
+        <label><!-- BU Union - Skill Maint --></label>
+        <name>BU_Union_Skill_Maint__c</name>
+    </fields>
+    <fields>
+        <label><!-- BU Union - Tech --></label>
+        <name>BU_Union_Tech__c</name>
+    </fields>
+    <fields>
+        <label><!-- CA Health Atlas Link --></label>
+        <name>CA_Health_Atlas_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Constituency Full Name --></label>
+        <name>Constituency_Full_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Constituency Name --></label>
+        <name>Constituency_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Constituency --></label>
+        <name>Constituency__c</name>
+        <relationshipLabel><!-- Accounts --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Constituency (2014) --></label>
+        <name>Constituency_before_2017__c</name>
+        <relationshipLabel><!-- Accounts (Constituency_before_2017) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Constituency forAPI Sandbox --></label>
+        <name>Constituency_forAPI__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contract Specialist --></label>
+        <name>Contract_Specialist__c</name>
+        <relationshipLabel><!-- Accounts --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+        <relationshipLabel><!-- Employers (Coordinator) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- County --></label>
+        <name>County__c</name>
+    </fields>
+    <fields>
+        <label><!-- Customer ID --></label>
+        <name>Customer_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Dignity Region --></label>
+        <name>Dignity_Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- District (2017) --></label>
+        <name>District_2017__c</name>
+        <relationshipLabel><!-- Accounts (District (2017)) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- District Name --></label>
+        <name>District_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- to be deleted --></help>
+        <label><!-- EBoard Seats --></label>
+        <name>EBoard_Seats__c</name>
+        <relationshipLabel><!-- Accounts --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Employer ID --></label>
+        <name>Employer_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Executive Committee --></label>
+        <name>Executive_Committee__c</name>
+    </fields>
+    <fields>
+        <label><!-- FacilityAddresses --></label>
+        <name>FacilityAddresses__c</name>
+    </fields>
+    <fields>
+        <label><!-- FacilityNames --></label>
+        <name>FacilityNames__c</name>
+    </fields>
+    <fields>
+        <label><!-- Facility Cluster --></label>
+        <name>Facility_Cluster__c</name>
+    </fields>
+    <fields>
+        <label><!-- Facility Image Displayed --></label>
+        <name>Facility_Image_Displayed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Facility Image --></label>
+        <name>Facility_Image__c</name>
+    </fields>
+    <fields>
+        <label><!-- Facility Type --></label>
+        <name>Facility_Type__c</name>
+        <picklistValues>
+            <masterLabel>City/County</masterLabel>
+            <translation><!-- City/County --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>District</masterLabel>
+            <translation><!-- District --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Investor</masterLabel>
+            <translation><!-- Investor --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Non-Profit</masterLabel>
+            <translation><!-- Non-Profit --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>State</masterLabel>
+            <translation><!-- State --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- For GOTV maps.  Enter the name of the Organizer on each line and then add latitude and longitude separated by commas.  For example
+
+Organizer1,34.010223,-118.156906
+Organizer2,34.098150,-118.296305 --></help>
+        <label><!-- GOTV Organizer Geolocations --></label>
+        <name>GOTV_Organizer_Geolocations__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hospital System --></label>
+        <name>Hospital_System__c</name>
+    </fields>
+    <fields>
+        <label><!-- Last BU Date --></label>
+        <name>Last_BU_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Last Bulk COPE - Month pd date --></help>
+        <label><!-- Last time COPE was paid --></label>
+        <name>Last_COPE_MonthPaid__c</name>
+    </fields>
+    <fields>
+        <label><!-- MO Active --></label>
+        <name>MO_Active__c</name>
+    </fields>
+    <fields>
+        <label><!-- Medical Group --></label>
+        <name>Medical_Group__c</name>
+    </fields>
+    <fields>
+        <label><!-- Membership_Associate --></label>
+        <name>Membership_Associate__c</name>
+        <relationshipLabel><!-- Employers (Membership_Associate) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Membership_Auditor --></label>
+        <name>Membership_Auditor__c</name>
+        <relationshipLabel><!-- Employers (Membership_Auditor) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- External ID (Employer ID from the Membership.Emloyers table) --></help>
+        <label><!-- Membership Employer Id --></label>
+        <name>Membership_Employer_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Min Wage Region --></label>
+        <name>Min_Wage_Region__c</name>
+    </fields>
+    <fields>
+        <help><!-- used for Public Hospitals&apos; reports as a way to shrink the BU size down without having to consider what is on the Contact record in dropping them from the BU. --></help>
+        <label><!-- No_CBA_Count --></label>
+        <name>No_CBA_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Number of Beds --></label>
+        <name>Number_of_Beds__c</name>
+    </fields>
+    <fields>
+        <label><!-- OSHPD ID Secondary --></label>
+        <name>OSHPD_ID_Secondary__c</name>
+    </fields>
+    <fields>
+        <label><!-- OSHPD ID --></label>
+        <name>OSHPD_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 1 --></label>
+        <name>Organizer_1__c</name>
+        <relationshipLabel><!-- Employers (Organizer 1) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Organizer 2 --></label>
+        <name>Organizer_2__c</name>
+        <relationshipLabel><!-- Employers (Organizer 2) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Organizer 3 --></label>
+        <name>Organizer_3__c</name>
+        <relationshipLabel><!-- Employers (Organizer 3) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Phase 5 Starting Coverage Pct --></label>
+        <name>Phase_5_Starting_Cover_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Phase 5 Goal Pct --></label>
+        <name>Phase_5_Total_Cover_Goal_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phase 6 Picket --></label>
+        <name>Phase_6_Picket__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phase 6 Starting Coverage Pct --></label>
+        <name>Phase_6_Starting_Cover_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Phase 6 Goal Pct --></label>
+        <name>Phase_6_Total_Cover_Goal_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Pol_Congress_District --></label>
+        <name>Pol_Congress_District__c</name>
+    </fields>
+    <fields>
+        <label><!-- Pol_St_Assembly_District --></label>
+        <name>Pol_St_Assembly_District__c</name>
+    </fields>
+    <fields>
+        <label><!-- Pol_St_Senate_District --></label>
+        <name>Pol_St_Senate_District__c</name>
+    </fields>
+    <fields>
+        <label><!-- Pol_Supervisorial_District --></label>
+        <name>Pol_Supervisorial_District__c</name>
+    </fields>
+    <fields>
+        <help><!-- archiving data --></help>
+        <label><!-- Previous Employer Id --></label>
+        <name>Previous_Employer_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Region --></label>
+        <name>Region__c</name>
+        <picklistValues>
+            <masterLabel>CENTRAL</masterLabel>
+            <translation><!-- CENTRAL --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Central Coast</masterLabel>
+            <translation><!-- Central Coast --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NORTH</masterLabel>
+            <translation><!-- NORTH --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SOUTH</masterLabel>
+            <translation><!-- SOUTH --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Regional Director Id --></label>
+        <name>RegionalDirectorId__c</name>
+        <relationshipLabel><!-- Employers (Regional Director Id) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Regional Director --></label>
+        <name>Regional_Director__c</name>
+        <relationshipLabel><!-- Employers (Regional Director) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Regional Rep Ex --></label>
+        <name>Regional_Rep_Ex__c</name>
+        <relationshipLabel><!-- Employers (Regional Rep Ex) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Report Links --></label>
+        <name>Report_Links__c</name>
+    </fields>
+    <fields>
+        <label><!-- SOSFW_toBeSharedToHomeCare? --></label>
+        <name>SOSFW_toBeSharedToHomeCare__c</name>
+    </fields>
+    <fields>
+        <label><!-- Split Employer --></label>
+        <name>Split_Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sub Region --></label>
+        <name>Sub_Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Contracts --></label>
+        <name>Total_Contracts__c</name>
+    </fields>
+    <fields>
+        <label><!-- Turf Key --></label>
+        <name>Turf_Key__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Area</masterLabel>
+            <translation><!-- Area --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Building</masterLabel>
+            <translation><!-- Building --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Campus</masterLabel>
+            <translation><!-- Campus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Employer</masterLabel>
+            <translation><!-- Employer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Floor/Room Number</masterLabel>
+            <translation><!-- Floor/Room Number --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Parent Employer</masterLabel>
+            <translation><!-- Parent Employer --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- subseat --></label>
+        <name>subseat__c</name>
+    </fields>
+    <layouts>
+        <layout>Account Layout</layout>
+        <sections>
+            <label><!-- D&amp;B Fields --></label>
+            <section>D&amp;B Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Account Layout - Allies 2</layout>
+        <sections>
+            <label><!-- D&amp;B Fields --></label>
+            <section>D&amp;B Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Account Layout - Community</layout>
+        <sections>
+            <label><!-- D&amp;B Fields --></label>
+            <section>D&amp;B Fields</section>
+        </sections>
+        <sections>
+            <label><!-- Unionization --></label>
+            <section>Unionization</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Account Layout - Hospital</layout>
+        <sections>
+            <label><!-- D&amp;B Fields --></label>
+            <section>D&amp;B Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Account Layout - Kaiser</layout>
+        <sections>
+            <label><!-- D&amp;B Fields --></label>
+            <section>D&amp;B Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Account Layout - New Organizing</layout>
+        <sections>
+            <label><!-- D&amp;B Fields --></label>
+            <section>D&amp;B Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Account Layout - Staff</layout>
+        <sections>
+            <label><!-- D&amp;B Fields --></label>
+            <section>D&amp;B Fields</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Data.com Account Layout</layout>
+        <sections>
+            <label><!-- D&amp;B Fields --></label>
+            <section>D&amp;B Fields</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Case --></label>
+        <name>Case</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Child Account --></label>
+        <name>Child_Account</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Contact --></label>
+        <name>Contact</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Opportunity --></label>
+        <name>Opportunity</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Task --></label>
+        <name>Task</name>
+    </quickActions>
+    <recordTypes>
+        <description><!-- Allies --></description>
+        <label><!-- Allies --></label>
+        <name>Allies</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Community --></description>
+        <label><!-- Community --></label>
+        <name>Community</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Home Care --></description>
+        <label><!-- Home Care --></label>
+        <name>Home_Care</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Hospital --></description>
+        <label><!-- Hospital --></label>
+        <name>Hospital</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Kaiser --></description>
+        <label><!-- Kaiser --></label>
+        <name>Kaiser</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- New Organizing --></description>
+        <label><!-- New Organizing --></label>
+        <name>New_Organizing</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Nursing Home --></description>
+        <label><!-- Nursing Home --></label>
+        <name>Nursing_Home</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Politician --></description>
+        <label><!-- Politician --></label>
+        <name>Politician</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Staff --></description>
+        <label><!-- Staff --></label>
+        <name>Staff</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- Consolidated_Addresses --></label>
+        <name>Consolidated_Addresses</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Consolidated_Notes --></label>
+        <name>Consolidated_Notes</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleMaps --></label>
+        <name>GoogleMaps</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleNews --></label>
+        <name>GoogleNews</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- GoogleSearch --></label>
+        <name>GoogleSearch</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- ID_Depts --></label>
+        <name>ID_Depts</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Mbr_Ldr_Permissions --></label>
+        <name>Mbr_Ldr_Permissions</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Normalize_Addresses --></label>
+        <name>Normalize_Addresses</name>
+    </webLinks>
+</CustomObjectTranslation>

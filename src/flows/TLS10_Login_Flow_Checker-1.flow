@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apexPluginCalls>
+        <description>Checks if a user&apos;s browser uses TLS1.0</description>
+        <name>TLS1_0_Checker</name>
+        <label>TLS1.0 Checker</label>
+        <locationX>184</locationX>
+        <locationY>66</locationY>
+        <apexClass>TLS_CheckerProcessPlugin</apexClass>
+        <connector>
+            <targetReference>TLS_Is_TLSv10</targetReference>
+        </connector>
+        <inputParameters>
+            <name>userid</name>
+            <value>
+                <elementReference>LoginFlow_UserId</elementReference>
+            </value>
+        </inputParameters>
+        <outputParameters>
+            <assignToReference>TLS_IsUsingTLS10</assignToReference>
+            <name>Is TLS1.0</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>TLSMessage</assignToReference>
+            <name>Message</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>TLSHelpPage</assignToReference>
+            <name>Help Page</name>
+        </outputParameters>
+        <outputParameters>
+            <assignToReference>TLSHelpPageUrlText</assignToReference>
+            <name>Help Page Url Text</name>
+        </outputParameters>
+    </apexPluginCalls>
+    <decisions>
+        <description>Is the user&apos;s browser using TLSv1.0. If yes direct them to warning screen. If not then do nothing.</description>
+        <name>TLS_Is_TLSv10</name>
+        <label>TLS Is TLSv1.0</label>
+        <locationX>186</locationX>
+        <locationY>184</locationY>
+        <defaultConnectorLabel>[Default Outcome]</defaultConnectorLabel>
+        <rules>
+            <name>TLS_v10_found</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>TLS_IsUsingTLS10</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>TLS_Display_TLSv10_warning_message</targetReference>
+            </connector>
+            <label>TLS v1.0 found</label>
+        </rules>
+    </decisions>
+    <description>User login flow to detect whether the user&apos;s browser is using TLSv1.0 and if so, provide a message describing the action needed to correct.</description>
+    <interviewLabel>TLS1.0 Login Flow Checker {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>TLS1.0 Login Flow Checker</label>
+    <processType>Flow</processType>
+    <screens>
+        <description>Message text and help page url are sourced from Settings -&gt; Custom MetaData. There you can set a specific message for each profile along with a url to a page with more details.
+Feel free to customize this screen as neeeded. 
+Note: These are old browsers so keep it short and simple.</description>
+        <name>TLS_Display_TLSv10_warning_message</name>
+        <label>TLS Display TLSv1.0 warning message</label>
+        <locationX>182</locationX>
+        <locationY>332</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>TLSMessageDisplayScreen</name>
+            <fieldText>&lt;SPAN ALIGN=&quot;CENTER&quot;&gt;&lt;FONT FACE=&quot;Arial&quot; STYLE=&quot;font-size:12px&quot; COLOR=&quot;#000000&quot; LETTERSPACING=&quot;0&quot; KERNING=&quot;0&quot;&gt;&lt;B&gt;{!TLSMessage}&lt;/B&gt;&lt;/FONT&gt;&lt;/SPAN&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <fields>
+            <name>TLSHelpPageLink</name>
+            <fieldText>&lt;SPAN ALIGN=&quot;CENTER&quot;&gt;&lt;FONT FACE=&quot;Arial&quot; STYLE=&quot;font-size:12px&quot; COLOR=&quot;#000000&quot; LETTERSPACING=&quot;0&quot; KERNING=&quot;0&quot;&gt;&lt;A HREF=&quot;{!TLSHelpPage}&quot; TARGET=&quot;_blank&quot;&gt;&lt;U&gt; {!TLSHelpPageUrlText} &lt;/U&gt;&lt;/A&gt;&lt;/FONT&gt;&lt;/SPAN&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <startElementReference>TLS1_0_Checker</startElementReference>
+    <variables>
+        <description>User ID of the currently logged in user</description>
+        <name>LoginFlow_UserId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Is the user using TLS1.0</description>
+        <name>TLS_IsUsingTLS10</name>
+        <dataType>Boolean</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+        <value>
+            <booleanValue>false</booleanValue>
+        </value>
+    </variables>
+    <variables>
+        <description>A URL for a page describing what action the user needs to take.
+Ideally, the page will detect the UserAgent header and display the steps needed for their specific platform/browser.
+Default provided but custom pages can be set for each profile in Settings -&gt; Custom MetaData</description>
+        <name>TLSHelpPage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>The text used for the link to help on this subject</description>
+        <name>TLSHelpPageUrlText</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+    <variables>
+        <description>Message to display to the user. A default message can be set from Settings -&gt; Custom MetatData Settings
+Specific messages for each profile can also be set there.</description>
+        <name>TLSMessage</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

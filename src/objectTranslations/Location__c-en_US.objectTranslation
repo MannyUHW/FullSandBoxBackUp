@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Location</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Locations</value>
+    </caseValues>
+    <fields>
+        <label><!-- City --></label>
+        <name>City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+        <relationshipLabel><!-- Locations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Parent Location --></label>
+        <name>Parent_Location__c</name>
+        <relationshipLabel><!-- Locations --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Postal Code --></label>
+        <name>Postal_Code__c</name>
+    </fields>
+    <fields>
+        <label><!-- State --></label>
+        <name>State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Street Address --></label>
+        <name>Street_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+        <picklistValues>
+            <masterLabel>Area/Campus</masterLabel>
+            <translation><!-- Area/Campus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Building</masterLabel>
+            <translation><!-- Building --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Suite_Floor</masterLabel>
+            <translation><!-- Suite_Floor --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Location Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

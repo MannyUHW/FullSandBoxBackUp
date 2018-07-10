@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Boothforce;This associates a Booth with a Shift Time and an assigned contact; This is use by Sarah Steck;</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Assigned_To_Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned__r.Division</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Assigned To Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned__r.Email</formula>
+        <label>Assigned To - Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This is the Assigned Manager during the event.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the Assigned Manager during the event.</inlineHelpText>
+        <label>Assigned To Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Staffing_Assignments1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Mobile__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned__r.MobilePhone</formula>
+        <label>Assigned To - Mobile</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other_FID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned_To_Other__r.FID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Assigned To Other - FID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other_Facility__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned_To_Other__r.Employer1__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Assigned To Other - Facility</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other_Home_Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned_To_Other__r.HomePhone</formula>
+        <label>Assigned To Other - Home Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other_Mobile__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned_To_Other__r.MobilePhone</formula>
+        <label>Assigned To Other - Mobile</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other_Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned_To_Other__r.Phone</formula>
+        <label>Assigned To Other - Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Other__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Members</inlineHelpText>
+        <label>Assigned To Other</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Staffing Assignments</relationshipLabel>
+        <relationshipName>Staffing_Assignments</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned__r.Phone</formula>
+        <label>Assigned To - Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_Title__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned__r.Title</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Assigned To Title</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_To_User_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Assigned To User Id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The User this Staffing Assignment is Assigned to</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The User this Staffing Assignment is Assigned to</inlineHelpText>
+        <label>Assigned To</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Staffing_Assignments</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Assigned_to_Users_Manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned__r.Manager.FirstName&amp;&apos; &apos;&amp;Assigned__r.Manager.LastName</formula>
+        <inlineHelpText>This is the Manager of the User in the Assigned To field</inlineHelpText>
+        <label>Assigned to Users Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Booth__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The Demo Booth or Exhibit</inlineHelpText>
+        <label>Booth</label>
+        <referenceTo>Booth__c</referenceTo>
+        <relationshipLabel>Staffing Assignments</relationshipLabel>
+        <relationshipName>Staffing_Assignments</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Is_Staffed_Non_UHW__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(  Assigned_To_Other__c =null, 0, 1)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Staffed Non-UHW</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Is_Staffed__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Assigned__c=null, 0, 1)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>If Assigned = 1, Else = 0</inlineHelpText>
+        <label>Is Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned__r.ManagerId</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Manager_Id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shift_Time__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The block of time required to staff this Booth</inlineHelpText>
+        <label>Shift Time</label>
+        <referenceTo>Shift_Time__c</referenceTo>
+        <relationshipLabel>Staffing Assignments</relationshipLabel>
+        <relationshipName>Staffing_Assignments</relationshipName>
+        <relationshipOrder>1</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <label>Staffing Assignment</label>
+    <nameField>
+        <displayFormat>StaffingAssignment-{0000000}</displayFormat>
+        <label>Staffing Assignment #</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Staffing Assignments</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

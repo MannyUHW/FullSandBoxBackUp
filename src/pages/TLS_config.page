@@ -1,0 +1,299 @@
+<apex:page showHeader="true" sidebar="false" controller="TLS_ConfigController" tabStyle="Config_TLS_Warning__tab" action="{!initialize}" docType="html-5.0">
+<style>
+  .tls_hidden { display: none; }
+
+  table#tls {
+      width:100%;
+  }
+   
+  table#tls, table#tls th, table#tls td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      padding: 5px;
+      text-align: left;
+      vertical-align: middle;
+  }
+
+  table#tls tr td.center { text-align:center; }
+  
+  table#tls th  {
+      background-color: #995905;
+      color: white;
+      text-align: center;
+  }
+
+  a.tls_link { color: #015BA7; }
+}
+</style>
+
+<apex:sectionHeader title="TLSv1.0 Warning Message" subtitle="Customize & Configure" />
+<apex:form id="tls_config_form">
+  <apex:pageMessages id="Error"/>
+  <apex:actionFunction name="toggleByProfile" action="{!toggleByProfile}" reRender="tls_config_form"/>
+  <apex:actionFunction name="navToCustomizeMsg" action="{!navToCustomizeMsg}"/>
+  <apex:actionFunction name="navToFlow" action="{!navToFlow}"/>
+    <apex:actionFunction name="navToCustomSettings" action="{!navToCustomSettings}" reRender="tls_config_form">
+    <apex:param name="ncustomSettingsId" assignTo="{!customSettingsId}" value="" />
+  </apex:actionFunction>
+  <apex:actionFunction name="setFlowStatus" action="{!setFlowStatus}" reRender="tls_config_form">
+    <apex:param name="nhasActiveFlow" assignTo="{!hasActiveFlow}" value="" />
+    <apex:param name="nflowId" assignTo="{!flowId}" value="" />
+  </apex:actionFunction>
+
+   <apex:tabPanel switchType="client" rendered="{!JSENCODE($CurrentPage.parameters.editMode) == null}" selectedTab="name1" id="theTabPanel">
+        
+        
+        <apex:tab label="Customize Message" name="name1" id="tabOne">
+           <apex:pageBlock > 
+             <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem rendered="{!isMessageProfileSpecific == false}">
+                    <p>The user message can be customized via Custom Labels. Custom Labels are translatable and therefore useful when supporting multiple languages.</p><br/>
+                <table id="tls">
+                <tr>
+                  <th>Action</th>
+                  <th>Type</th>   
+                  <th>Name</th>
+                  <th>Value</th>
+                </tr>
+                <tr>
+                  <td class="center"><a href="javascript:navToCustomizeMsg()" class="tls_link">Edit</a></td>
+                  <td class="center">Custom Label</td>    
+                  <td>TLS_Warning_Message</td>
+                  <td>{!JSENCODE($Label.TLS_Warning_Message)}</td>
+                </tr>
+                <tr>
+                  <td class="center"><a href="javascript:navToCustomizeMsg()" class="tls_link">Edit</a></td>
+                  <td class="center">Custom Label</td>    
+                  <td>TLS_Warning_Help_URL_Link_Text</td>
+                  <td>{!JSENCODE($Label.TLS_Warning_Help_URL_Link_Text)}</td>
+                </tr>
+                <tr>               
+                  <td class="center"><a href="/apex/TLS_config?editMode=true&showUrlEdit=true" class="tls_link">Edit</a></td>
+                  <td class="center">Custom Setting</td>    
+                  <td>Warning Instructions URL</td>
+                  <td>{!JSENCODE(help_url)}</td>
+                </tr> 
+                 <tr>               
+                  <td class="center"><a href="/apex/TLS_config?editMode=true&showDateEdit=true" class="tls_link">Edit</a></td>
+                  <td class="center">Custom Setting</td>    
+                  <td>Production Effective Date</td>
+                  <td>{!formatted_effective_date}</td>
+                </tr> 
+              </table>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!isMessageProfileSpecific}">
+                    <p><h2>TLS Warning Message (by profile)</h2><br/>
+                    The user message can be customized per-profile via a Custom Setting. Note that translations are not possible with Custom Settings. If you need to support translations then <a href="javascript:toggleByProfile()">disable messages by profile</a>.</p>
+                <table id="tls">
+                <tr>
+                  <th>Action</th>
+                  <th>Type</th>   
+                  <th>Name</th>
+                  <th>Value</th>
+                </tr>
+                <tr>
+                  <td class="center"><a href="javascript:goToCustomSettings()" class="tls_link">Edit</a></td>
+                  <td class="center">Custom Setting</td>    
+                  <td>Warning Message (by Profile)</td>
+                  <td>{!JSENCODE( $Setup.tls_warning_message_profile__c.tls_message_profile__c )}</td>
+                </tr>
+                <tr>
+                  <td class="center"><a href="javascript:goToCustomSettings()" class="tls_link">Edit</a></td>
+                  <td class="center">Custom Setting</td>    
+                  <td>Warning Instructions Link Text</td>
+                  <td>{!JSENCODE(help_url_link_text)}</td>
+                </tr>
+                <tr>               
+                  <td class="center"><a href="/apex/TLS_config?editMode=true&showUrlEdit=true" class="tls_link">Edit</a></td>
+                  <td class="center">Custom Setting</td>    
+                  <td>Warning Instructions URL</td>
+                  <td>{!JSENCODE(help_url)}</td>
+                </tr> 
+                <tr>               
+                  <td class="center"><a href="/apex/TLS_config?editMode=true&showDateEdit=true" class="tls_link">Edit</a></td>
+                  <td class="center">Custom Setting</td>    
+                  <td>Production Effective Date</td>
+                  <td>{!formatted_effective_date}</td>
+                </tr> 
+            </table>
+                </apex:pageBlockSectionItem>
+                <b>Note:</b> Adding <i><b>{effective_date}</b></i> anywhere in the message will inject the Production effective date in the localized format of the user.
+                <apex:pageBlockSectionItem >
+                </apex:pageBlockSectionItem>
+              </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:pageBlock >
+              <apex:pageBlockSection columns="1">
+              <apex:pageBlockSectionItem rendered="{!isMessageProfileSpecific == false}">
+                  <apex:outputPanel layout="none">
+                      <apex:commandButton value="Enable a Profile Specific Message" onclick="if (!confirmToggleByProfile()) {return false};" action="{!toggleByProfile}" reRender="tls_config_form" /><br/>
+                  </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+              <apex:pageBlockSectionItem rendered="{!isMessageProfileSpecific}">
+                  <apex:outputPanel layout="none">
+                      <apex:commandButton value="Enable Translatable Messages" action="{!toggleByProfile}" reRender="tls_config_form" />
+                      <b>Note:</b> Profile-specific messages use Custom Settings and therefore are not translatable. If you require multiple languages then simply click below to revert to use Translatable custom labels<br/>
+                  </apex:outputPanel>
+              </apex:pageBlockSectionItem>
+              </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:tab>
+
+        <apex:tab label="Visual Force Page" name="name2" id="tabTwo">
+          <apex:pageBlock > 
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                      Simply add the <b>&lt;c:TLS_NiceWarningJquery/&gt;</b> component to the bottom of any Visualforce page.<br/><br/>
+                This is useful with Sites where users are not required to login.
+                </apex:pageBlockSectionItem>
+              </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:pageBlock >
+              <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem helpText="Once the message has been closed by the user by pressing X, don't show it to them again for this many days.">
+                    <apex:outputLabel value="Days between showing message:" for="day_count"/>
+                      <apex:inputText id="day_count" value="{!daysBetweenWarning}" maxlength="3" size="3"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="none">
+                      <apex:commandButton value="Save" action="{!updateDaysBetweenWarning}" reRender="tls_config_form" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+              </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:tab>
+
+
+    <apex:tab label="On Login" name="name3" id="tabThree">
+        <apex:pageBlock >   
+              <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem rendered="{!hasActiveFlow == false}">
+                  A warning message can be displayed during user login.<br/><br/>
+
+                  Get Started by <a class="tls_link" href="javascript:navToFlow()"><b>Activating the Login Flow</b></a>
+
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem rendered="{!hasActiveFlow}">
+                    A warning message can be displayed during user login.<br/><br/>
+                  
+                  <div class="center"><a href="/0Kq?retURL=%2Fapex%2FTLS_config" class="tls_link"><b>Manage which Profile(s) will see the warning message</b></a></div><br/><br/>
+                
+                    <h2>Important Consideration:</h2>
+                     <ul>
+                      <li>Unlike the VisualForce page warning, login warnings are displayed during each and every login when TLSv1.0 is detected.</li>
+                     </ul>
+                </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+      </apex:pageBlock>
+    </apex:tab>
+
+    <apex:tab label="Testing" name="name4" id="tabFour">
+      <apex:pageBlock >   
+          <apex:pageBlockSection columns="1">
+              <apex:pageBlockSectionItem >
+                  Testing Mode will show the warning message every time, regarless of the browsers TLS version.<br/>
+                  This is useful for testing and demonostrating when you don't have access to an older devide using TLSv1.0.<br/><br/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                  <apex:outputPanel layout="none">
+                      <apex:commandButton value="{!IF(isDebugMode, 'Disable', 'Enable')}" action="{!toggleDebugMode}" reRender="tls_config_form" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+      </apex:pageBlock>
+    </apex:tab>
+
+    <apex:tab label="Help" name="name5" id="tabFive">
+      <apex:pageBlock >   
+          <apex:pageBlockSection columns="1">
+              <apex:pageBlockSectionItem >
+                 <div class="center"><a href="https://www.sfdc.co/tls1warningmsg" class="tls_link" target="_blank"><b>&gt;Help Video showing how to setup and use&lt;</b></a></div>
+              </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+      </apex:pageBlock>
+    </apex:tab>
+
+  </apex:tabPanel>
+  
+<!-- START: Help URL Edit -->
+    <apex:pageBlock title="Edit Instructions URL" mode="edit" rendered="{!JSENCODE($CurrentPage.parameters.showUrlEdit) == 'true'}" >   
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton action="{!updateUrl}" value="Update" />
+            <apex:commandButton action="{!doCancel}" value="Back" /> 
+        </apex:pageBlockButtons> 
+        <apex:pageBlockSection columns="1">
+                  <apex:input label="Help URL" size="125" value="{!help_url}" id="help_url_input"/>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+<!-- END: Help URL Edit -->
+
+<!-- START: Effective Date Edit -->
+    <apex:pageBlock title="Edit Production Effective Date" mode="edit" rendered="{!JSENCODE($CurrentPage.parameters.showDateEdit) == 'true'}" >   
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton action="{!updateEffectiveDate}" value="Update" />
+            <apex:commandButton action="{!doCancel}" value="Back" /> 
+        </apex:pageBlockButtons> 
+        <apex:pageBlockSection columns="1">
+                  <apex:input label="Effective Date" value="{!effective_date}" type="date" id="effective_date_input"/>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+<!-- END: Effective Date Edit -->
+  
+  
+
+</apex:form>
+<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+<script type="text/javascript">
+    var isEditMode = ('{!JSENCODE($CurrentPage.parameters.editMode)}' === 'true') ? true : false;
+
+  function confirmToggleByProfile(){
+    return confirm("Enabling Profile specific message will not allow for translations.\nPress Ok to proceed.");
+  }
+
+  $j = jQuery.noConflict();
+  $j( document ).ready(function() {
+        if(!isEditMode && 'false' === '{!hasActiveFlow}') {
+          checkForActiveFlow();
+        }
+        if({!isDebugMode})
+          showTlsMessage();
+     });
+
+  function checkForActiveFlow() {
+      $j.ajax({
+          url: "/services/data/v35.0/tooling/query?q=SELECT+DefinitionId,+Status+FROM+FLOW+WHERE+MasterLabel='TLS1.0+Login+Flow+Checker'",
+          type: "GET", contentType: 'application/json', dataType: 'json',
+          headers: { 'Authorization': 'Bearer {!$Api.Session_ID}' },
+          error: function(data){ alert('Error accessing tooling API for login flow status check:\n'+data.responseText)},
+          success: function(data) { 
+            var records = data.records;
+            var hasActiveFlow = false;
+            var Id = '';
+            for(var key in records){
+              if(records.hasOwnProperty(key)){
+                Id=records[key].DefinitionId;
+                if(records[key].Status === 'Active') hasActiveFlow = true;  
+              }
+            }
+            setFlowStatus(hasActiveFlow,Id); 
+          }
+      });
+  }
+
+  function goToCustomSettings(){
+    
+    $j.ajax({
+          url: "/services/data/v35.0/tooling/query?q=SELECT+Id+FROM+CUSTOMOBJECT+WHERE+DeveloperName='tls_warning_message_profile'",
+          type: "GET", contentType: 'application/json', dataType: 'json',
+          headers: { 'Authorization': 'Bearer {!$Api.Session_ID}' },
+          error: function(data){ alert('Error accessing tooling API for custom setting:\n'+data.responseText)},
+          success: function(data) { 
+            var id = data.records[0].Id;
+            navToCustomSettings(id); 
+          }
+      });
+  }
+
+</script>
+<c:TLS_NiceWarningJquery />
+</apex:page>

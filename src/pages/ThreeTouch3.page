@@ -1,0 +1,904 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="ThreeTouchController">
+    <html>
+        <head>
+            <meta charset="utf-8"></meta>
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+            <apex:includeScript value="{!$Resource.agGridEnterprise12}"/>
+            <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono"/>
+            <style>
+                @media screen and (min-width: 768px) {
+                    #SelectAccountLabel,#UpdateCountLabel {
+                        margin-left: 4px;
+                        color:blue;
+                    }
+                    #AccountGridDiv, #ContactGridDiv {
+                        height: 350px;
+                        padding-left: 9px;
+                        padding-top: 4px;
+                        padding-bottom: 9px;
+                        padding-right: 9px;                    
+                    }
+                    #TitleDiv  {
+                        margin: 0 auto;
+                        width: 58%;
+                        padding-top: 1px;
+                        padding-right: 20px;
+                        padding-bottom: 1px;
+                        padding-left: 380px;
+                        font-size: 25px;
+                        float: left;
+                    }
+                }
+                
+                @media screen and (min-width: 1920px) {
+                    #SelectAccountLabel,#UpdateCountLabel {
+                        margin-left: 4px;
+                        color:white;
+                    }
+                    #AccountGridDiv, #ContactGridDiv {
+                        height: 760px;
+                        padding-left: 9px;
+                        padding-top: 4px;
+                        padding-bottom: 9px;
+                        padding-right: 9px;
+                    }
+                    #TitleDiv  {
+                        margin: 0 auto;
+                        width: 58%;
+                        padding-top: 1px;
+                        padding-right: 20px;
+                        padding-bottom: 1px;
+                        padding-left: 528px;
+                        font-size: 25px;
+                        float: left;
+                    }
+                }
+                
+                #Content {
+                    color: white;
+                    background-color: rebeccapurple;
+                }
+                
+                #ScreenSize {
+                    display: inline-block;
+                    width: 119px;
+                    height: 23px;
+                    padding-top: 6px;
+                    font-size: 10px;
+                    padding-left: 10px;
+                }
+                
+                .cellRight {
+                    text-align: right;
+                    padding-right:5px !important;
+                    font-family: 'Roboto Mono', monospace;
+                    font-size: 12px;
+                    font-style: normal;
+                    font-variant: normal;
+                }
+                .cellCenter {
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 12px;
+                    text-align: center;
+                    font-style: normal;
+                    font-variant: normal;
+                }
+                .cellLeft {
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 12px;
+                    text-align: left;
+                    padding-left:5px !important;
+                    font-style: normal;
+                    font-variant: normal;
+                }
+                .touchST {
+                    background-color: #DDFAFC;
+                    background-color: rgba(221,250,252,0.5);
+                }
+                .touchVC {
+                    background-color:  #FCD9FB;
+                    background-color: rgba(252,227,251,0.5);
+                }
+                .touchOB {
+                    background-color: #FCE1D3;
+                    background-color: rgba(252,225,211,0.5);
+                }
+                .slip, .WorksNightBefore {
+                    color:red;
+                }
+                
+                .chkBox {
+                    background: #4d84c7;
+                    border-radius: 30px;
+                }
+                .tabs {
+                    border: 1px solid #ddd;
+                    position: relative;
+                }
+                .tabs__navigation {
+                    margin-top: 8px;
+                }
+                .tabs__link {
+                    display: inline-block;
+                    border: 1px solid #ddd;
+                    text-decoration: none;
+                    padding: .25rem .75rem;
+                    color: #B3B3B3;
+                    background: #E7E7E7;
+                    margin-left: .25rem;
+                }
+                .tabs__link:first-child { margin-left: 10px; }
+                .tabs__link--active {
+                    font-weight: bold;
+                    border-bottom-color: #fff;
+                    background: #fff;
+                    color: #186baa;
+                }
+                
+                .hide {
+                    display:none;
+                }
+                .show {
+                    display:block;
+                }
+                .modalDialog {
+                    position: fixed;
+                    font-family: Arial, Helvetica, sans-serif;
+                    top: 200px;
+                    left: 270px;
+                    width: 80%;
+                    height: 70%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 99999;
+                    opacity: 0.8;
+                    pointer-events: none;
+                }
+                .modalDialog > div {
+                    width: 400px;
+                    position: relative;
+                    margin: 10% auto;
+                    padding: 5px 20px 13px 20px;
+                    border-radius: 10px;
+                    background: #fff;
+                    background: -moz-linear-gradient(#fff, #999);
+                    background: -webkit-linear-gradient(#fff, #999);
+                    background: -o-linear-gradient(#fff, #999);
+                }
+                    
+                body {
+                    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+                    font-size: 14px;
+                    padding : 10px ;
+                }
+                    
+                .chksDiv {
+                    display: inline-block;
+                    color:#e1c1ff;
+                    width: 370px;
+                    border: 1px solid red;
+                }
+                    
+                .chks {
+                    font-size: 80%;
+                    padding-right: 20px;
+                }
+                      
+                /* removes outline dots from button when it gets focus */
+                :focus {outline:none;}
+                ::-moz-focus-inner {border:0;}
+                    
+                #FilterDiv1,#FilterDiv2 {
+                    display: inline-block;
+                    color: #bbc6a5;
+                    font-size: 16px;
+                    padding-bottom: 5px;
+                    background-color: white;
+                    width:60%;
+                    margin-top: 3px;
+                    margin-left: 10px;
+                }
+                    
+                #AccountFilterInput,#ContactFilterInput {
+                    padding-left: 5px;
+                    width: 97%;
+                    height: 24px;
+                    font-size: 14px;
+                    margin-top: 15px;
+                    margin-left: 8px;
+                }
+                    
+            </style>
+        </head>
+        <body>
+    
+        <div id="Content">        
+    
+            <div id="TitleDiv">Three Touch 3.0</div>
+            <div id="ScreenSize"></div>
+ 
+            <div class="tabs">
+    
+                <nav class="tabs__navigation">
+                    <a id="Tab1Id" class="tabs__link tabs__link--active" href="#tab1">Employers</a>
+                    <a id="Tab2Id" class="tabs__link" href="#tab2">Contacts</a>                
+                    <label id="SelectAccountLabel">Selected Account</label>
+                    <label id="UpdateCountLabel"></label>
+                </nav>
+    
+                <div id="tab1" class="tabs__section">
+                    <div id="FilterDiv1">
+                        <input id="AccountFilterInput" placeholder="Search..." type="text"/>
+                    </div>
+                    <div id = "AccountGridDiv" class="ag-fresh"></div>
+                </div>
+    
+                <div id="tab2" class="tabs__section">
+                    <div id="FilterDiv2">
+                        <input id="ContactFilterInput" placeholder="Search..." type="text"/>
+                    </div>
+                    <input id="MonitorBtn" type="Button" value="Start Monitoring"></input>
+                    <label id="MonitorLbl"></label>
+                    <div id = "ContactGridDiv" class="ag-fresh"></div>
+                </div>
+    
+            </div>
+    
+        </div>
+    
+        <div id="ModalLoadingDiv" class="modalDialog hide">
+            <div>
+                <h2>Loading data...</h2>
+            </div>
+        </div>
+    
+        </body>
+        <script type="text/javascript">
+            'use strict';
+           
+            function accountFilterInputHandler(e) {
+                let searchText = e.target.value;
+                accountGridOptions.api.setQuickFilter(searchText);
+            }
+    
+            function contactFilterInputHandler(e) {
+                let searchText = e.target.value;
+                contactGridOptions.api.setQuickFilter(searchText);
+            }
+
+            function pollForChanges() {
+                let now = moment();
+                let date1MinsAgo = moment(now).subtract(1, 'minutes');
+                let utcD = date1MinsAgo.get('date');
+                let utcM = date1MinsAgo.get('month') +1;
+                let utcY = date1MinsAgo.get('year');
+                let utcH = date1MinsAgo.get('hour');
+                let utcZ = date1MinsAgo.get('minute');
+                let utcS = date1MinsAgo.get('second');
+                let dtArray = [utcD,utcM,utcY,utcH,utcZ,utcS];
+                getRecentContactsForAccount(selectedAccountId, dtArray);
+            }
+
+            function tab1ClickHandler() {
+                monitoring               = false;
+                monitorButton.value      = 'Start monitoring';
+                monitorLabel.textContent = '';
+                if(intervalId) clearInterval(intervalId);
+            }
+
+            function monitorButtonHandler() {
+                monitoring = !monitoring;
+                if(monitoring) {
+                    monitorButton.value = 'Stop monitoring';
+                    monitorLabel.textContent = 'Real-time monitoring enabled.'
+                    intervalId = window.setInterval(pollForChanges, 20000);
+                    console.log('Monitoring started');
+                }
+                else {
+                    monitorButton.value = 'Start monitoring';
+                    monitorLabel.textContent = 'Real-time monitoring disabled.'                    
+                    clearInterval(intervalId);
+                    console.log('Monitoring stopped');
+                }
+            }
+
+            function init() {
+                accountFilterInput.addEventListener ("input", accountFilterInputHandler, false);
+                contactFilterInput.addEventListener ("input", contactFilterInputHandler, false);
+                monitorButton.addEventListener ("click", monitorButtonHandler, false);
+                tab1Id.addEventListener ("click", tab1ClickHandler, false);
+    
+                pureTabs.init('tabs__link', 'tabs__link--active'); // http://www.cssscript.com/lightweight-tabs-widget-with-pure-javascript-puretabs
+                shownBefore       = false;
+                accountMap        = {};
+                contactMap        = {};
+                cacheDirtyMap     = {};
+                screensize.innerHTML = `screen: ${screen.width} x ${screen.height}`;
+            }
+    
+            function clean(s) {
+                let s1,s2,s3,s4,s5,s6,s7,s8,s9 = '';
+                if(s) {
+                    s1 = s.replace(r1, "&");
+                    s2 = s1.replace(r2, "'");
+                    s3 = s2.replace(r3, "&");
+                    s4 = s3.replace(r4, "'");
+                    s5 = s4.replace(r5, "'");
+                    s6 = s5.replace(r6, ">");
+                    s7 = s6.replace(r7, ">"); 
+                    s8 = s6.replace(r8, "<");
+                    s9 = s6.replace(r8, "<");
+                }
+                return s9;
+            }
+    
+            function toProperCase(s) {
+                // My version - handles hyphenated names correctly :)
+                let s1,s2;
+                if(s == null)
+                    s2 = '';
+                else {
+                    s1 = s.trim().toLowerCase();
+                    s2 = clean(s1);
+                    s2 = s2.replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+                }
+                return s2;
+            }
+    
+            function getAccountData() {
+                // Controller:
+                // SELECT Id,Name, Account_Group__c,Region__c,Hospital_System__c,BU_Count__c,Coordinator__r.Id, Coordinator__r.Lastname,Coordinator__r.FirstName, Organizer_1__r.Id, Organizer_1__r.Lastname,Organizer_1__r.FirstName
+                // FROM Account Where Account_Group__c In ('Kaiser','Hospital','New Organizing') And Type = 'Employer' And Active__c = 'YES'
+                // ORDER BY Account_Group__c, Name
+                return new Promise(function (resolve, reject) {
+                    ThreeTouchController.getAccountData( (result, event) => {
+                        if (event.status) {
+                            console.log('Retrieved Account data');
+                            resolve(result);
+                        }
+                        else
+                        {
+                            console.log('Error retrieving Account data');
+                            reject(event);
+                        }
+                    });
+                });
+            }
+    
+            function processAccountData(results) {
+                return new Promise(function (resolve, reject) {
+                    let len, rec, i;
+                    let id, region, accountName, buCount, division,hospitalSystem,coordId, coordLastname,coordFirstName, org1Id, org1Lastname,org1FirstName
+                    let coordLn,coordFn,coord,org1Ln,org1Fn,org1;
+    
+                    accountDataArray = [];
+                    accountMap       = {};
+                    len = results.length;
+                    if(len > 0) {
+                        for (i = 0; i < len; i++) {
+                            id = accountName = division = hospitalSystem = buCount = coordId = coord = coordLn = coordFn = org1Id = org1 = org1Ln = org1Fn = '';
+                            rec         = results[i];
+                            id          = rec.Id;
+                            accountName = toProperCase(rec.Name);
+                            region      = toProperCase(rec.Region__c);
+                            division    = toProperCase(rec.Account_Group__c);
+                            buCount     = parseInt(rec.BU_Count__c) ||  0;
+    
+                            if ('Coordinator__r' in rec) { 
+                                if(rec.Coordinator__r) {
+                                    coordLn = toProperCase(rec.Coordinator__r.LastName);
+                                    coordFn = toProperCase(rec.Coordinator__r.FirstName);
+                                    coord   = `${coordLn}, ${coordFn}`;
+                                }
+                            }
+    
+                            if ('Organizer_1__r' in rec) { 
+                                if(rec.Organizer_1__r) {
+                                    org1Ln = toProperCase(rec.Organizer_1__r.LastName);
+                                    org1Fn = toProperCase(rec.Organizer_1__r.FirstName);
+                                    org1   = `${coordLn}, ${coordFn}`;
+                                }
+                            }
+                            
+                            accountMap[id] = {Id:id,AccountName:accountName,BuCount:buCount,Division:division,Region:region,HospitalSystem:hospitalSystem,
+                                              Coord: coord, Org1Id:org1Id, Org1:org1};
+    
+                            accountDataArray.push({Id:id,AccountName:accountName,BuCount:buCount,Division:division,Region:region,HospitalSystem:hospitalSystem,
+                                              Coord: coord, Org1Id:org1Id, Org1:org1});
+    
+                        }
+                        showAccountGrid();
+                        showLoadingMsg(false);
+                    }
+                    resolve('ok');
+                });            
+            }
+    
+            function contactChangeHandler(params) {
+                if(params.newValue != params.oldValue) {
+                    cacheDirtyMap[selectedAccountId] = true;
+                    changedField = params.colDef.field; 
+                    changeTo     = params.newValue;
+                    console.log(`Changed ${changedField} to ${changeTo} from ${params.oldValue} for ${selectedContact}`);
+                    updateSalesforce();
+                }
+            }
+
+            function showContactGrid() {
+                if(contactShownBefore)
+                    contactGridOptions.api.destroy();
+                else contactShownBefore = true;
+    
+                contactGridOptions = {
+                    columnDefs: contactColDefs,
+                    rowData:    contactDataArray,
+                    rowSelection: 'single',
+                    enableSorting: true,
+                    enableFilter: true,
+                    showToolPanel: false,
+                    toolPanelSuppressRowGroups: true,
+                    toolPanelSuppressValues: true,
+                    toolPanelSuppressPivots: true,
+                    toolPanelSuppressPivotMode: true,
+                    onSelectionChanged:contactSelectionHandler,
+                    onCellValueChanged:contactChangeHandler
+                };
+                new agGrid.Grid(contactGridDiv, contactGridOptions);
+                contactGridOptions.api.setSortModel(nameSort);
+                tab2Id.click();
+                showLoadingMsg(false);
+            }
+    
+            function checkboxChangeHandler(event) {
+                let fieldArray    = event.target.id.split(' ');
+                selectedContactId = fieldArray[0];
+                changedField      = fieldArray[1];
+                changeTo          = event.target.checked;
+                selectedContact   = contactMap[selectedAccountId][selectedContactId].Name;
+                console.log(selectedContact,changedField,selectedContactId,changeTo);
+                updateSalesforce();
+            }
+    
+            function updateSalesforce() {
+                return new Promise(function(resolve, reject) {
+                    ThreeTouchController.updateContact(selectedContactId,changedField,changeTo, (result, event) => {
+                        if (event.status) {
+                            notify.log('Salesforce updated');
+                            updateCount++;
+                            if(updateCount==1) {
+                                UpdateCountLabel.innerHTML = `(${updateCount} record updated)`;
+                            }
+                            else {
+                                UpdateCountLabel.innerHTML = `(${updateCount} records updated)`;
+                            }
+                            resolve(result);
+                        }
+                        else {
+                            let eType  = event.type;
+                            let eMsg   = event.message;
+                            let eWhere = event.where;
+                            alert('Salesforce update error: ' + eMsg);
+                            console.log(eType);
+                            console.log(eMsg);
+                            if(eWhere != undefined) console.log(eWhere);
+                            reject(event);
+                        }
+                    })
+                });
+            }
+    
+            function showAccountGrid() {
+                if(accountShownBefore)
+                   accountGridOptions.api.destroy();
+                else accountShownBefore = true;
+                
+                accountGridOptions = {
+                    columnDefs: accountColDefs,
+                    rowData:    accountDataArray,
+                    rowSelection: 'single',
+                    onSelectionChanged: accountSelectionHandler,
+                    onRowDoubleClicked: rowDoubleClickedHandler,
+                    enableSorting: true,
+                    enableFilter: true,
+                    showToolPanel: false,
+                    toolPanelSuppressRowGroups: true,
+                    toolPanelSuppressValues: true,
+                    toolPanelSuppressPivots: true,
+                    toolPanelSuppressPivotMode: true
+                };
+                new agGrid.Grid(accountGridDiv, accountGridOptions);
+            }
+    
+            function restoreContactData() {
+                let mapKey,rec;
+                contactDataArray = [];
+                for(mapKey in contactMap[selectedAccountId]) {
+                    rec = contactMap[selectedAccountId][mapKey];
+                    contactDataArray.push(rec);
+                } 
+                showContactGrid();
+            }
+    
+            function rowDoubleClickedHandler() {
+                let selectedNode  = accountGridOptions.api.getSelectedNodes()[0];
+                selectedAccount   = selectedNode.data.AccountName;
+                selectedAccountId = selectedNode.data.Id;
+                updateCount       = 0;
+                selectAccountLabel.innerHTML = selectedAccount;            
+                UpdateCountLabel.innerHTML   = ''
+                if(!contactMap[selectedAccountId] || cacheDirtyMap[selectedAccountId]) {
+                    if(!cacheDirtyMap[selectedAccountId])
+                        console.log(`Fetching ${selectedAccount} contacts from Salesforce`);
+                    else
+                        console.log(`Re-Fetching ${selectedAccount} contacts from Salesforce`);
+                    showLoadingMsg(true);
+                    getContactsForAccount(selectedAccountId);
+                } else {
+                    console.log(`Restoring ${selectedAccount} contacts from cache`);
+                    restoreContactData();
+                }
+            }
+    
+            function accountSelectionHandler() {
+                let selectedNode  = accountGridOptions.api.getSelectedNodes()[0];
+                selectedAccount   = selectedNode.data.AccountName;
+                selectedAccountId = selectedNode.data.Id;
+                selectAccountLabel.innerHTML = selectedAccount;
+            }
+    
+            function contactSelectionHandler() {
+                let selectedNode  = contactGridOptions.api.getSelectedNodes()[0];
+                selectedContact   = selectedNode.data.Name;
+                selectedContactId = selectedNode.data.Id;
+            }
+
+            function getContactsForAccount(id) {
+                getContactData(id,null).then(contactData => {
+                    processContacts(contactData);}).then( function() {
+                        showContactGrid();
+                    }).catch(error => {
+                    console.log('Error' + error);
+                });
+            }
+
+            function getRecentContactsForAccount(id,dtA) {
+                getContactData(id,dtA).then(contactData => {
+                    processRecentContacts(contactData);
+                }).catch(error => {
+                    console.log('Error' + error);
+                });
+            }
+    
+            function getContactData(id,dtA) {
+                /*
+                 controller code - getContactData(Id):
+                 SELECT Id,AccountId,BU__c,FirstName,LastName,Department,Division__c,Title,MobilePhone,Phone,Shift__c,SignedOrVerified__c,Signed_Membership_Card_By__c,Signed_Membership_Card_Date__c,Signed_Membership_Card__c,Three_Touch_Count__c,Three_Touch_ST__c,Three_Touch_VC__c,Three_Touch__c,GOTV_Assessment__c,GOTV_Vote_Yes_Petition__c
+                 FROM Contact
+                 WHERE AccountId = :accountId = :Id AND In_Current_BU__c = true
+                 ORDER BY LastName,FirstName             
+                */
+                return new Promise(function(resolve, reject) {
+                    if(dtA) {
+                        ThreeTouchController.getContactData(id,dtA, (result, event) => {
+                            if (event.status) {
+                                resolve(result);
+                            }
+                            else  {
+
+                                reject(event);
+                            }
+                        });
+                    } else {
+                        ThreeTouchController.getContactData(id,null, (result, event) => {
+                            if (event.status) {
+                                console.log('Contact data downloaded successfully');
+                                resolve(result);
+                            }
+                            else  {
+                                console.log('Contact data downloaded error');
+                                reject(event);
+                            }
+                        });
+                    }
+                });
+            }
+
+            function processRecentContacts(results) {
+                return new Promise(function(resolve, reject) {
+                    let i,len,rec;
+                    len = results.length;
+                    for (i = 0; i < len; i++) {
+                        rec = results[i];
+                        console.log(rec);
+                    }
+                })
+            }
+
+            function processContacts(results) {
+                return new Promise(function(resolve, reject) {
+                    let i,len,rec;
+                    let id,accountId,buCount,name,firstName,lastName,department,division,title,cellPhone,phone,shift,signedOrVerified,signedMembershipCardBy,signedMembershipCardDate,signedMembershipCard;
+                    let threeTouchCount,threeTouchST,threeTouchVC,threeTouch,gotvAssessment,gotvVoteYesPetition;
+    
+                    contactDataArray = [];
+                    contactMap[selectedAccountId] = {};
+                    delete cacheDirtyMap[selectedAccountId];
+                    contactCount     = 0;
+                    len = results.length;
+                    for (i = 0; i < len; i++) {
+                        id = name = accountId = firstName = lastName = title = department = division = cellPhone = phone = shift = signedOrVerified = signedMembershipCardBy = signedMembershipCardDate = signedMembershipCard = '';
+                        contactCount++;
+                        rec = results[i];
+                        if (rec) {
+                            id                       = rec.Id;
+                            accountId                = rec.AccountId;
+                            firstName                = toProperCase(rec.FirstName);
+                            lastName                 = toProperCase(rec.LastName);
+                            title                    = toProperCase(rec.Title);
+                            department               = toProperCase(rec.Department);
+                            division                 = toProperCase(rec.Division__c);
+                            cellPhone                = phoneFormat(rec.MobilePhone);
+                            phone                    = phoneFormat(rec.Phone);
+                            shift                    = toProperCase(rec.Shift__c);
+                            buCount                  = rec.BU__c                        || 0;                        
+                            threeTouchCount          = rec.Three_Touch_Count__c         || '';
+                            threeTouchST             = rec.Three_Touch_ST__c            || '';
+                            threeTouchVC             = rec.Three_Touch_VC__c            || '';
+                            threeTouch               = rec.Three_Touch__c               || '';
+                            signedOrVerified         = rec.SignedOrVerified__c          || ''; 
+                            signedMembershipCardBy   = rec.Signed_Membership_Card_By__c || '';
+                            gotvAssessment           = clean(rec.GOTV_Assessment__c);
+                            gotvVoteYesPetition      = clean(rec.GOTV_Vote_Yes_Petition__c);
+                            if(rec.Signed_Membership_Card_Date__c) {
+                                signedMembershipCardDate = new Date(rec.Signed_Membership_Card_Date__c).toLocaleString('en-US', dateOptions);
+                            }
+                            signedMembershipCard     = rec.Signed_Membership_Card__c    || '';
+                            name = lastName + ', ' + firstName;
+    
+                            contactDataArray.push({
+                                Id: id, AccountId:accountId,Name:name, FirstName: firstName, LastName:lastName,Title:title,Department:department,Division:division,CellPhone:cellPhone,
+                                Phone:phone,Shift:shift,SignedOrVerified:signedOrVerified,ThreeTouchCount:threeTouchCount,ThreeTouchST:threeTouchST,ThreeTouchVC:threeTouchVC,ThreeTouch:threeTouch,
+                                SignedMembershipCardBy:signedMembershipCardBy,SignedMembershipCardDate:signedMembershipCardDate,SignedMembershipCard:signedMembershipCard,
+                                GotvAssessment:gotvAssessment,GotvVoteYesPetition:gotvVoteYesPetition
+                            });
+    
+                            contactMap[selectedAccountId][id] = {
+                                Id: id, AccountId:accountId,Name:name, FirstName: firstName, LastName:lastName,Title:title,Department:department,Division:division,CellPhone:cellPhone,
+                                Phone:phone,Shift:shift,SignedOrVerified:signedOrVerified,ThreeTouchCount:threeTouchCount,ThreeTouchST:threeTouchST,ThreeTouchVC:threeTouchVC,ThreeTouch:threeTouch,
+                                SignedMembershipCardBy:signedMembershipCardBy,SignedMembershipCardDate:signedMembershipCardDate,SignedMembershipCard:signedMembershipCard,
+                                GotvAssessment:gotvAssessment,GotvVoteYesPetition:gotvVoteYesPetition
+                            };
+    
+                        }
+                        else {
+                            console.log('record error');
+                        }
+                    }
+                    resolve(contactDataArray);
+                });
+            }
+    
+            function spawn(generatorFunc) {
+                function continuer(verb, arg) {
+                    var result;
+                    try {
+                        result = generator[verb](arg);
+                    } catch (err) {
+                        return Promise.reject(err);
+                    }
+                    if (result.done) {
+                        return result.value;
+                    } else {
+                        return Promise.resolve(result.value).then(onFulfilled, onRejected);
+                    }
+                }
+                var generator = generatorFunc();
+                var onFulfilled = continuer.bind(continuer, "next");
+                var onRejected = continuer.bind(continuer, "throw");
+                return onFulfilled();
+            }
+    
+            function showLoadingMsg(show) {
+                if(show) // modal window fake
+                    modalLoadingDiv.setAttribute('class', 'modalDialog');
+                else
+                    modalLoadingDiv.setAttribute('class', 'hide');
+            }
+    
+            function phoneFormat(s) {
+                let s1;
+                if(s == null || s.trim().length < 10)
+                    s1 = '';
+                else {
+                    s1 = s.trim().replace(/[^0-9]/g,'');
+                    s1 = '(' + s1.substr(0,3) + ') ' + s1.substr(3,3) + '-' + s1.substr(6);
+                }
+                return s1;
+            }
+    
+            function touchStCellRenderer(params) {
+                let checkbox  = document.createElement('input');
+                checkbox.type = "checkbox";
+                checkbox.name = 'ThreeTouchST';
+                checkbox.id   = params.data.Id + ' [ST]';
+                checkbox.checked = params.value;
+                checkbox.addEventListener('change',checkboxChangeHandler,false);
+                return checkbox;
+            }
+    
+            function touchVcCellRenderer(params) {
+                let checkbox  = document.createElement('input');
+                checkbox.type = "checkbox";
+                checkbox.name = 'ThreeTouchVC';            
+                checkbox.id   = params.data.Id + ' [VC]';            
+                checkbox.checked = params.value;
+                checkbox.addEventListener('change',checkboxChangeHandler,false);
+                return checkbox;
+            }
+    
+            function touchObCellRenderer(params) {
+                let checkbox  = document.createElement('input');
+                checkbox.type = "checkbox";
+                checkbox.name = 'ThreeTouchOB';
+                checkbox.id   = params.data.Id + ' [OB]';
+                checkbox.checked = params.value;
+                checkbox.addEventListener('change',checkboxChangeHandler,false);
+                return checkbox;
+            }
+    
+            function slipCellRenderer(params) {
+                let checkbox  = document.createElement('input');
+                checkbox.type = "checkbox";
+                checkbox.name = 'Slip';
+                checkbox.id   = params.data.Id + ' [SL]';
+                checkbox.checked = params.value;
+      //        checkbox.addEventListener('change',checkboxChangeHandler,false); Not ready in controller yet.                
+                return checkbox;
+            }
+
+            function worksNightBeforeCellRenderer(params) {
+                let checkbox  = document.createElement('input');
+                checkbox.type = "checkbox";
+                checkbox.name = 'WNB';
+                checkbox.id   = params.data.Id + ' [WK]';
+                checkbox.checked = params.value;
+      //        checkbox.addEventListener('change',checkboxChangeHandler,false); Not ready in controller yet.                
+                return checkbox;
+            }
+
+            function reconfirmedCellRenderer(params) {
+                let checkbox  = document.createElement('input');
+                checkbox.type = "checkbox";
+                checkbox.name = 'Reconfirm';
+                checkbox.id   = params.data.Id + ' [RC]';
+                checkbox.checked = params.value;
+      //        checkbox.addEventListener('change',checkboxChangeHandler,false); Not ready in controller yet.                
+                return checkbox;
+            }
+
+            function initAgGrid() {
+                agGrid.LicenseManager.setLicenseKey("SEIU-UWH_Site_1Devs7_February_2018__MTUxNzk2MTYwMDAwMA==f54417966e3979c429e6a1af033c1a9a");
+                
+                accountColDefs = [
+                    {headerName: 'Division',              field: 'Division',        width: 120, suppressMenu: true,  sortingOrder: ['asc','desc']},
+                    {headerName: 'Name',                  field: 'AccountName',     width: 350, suppressMenu: true,  sortingOrder: ['asc','desc'], sort: 'asc'},
+                    {headerName: 'BU',                    field: 'BuCount',         width:  60, suppressMenu: true,  sortingOrder: ['asc','desc'], cellClass: 'cellRight'},                
+                    {headerName: 'Region',                field: 'Region',          width: 120, suppressMenu: true,  sortingOrder: ['asc','desc']},
+                    {headerName: 'Coordinator',           field: 'Coord',           width: 160, suppressMenu: false, sortingOrder: ['asc','desc'], filter: 'set', menuTabs:['filterMenuTab'], filterParams:{suppressMiniFilter:true}},
+                    {headerName: 'Organizer1',            field: 'Org1',            width: 160, suppressMenu: false, sortingOrder: ['asc','desc'], filter: 'set', menuTabs:['filterMenuTab'], filterParams:{suppressMiniFilter:true}}
+                ];        
+
+/* Don't think these apply to New Organizing.
+                    {headerName: 'Signed Or Verified',         field: 'SignedOrVerified',         width: 220, suppressMenu: true,  sortingOrder: ['asc','desc']},
+                    {headerName: 'Signed Membership Card By',  field: 'SignedMembershipCardBy',   width: 220, suppressMenu: true,  sortingOrder: ['asc','desc']},
+                    {headerName: 'Signed Membership CardDate', field: 'SignedMembershipCardDate', width: 220, suppressMenu: true,  sortingOrder: ['asc','desc']},
+                    {headerName: 'Signed Membership Card',     field: 'SignedMembershipCard',     width: 220, suppressMenu: true,  sortingOrder: ['asc','desc']}
+*/
+                contactColDefs = [
+                    {headerName: 'Last Name',            field: 'LastName',                 width: 120, suppressMenu: true,  sortingOrder: ['asc','desc'],editable:true, cellEditor:'text', pinned: 'left'},
+                    {headerName: 'First Name',           field: 'FirstName',                width: 120, suppressMenu: true,  sortingOrder: ['asc','desc'],editable:true, cellEditor:'text', pinned: 'left'},
+                    {headerName: 'Plan Type',            field: 'GotvPlanType',             width: 100, suppressMenu: true,  sortingOrder: ['asc','desc'],editable:true, cellEditor:'text', pinned: 'left'},
+                    {headerName: 'ST',                   field: 'ThreeTouchST',             width:  80, suppressMenu: true,  suppressSorting: true, cellRenderer:touchStCellRenderer, cellClass: 'cellCenter touchST', pinned: 'left', enableCellChangeFlash: true},
+                    {headerName: 'VC',                   field: 'ThreeTouchVC',             width:  80, suppressMenu: true,  suppressSorting: true, cellRenderer:touchVcCellRenderer, cellClass: 'cellCenter touchVC', pinned: 'left', enableCellChangeFlash: true},
+                    {headerName: 'OB',                   field: 'ThreeTouchOB',             width:  80, suppressMenu: true,  suppressSorting: true, cellRenderer:touchObCellRenderer, cellClass: 'cellCenter touchOB', pinned: 'left', enableCellChangeFlash: true},
+                    {headerName: 'Slip',                 field: 'GotvSlip',                 width:  80, suppressMenu: true,  suppressSorting: true, cellRenderer:slipCellRenderer,    cellClass: 'cellCenter slip',    pinned: 'left', enableCellChangeFlash: true},
+                    {headerName: 'Shift',                field: 'Shift',                    width: 130, suppressMenu: false, sortingOrder: ['asc','desc'],filter: 'set', menuTabs:['filterMenuTab'], filterParams:{suppressMiniFilter:true}, editable:true, cellEditor:'select', cellEditorParams:{values: Shifts} },
+                    {headerName: 'GOTV Assessment',      field: 'GotvAssessment',           width: 350, suppressMenu: false, sortingOrder: ['asc','desc'],filter: 'set', menuTabs:['filterMenuTab'], filterParams:{suppressMiniFilter:true}, editable:true, cellEditor:'select', cellEditorParams:{values: GOTV_Assessments} },
+                    {headerName: 'Assigned to VC',       field: 'VC',                       width: 150, suppressMenu: true,  sortingOrder: ['asc','desc']},
+                    {headerName: 'Owner',                field: 'OwnerName',                width: 150, suppressMenu: true,  sortingOrder: ['asc','desc']},
+                    {headerName: 'Vote Block',           field: 'VoteBlock',                width: 100, suppressMenu: true,  sortingOrder: ['asc','desc']},
+                    {headerName: 'Works Eday1',          field: 'GotvWorksNightBeforeEday1',width: 100, suppressMenu: true,  suppressSorting: true, cellRenderer:worksNightBeforeCellRenderer,cellClass: 'cellCenter WorksNightBefore'},
+                    {headerName: 'EVT',                  field: 'GotvExactVoteTime',        width: 150, suppressMenu: false, sortingOrder: ['asc','desc'],cellEditor:'text'},
+                    {headerName: 'Before',               field: 'GotvWhereBeforeVoting',    width: 150, suppressMenu: false, sortingOrder: ['asc','desc'],cellEditor:'text'},
+                    {headerName: 'After',                field: 'GotvWhereAfterVoting',     width: 150, suppressMenu: false, sortingOrder: ['asc','desc'],cellEditor:'text'},
+                    {headerName: 'Department',           field: 'Department',               width: 200, suppressMenu: false, sortingOrder: ['asc','desc'],filter: 'set', menuTabs:['filterMenuTab'], filterParams:{suppressMiniFilter:true}, editable:true, cellEditor:'text'},
+                    {headerName: 'GOTV Vote Yes',        field: 'GotvVoteYesPetition',      width: 220, suppressMenu: false, sortingOrder: ['asc','desc'],filter: 'set', menuTabs:['filterMenuTab'], filterParams:{suppressMiniFilter:true}, editable:true, cellEditor:'select', cellEditorParams:{values: GOTV_VoteYes} },
+                    {headerName: 'GOTV Reconfirmed',     field: 'GotvReconfirmed',          width: 100, suppressMenu: true,  suppressSorting: true, cellRenderer:reconfirmedCellRenderer, cellClass: 'cellCenter Reconfirmed'},
+                    {headerName: 'Title',                field: 'Title',                    width: 200, suppressMenu: false, sortingOrder: ['asc','desc'],filter: 'set', menuTabs:['filterMenuTab'], filterParams:{suppressMiniFilter:true}, editable:true, cellEditor:'text'},
+                    {headerName: 'Cell Phone',           field: 'CellPhone',                width: 130, suppressMenu: true,  suppressSorting: true, editable:true, cellEditor:'text'},
+                    {headerName: 'Phone',                field: 'Phone',                    width: 130, suppressMenu: true,  suppressSorting: true, editable:true, cellEditor:'text'}
+                ];
+            }
+    
+            var accountGridOptions,accountColDefs,accountShownBefore = false, contactGridOptions,contactColDefs,initialSort, contactShownBefore = false;
+            var selectedAccount,selectedAccountId,selectedContact,selectedContactId,changedField,changeTo;
+            var accountMap, accountData,  accountDataArray;
+            var contactMap, contactData,  contactDataArray, contactCount, cacheDirtyMap;
+            var shownBefore, updateCount = 0, intervalId;
+    
+            const modalLoadingDiv    = document.getElementById('ModalLoadingDiv');
+            const accountGridDiv     = document.getElementById('AccountGridDiv');
+            const contactGridDiv     = document.getElementById('ContactGridDiv');
+            const tab1Id             = document.getElementById('Tab1Id');
+            const tab2Id             = document.getElementById('Tab2Id');
+            const selectAccountLabel = document.getElementById('SelectAccountLabel');
+            const updateCountLabel   = document.getElementById('UpdateCountLabel');
+            const accountFilterInput = document.getElementById('AccountFilterInput');
+            const contactFilterInput = document.getElementById('ContactFilterInput');
+            const monitorButton      = document.getElementById('MonitorBtn');
+            const monitorLabel       = document.getElementById('MonitorLbl');
+            const screensize         = document.getElementById('ScreenSize');
+    
+            const notify = humane.create({ baseCls: 'humane-libnotify' })
+            const dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric'};
+    
+            const r1 = new RegExp(/&amp/,'gm');
+            const r2 = new RegExp(/&#39/,'gm');
+            const r3 = new RegExp(/&;/,'gm');
+            const r4 = new RegExp(/&quot/,'gm');
+            const r5 = new RegExp(/';/,'gm');
+            const r6 = new RegExp(/&gt/,'gm');
+            const r7 = new RegExp(/>;/,'gm');
+            const r8 = new RegExp(/&lt/,'gm');
+            const r9 = new RegExp(/<;/,'gm');
+
+            const GOTV_Assessments = [
+                '',
+                '1. Voting SEIU-UHW with Exact Vote Time & Plan',
+                '2. Voting SEIU-UHW,No Exact Vote Time',
+                '3. Undecided',
+                '4. Voting "No" or "Not Voting for SEIU-UHW"',
+                '6. Will Not Be Voting',
+                '9. Challenge'
+            ];
+
+            const GOTV_VoteYes = [
+                '',
+                '1. SEIU-UHW Leader Producing',
+                '2. SEIU-UHW Supporter',
+                '3. Undecided',
+                '4. Anti-Union',
+                '5. NUHW Supporter',
+                '6. Management Leader or Activist',
+                '7. NUHW Leader or Activist',
+                '9. Reported to be NLE'
+            ];
+
+            const Shifts = ['AM','PM','Day-12 hour','Eve-12 hour','Night-12 hour','NOC','Swing','Varies','Full-time','Part-time','Per Diem'];
+
+            const nameSort = [
+                {colId: 'LastName', sort: 'asc'},
+                {colId: 'FirstName', sort: 'asc'}
+            ];
+                
+            // ***************** Main Program Entry *****************
+            init();
+            initAgGrid();
+    
+            showLoadingMsg(true);
+    
+            spawn(function *() {
+               accountData = yield getAccountData();
+               yield processAccountData(accountData);
+            });
+    
+        </script>
+        
+        <script>        
+            <apex:includeScript value="{!$Resource.puretabsJs}"/> 
+            <apex:includeScript value="{!$Resource.MomentJs}"/> 
+            <apex:stylesheet value="{!URLFOR($Resource.HumaneZip, 'libnotify.css')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.HumaneZip,'humane.js')}"/>
+        </script>
+    
+        </html>
+    </apex:page>

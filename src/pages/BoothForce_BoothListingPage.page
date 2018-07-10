@@ -1,0 +1,57 @@
+<apex:page controller="BoothForce_BoothListingController"  showHeader="false" standardStylesheets="false">
+
+<div id="boothListing">
+  
+  <div class="filterMenu">
+    <input type="text" class="filterRange"/>
+    <div class="rangeSlider"></div>
+  </div>
+  
+  <div style="padding-left: 130px;">
+  <apex:repeat var="daySR" value="{!shiftRowDays}" >
+    <div class="dayCluster">
+
+      <div class="dayHeader">
+        
+        <div class="day">{!DAY(daySR.dateMapper)}</div>
+        <div class="day-text"><apex:outputText value="{0,date,EEEE}"><apex:param value="{!daySR.dateMapper}" /></apex:outputText></div>
+        <div class="month"><apex:outputText value="{0,date,MMMM}"><apex:param value="{!daySR.dateMapper}" /></apex:outputText></div>
+        <div class="year">{!YEAR(daySR.dateMapper)}</div>
+        
+      </div>
+    
+    
+      <apex:repeat var="row" value="{!daySR.shiftRowsByDate}" >
+        <apex:repeat var="data" value="{!row.datesData}" >
+          <div class="dataCell" data-startmintime="{!data.stdminStart}" data-starthrtime="{!data.stdhrStart}" data-endmintime="{!data.stdminEnd}" data-endhrtime="{!data.stdhrEnd}" data-startday="{!data.stdStartDate}">
+          
+            <div class="shiftTime">{!row.shiftTime}</div>
+    
+            <apex:form rendered="{!data.needsAssignment}">
+              <apex:outputPanel rendered="{!data.needsAssignment}" layout="none">
+                <a class="btn btnPrimary" onClick="signUp('{!data.openStaffingId}', $(this))">Sign Up</a>
+              </apex:outputPanel>
+              <apex:outputPanel rendered="{!enableAssign}" layout="none">
+                <span class="btn btnPrimary assignButton" rel="#assignContainer" data-said="{!data.openStaffingId}" >Assign</span>
+              </apex:outputPanel>
+            </apex:form>
+            
+            <apex:repeat var="userName" value="{!data.usersAssigned}" >
+               <div class="shiftItem">{!userName}</div>
+            </apex:repeat>
+            
+            <apex:outputPanel rendered="{!IF(data.slotsLeft <> '0', 'true', 'false')}">
+              <div class="shiftItem">{!data.slotsLeft} remaining</div>
+            </apex:outputPanel>
+                
+                
+          </div>
+        </apex:repeat>
+      </apex:repeat>
+     
+    </div>
+  </apex:repeat>
+  </div>
+</div>
+
+</apex:page>

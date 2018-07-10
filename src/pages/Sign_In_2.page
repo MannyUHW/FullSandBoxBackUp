@@ -1,0 +1,1795 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false" controller="SignInRemoteController2">
+
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+    <apex:includeScript value="{!$Resource.agGridEnterprise17}" />
+    <apex:includeScript value="{!$Resource.snap}" />
+    <apex:includeScript value="{!$Resource.MomentJs}" />
+    <apex:includeScript value="{!$Resource.Pikaday}" />
+    <apex:includeScript value="{!$Resource.puretabsJs}" />
+    <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono" />
+
+    <style>
+      #help {
+        background-color: white;
+      }
+
+      #SaveAsCsvButton {
+        color: blue;
+        margin-left: 4px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        font-size: 1.0em;
+        float: right;
+      }
+
+      #noEvents {
+        color: indianred;
+        background-color: #fff;
+        border: 1px solid gray;
+        border-radius: 10px;
+        padding: 10px;
+        width: 30%;
+        margin-left: 35%;
+      }
+
+      @charset "UTF-8";
+      /*!
+             * Pikaday
+             * Copyright © 2014 David Bushell | BSD MIT license | http://dbushell.com/
+             */
+
+      .pika-single {
+        z-index: 9999;
+        display: block;
+        position: relative;
+        color: #333;
+        background: #fff;
+        border: 1px solid #ccc;
+        border-bottom-color: #bbb;
+        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      /*
+            clear child float (pika-lendar), using the famous micro clearfix hack
+            http://nicolasgallagher.com/micro-clearfix-hack/
+            */
+
+      .pika-single:before,
+      .pika-single:after {
+        content: " ";
+        display: table;
+      }
+
+      .pika-single:after {
+        clear: both
+      }
+
+      .pika-single {
+        *zoom: 1
+      }
+
+      .pika-single.is-hidden {
+        display: none;
+      }
+
+      .pika-single.is-bound {
+        position: absolute;
+        box-shadow: 0 5px 15px -5px rgba(0, 0, 0, .5);
+      }
+
+      .pika-lendar {
+        float: left;
+        width: 240px;
+        margin: 8px;
+      }
+
+      .pika-title {
+        position: relative;
+        text-align: center;
+      }
+
+      .pika-label {
+        display: inline-block;
+        *display: inline;
+        position: relative;
+        z-index: 9999;
+        overflow: hidden;
+        margin: 0;
+        padding: 5px 3px;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: bold;
+        background-color: #fff;
+      }
+
+      .pika-title select {
+        cursor: pointer;
+        position: absolute;
+        z-index: 9998;
+        margin: 0;
+        left: 0;
+        top: 5px;
+        filter: alpha(opacity=0);
+        opacity: 0;
+      }
+
+      .pika-prev,
+      .pika-next {
+        display: block;
+        cursor: pointer;
+        position: relative;
+        outline: none;
+        border: 0;
+        padding: 0;
+        width: 20px;
+        height: 30px;
+        /* hide text using text-indent trick, using width value (it's enough) */
+        text-indent: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        background-color: transparent;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 75% 75%;
+        opacity: .5;
+        *position: absolute;
+        *top: 0;
+      }
+
+      .pika-prev:hover,
+      .pika-next:hover {
+        opacity: 1;
+      }
+
+      .pika-prev,
+      .is-rtl .pika-next {
+        float: left;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==');
+        *left: 0;
+      }
+
+      .pika-next,
+      .is-rtl .pika-prev {
+        float: right;
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=');
+        *right: 0;
+      }
+
+      .pika-prev.is-disabled,
+      .pika-next.is-disabled {
+        cursor: default;
+        opacity: .2;
+      }
+
+      .pika-select {
+        display: inline-block;
+        *display: inline;
+      }
+
+      .pika-table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        border: 0;
+      }
+
+      .pika-table th,
+      .pika-table td {
+        width: 14.285714285714286%;
+        padding: 0;
+      }
+
+      .pika-table th {
+        color: #999;
+        font-size: 12px;
+        line-height: 25px;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .pika-button {
+        cursor: pointer;
+        display: block;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        outline: none;
+        border: 0;
+        margin: 0;
+        width: 100%;
+        padding: 5px;
+        color: #666;
+        font-size: 12px;
+        line-height: 15px;
+        text-align: right;
+        background: #f5f5f5;
+      }
+
+      .pika-week {
+        font-size: 11px;
+        color: #999;
+      }
+
+      .is-today .pika-button {
+        color: #33aaff;
+        font-weight: bold;
+      }
+
+      .is-selected .pika-button {
+        color: #fff;
+        font-weight: bold;
+        background: #33aaff;
+        box-shadow: inset 0 1px 3px #178fe5;
+        border-radius: 3px;
+      }
+
+      .is-inrange .pika-button {
+        background: #D5E9F7;
+      }
+
+      .is-startrange .pika-button {
+        color: #fff;
+        background: #6CB31D;
+        box-shadow: none;
+        border-radius: 3px;
+      }
+
+      .is-endrange .pika-button {
+        color: #fff;
+        background: #33aaff;
+        box-shadow: none;
+        border-radius: 3px;
+      }
+
+      .is-disabled .pika-button,
+      .is-outside-current-month .pika-button {
+        pointer-events: none;
+        cursor: default;
+        color: #999;
+        opacity: .3;
+      }
+
+      .pika-button:hover {
+        color: #fff;
+        background: #ff8000;
+        box-shadow: none;
+        border-radius: 3px;
+      }
+
+      /* styling for abbr */
+
+      .pika-table abbr {
+        border-bottom: none;
+        cursor: help;
+      }
+
+      .canEdit {
+        color: #8412ef;
+      }
+
+      .noEdit {
+        color: #3f4a6be6;
+      }
+
+      .close {
+        background: #606061;
+        color: #FFFFFF;
+        line-height: 25px;
+        position: absolute;
+        right: -12px;
+        text-align: center;
+        top: -10px;
+        width: 24px;
+        text-decoration: none;
+        font-weight: bold;
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+        border-radius: 12px;
+        -moz-box-shadow: 1px 1px 3px #000;
+        -webkit-box-shadow: 1px 1px 3px #000;
+        box-shadow: 1px 1px 3px #000;
+      }
+
+      .close:hover {
+        background: #00d9ff;
+      }
+
+      /* Modal css found here: http://jsfiddle.net/kumarmuthaliar/GG9Sa/1/
+                right: 0;
+                bottom: 0;
+            */
+
+      .modalDialog {
+        position: fixed;
+        font-family: Arial, Helvetica, sans-serif;
+        top: 100px;
+        left: 50px;
+        width: 80%;
+        height: 80%;
+        background: rgba(0, 0, 0, 0.8);
+        z-index: 99999;
+        opacity: 0.8;
+        pointer-events: none;
+      }
+
+      .modalDialog>div {
+        width: 400px;
+        position: relative;
+        margin: 10% auto;
+        padding: 5px 20px 13px 20px;
+        border-radius: 10px;
+        background: #fff;
+        background: -moz-linear-gradient(#fff, #999);
+        background: -webkit-linear-gradient(#fff, #999);
+        background: -o-linear-gradient(#fff, #999);
+      }
+
+      .close {
+        background: #606061;
+        color: #FFFFFF;
+        line-height: 25px;
+        position: absolute;
+        right: -12px;
+        text-align: center;
+        top: -10px;
+        width: 24px;
+        text-decoration: none;
+        font-weight: bold;
+        -webkit-border-radius: 12px;
+        -moz-border-radius: 12px;
+        border-radius: 12px;
+        -moz-box-shadow: 1px 1px 3px #000;
+        -webkit-box-shadow: 1px 1px 3px #000;
+        box-shadow: 1px 1px 3px #000;
+      }
+
+      .close:hover {
+        background: #00d9ff;
+      }
+
+
+      #SaveChangesDiv {
+        width: 400px;
+        position: absolute;
+        top: 25%;
+        left: 40%;
+        margin: 10% auto;
+        padding: 5px 20px 13px 20px;
+        border-radius: 10px;
+        background: #fff;
+        background: -moz-linear-gradient(#fff, #999);
+        background: -webkit-linear-gradient(#fff, #999);
+        background: -o-linear-gradient(#fff, #999);
+      }
+
+      .svgCell {
+        margin-left: 15px;
+        width: 40px;
+        height: 40px;
+      }
+
+      .cellClass1 {
+        padding-top: 12px !important;
+        padding-left: 5px !important;
+      }
+
+      .cellClass2 {
+        padding-top: 12px !important;
+        padding-left: 5px !important;
+      }
+
+      .cellRight {
+        text-align: right;
+        padding-right: 5px !important;
+      }
+  
+      .cellCenter {
+        text-align: center !important;
+      }
+  
+      .cellLeft {
+        text-align: left;
+        padding-left: 5px !important;
+      }
+
+      .rect {
+        stroke: cyan;
+        stroke-width: 1;
+        fill: orange;
+      }
+
+      .ag-fresh {
+        font-size: 16px;
+        font-family: 'Roboto Condensed', sans-serif;
+      }
+
+      .fontTest1 {
+        font-family: 'Roboto Condensed', sans-serif;
+        color: red;
+      }
+
+      .fontTest2 {
+        font-family: 'Roboto Mono', monospace;
+        /*   color:#8412ef; */
+      }
+
+      .UpdateButton1 {
+        background-color: white;
+        color: #8412ef;
+        font-size: 1.1em;
+        width: 200px;
+      }
+
+      .UpdateButton1:disabled {
+        color: #C28D8D;
+      }
+
+      .UpdateButton2 {
+        background-color: lightgreen;
+        color: red;
+        font-size: 1.1em;
+        width: 200px;
+      }
+
+      /* removes outline dots from button when it gets focus */
+
+      :focus {
+        outline: none;
+      }
+
+      ::-moz-focus-inner {
+        border: 0;
+      }
+
+      .GroupHeader {
+        background-color: #799BA6 !important;
+      }
+
+      #Container1,
+      #Container2,
+      #Container3 {
+        width: 280px;
+        float: left;
+      }
+
+      #Container4 {
+        width: 240px;
+        float: right;
+      }
+
+      .ok {
+        color: blue;
+        background-color: white;
+      }
+
+      .skip {
+        color: white;
+        background-color: red;
+      }
+
+      #MessageDiv {
+        margin-left: 11px;
+        font-weight: bold;
+
+        width: 200px;
+        height: 46px;
+        -moz-border-radius: 100px / 50px;
+        -webkit-border-radius: 100px / 50px;
+        border-radius: 100px / 50px;
+
+        display: inline-block;
+        text-align: center;
+        opacity: 0;
+
+        line-height: 41px;
+        padding-top: 4px;
+        margin-top: 4px;
+        margin-bottom: 10px;
+        padding-bottom: 3px;
+      }
+
+      .animated {
+        -webkit-animation-duration: 2s;
+        animation-duration: 2s;
+        transition-timing-function: cubic-bezier(.45, .05, .55, .95);
+      }
+
+      .animated-long {
+        -webkit-animation-duration: 3s;
+        animation-duration: 3s;
+        transition-timing-function: cubic-bezier(.45, .05, .55, .95);
+      }
+
+      @keyframes fade {
+        0%,
+        100% {
+          opacity: 0
+        }
+        50% {
+          opacity: 1
+        }
+      }
+
+      .fadeInOut {
+        -webkit-animation-name: fade;
+        animation-name: fade;
+      }
+
+      #MessageDiv.show {
+        opacity: 1;
+      }
+
+      .no-show {
+        display: none;
+      }
+
+      .show {
+        display: block;
+      }
+
+      #SignInFilterInput {
+        font-size: 1.1em;
+        width: 44%
+      }
+
+      #MessgeContainer {
+        height: 48px;
+        width: 40%;
+        display: inline-block;
+      }
+
+      #DateMessageDiv {
+        padding-left: 10px;
+        padding-top: 10px;
+        color: rebeccapurple;
+        font-weight: bold;
+      }
+
+      #LocMessageDiv {
+        padding-left: 10px;
+        padding-top: 15px;
+        height: 30px;
+        color: white;
+      }
+
+      body {
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        background-color: #9D37FF;
+      }
+
+      .right-align {
+        text-align: right;
+        padding-top: 12px !important;
+        padding-right: 5px !important;
+      }
+
+      #Controls {
+        float: left;
+        width: 99%;
+        padding-top: 10px;
+        padding-left: 10px;
+        background-color: #cacae4;
+      }
+
+      #Content {
+/*     width: 1555px; */
+      }
+
+      .GridContainer {
+        width: 550px;
+        height: 250px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+
+      #SignInDataContainer {
+        height: 650px;
+        margin-top: 5px;
+        margin-bottom: 10px;
+      }
+
+      #AllDataGrid {
+        height: 350px;
+      }
+
+      #SummarizedDataGrid {
+        width: 500px;
+        height: 200px;
+        padding-top: 10px;
+        padding-left: 5px;
+      }
+
+      #DateVenueDataGrid {
+        width: 500px;
+        height: 200px;
+        padding-top: 10px;
+        padding-left: 5px;
+      }
+
+      #SignInDataGrid, #CountsGridDiv {
+/*      width: 1535px; */
+        height: 630px;
+        padding-top: 10px;
+      }
+
+      #Title {
+        text-align: center;
+        clear: both;
+        color: white;
+      }
+
+      #DatePicker {
+        width: 109px;
+        margin-left: 10px;
+        color: #8412ef;
+        background-color: white;
+        font-size: 1em;
+        font-family: 'Roboto Condensed', sans-serif;
+        padding-left: 5px;
+      }
+
+      .LocSelect {
+        width: 170px;
+        margin-left: 10px;
+        color: #8412ef;
+        background-color: white;
+        font-size: 1em;
+        font-family: 'Roboto Condensed', sans-serif;
+      }
+
+      .row {
+        display: flex;
+        /* equal height of the children */
+        padding-top: 1px;
+        padding-bottom: 3px;
+      }
+
+      .col {
+        flex: 1;
+        /* additionally, equal width */
+        padding-right: 10px;
+        padding-left: 10px;
+      }
+
+      .shadow {
+        padding: 10px 10px 10px 10px;
+        background-color: #9B4FE1;
+        box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+        -moz-box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
+        -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+      }
+
+      /* Style the navigation bar links.  */
+
+      #navbar a {
+        font-family: 'Open Sans', sans-serif;
+        font-size: 1.5em;
+        margin: 0px 10px 0px 10px;
+        padding: 0px 8px 0px 8px;
+        color: black;
+        text-decoration: none;
+
+        border: 2px solid;
+        border-color: white;
+        border-radius: 20px;
+      }
+
+      /* Give the user an affordance that each link is clickable. */
+
+      #navbar a:hover {
+        border-color: #8c5e9c;
+      }
+
+      /* Style the active page link. */
+
+      #navbar a.active {
+        border-color: gray;
+      }
+
+      #navbar {
+        width: 40%;
+        display: inline-block;
+        height: 32px;
+        padding-top: 3px;
+      }
+
+      .tabs__link {
+        display: inline-block;
+        text-decoration: none;
+        padding: .25rem .75rem;
+        color: #4ca9ce;
+        background: #E7E7E7;
+        margin-left: .25rem;
+      }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div id="ModalLoadingDiv" class="modalDialog no-show">
+      <div>
+        <h2>Loading data...</h2>
+      </div>
+    </div>
+
+    <div id="SaveChangesDiv" class="no-show">
+      <div>
+        <h2>Save pending changes?</h2>
+      </div>
+    </div>
+
+    <div id="Content">
+      <div id="Title">
+        <div id="fontTest2" class="fontTest2">
+          <h2>Sign in Contacts to event</h2>
+        </div>
+      </div>
+      <hr/>
+      <div class="tabs">    
+        <div id="NavigationDiv">
+          <nav class="tabs__navigation">
+            <div class="NavSection">
+              <a id="Tab1Id" class="tabs__link tabs__link--active" href="#tab1">Data Entry</a>
+              <a id="Tab2Id" class="tabs__link" href="#tab2">Counts</a>
+            </div>
+          </nav>
+        </div>
+        <div id="tab1" class="tabs__section">
+          <div class="row">
+          <div class="col shadow">
+            <div id="Controls">
+              <div id="Container1">
+                <input id="DatePicker" type="text" placeholder="Choose date"></input>
+                <div id="DateMessageDiv"></div>
+              </div>
+              <div id="Container2">
+                <select id="VenueSelectList" class="LocSelect"></select>
+                <div id="LocMessageDiv"></div>
+              </div>
+              <div id="Container3">
+                <input id="UpdateButton" type="Button" value="Update" disabled="true" class="UpdateButton1"></input>
+              </div>
+              <div id="Container4">
+                <div id="MessageDiv"></div>
+              </div>
+            </div>
+          </div>
+          </div>
+          <div class="row">
+        <div class="col shadow">
+          <div id="SignInDataContainer" class="no-show">
+            <input id="SignInFilterInput" placeholder="Search..." type="text" />
+            <input id="SaveAsCsvButton" type="Button" value="Save As .csv"></input>
+            <div id="SignInDataGrid" class="ag-fresh"></div>
+          </div>
+        </div>
+          </div>
+          <hr/>
+          <div id="help">
+          Double click in fields Agent, Attended, Credit, Ok To Text or Ethnicity to edit. Other fields cannot be changed. Non-members appear
+          in {} and cannot have their Ok To Text or Ethnicity set. Attendance and Credit cannot be set for a future date.
+          </div>
+        </div>
+
+        <div id="tab2" class="tabs__section">
+          <div class="row">
+            <div id="CountsDiv" class="col shadow">
+              <div id="CountsGridDiv" class="BaseGrid ag-fresh"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div id="DebugContainer" class="no-show">
+        <div class="row">
+          <div class="col shadow">All data...
+            <div id="AllDataGrid" class="ag-fresh"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript">
+      
+      'use strict';
+
+      function processRow(node) {
+        let rec,recruitedBy,recruitRecId,dateKey,venue,credit,contactId,firstName,lastName,homePhone,email,mobilePhone,ethnicGroup,shift;
+        let orgHomePhone,orgMobilePhone,orgEmail,orgAgent,orgEthnicGroup,copeAmount,copeDate;
+        let okToText,orgOkToText,attended,orgAttended,uid,t,recruitedByLF;
+        let agent,employer,lastFirstName,orgCredit;
+
+        rec = recruitedBy = recruitRecId = dateKey = venue = credit = contactId = firstName = lastName = homePhone = email = mobilePhone = ethnicGroup = shift = '';
+        orgHomePhone = orgMobilePhone = orgEmail = orgEthnicGroup = copeAmount = copeDate = '';
+        okToText = orgOkToText = attended = orgAttended = false;
+        uid = 0;
+        rec = node.data;
+        recruitRecId = rec.RecruitRecId;
+        recruitedByLF = rec.RecruitedByLF;
+        dateKey = rec.Date;
+        venue = rec.Venue;
+        email = rec.Email;
+        contactId = rec.ContactId;
+        firstName = rec.FirstName;
+        lastName = rec.LastName;
+        homePhone = rec.HomePhone;
+        mobilePhone = rec.MobilePhone;
+        agent =  rec.Agent;
+        attended = rec.Attended;
+        okToText = rec.OkToText;
+        credit = rec.Credit;
+        ethnicGroup = rec.EthnicGroup;
+        shift = rec.Shift;
+        uid = rec.Uid;
+        copeAmount = rec.CopeAmount;
+        copeDate = rec.CopeDate;
+        employer = rec.Employer;
+        lastFirstName = lastName + ',' + firstName;
+        orgHomePhone = homePhone;
+        orgMobilePhone = mobilePhone;
+        orgEmail = email;
+        orgAgent = agent,
+        orgAttended = attended;
+        orgOkToText = okToText;
+        orgEthnicGroup = ethnicGroup;
+        orgCredit = credit;
+
+        signInDataArray.push({
+          Attended: attended,
+          Agent:agent, 
+          Credit: credit,
+          NeedsUpdate: false,
+          RecruitRecId: recruitRecId,
+          RecruitedByLF: recruitedByLF,
+          Date: dateKey,
+          Venue: venue,
+          Email: email,
+          ContactId: contactId,
+          LastFirstName: lastFirstName,
+          Employer: employer,
+          CopeAmount: copeAmount,
+          CopeDate: copeDate,
+          HomePhone: homePhone,
+          MobilePhone: mobilePhone,
+          OkToText: okToText,
+          EthnicGroup: ethnicGroup,
+          Shift: shift,
+          OrgHomePhone: orgHomePhone,
+          OrgMobilePhone: orgMobilePhone,
+          OrgAgent: orgAgent,
+          OrgAttended: orgAttended,
+          OrgOkToText: orgOkToText,
+          OrgEthnicGroup: orgEthnicGroup,
+          OrgCredit: orgCredit,
+          AllDataArrayUid: uid
+        });
+      }
+
+      function buildFilteredData() {
+        signInDataArray = [];
+        allDataGridOptions.api.forEachNodeAfterFilterAndSort(processRow); // Using filtered data from grid to populate signInDataArray
+
+        if (shownBefore)
+          signInDataGridOptions.api.destroy();
+        else shownBefore = true;
+
+//           groupRowRenderer: signInGroupRowRenderer,
+// groupRowRenderer:  'agGroupCellRenderer';
+// gridOptions.groupRowRendererParams: {
+//     innerRenderer: function(params) {return params.node.key;},
+// };
+
+          // groupRowRenderer: function(params) {
+          //   console.log(params);
+          //   return params.node.key;
+          // },
+
+        signInDataGridOptions = {
+          columnDefs: signInColumnDefs,
+          rowData: signInDataArray,
+          suppressCellSelection: true,
+          rowSelection: 'single',
+          enableFilter: true,
+          enableSorting: true,
+          suppressHorizontalScroll: false,
+          groupSuppressAutoColumn: true,
+          groupUseEntireRow: true,
+          groupRowRenderer: 'agGroupCellRenderer',
+          groupRowRendererParams: {
+            innerRenderer: function(params) {
+              console.log(params);
+              return params.node.key;
+            }
+          },
+          groupDefaultExpanded: -1,
+          overlayNoRowsTemplate: '<div id="noEvents">No events for this date</div>'
+        };
+
+        signInDataGridOptions.getRowHeight = function (params) {
+          let retVal = 50;
+          if (params.node.hasOwnProperty('group')) {
+            if (params.node.group)
+              retVal = 25;
+          }
+          return retVal;
+        };
+
+        signInDataContainer.setAttribute('class', 'show');
+
+        new agGrid.Grid(signInDataGridDiv, signInDataGridOptions);
+        signInDataGridOptions.api.setSortModel(signInSort);
+
+      }
+
+      function setFilters(from) {
+        allDataGridOptions.api.setFilterModel(userFilter);
+        buildFilteredData();
+      }
+
+      function venueChangeHandler() {
+        let expectedFromLocCnt, venueMsg, loc;
+
+        // Pending changes are discarded.
+        if (rowUpdateCount > 0) {
+          messageDiv.innerHTML = 'Changes discarded';
+          messageDiv.setAttribute('class', 'animated fadeInOut skip');
+          window.setTimeout(resetMessageDivClass, 2000);
+          resetMessage();
+        }
+
+        ldv = venueDropdown.value;
+        if (ldv == 0) {
+          locMessageDiv.innerHTML = '';
+          locFilterValue[0] = '';
+          userFilter = { Date: dateFilterValue };
+        }
+        else {
+          loc = ldv.replace(/_/g, ' ');
+          expectedFromLocCnt = dateVenueMap[ddv][ldv].Cnt;
+          venueMsg = 'Expect: 1 person from this location';
+          if (venueCnt > 1 && expectedFromLocCnt > 1)
+            venueMsg = 'Expect: ' + expectedFromLocCnt + ' people from this location';
+
+          locMessageDiv.innerHTML = venueMsg;
+          locFilterValue[0] = loc;
+          userFilter = { Date: dateFilterValue, Venue: locFilterValue };
+        }
+        setFilters('venueChangeHandler');
+      }
+
+      function resetMessage() {
+        changeMap.clear();
+        rowUpdateCount = 0;
+        searchText = '';
+        signInFilterInput.value = '';
+        updateButton.value = 'Update';
+        updateButton.disabled = true;
+        pendingUpdates = false;
+      }
+
+      function resetMessageDivClass() {
+        messageDiv.setAttribute('class', '');
+      }
+
+      function dateChangeHandler(dateVal, dateStr) {
+        let i, l, loc, locKey,expectedCnt,expectedMsg,totalVenueMsg;
+
+        // Pending changes are discarded.
+        if (rowUpdateCount > 0) {
+          messageDiv.innerHTML = 'Changes discarded';
+          messageDiv.setAttribute('class', 'animated fadeInOut skip');
+          window.setTimeout(resetMessageDivClass, 2000);
+          resetMessage();
+        }
+
+        while (venueDropdown.hasChildNodes()) {
+          venueDropdown.removeChild(venueDropdown.childNodes[0]);
+        }
+        addOption(venueDropdown, 'Locations', 0);
+
+        ddv = dateStr;
+        venueCnt = 0;
+        dateFilterValue[0] = ddv;
+        venueDropdown.disabled = false;
+        for (i = 0, l = dateVenueDataArray.length; i < l; i++) {
+          if (dateVenueDataArray[i].Date == ddv) {
+            venueCnt++;
+            loc = dateVenueDataArray[i].Venue;
+            locKey = loc.replace(/ /g, '_');
+            addOption(venueDropdown, loc, locKey);
+          }
+        }
+
+        if (venueCnt > 0) {
+          expectedCnt = dateVenueShiftMap[ddv].Cnt;
+          if (venueCnt == 1)
+            totalVenueMsg = ' from 1 location';
+          else
+            totalVenueMsg = ' from ' + venueCnt + ' locations';
+
+          if (expectedCnt == 1)
+            expectedMsg = 'Expect: 1 Person';
+          else
+            expectedMsg = 'Expect: ' + expectedCnt + ' People';
+
+          dateMessageDiv.innerHTML = expectedMsg + totalVenueMsg;
+          locMessageDiv.innerHTML = '';
+
+          userFilter = { Date: dateFilterValue };
+          dateFilter = { Date: dateFilterValue };
+          setFilters('dateChangeHandler');
+        }
+        else {
+          dateMessageDiv.innerHTML = 'No events for this date';
+          locMessageDiv.innerHTML = '';
+          if (signInDataGridOptions) {
+            signInDataArray = null;
+            signInDataArray = [];
+            signInDataGridOptions.api.setRowData(signInDataArray);
+          }
+        }
+      }
+
+      function signInFilterInputHandler(e) {
+        searchText = e.target.value;
+        signInDataGridOptions.api.setQuickFilter(searchText);
+      }
+
+      function phoneFormat(s) {
+        let s1;
+        if (s == null || s.trim().length < 10)
+          s1 = '';
+        else {
+          s1 = s.trim().replace(/[^0-9]/g, '');
+          s1 = '(' + s1.substr(0, 3) + ') ' + s1.substr(3, 3) + '-' + s1.substr(6);
+        }
+        return s1;
+      }
+
+      function toProperCase(s) {
+        // My version - handles hyphenated names correctly :)
+        let s1 = '';
+        if (s)
+          s1 = s.trim().toLowerCase().replace(/\b[a-zA-Z]/g, function ($1) { return $1.toUpperCase(); });
+
+        return s1;
+      }
+
+      async function loadLookUpData() {
+        // Controller:
+        // SELECT Id,Type__c,User__c,Name,Description__c,ColumnState__c,SortModel__c,OwnerId FROM GOTV_Views__c ORDER BY Name
+        return new Promise(function (resolve, reject) {
+          SignInRemoteController2.getLookupData((result, event) => {
+            if (event.status) {
+              console.log('Retrieved Lookup data');
+              resolve(result);
+            }
+            else {
+              console.log('Error retrieving Lookup data');
+              reject(event);
+            }
+          });
+        });
+      }
+
+      async function loadSignInData() {
+        // Controller:
+        // 
+        return new Promise(function (resolve, reject) {
+          let cutoffDateStr = moment().subtract(6, 'months').format('YYYY-MM-DD');
+          SignInRemoteController2.getData(cutoffDateStr, (result, event) => {
+            if (event.status) {
+              console.log('Retrieved SignIn data');
+              console.log('-----------------------------------------------------');
+console.log(result);
+              resolve(result);
+            }
+            else {
+              console.log('Error retrieving SignIn data');
+              reject(event);
+            }
+          });
+        });
+      }
+
+      async function getData() {
+        let lookUpData, signInData, result;
+        lookUpData = await loadLookUpData();
+        signInData = await loadSignInData();
+        result     = await processLookUpData(lookUpData);
+        result     = await processSignIns(signInData);
+        showLoadingMsg(false);
+        return('Initilization complete');
+      }
+
+      async function processLookUpData(results) {
+        return new Promise(function (resolve, reject) {
+          showLoadingMsg(false);
+          let rec, len, i, processedAll, agent, office, officeAgent;
+          officeAgentArray = [];
+          len = results.length - 1;
+          for(i=0;i<len;i++) {
+            office      = results[i].Office__c;
+            agent       = results[i].Agent__c;   
+            officeAgent = office + ' ' + agent;
+            officeAgentArray.push(officeAgent);
+          }
+          resolve('ok');
+        });
+      }
+
+      async function processSignIns(results) {
+        return new Promise(function (resolve, reject) {
+          let rec, len, i, processedAll;
+          let agent, attended, venue, dateKey, venueKey, shiftKey, expected, credit, ethnicGroup;
+          let recruitedByLN, recruitedByFN, recruitedByLF, email, employer, contactId, firstName, lastName, homePhone, mobilePhone, okToText;
+          let cnt, locCnt, recruitRecId, copeAmount;
+          let volDate, volDate1, volDateAdjusted;
+          let copeDate, copeDate1, copeDateAdjusted;
+          let locDateSkipCnt = 0;
+          let nameIdSkipCnt = 0;
+
+          allDataArray = [];
+          summarizedDataArray = [];
+          dateCountDataArray  = [];
+          dateVenueDataArray  = [];
+          dateMap             = {};
+          dateVenueMap        = {};
+          dateVenueShiftMap   = {};
+
+          // Note: moment(AnyDate__c) creates a moment with a default midnight zulu time  (e.g moment(2016-09-03) --> 2016-09-03T00:00:00.000Z
+          // which will convert to the previous day, locally!
+          // So, adding time to account for this.
+
+          processedAll = false;
+          len = results.length - 1;
+          cnt = 0;
+          for (i = 0; i <= len; i++) {
+            recruitedByLN = recruitedByFN = recruitedByLF = email = employer = contactId = firstName = lastName = homePhone = mobilePhone = credit = ethnicGroup = copeDate = agent = '';
+            copeAmount = 0;
+            okToText = attended = false;
+
+            rec = results[i];
+            attended        = rec.Attended__c;
+            console.log(attended);
+            agent           = rec.Agent__c  || '';
+            credit          = rec.Credit__c || '';
+            recruitRecId    = rec.Id;
+            volDate         = rec.Volunteer_Date__c;
+            volDate1        = moment(volDate);
+            volDateAdjusted = moment(volDate1).add(12, 'hours');
+            dateKey         = volDateAdjusted.format('YYYY-MM-DD'); // I love this library!
+            venue           = rec.Location__c;
+
+            // Can't trust required field data will be populated.
+            if (!venue || !volDate) {
+              locDateSkipCnt++;
+              console.log(locDateSkipCnt + '  Skipping rec without location or date');
+              console.log(rec);
+              continue;
+            }
+
+            venueKey = venue.replace(/ /g, '_');
+            shiftKey = rec.Shift__c;
+
+            if (rec.Recruited_By__r) {
+              if (rec.Recruited_By__r.LastName) {
+                recruitedByLN = toProperCase(rec.Recruited_By__r.LastName);
+                recruitedByFN = toProperCase(rec.Recruited_By__r.FirstName);
+                recruitedByLF = recruitedByLN + ',' + recruitedByFN;
+              }
+            }
+
+            if (rec.Alt_First_Name__c || rec.Alt_Last_Name__c) {
+              firstName = '{' + toProperCase(rec.Alt_First_Name__c) + '}';
+              lastName = '{' + toProperCase(rec.Alt_Last_Name__c) + '}';
+              homePhone = phoneFormat(rec.Alt_Phone__c);
+            }
+            else if (rec.Recruit__r) {
+              employer = toProperCase(rec.Recruit__r.Employer1__c);
+              contactId = rec.Recruit__r.Id;
+              firstName = toProperCase(rec.Recruit__r.FirstName);
+              lastName = toProperCase(rec.Recruit__r.LastName);
+              homePhone = phoneFormat(rec.Recruit__r.HomePhone);
+              mobilePhone = phoneFormat(rec.Recruit__r.MobilePhone);
+              ethnicGroup = rec.Recruit__r.Ethnic_Group__c || '';
+              email = rec.Recruit__r.Email || '';
+              okToText = rec.Recruit__r.OK_To_Text__c;
+              email = email.toLowerCase();
+              copeAmount = rec.Recruit__r.Cope_Amount__c || 0;
+              if (copeAmount) {
+                copeDate = rec.Recruit__r.Cope_Payment_Date__c;
+                copeDate1 = moment(copeDate);
+                copeDateAdjusted = moment(copeDate1).add(12, 'hours').format('MM/DD/YYYY');
+              }
+              else copeDateAdjusted = null;
+            }
+            else {
+              nameIdSkipCnt++;
+              console.log(nameIdSkipCnt + '  Skipping rec without name or contact id');
+              console.log(rec);
+              continue;
+            }
+
+            allDataArray.push({ Uid: cnt, Agent:agent, RecruitRecId: recruitRecId, RecruitedByLF: recruitedByLF, Attended: attended, Credit: credit, EthnicGroup: ethnicGroup, Date: dateKey, Venue: venue, Email: email, ContactId: contactId, FirstName: firstName, LastName: lastName, HomePhone: homePhone, MobilePhone: mobilePhone, OkToText: okToText, Shift: shiftKey, Employer: employer, CopeAmount: copeAmount, CopeDate: copeDateAdjusted });
+            cnt++;
+
+            if (!dateMap[dateKey])
+              dateMap[dateKey] = { Cnt: 1 };
+            else
+              dateMap[dateKey].Cnt++;
+
+            if (!dateVenueMap[dateKey])
+              dateVenueMap[dateKey] = { Cnt: 1 };
+            else
+              dateVenueMap[dateKey].Cnt++;
+
+            if (!dateVenueMap[dateKey][venueKey])
+              dateVenueMap[dateKey][venueKey] = { Cnt: 1 };
+            else
+              dateVenueMap[dateKey][venueKey].Cnt++;
+
+            if (!dateVenueShiftMap[dateKey])
+              dateVenueShiftMap[dateKey] = { Cnt: 1 };
+            else
+              dateVenueShiftMap[dateKey].Cnt++;
+
+            if (!dateVenueShiftMap[dateKey][venueKey])
+              dateVenueShiftMap[dateKey][venueKey] = { Cnt: 1 };
+            else
+              dateVenueShiftMap[dateKey][venueKey].Cnt++;
+
+            if (!dateVenueShiftMap[dateKey][venueKey][shiftKey])
+              dateVenueShiftMap[dateKey][venueKey][shiftKey] = { Cnt: 1 };
+            else
+              dateVenueShiftMap[dateKey][venueKey][shiftKey].Cnt++;
+          }
+          for (dateKey in dateVenueMap) {
+            for (venueKey in dateVenueMap[dateKey]) {
+              if (venueKey == 'Cnt')
+                continue;
+              locCnt = dateVenueMap[dateKey][venueKey].Cnt;
+              venue = venueKey.replace(/_/g, ' ');
+              dateVenueDataArray.push({ Date: dateKey, Venue: venue, Cnt: locCnt });
+            }
+          }
+
+          for (dateKey in dateVenueShiftMap) {
+            for (venueKey in dateVenueShiftMap[dateKey]) {
+              if (venueKey == 'Cnt')
+                continue;
+              else {
+                for (shiftKey in dateVenueShiftMap[dateKey][venueKey]) {
+                  if (shiftKey == 'Cnt') continue;
+                  expected = dateVenueShiftMap[dateKey][venueKey][shiftKey].Cnt;
+                  venue = venueKey.replace(/_/g, ' ');
+                  summarizedDataArray.push({
+                    Date: dateKey,
+                    Venue: venue,
+                    Shift: shiftKey,
+                    Expected: expected
+                  });
+                }
+              }
+            }
+            cnt = dateVenueShiftMap[dateKey].Cnt;
+            dateVenueShiftMap[dateKey].LocCnt = locCnt;
+          }
+          initAgGrid();
+          createGrids(); // Creates grids but keeps them hidden.
+          resolve('ok');
+        });
+      }
+
+      function dateFmt(dateStr) {
+        let localDate;
+        yyyy = dateStr.substr(0, 4);
+        mm = dateStr.substr(5, 2);
+        dd = dateStr.substr(8, 2);
+        localDate = mm + '/' + dd + '/' + yyyy;
+        return localDate;
+      }
+
+      function createSvgCheckmark() {
+        // animated line tehnique found here: https://jakearchibald.com/2013/animated-line-drawing-svg
+        // snap version found here: http://codepen.io/anon/pen/uGylx
+        let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        let snap = Snap(svg);
+        let path = snap.path("M 10 20 L 20 36 L 32 10");
+        let length = path.getTotalLength();
+        svg.setAttribute("class", "svgCell");
+        path.attr({
+          fill: "none",
+          stroke: "#008000",
+          "stroke-width": "3",
+          "stroke-dasharray": length + " " + length,
+          "stroke-dashoffset": "" + length
+        });
+        path.animate({ "stroke-dashoffset": 0 }, 250);
+        return svg;
+      }
+
+      function copeAmountRenderer(params) {
+        let strVal = '';
+
+        if (params.data.CopeAmount)
+          strVal = '$' + params.data.CopeAmount.toFixed(2);
+
+        return strVal;
+      }
+
+      function copeDateRenderer(params) {
+        if (params.data.CopeDate) {
+          return params.data.CopeDate;
+        }
+        else return '';
+      }
+
+      function attendedRenderer(params) {
+        if (params.data.Attended) {
+          return createSvgCheckmark();
+        }
+        else return '';
+      }
+
+      function attendedDoubleClickedHandler(params) {
+        let rowNodes = [];
+        let field = params.colDef.field;
+        let vDate = params.data.Date;
+        let volDate = moment(vDate);
+        let today = moment();
+
+        if (volDate.isAfter(today)) {
+          messageDiv.innerHTML = 'Cannot set for future date';
+          messageDiv.setAttribute('class', 'animated-long fadeInOut skip');
+          window.setTimeout(resetMessageDivClass, 3000);
+        }
+        else {
+          params.data.Attended = !params.data.Attended;
+          rowNodes.push(params.node.data);
+          signInDataGridOptions.api.updateRowData({ update: rowNodes });          
+          hasRowChanged(params.data);
+        }
+      }
+
+      function okToTextRenderer(params) {
+        if (params.data.OkToText)
+          return createSvgCheckmark();
+        else return '';
+      }
+
+      function okToTextDoubleClickedHandler(params) {
+        let rowNodes = [];
+        let field = params.colDef.field;
+        let vDate = params.data.Date;
+        let volDate = moment(vDate);
+        let today = moment();
+
+        if (!params.data.ContactId) {
+          messageDiv.innerHTML = 'Cannot set for non-member';
+          messageDiv.setAttribute('class', 'animated-long fadeInOut skip');
+          window.setTimeout(resetMessageDivClass, 3000);
+        }
+        else {
+          params.data.OkToText = !params.data.OkToText;
+          rowNodes.push(params.node);
+          rowNodes.push(params.node.data);
+          signInDataGridOptions.api.updateRowData({ update: rowNodes });          
+          hasRowChanged(params.data);
+        }
+      }
+
+      function ethnicGroupChangeHandler(params) {
+        hasRowChanged(params.data);
+      }
+
+      function creditChangeHandler(params) {
+        hasRowChanged(params.data);
+      }
+
+      function agentChangeHandler(params) {
+        hasRowChanged(params.data);
+      }
+
+      function hasRowChanged(data) {
+
+        if (data.Agent       != data.OrgAgent    ||
+            data.Attended    != data.OrgAttended ||
+            data.OkToText    != data.OrgOkToText ||
+            data.Credit      != data.OrgCredit   ||
+            data.EthnicGroup != data.OrgEthnicGroup) {
+
+          data.NeedsUpdate = true;
+
+          if (!changeMap.has(data.RecruitRecId)) {
+            changeMap.set(data.RecruitRecId, 1);
+            rowUpdateCount++;
+          }
+          else {
+            cnt = changeMap.get(data.RecruitRecId) + 1;
+            changeMap.set(data.RecruitRecId, cnt);
+          }
+        }
+        else {
+          data.NeedsUpdate = false;
+          if (changeMap.has(data.RecruitRecId)) {
+            changeMap.delete(data.RecruitRecId);
+            rowUpdateCount--;
+          }
+        }
+
+        if (rowUpdateCount > 0) {
+          updateButton.disabled = false;
+          if (rowUpdateCount > 1)
+            updateButton.value = 'Update ' + rowUpdateCount + ' changed rows';
+          else
+            updateButton.value = 'Update 1 changed row';
+        }
+        else {
+          updateButton.disabled = true;
+          updateButton.value = 'Update';
+        }
+
+        return;
+      }
+
+      function dateRenderer(params) {
+        keyDate = params.data.Date;
+        return dateFmt(keyDate);
+      }
+
+      function nvHandler(params) {
+        let rowNodes = [];
+        let colIds = [];
+        let field = params.colDef.field;
+        let vDate = params.data.Date;
+        let volDate = moment(vDate);
+        let today = moment();
+
+        if (field == 'Agent') {
+          params.data[field] = params.newValue;
+          console.log('nvHandler set ' + params.newValue + ' for ' + field);
+        }
+
+        if (field == 'EthnicGroup') {
+          if (params.data.ContactId) {
+            params.data[field] = params.newValue;
+            console.log('nvHandler set ' + params.newValue + ' for ' + field);
+          }
+          else {
+            messageDiv.innerHTML = 'Cannot set for non-member';
+            messageDiv.setAttribute('class', 'animated-long fadeInOut skip');
+            window.setTimeout(resetMessageDivClass, 3000);
+          }
+        }
+
+        if (field == 'Credit') {
+          if (volDate.isAfter(today)) {
+            messageDiv.innerHTML = 'Cannot set for future date';
+            messageDiv.setAttribute('class', 'animated-long fadeInOut skip');
+            window.setTimeout(resetMessageDivClass, 3000);
+          }
+          else {
+            params.data[field] = params.newValue;
+            console.log('nvHandler set ' + params.newValue + ' for ' + field);
+          }
+        }
+      }
+
+      function initAgGrid() {
+        agGrid.LicenseManager.setLicenseKey("United_Healthcare_Workers_West_10-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+
+        allDataColumnDefs = [
+          { headerName: 'Date',       field: 'Date',          width: 90, suppressMenu: true, cellRenderer: dateRenderer },
+          { headerName: 'Location',   field: 'Venue',         width: 150, suppressMenu: true },
+          { headerName: 'Agent',      field: 'Agent',         width: 90, suppressMenu: true },
+          { headerName: 'Attended',   field: 'Attended',      width: 90, suppressMenu: true },
+          { headerName: 'Credit',     field: 'Credit',        width: 90, suppressMenu: true },
+          { headerName: 'Last Name',  field: 'LastName',      width: 150, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'noEdit' },
+          { headerName: 'First Name', field: 'FirstName',     width: 150, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'noEdit' },
+          { headerName: 'Employer',   field: 'Employer',      width: 150, suppressMenu: true },
+          { headerName: 'RecruitedBy',field: 'RecruitedByLF', width: 150, suppressMenu: true },
+          { headerName: 'Shift',      field: 'Shift',         width: 100, suppressMenu: true, sort: 'asc', cellClass: 'right-align' },
+          { headerName: 'Home Phone', field: 'HomePhone',     width: 150, suppressMenu: true },
+          { headerName: 'Cell Phone', field: 'MobilePhone',   width: 150, suppressMenu: true },
+          { headerName: 'Ok To Text', field: 'OkToText',      width: 150, suppressMenu: true },
+          { headerName: 'Ethnicity',  field: 'EthnicGroup',   width: 150, suppressMenu: true }
+        ];
+
+        signInColumnDefs = [
+          { headerName: 'Location',    field: 'Venue',         width: 150, suppressMenu: true, hide: true, rowGroupIndex: 0 },
+          {
+            headerName: 'Agent', field: 'Agent', width: 170, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'canEdit',
+            cellEditor: 'select',
+            editable: true,
+            newValueHandler: nvHandler,
+            onCellValueChanged: agentChangeHandler,
+            cellEditorParams: {  values: officeAgentArray, isCancelBeforeStart: true }
+          },
+          { headerName: 'Attended',    field: 'Attended',      width:  70, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellRenderer: attendedRenderer, onCellDoubleClicked: attendedDoubleClickedHandler, headerClass: 'canEdit' },
+          { headerName: 'Recruit',     field: 'LastFirstName', width: 150, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'noEdit' },
+          { headerName: 'Employer',    field: 'Employer',      width: 190, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'noEdit' },
+          { headerName: 'RecruitedBy', field: 'RecruitedByLF', width: 150, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'noEdit' },
+          {
+            headerName: 'Credit', field: 'Credit', width: 90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'canEdit',
+            cellEditor: 'select',
+            editable: true,
+            newValueHandler: nvHandler,
+            onCellValueChanged: creditChangeHandler,
+            cellEditorParams: { values: ['', 'Full', 'Half', 'None'], isCancelBeforeStart: true }
+          },
+          {            
+          headerName: 'Ok To Text', field: 'OkToText', width: 90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellRenderer: okToTextRenderer,onCellDoubleClicked: okToTextDoubleClickedHandler,headerClass: 'canEdit'},
+          {
+            headerName: 'Ethnicity', field: 'EthnicGroup', width: 150, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'canEdit',
+            cellEditor: 'select',
+            editable: true,
+            newValueHandler: nvHandler,
+            onCellValueChanged: ethnicGroupChangeHandler,
+            cellEditorParams: { values: ['', 'Asian / Pacific Islander', 'Black / African American', 'Hispanic / Latino', 'White / Caucasian', 'Other'] }
+          },
+          { headerName: 'Last Cope $', field: 'CopeAmount', width: 100, suppressMenu: true, sortingOrder: ['asc', 'desc'], sort: 'asc', cellClass: 'right-align', headerClass: 'noEdit', cellRenderer: copeAmountRenderer },
+          { headerName: 'Last Date', field: 'CopeDate', width: 100, suppressMenu: true, sortingOrder: ['asc', 'desc'], sort: 'asc', cellClass: 'cellClass2', headerClass: 'noEdit', cellRenderer: copeDateRenderer },
+          { headerName: 'Home Phone', field: 'HomePhone', width: 130, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'noEdit' },
+          { headerName: 'Cell Phone', field: 'MobilePhone', width: 130, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'noEdit' },
+          { headerName: 'Email', field: 'Email', width: 250, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1', headerClass: 'noEdit' }
+        ];
+
+        countsColumnDefs = [
+          { headerName: 'Date',     field: 'Date',  width:  90, suppressMenu: true, cellRenderer: dateRenderer },
+          { headerName: 'Location', field: 'Venue', width: 190, suppressMenu: true },
+          { headerName: 'Expected', field: 'Cnt',   width:  90, suppressMenu: true, cellClass: 'cellRight' }
+        ];
+  
+        countsSort = [
+          { colId: 'Date',      sort: 'desc'},
+          { colId: 'Venue',     sort: 'asc' }
+        ];
+
+        signInSort = [
+          { colId: 'Venue', sort: 'asc' },
+          { colId: 'LastName', sort: 'asc' },
+          { colId: 'FirstName', sort: 'asc' }
+        ];
+
+      }
+
+      function signInGroupRowRenderer(param) {
+        let newDiv = document.createElement('div');
+        let locName = param.node.childrenAfterGroup[0].data.Venue;
+        let newTN1 = document.createTextNode('Location: ' + locName);
+        newDiv.appendChild(newTN1);
+        newDiv.setAttribute('class', 'GroupHeader');
+        return newDiv;
+      }
+
+      function createGrids() {
+        allDataGridOptions = {
+          columnDefs: allDataColumnDefs,
+          rowData: allDataArray,
+          enableFilter: true,
+          enableSorting: true
+        };
+        new agGrid.Grid(allDataGridDiv, allDataGridOptions);
+        allDataGridOptions.api.setSortModel(signInSort);
+
+        countsDataGridOptions = {
+          columnDefs: countsColumnDefs,
+          rowData: dateVenueDataArray,
+          enableFilter: true,
+          enableSorting: true
+        };
+        new agGrid.Grid(countsGridDiv, countsDataGridOptions);
+        countsDataGridOptions.api.setSortModel(countsSort);
+      }
+
+      function addOption(dropDown, name, id) {
+        let opt = document.createElement("option");
+        opt.text = name;
+        opt.value = id;
+        dropDown.add(opt, null);
+      }
+
+      function init() {
+
+        pureTabs.init('tabs__link', 'tabs__link--active'); // http://www.cssscript.com/lightweight-tabs-widget-with-pure-javascript-puretabs
+        Visualforce.remoting.timeout = 120000;
+
+        shownBefore = false;
+        rowUpdateCount = 0;
+        changeMap = new Map();
+        dateFilterValue = [''];
+        locFilterValue = [''];
+
+        dateMessageDiv = document.getElementById('DateMessageDiv');
+        locMessageDiv = document.getElementById('LocMessageDiv');
+        modalLoadingDiv = document.getElementById('ModalLoadingDiv');
+        venueDropdown = document.getElementById('VenueSelectList');
+        signInFilterInput = document.getElementById('SignInFilterInput');
+        signInDataContainer = document.getElementById('SignInDataContainer');
+
+        signInDataGridDiv = document.getElementById('SignInDataGrid');
+        allDataGridDiv    = document.getElementById('AllDataGrid');
+        countsGridDiv     = document.getElementById('CountsGridDiv');
+        messageDiv        = document.getElementById('MessageDiv');
+        updateButton      = document.getElementById('UpdateButton');
+        saveAsCsvButton   = document.getElementById("SaveAsCsvButton");
+
+        summarizedDataGridDiv = document.getElementById('SummarizedDataGrid');
+        dateVenueDataGridDiv  = document.getElementById('DateVenueDataGrid');
+
+        addOption(venueDropdown, 'Locations', 0);
+
+        dateMessageDiv.innerHTML = '';
+        locMessageDiv.innerHTML = '';
+
+        updateButton.addEventListener("click", updateClickHandler, false);
+        saveAsCsvButton.addEventListener("click", saveAsCsv, false);
+        venueDropdown.addEventListener("change", venueChangeHandler);
+        signInFilterInput.addEventListener("input", signInFilterInputHandler, false);
+
+        picker = new Pikaday({
+          field: document.getElementById('DatePicker'),
+          format: 'L',
+          onSelect: function () {
+            if (rowUpdateCount > 0) {
+              messageDiv.innerHTML = 'Changes discarded';
+              messageDiv.setAttribute('class', 'animated fadeInOut skip');
+              window.setTimeout(resetMessageDivClass, 2000);
+            }
+            resetMessage();
+            let dv = this.getMoment().format('L');
+            let ds = this.getMoment().format('YYYY-MM-DD');
+            picker.hide();
+            dateChangeHandler(dv, ds);
+          }
+        });
+      }
+
+      function saveAsCsv() {
+        let fileName = 'Sign-In Data for ' + ddv + '.csv';
+        signInDataGridOptions.api.exportDataAsCsv({ fileName: fileName });
+      }
+
+      function updateClickHandler(e) {
+
+        let updateTxArray = [];
+        let tmpRecruitTx = {};
+        let i = 0, l = 0;
+
+        if (pendingUpdates) {
+          alert('Please wait for current update to finish');
+          return;
+        }
+
+        updateArray = [];
+        for (i = 0, l = signInDataArray.length; i < l; i++) {
+          if (signInDataArray[i].NeedsUpdate) {
+            tmpRecruitTx = {};
+            tmpRecruitTx.Agent = signInDataArray[i].Agent;
+            tmpRecruitTx.ContactId = signInDataArray[i].ContactId;
+            tmpRecruitTx.RecruitRecId = signInDataArray[i].RecruitRecId;
+            tmpRecruitTx.Attended = signInDataArray[i].Attended;
+            tmpRecruitTx.Credit = signInDataArray[i].Credit || '';
+            tmpRecruitTx.OkToText = signInDataArray[i].OkToText;
+            tmpRecruitTx.EthnicGroup = signInDataArray[i].EthnicGroup || '';
+
+            updateTxArray.push(JSON.stringify(tmpRecruitTx));
+
+            tmpRecruitTx.Uid = signInDataArray[i].AllDataArrayUid;
+            updateArray.push(tmpRecruitTx);
+          }
+        }
+        pendingUpdates = true;
+        updateButton.value = 'Updating Salesforce ...';
+        updateButton.disabled = true;
+        updateButton.setAttribute('class', 'UpdateButton2');
+        console.log('updateTxArray:');
+        console.log(updateTxArray);
+        SignInRemoteController2.RecruitUpdate(updateTxArray, updateResults);
+      }
+
+      function updateResults(result, event) {
+        let noError = true;
+        let i, l, notFound, contactId, ptr;
+        let rowNodes = [];
+        let colIds = [];
+
+        if (event.status) {
+          if (result) {
+            if (result.length > 0) {
+              for (i = 0, l = result.length; i < l; i++) {
+                if (result[i].indexOf('Error') != -1) {
+                  noError = false;
+                  console.log("error: " + result[i].toString());
+                  break;
+                }
+              }
+            }
+          }
+        }
+        else {
+          noError = false;
+          if (event.type === 'exception')
+            console.log(event.message + "\n" + event.where);
+          else
+            console.log(event.message);
+        }
+
+        resetMessage();
+
+        if (noError) {
+          for (i = 0, l = updateArray.length; i < l; i++) {
+            ptr = updateArray[i].Uid;
+            contactId = updateArray[i].ContactId;
+            allDataArray[ptr].Agent = updateArray[i].Agent;
+            allDataArray[ptr].Attended = updateArray[i].Attended;
+            allDataArray[ptr].OkToText = updateArray[i].OkToText;
+            allDataArray[ptr].EthnicGroup = updateArray[i].EthnicGroup;
+            allDataArray[ptr].Credit = updateArray[i].Credit;
+
+            notFound = true;
+            ptr = 0;
+            while (notFound) {
+              if (signInDataArray[ptr].ContactId == contactId) {
+                console.log('signInDataArray updated at ' + ptr);
+                signInDataArray[ptr].Agent = updateArray[i].Agent;
+                signInDataArray[ptr].Attended = updateArray[i].Attended;
+                signInDataArray[ptr].OkToText = updateArray[i].OkToText;
+                signInDataArray[ptr].EthnicGroup = updateArray[i].EthnicGroup;
+                signInDataArray[ptr].Credit = updateArray[i].Credit;
+
+                signInDataArray[ptr].OrgAgent    = updateArray[i].Agent;
+                signInDataArray[ptr].OrgAttended = updateArray[i].Attended;
+                signInDataArray[ptr].OrgOkToText = updateArray[i].OkToText;
+                signInDataArray[ptr].OrgEthnicGroup = updateArray[i].EthnicGroup;
+                signInDataArray[ptr].OrgCredit = updateArray[i].Credit;
+                signInDataArray[ptr].NeedsUpdate = false;
+                notFound = false;
+                break;
+              }
+              ptr++;
+            }
+          }
+
+          signInDataGridOptions.api.redrawRows();
+          allDataGridOptions.api.redrawRows();
+          updateButton.setAttribute('class', 'UpdateButton1');
+          messageDiv.innerHTML = 'Updated';
+          messageDiv.setAttribute('class', 'animated fadeInOut ok');
+          window.setTimeout(resetMessageDivClass, 2000);
+        }
+        else alert('Alas, a Salesforce error occurred.  Please take screen shot the of browser console window and email to gsmith@seiu-uhw.org');
+
+      }
+
+      function showLoadingMsg(show) {
+        if (show) // modal window fake
+          modalLoadingDiv.setAttribute('class', 'modalDialog');
+        else
+          modalLoadingDiv.setAttribute('class', 'no-show');
+      }
+
+      var allDataArray,signInDataArray,summarizedDataArray,dateCountDataArray,dateVenueDataArray,dateVenueMap;
+      var filteredDataArray,updateArray,locFilterValue,dateFilterValue,userFilter, dateFilter;
+      var signInColumnDefs,allColumnDefs,allDataColumnDefs,allDataGridOptions,signInDataGridOptions,countsColumnDefs;
+      var dateVenueShiftMap,dateSelectList,venueSelectList;
+      var keyDate, picker, pendingUpdates,yyyy,mm,dd,dateMap;
+      var searchText,signInFilterInput,saveAsCsvButton;
+      var signInSort,dateMessageDiv,modalLoadingDiv,locMessageDiv,allDataGridDiv;
+      var venueDropdown,venueCnt, ldv, ddv, sdv;
+      var shownBefore,updateButton,messageDiv,dateVenueDataGridDiv, signInDataGridDiv, signInDataContainer;
+      var summarizedDataGridDiv,countsGridDiv, countsDataGridOptions,countsSort;
+      var officeAgentArray, rowUpdateCount,changeMap,retVal,showModal = false;
+      // ***************** Main Program Entry *****************
+      init();
+      showLoadingMsg(true);
+
+      getData().then(retVal => {
+        console.log(retVal);
+      });
+
+    </script>
+  </body>
+</apex:page>

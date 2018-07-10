@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BHAT Activity Daily</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BHAT Activity Daily</value>
+    </caseValues>
+    <fields>
+        <label><!-- Activity Date --></label>
+        <name>Activity_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Approved By --></label>
+        <name>Approved_By__c</name>
+        <relationshipLabel><!-- BHAT Activity Daily --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Approved Date --></label>
+        <name>Approved_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Weekly --></label>
+        <name>BHAT_Activity_Weekly__c</name>
+        <relationshipLabel><!-- BHAT Activity Daily --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Daily Hours Spent --></label>
+        <name>Daily_Hours_Spent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Daily Total Paid Hours --></label>
+        <name>Daily_Hours_Total__c</name>
+    </fields>
+    <fields>
+        <help><!-- Total Paid Hours - 8 hours to caluclaute Over time hours --></help>
+        <label><!-- Daily Overtime Hours --></label>
+        <name>Daily_Overtime_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- EndDateMonth --></label>
+        <name>EndDateMonth__c</name>
+    </fields>
+    <fields>
+        <label><!-- EndDateWeek --></label>
+        <name>EndDateWeek__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hire Date --></label>
+        <name>Hire_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hourly_Employee --></label>
+        <name>Hourly_Employee__c</name>
+    </fields>
+    <fields>
+        <label><!-- HoursWorked --></label>
+        <name>HoursWorked__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hours Worked --></label>
+        <name>Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Location --></label>
+        <name>Location__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager --></label>
+        <name>Manager__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mins Worked --></label>
+        <name>Mins__c</name>
+    </fields>
+    <fields>
+        <label><!-- MinutesWorked --></label>
+        <name>MinutesWorked__c</name>
+    </fields>
+    <fields>
+        <label><!-- Non_Exempt_Employee --></label>
+        <name>Non_Exempt_Employee__c</name>
+    </fields>
+    <fields>
+        <label><!-- OPEIU Graveyard/Swing --></label>
+        <name>OPEIU_Graveyard_Swing__c</name>
+    </fields>
+    <fields>
+        <label><!-- Paid Break Total --></label>
+        <name>Paid_Break_Total__c</name>
+    </fields>
+    <fields>
+        <label><!-- Record No --></label>
+        <name>Record_No__c</name>
+    </fields>
+    <fields>
+        <label><!-- ReturnedDate --></label>
+        <name>ReturnedDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- StartDateMonth --></label>
+        <name>StartDateMonth__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Complete</masterLabel>
+            <translation><!-- Complete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Incomplete</masterLabel>
+            <translation><!-- Incomplete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Entry</masterLabel>
+            <translation><!-- No Entry --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Overtime</masterLabel>
+            <translation><!-- Overtime --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Submitted Date --></label>
+        <name>Submitted_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Term Date --></label>
+        <name>Term_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the time difference between WorkStartTime and WorkEndTime to be matched with Daily_Hours_Spent to update the status field through workflow --></help>
+        <label><!-- Time Difference --></label>
+        <name>Time_Difference__c</name>
+    </fields>
+    <fields>
+        <label><!-- Time Off Total --></label>
+        <name>Time_Off_Total__c</name>
+    </fields>
+    <fields>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unpaid Lunch Total --></label>
+        <name>Unpaid_Lunch_Total__c</name>
+    </fields>
+    <fields>
+        <label><!-- User City --></label>
+        <name>User_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Week Start Date --></label>
+        <name>WeekStartDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- Work Hour End Time --></label>
+        <name>Work_Hour_End_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Work Hour Start Time --></label>
+        <name>Work_Hour_Start_Time__c</name>
+    </fields>
+    <layouts>
+        <layout>BHAT Activity Daily Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Parent Weekly --></label>
+            <section>Parent Weekly</section>
+        </sections>
+        <sections>
+            <label><!-- Time Difference Calculation --></label>
+            <section>Time Difference Calculation</section>
+        </sections>
+        <sections>
+            <label><!-- Total Hours Calculation --></label>
+            <section>Total Hours Calculation</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

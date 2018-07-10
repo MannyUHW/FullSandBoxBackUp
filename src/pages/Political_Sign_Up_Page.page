@@ -1,0 +1,60 @@
+<apex:page standardStylesheets="false">
+
+    <head>
+        <style>
+
+            .spaced {
+                margin-top: 20px;
+            }
+
+            #DataGroup {
+                font-size: 2.0em;
+                color: #481C60;
+                font-weight: bold;
+                padding-top: 16px;
+                padding-bottom: 4px;
+            }
+
+        </style>
+    </head>
+    <body>
+    <font size="+1">
+    <dl>
+        <dt></dt>
+        <dd>
+            <div id="DataGroup">Political Events Sign-Up Page</div>
+            <ul>
+
+                            
+                <li class="spaced"><apex:outputLink value="{!$Page.Enter_Election_Shifts}">My Election Shifts</apex:outputLink><br/>
+                </li>
+                
+            
+
+                <li class="spaced"><apex:outputLink value="{!$Page.Enter_Survey_Response}?qcode=JP3">Primary Bootcamp April 27 Staff Sign-Up - Friday, April 27th</apex:outputLink><br/>
+                Logistics details will be posted soon.
+                </li>
+
+                
+                <!--
+                <li class="spaced"><apex:outputLink value="{!$Page.Enter_Survey_Response}?qcode=JP1">Weekend Warrior Sign-Up - Friday, October 14th to 16th</apex:outputLink><br/>
+                </li>
+                -->
+
+                <!--
+                <li class="spaced"><apex:outputLink value="{!$Page.Enter_Survey_Response}?qcode=WWI">Weekend Warrior Sign-Up - Friday, October 21th to 23rd</apex:outputLink><br/>
+                </li>
+                -->
+
+                <!--
+                <li class="spaced"><apex:outputLink value="{!$Page.Enter_Survey_Response}?qcode=WTP">Weekend Warrior Sign-Up - GOTV before November 8th Election Day</apex:outputLink><br/>
+                </li>
+                -->
+            
+            </ul>
+
+        </dd>
+    </dl>
+    </font>
+    </body>
+</apex:page>

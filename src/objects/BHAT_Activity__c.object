@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>BHAT Activity Log</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>ActivityDateMonday__c</fullName>
+        <externalId>false</externalId>
+        <formula>Activity_Date__c - 1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ActivityDateMonday</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Date__c</fullName>
+        <description>Activity Date</description>
+        <externalId>false</externalId>
+        <label>Activity Date</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Activity_Note_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>BHAT_Activity_Note__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Activity Note Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Approved_By__c</fullName>
+        <description>Approved By</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Approved By</inlineHelpText>
+        <label>Approved By</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Approved_Date__c</fullName>
+        <description>Approved Date</description>
+        <externalId>false</externalId>
+        <label>Approved Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>BHAT_Activity_Code__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>BHAT Activity Code</label>
+        <referenceTo>BHAT_Activity_Code__c</referenceTo>
+        <relationshipLabel>BHAT Activities</relationshipLabel>
+        <relationshipName>BHAT_Activities</relationshipName>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>BHAT_Activity_Daily__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>BHAT Activity Daily</label>
+        <referenceTo>BHAT_Activity_Daily__c</referenceTo>
+        <relationshipLabel>BHAT Activities</relationshipLabel>
+        <relationshipName>BHAT_Activities</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>BHAT_Activity_Note_Other__c</fullName>
+        <description>BHAT Sub Category Other</description>
+        <externalId>false</externalId>
+        <label>BHAT Sub Category Other</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BHAT_Activity_Note__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>BHAT Sub Category</description>
+        <externalId>false</externalId>
+        <inlineHelpText>BHAT Sub Category</inlineHelpText>
+        <label>BHAT Sub Category</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>$Source.BHAT_Activity_Code__c</field>
+                <operation>equals</operation>
+                <valueField>BHAT_Activity_Note__c.BHAT_Activity_Code__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>BHAT_Activity_Note__c</referenceTo>
+        <relationshipLabel>BHAT Activities</relationshipLabel>
+        <relationshipName>BHAT_Activities</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>BHAT_Code_and_Short_Desc__c</fullName>
+        <externalId>false</externalId>
+        <formula>BHAT_Activity_Code__r.Name + &apos;-&apos; +  BHAT_Activity_Code__r.Short_Description__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>BHAT Code and Short Desc</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Details__c</fullName>
+        <externalId>false</externalId>
+        <formula>BHAT_Code_and_Short_Desc__c  &amp; &quot;-&quot; &amp;  BHAT_Activity_Note__r.Name &amp; &quot;-&quot; &amp; BHAT_Activity_Note_Other__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Details</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Division</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EEID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Employee_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>EEID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Email_Address__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Email</formula>
+        <label>Email Address</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Hire_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Hire_Date__c</formula>
+        <label>Hire Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Hourly_Employee__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Hourly_Employee__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Hourly_Employee</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hours_Spent__c</fullName>
+        <defaultValue>0</defaultValue>
+        <description>Hours Spent</description>
+        <externalId>false</externalId>
+        <label>Hours Spent</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IsDailyHours__c</fullName>
+        <description>This is going to be referred in trigger to calculate Daily hours</description>
+        <externalId>false</externalId>
+        <formula>AND( NOT( IsTimeOff__c ) ,NOT( IsUnpaidLunch__c ) ,NOT( IsPaidBreak__c ) )</formula>
+        <label>IsDailyHours</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsPaidBreak__c</fullName>
+        <description>This is referred in trigger to exclude activity hours from calculation and do seperate calculation</description>
+        <externalId>false</externalId>
+        <formula>LOWER( BHAT_Activity_Code__r.Name ) == &apos;k&apos;</formula>
+        <label>IsPaidBreak?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsTimeOff__c</fullName>
+        <description>This is to refer in Trigger for calculating Total Time Off in DailyBHAT object</description>
+        <externalId>false</externalId>
+        <formula>ISPICKVAL( BHAT_Activity_Code__r.Activity_Code_Category__c  , &apos;Time Off&apos;)</formula>
+        <label>IsTimeOff?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsUnpaidLunch__c</fullName>
+        <description>This is refered in trigger to exclude activity hours from calculation</description>
+        <externalId>false</externalId>
+        <formula>LOWER( BHAT_Activity_Code__r.Name ) == &apos;u&apos;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>IsUnpaidLunch?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Location__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Location__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Location</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASESAFEID(Owner:User.ManagerId)</formula>
+        <label>Manager Id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name_EEID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.LastName &amp; &quot;, &quot;&amp;  Owner:User.FirstName  &amp; &quot; &quot; &amp;   Owner:User.Employee_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Name EEID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Non_Exempt_Employee__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Non_Exempt_Employee__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Non_Exempt_Employee</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Record_No__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Record No</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Submitted_Date__c</fullName>
+        <description>Submitted Date</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Submitted Date</inlineHelpText>
+        <label>Submitted Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Term_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Term_Date__c</formula>
+        <label>Term Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>UniqueId__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>BHAT Activity unique id; This is populate during insert and update via workflow rule and update field;</description>
+        <externalId>false</externalId>
+        <label>UniqueId</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>User_Name__c</fullName>
+        <description>User Name</description>
+        <externalId>false</externalId>
+        <label>User Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WeekStartDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>BHAT_Activity_Daily__r.WeekStartDate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Week Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>city__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.City</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>city</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>BHAT Activity</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Name_EEID__c</columns>
+        <columns>Activity_Date__c</columns>
+        <columns>BHAT_Code_and_Short_Desc__c</columns>
+        <columns>BHAT_Activity_Note__c</columns>
+        <columns>BHAT_Activity_Note_Other__c</columns>
+        <columns>Hours_Spent__c</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>OWNER.LAST_NAME</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Weekly_Review</fullName>
+        <columns>Name_EEID__c</columns>
+        <columns>Activity_Date__c</columns>
+        <columns>Details__c</columns>
+        <columns>BHAT_Code_and_Short_Desc__c</columns>
+        <columns>BHAT_Activity_Note__c</columns>
+        <columns>BHAT_Activity_Note_Other__c</columns>
+        <columns>Hours_Spent__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>startsWith</operation>
+            <value>kaiser</value>
+        </filters>
+        <label>Weekly Review</label>
+    </listViews>
+    <listViews>
+        <fullName>emp</fullName>
+        <columns>Name_EEID__c</columns>
+        <columns>Activity_Date__c</columns>
+        <columns>Details__c</columns>
+        <columns>BHAT_Code_and_Short_Desc__c</columns>
+        <columns>BHAT_Activity_Note__c</columns>
+        <columns>BHAT_Activity_Note_Other__c</columns>
+        <columns>Hours_Spent__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Name_EEID__c</field>
+            <operation>contains</operation>
+            <value>Sherlina</value>
+        </filters>
+        <filters>
+            <field>Activity_Date__c</field>
+            <operation>equals</operation>
+            <value>THIS_YEAR</value>
+        </filters>
+        <label>emp</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>{000}</displayFormat>
+        <label>BHAT Activity Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>BHAT Activities</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Activity_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>BHAT_Activity_Code__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>BHAT_Activity_Note__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Hours_Spent__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

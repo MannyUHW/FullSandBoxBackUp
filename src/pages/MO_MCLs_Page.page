@@ -1,0 +1,117 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+<div align="center">
+  <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MO_Search_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+  
+<font size="+1"><b>Multi-Column Lists</b></font>
+
+<br>&nbsp;</br>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+
+
+<script language="JavaScript">
+//alert("Start");
+  sessionStorage.setItem("mo_last_page", window.location);
+
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").replace("\"", "").split(",");
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").replace("\"", "").split(",");
+var emids = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").replace("\"", "").split(",");
+var emnames = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").replace("\"", "").split(",");
+var cams = localStorage.getItem("mo_sync_cams").replace("[", "").replace("]","").replace("\"", "").replace("\"", "").split(",");
+
+  try{ 
+
+      sforce.connection.sessionId = "{!$Api.Session_ID}";
+      var query = "SELECT Id, Name FROM MCL_Report__c where (";
+      for (var g = 0; g < cams.length; g++) {
+        if (g > 0) {
+          query += " OR "
+        }
+        query += " UHW_Campaign__c = \'" + cams[g].replace(/"/g, "") + "\' ";
+      }
+      query += ") and (";
+      for (var g = 0; g < emnames.length; g++) {
+        if (g > 0) {
+          query += " OR "
+        }
+        query += " Employer__r.Name = \'" + emnames[g] + "\' ";
+      }
+      query += ")";
+      
+      //alert(query);
+      
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records');  
+      
+      document.write("<br>&nbsp;</br>\n\n\n\n");
+      document.write("MCLs Found = " + records0.length);
+      document.write("<br>&nbsp;</br>\n\n\n\n");
+      document.write("<table cellpadding=\"15\">\n\n");            
+      for(var i=0;i<records0.length;i++){ 
+        document.write("<tr valign=\"top\">\n");
+        document.write("<td align=\"left\"><font size=\"+0\">\n");
+        document.write("<a target=\"_BLANK\" href=\"{! $Page.MCL_Print}?scontrolCaching=1&id=" + records0[i].Id  + "\">");
+        document.write(records0[i].Name);
+        document.write("</a>\n");
+        document.write("</font></td>\n");
+        document.write("</tr>\n");                
+      }
+      document.write("</table>");
+      document.write("<br>&nbsp;</br>\n\n\n\n");
+
+      
+  } catch(e){ 
+    alert('An Error has Occured. Error:' +e); 
+  }
+
+</script>
+
+<br>&nbsp;</br>
+
+<i>CONFIDENTIAL</i>
+</div>
+</apex:page>

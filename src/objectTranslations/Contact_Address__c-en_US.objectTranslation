@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Contact Address</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Contact Addresses</value>
+    </caseValues>
+    <fields>
+        <label><!-- Assistant Name --></label>
+        <name>AssistantName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bad Address --></label>
+        <name>Bad_Address__c</name>
+        <picklistValues>
+            <masterLabel>Maybe</masterLabel>
+            <translation><!-- Maybe --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Probable</masterLabel>
+            <translation><!-- Probable --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes</masterLabel>
+            <translation><!-- Yes --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- City --></label>
+        <name>City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Comment --></label>
+        <name>Comment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact Name --></label>
+        <name>Contact_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Contact Addresses --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Do Not Visit --></label>
+        <name>Do_Not_Visit__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer Name --></label>
+        <name>Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- FID --></label>
+        <name>FID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Geolocation --></label>
+        <name>Geolocation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Information Source --></label>
+        <name>Information_Source__c</name>
+        <picklistValues>
+            <masterLabel>Card</masterLabel>
+            <translation><!-- Card --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Catalist</masterLabel>
+            <translation><!-- Catalist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>EList</masterLabel>
+            <translation><!-- EList --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Employer</masterLabel>
+            <translation><!-- Employer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lexis-Nexus</masterLabel>
+            <translation><!-- Lexis-Nexus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>License List 2014</masterLabel>
+            <translation><!-- License List 2014 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Migrated from Contact</masterLabel>
+            <translation><!-- Migrated from Contact --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TargetSmart</masterLabel>
+            <translation><!-- TargetSmart --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Verbal</masterLabel>
+            <translation><!-- Verbal --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Original Created By --></label>
+        <name>Original_Created_By__c</name>
+        <relationshipLabel><!-- Contact Addresses --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Original Entry Datetime --></label>
+        <name>Original_Entry_Datetime__c</name>
+    </fields>
+    <fields>
+        <label><!-- PostalCode --></label>
+        <name>PostalCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- Primary Address --></label>
+        <name>Primary_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Same as Mailing --></label>
+        <name>Same_as_Mailing__c</name>
+    </fields>
+    <fields>
+        <label><!-- State --></label>
+        <name>State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Street View --></label>
+        <name>Street_View__c</name>
+    </fields>
+    <fields>
+        <label><!-- Street --></label>
+        <name>Street__c</name>
+    </fields>
+    <layouts>
+        <layout>Contact Address Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- The Postal Code/Zip must be 5 digits. --></errorMessage>
+        <name>Postal_Code_Must_Be_Five</name>
+    </validationRules>
+</CustomObjectTranslation>

@@ -1,0 +1,1484 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.jquery_2_1_3_min}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jQueryUiMinZip2,'jquery-ui.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.agGridMinZip400,'ag-grid.min.js')}"/>
+        <apex:includeScript value="{!$Resource.FileSaver}"/>
+
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.theme.min.css')}"/>
+
+        <style>
+
+            /* removes outline dots from button when it gets focus */
+            :focus {outline:none;}
+            ::-moz-focus-inner {border:0;}
+
+            .highlight-row {
+                /* background-color: #DDEEFF; */
+                background-color: rgba(235,227,228,1);
+            }
+
+            .SaveAs {
+                visibility:hidden;
+                float: right;
+                margin-right: 9px;
+                font-size: 1.4em !important;
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+            }
+
+            .FilterInput {
+                visibility:hidden;
+                float:left;
+                margin-left: 3px;
+                width: 300px;
+                font-size: 1.4em !important;
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+            }
+
+            #PoliticalTime {
+                float:left;
+                margin-left: 0px;
+                margin-right: 0px;
+                width: 80%;
+                background-color: linen;
+                min-height: 224px;
+                overflow-y: auto;
+            }
+
+            #StatusDiv {
+                float: left;
+                min-height: 224px;
+                width: 20%;
+                background-color: #DDE9DD;
+                overflow-y: auto;
+            }
+
+            /* Equal Height divs technique found at http://matthewjamestaylor.com/blog/equal-height-columns-cross-browser-css-no-hacks
+
+              Start of Column CSS
+            */
+            #container2 {
+                clear:left;
+                float:left;
+                width:100%;
+                overflow:hidden;
+                background-color: #DDE9DD;
+            }
+            #container1 {
+                float:left;
+                width:100%;
+                position:relative;
+                right:50%;
+                background-color: linen;
+                margin-left: 0px;
+                margin-right: 0px;
+            }
+            #col1 {
+                background-color: azure;
+                float:left;
+                width:80%;
+                position:relative;
+                left:50%;
+                overflow:hidden;
+            }
+            #col2 {
+                float:left;
+                width:20%;
+                position:relative;
+                left:50%;
+                overflow:hidden;
+            }
+            /* --> */
+
+            #NoPrefs {
+                font-size: 1.1em;
+                margin-left: 10%;
+            }
+
+            #SelectedRows {
+                float: left;
+                height:500px;
+                width:450px;
+                background-color: lightslategrey;
+            }
+
+            #BhatGrid {
+                height:340px;
+                width:450px;
+                float:left;
+            }
+
+            #MainGrid,#DetailSummaryGrid,#DetailWeeklyGrid,#DetailGrid {
+                height:0;
+            }
+
+            .right-align {
+                text-align: right;
+            }
+
+            .center-align {
+                text-align: center;
+            }
+
+            #ExportButton {
+                margin-top: 5px;
+                width: 121px;
+                height: 27px;
+            }
+
+            #Eb1 {
+                display: inline-block;
+                float: left;
+            }
+
+            #Eb2 {
+                background-color: lightsalmon;
+                font-size: 2em;
+                margin-left: 46%;
+            }
+
+            body {
+                max-width: 1385px;
+            }
+
+            #PageTitle {
+                background-color: lightsalmon;
+                font-size: 2em;
+                text-align: center;
+            }
+
+            .section {
+                height: 40px;
+                background-color: lightsalmon;
+                padding-top: 6px;
+            }
+
+            .sectionText {
+                text-align: center;
+                font-size: 2em;
+                float:left;
+                width: 50%;
+                margin-left: 21px;
+                /*                border: 1px solid white; */
+            }
+
+            #FinalDiv, #DetailSummaryDiv, #DetailWeeklyDiv, #DetailDiv {
+                border : 1px solid green;
+            }
+
+            #QueryStatus {
+                display: inline-block;
+            }
+
+            #QueryButton {
+                font-size: 1.1em;
+            }
+
+            #ControlsContainer {
+                background-color: aliceblue;
+                height: 33px;
+                padding-top: 14px;
+            }
+
+            #label1 {
+                font-size: 1.1em;
+                margin-left: 10%;
+            }
+
+            #label2 {
+                font-size: 1.1em;
+                color:lightsalmon;
+            }
+
+            #label3 {
+                font-size: 1.1em;
+                color:lightsalmon;
+            }
+
+            .DescCheckBoxLabel {
+                padding-left: 5px;
+            }
+
+            .checkboxInput {
+                margin-top: 3px;
+                margin-left: 6px;
+            }
+
+            .DescCheckboxDiv {
+                padding-left: 2px;
+                padding-top: 2px;
+                margin-left: 10px;
+                margin-bottom: 2px;
+                float: left;
+                width: 458px;
+                height: 21px;
+            }
+
+            .TitleDesc {
+                text-align: center;
+                font-size: 1.1em;
+                font-weight: bold;
+                margin-top: 5px;
+                padding-top: 6px;
+                padding-bottom: 11px;
+                clear: both;
+            }
+
+            #PoliticalTimeContainer {
+                min-height: 224px;
+                overflow-y: auto;
+            }
+
+            #ContentDiv {
+                clear: both;
+                border:1px solid lightsalmon;
+                margin-top: 1px;
+                margin-left: 1px;
+            }
+
+            #PrefsDiv {
+                clear: both;
+                border:1px solid lightsalmon;
+                margin-top: 1px;
+                margin-left: 1px;
+                min-height: 466px;
+            }
+
+            #title {
+                font-size: 22px;
+                float: left;
+                width: 750px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+    <script type="text/javascript">
+
+        function myCallback() {
+            alert('one tick');
+            ticks++;
+            now           = new Date();
+            localDateTime = (now.toLocaleTimeString());
+            queryStatus.innerHTML = 'Tick ' + ticks;
+        }
+
+        function findPoliticalTime(){
+            var d1;
+            var d2;
+            var s1;
+            var s2;
+            var test;
+
+            statusDiv.innerHTML = '';
+
+            d1 = $("#startDatePicker").datepicker("getDate");
+            d2 = $("#endDatePicker").datepicker("getDate");
+
+            if(d1 == null || d2 == null) {
+                alert('Please enter a date range');
+                return;
+            }
+
+            if(twoWeekCheck.checked) {
+                test = dateDiffInDays(d1,d2) +1;
+                if(test != 14) {
+                    if(test == 1)
+                        alert("Your date range is for 1 day - Please enter a 2 week period or uncheck the option.");
+                    else
+                        alert("Your date range is for " + test + " days. - Please enter a 2 week period or uncheck the option.");
+
+                    return;
+                }
+            }
+
+            intervalID = window.setInterval(myCallback, 1000);
+
+            s1 = d1.toISOString();
+            s2 = d2.toISOString();
+            startDateStr = s1.substr(0,10);
+            endDateStr   = s2.substr(0,10);
+
+            var query = " SELECT EEID__c,Name_EEID__c FROM BHAT_Activity__c WHERE Activity_Note_Name__c In (" + checkString + ") AND " +
+                    " BHAT_Activity_Daily__r.WeekStartDate__c >= " + startDateStr + " AND BHAT_Activity_Daily__r.WeekStartDate__c <= " + endDateStr;
+
+            //            try {
+            var queryResults = sforce.connection.query(query);
+            processPolTimeFind(queryResults);
+            //            }
+            //            catch(e) {alert('An error occurred retrieving from BHAT_Activity__c: ' + e.faultstring);}
+        }
+
+        function processPolTimeFind(results){
+            var processedAll;
+            var polTimeRecords;
+            var eeid;
+            var name;
+            var i;
+
+            var recCnt;
+            var batCnt;
+
+            nameArray    = [];
+            eeidArray    = [];
+            eeidMap      = {};
+            polRecCount  = 0;
+            uniqueIdCnt  = 0;
+            recCnt       = 0;
+            batCnt       = 0;
+            stepCnt      = 0;
+
+            statusMsg('Step 1 - Searching');
+            while (!processedAll) {
+                polTimeRecords = results.getArray('records');
+                for (i = 0; i < polTimeRecords.length; i++) {
+                    recCnt++;
+                    eeid = polTimeRecords[i].EEID__c;
+                    name = polTimeRecords[i].Name_EEID__c;
+                    if(!eeidMap[eeid]) {
+                        eeidMap[eeid] = name;
+                        eeidArray.push("'" + eeid + "'");
+                        nameArray.push("'" + name + "'");
+                        uniqueIdCnt++;
+                    }
+                }
+
+                if (results.done == 'true') {
+                    processedAll = true;
+                }
+                else {
+                    batCnt++;
+                    queryStatus.innerHTML = 'Searching (batch: ' + batCnt + ')';
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+            }
+
+            if(uniqueIdCnt > 0) {
+                if(batCnt > 0)
+                    statusMsg('Search complete (batch count : ' + batCnt + ')' );
+
+                statusMsg('Step 2 - Retrieving details');
+                loadSalary();
+                loadDetail();
+            }
+            else {
+                window.clearInterval(intervalID);
+                queryStatus.innerHTML += 'No one found';
+                statusMsg('No one found');
+            }
+        }
+
+        function loadSalary() {
+            var query;
+
+            eeidList = eeidArray.join();
+            query = " SELECT Bi_Weekly_Wage__c,Employee_ID__c,Name,Title " +
+                    " FROM User " +
+                    " WHERE Employee_ID__c IN ( " + eeidList + ")";
+
+            statusMsg('Step 3 - Retrieving salary data');
+            var queryResults = sforce.connection.query(query);
+            processSalary(queryResults);
+        }
+
+        function processSalary(results){
+            var records;
+            var biWeeklyWage;
+            var employeeId;
+            var employeeName;
+            var employeeTitle;
+
+            salaryMap = {};
+
+            records = results.getArray('records');
+            for (i = 0; i < records.length; i++) {
+                biWeeklyWage  = records[i].Bi_Weekly_Wage__c;
+                employeeId    = records[i].Employee_ID__c;
+                employeeName  = records[i].Name;
+                employeeTitle = records[i].Title;
+
+                if(!salaryMap[employeeId])
+                    salaryMap[employeeId] = {Name:employeeName, Title:employeeTitle, BiWeeklyWage:biWeeklyWage};
+            }
+        }
+
+        function loadDetail() {
+            var nameList;
+            var query;
+
+            nameList = nameArray.join();
+            query = " SELECT Activity_Date__c,Activity_Note_Name__c,BHAT_Activity_Note_Other__c,BHAT_Activity_Code__r.Name,BHAT_Code_and_Short_Desc__c,EEID__c,Details__c,Hours_Spent__c,Name_EEID__c,WeekStartDate__c " +
+                    " FROM BHAT_Activity__c " +
+                    " WHERE BHAT_Activity_Daily__r.WeekStartDate__c  >= " + startDateStr + " AND BHAT_Activity_Daily__r.WeekStartDate__c <= " + endDateStr + " AND Name_EEID__c IN ( " + nameList + ") " +
+                    " ORDER BY BHAT_Activity_Daily__r.WeekStartDate__c,Activity_Date__c,Name_EEID__c,BHAT_Activity_Code__r.Name";
+
+            var queryResults = sforce.connection.query(query);
+            processDetail(queryResults);
+        }
+
+        function processDetail(results){
+
+            var key;
+            var mapKey;
+            var processedAll;
+            var records;
+            var rec;
+            var eeid;
+            var i;
+
+            var activity;
+            var total;
+            var politicalActivity;
+            var politicalActivityTotal;
+            var politicalActivityTotalPC;
+            var politicalActivityInKind;
+
+            var activityDate;
+            var activityNoteName;
+            var bhatActivityNoteOther;
+            var bhatActivityCode;
+            var bhatCodeAndShortDesc;
+            var details;
+            var hoursSpent;
+            var nameEEID;
+            var weekStart;
+
+            var recCnt;
+            var batCnt;
+            var biWeeklyWage;
+            var politicalInKind;
+            var periodRecords;
+
+            var pActivityTotal;
+            var pActivityTotalPC;
+            var pActivityInKind;
+            var hoursFormatted;
+
+            var pPolitical;
+            var pOther;
+            var pTotalHours;
+            var pPoliticalPC;
+            var pOtherPC;
+            var pBiWeeklyWage;
+            var pInKind;
+            var rowHighlight;
+
+            mainDataArray          = [];
+            detailDataArray        = [];
+            detailWeeklyDataArray  = [];
+            detailSummaryDataArray = [];
+
+            detailMap            = {};
+            periodMap            = {};
+            politicalActivityMap = {};
+            otherActivityMap     = {};
+            catMap               = {};
+            nameArray            = [];
+            polRecCount          = 0;
+            recCnt               = 0;
+            batCnt               = 0;
+
+            statusMsg('Step 4 - Retrieving time data');
+
+            var detailWeekMap = {};
+            while (!processedAll) {
+                records = results.getArray('records');
+                for (i = 0; i < records.length; i++) {
+                    recCnt++;
+                    activityDate          = records[i].Activity_Date__c;
+                    activityNoteName      = records[i].Activity_Note_Name__c;
+                    bhatActivityNoteOther = records[i].BHAT_Activity_Note_Other__c;
+
+                    if(records[i].BHAT_Activity_Code__r)
+                        bhatActivityCode      = records[i].BHAT_Activity_Code__r.Name;
+                    else
+                        bhatActivityCode      = '*';
+
+                    if(boxIsChecked(activityNoteName))
+                        rowHighlight = 'Y';
+                    else
+                        rowHighlight = 'N';
+
+                    bhatCodeAndShortDesc  = records[i].BHAT_Code_and_Short_Desc__c;
+                    details               = records[i].Details__c;
+                    eeid                  = records[i].EEID__c;
+                    nameEEID              = records[i].Name_EEID__c;
+                    weekStartDate         = records[i].WeekStartDate__c;
+                    hoursSpent            = parseFloat(records[i].Hours_Spent__c);
+                    hoursFormatted = number_format(hoursSpent,2);
+                    detailDataArray.push({Highlight: rowHighlight, ActivityDate:activityDate,NameEEID:nameEEID,HoursSpent:hoursFormatted,Details:details,ActivityNoteName:activityNoteName,BhatActivityNoteOther:bhatActivityNoteOther,BhatActivityCode:bhatActivityCode,BhatCodeAndShortDesc:bhatCodeAndShortDesc,WeekStartDate:weekStartDate});
+
+                    if (!detailWeekMap[weekStartDate + nameEEID + activityNoteName])
+                        detailWeekMap[weekStartDate + nameEEID + activityNoteName] = {WeekStartDate:weekStartDate,EEID:eeid,NameEEID:nameEEID,Activity:activityNoteName,Total:hoursSpent};
+                    else
+                        detailWeekMap[weekStartDate + nameEEID + activityNoteName].Total += hoursSpent;
+                }
+
+                if (results.done == 'true')
+                    processedAll = true;
+                else {
+                    batCnt++;
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+            }
+
+            statusMsg('Step 5 - Populating detail table');
+            for(mapKey in detailWeekMap) {
+                rec = detailWeekMap[mapKey];
+                weekStart = rec.WeekStartDate;
+                nameEEID  = rec.NameEEID;
+                activity  = rec.Activity;
+                total     = number_format(rec.Total,2);
+                detailWeeklyDataArray.push({WeekStart:weekStart,NameEEID:nameEEID,Activity:activity,Total:total});
+
+                if(!periodMap[nameEEID])
+                    periodMap[nameEEID] = {EEID:rec.EEID};
+
+                if(checkedMap[activity]) {
+                    if(!periodMap[nameEEID][activity])
+                        periodMap[nameEEID][activity] = {Total:total};
+                    else
+                        periodMap[nameEEID][activity].Total += total;
+                }
+                else {
+                    if(!periodMap[nameEEID]['Other'])
+                        periodMap[nameEEID]['Other'] = {Total:total};
+                    else
+                        periodMap[nameEEID]['Other'].Total += total;
+                }
+            }
+
+            nameSummaryMap = {};
+            var periodSummaryMap = {};
+            statusMsg('Step 6 - Calculating percentages');
+
+            for(mapKey in periodMap) {
+                periodRecords    = periodMap[mapKey];
+                eeid             = periodRecords.EEID;
+                periodTotalHours = 0.0;
+                periodPolitical  = 0.0;
+                periodOther      = 0.0;
+                for(key in periodRecords) {
+                    if(key != 'EEID') {
+                        rec = periodRecords[key];
+                        periodTotalHours += rec.Total;
+
+                        if(checkedMap[key])
+                            periodPolitical += rec.Total;
+                        else
+                            periodOther     += rec.Total;
+                    }
+                }
+
+                periodPoliticalPC  = (periodPolitical / periodTotalHours) * 100;
+                periodOtherPC      = (periodOther     / periodTotalHours) * 100;
+                biWeeklyWage       = parseFloat(salaryMap[eeid].BiWeeklyWage);
+
+                if(biWeeklyWage > 0)
+                    politicalInKind = biWeeklyWage  * (periodPoliticalPC / 100);
+                else
+                    politicalInKind = 0.0;
+
+                pPolitical    = number_format(periodPolitical,2);
+                pOther        = number_format(periodOther,2);
+                pTotalHours   = number_format(periodTotalHours,2);
+                pPoliticalPC  = number_format(periodPoliticalPC,2);
+                pOtherPC      = number_format(periodOtherPC,2);
+                pBiWeeklyWage = number_format(biWeeklyWage,2);
+                pInKind       = number_format(politicalInKind,2);
+
+                periodSummaryMap[mapKey] = {
+                    PeriodPolitical   : periodPolitical,
+                    PeriodOther       : periodOther,
+                    PeriodTotalHours  : periodTotalHours,
+                    PeriodPoliticalPC : periodPoliticalPC,
+                    PeriodOtherPC     : periodOtherPC,
+                    BiWeeklyWage      : biWeeklyWage,
+                    PoliticalInKind   : politicalInKind
+                };
+                detailSummaryDataArray.push({NameEEID:mapKey,PoliticalTotal:pPolitical,OtherTotal:pOther,PeriodTotalHours:pTotalHours,PeriodPoliticalPC:pPoliticalPC,PeriodOtherPC:pOtherPC,BiWeeklyWage:pBiWeeklyWage,PoliticalInKind:pInKind});
+            }
+
+            statusMsg('Step 7 - Populating Final table');
+            for(mapKey in periodMap) {
+                periodRecords    = periodMap[mapKey];
+                eeid             = periodRecords.EEID;
+                for(key in periodRecords) {
+                    if(key != 'EEID') {
+                        if(checkedMap[key]) {
+                            psmRec = periodSummaryMap[mapKey];
+                            politicalActivity        = periodRecords[key];
+                            politicalActivityTotal   = politicalActivity.Total;
+                            politicalActivityTotalPC = (politicalActivityTotal / psmRec.PeriodTotalHours) * 100;
+                            politicalActivityInKind  = psmRec.BiWeeklyWage * (politicalActivityTotalPC / 100);
+
+                            pActivityTotal   = number_format(politicalActivityTotal,2);
+                            pActivityTotalPC = number_format(politicalActivityTotalPC,2);
+                            pActivityInKind  = number_format(politicalActivityInKind,2);
+                            mainDataArray.push({NameEEID:mapKey,PoliticalActivity:key,PoliticalHours:pActivityTotal,PoliticalPercent:pActivityTotalPC,InKindTotal:pActivityInKind});
+                        }
+                    }
+                }
+            }
+
+            window.clearInterval(intervalID);
+
+            displayGrids();
+            statusMsg('Step 8 - Finished');
+            statusMsg('-----------------');
+
+            if (uniqueIdCnt > 1)
+                statusStr = 'Found ' + uniqueIdCnt + ' People';
+            else
+                statusStr = 'Found 1 Person';
+            statusMsg(statusStr);
+
+            statusMsg('Final   record count: ' + number_format(mainDataArray.length,0));
+            statusMsg('Summary record count: ' + number_format(detailSummaryDataArray.length,0));
+            statusMsg('Weekly  record count: ' + number_format(detailWeeklyDataArray.length,0));
+            statusMsg('Detail  record count: ' + number_format(detailDataArray.length,0));
+        }
+
+        function loadBHATcodes() {
+
+            var query = " SELECT Name, Activity_Note_Description__c, BHAT_Activity_Code__r.Name, BHAT_Activity_Code__r.Short_Description__c " +
+                    " FROM BHAT_Activity_Note__c Order By BHAT_Activity_Code__r.Full_Activity_Name__c, Activity_Note_Description__c";
+            var queryResults = sforce.connection.query(query);
+
+            processBHATcodes(queryResults);
+        }
+
+        function loadBHATdesciptions() {
+
+            var query = " SELECT Name,Full_Activity_Name__c FROM BHAT_Activity_Code__c ORDER BY Full_Activity_Name__c ASC NULLS FIRST ";
+
+            //     try {
+            var queryResults = sforce.connection.query(query);
+            processBHATdesciptions(queryResults);
+            //      }
+            //      catch(e) {alert('An error occurred retrieving from BHAT_Activity_Code__c: ' + e.faultstring);}
+        }
+
+        function boxIsChecked(pName) {
+            var exists = false;
+            var i;
+
+            for(i=0;i<userBoxCheckedArray.length;i++) {
+                if(userBoxCheckedArray[i] == pName) {
+                    exists = true;
+                    break;
+                }
+            }
+            return exists;
+        }
+
+        function prefIsSet(pCode) {
+            var cookieArray = [];
+            var exists = false;
+            var i;
+
+            cookieArray = prefsCookie.split(',');
+            for(i=0;i<cookieArray.length;i++) {
+                if(cookieArray[i] == pCode) {
+                    exists = true;
+                    break;
+                }
+            }
+            return exists;
+        }
+
+        function processBHATdesciptions(results){
+            var i;
+            var bhatRecords;
+            var bhatCode;
+            var bhatDesc;
+            var bhatDescStr;
+            var alreadyChecked;
+
+            bhatDataArray = [];
+            bhatDescMap   = {};
+            prefsCookie   = docCookies.getItem("PoliticalTimeCodes");
+
+            bhatRecords = results.getArray('records');
+            for (i = 0; i < bhatRecords.length; i++) {
+                alreadyChecked = false;
+                bhatDesc       = bhatRecords[i].Full_Activity_Name__c;
+                bhatCode       = bhatRecords[i].Name;
+                bhatDescStr    = bhatDesc.substr(bhatDesc.indexOf('-') +1);
+                if(!bhatDescMap[bhatCode]) {
+                    bhatDescMap[bhatCode] = {Desc: bhatDescStr};
+                    if (prefsCookie && prefIsSet(bhatCode))
+                        alreadyChecked = true;
+
+                    bhatDataArray.push({Code:bhatCode, Desc:bhatDescStr, Checked:alreadyChecked });
+                }
+            }
+
+            bhatGridOptions = {
+                columnDefs: bhatColumnDefs,
+                rowSelection: 'multiple',
+                suppressRowClickSelection: true,
+                rowData:    bhatDataArray
+            };
+            new agGrid.Grid(bhatDiv,  bhatGridOptions);
+            bhatGridOptions.api.forEachNode(preCheck);
+            bhatGridOptions.onSelectionChanged = bhatSelectionChanged;
+        }
+
+        function preCheck(params) {
+            if(params.data.Checked)
+                params.setSelected(true);
+        }
+
+        function bhatSelectionChanged() {
+            var selectedRows = bhatGridOptions.api.getSelectedRows();
+            var codesString = '';
+            selectedRows.forEach( function(selectedRow, index) {
+                if (index!=0) {
+                    codesString += ',';
+                }
+                codesString += selectedRow.Code;
+            });
+            docCookies.setItem('PoliticalTimeCodes', codesString, Infinity);
+            populateDivs();
+        }
+
+        function processBHATcodes(results){
+            var i;
+            var noteDesc;
+            var bhatRecords;
+            var bhatCode;
+            var bhatName;
+            var bhatDesc;
+            var prefCode;
+
+            bhatMap = {};
+
+            bhatRecords = results.getArray('records');
+
+            // Need to fudge missing 'K' code description.
+            bhatMap['K'] = {};
+            bhatMap['K']['Paid Break Time'] = { Code: 'K', Name: 'Paid Break Time', Desc: 'Paid Break Time', ShortDesc: 'Paid Break Time'};
+
+            for (i = 0; i < bhatRecords.length; i++) {
+                noteDesc = bhatRecords[i].Name;
+                if(bhatRecords[i].BHAT_Activity_Code__r) {
+                    bhatCode = bhatRecords[i].BHAT_Activity_Code__r.Name;
+                    bhatName = bhatRecords[i].BHAT_Activity_Code__r.Full_Activity_Name__c;
+                    bhatDesc = bhatRecords[i].BHAT_Activity_Code__r.Short_Description__c;
+                }
+                else {
+                    bhatCode = '*';
+                    bhatName = '*';
+                    bhatDesc = '#';
+                }
+
+                if(!bhatMap[bhatCode])
+                    bhatMap[bhatCode] = {};
+
+                if(!bhatMap[bhatCode][noteDesc])
+                    bhatMap[bhatCode][noteDesc] = { Code: bhatCode, Name: bhatName, Desc: noteDesc, ShortDesc: bhatDesc};
+            }
+        }
+
+        function populateDivs() {
+            var codeMapKey;
+            var mapKey;
+            var descTitle;
+            var desc;
+
+            while (politicalTime.firstChild) {
+                politicalTime.removeChild(politicalTime.firstChild);
+            }
+
+            prefsCookie = docCookies.getItem("PoliticalTimeCodes");
+            if(!prefsCookie) {
+                noPrefs = makeTitle('Please set some perferences');
+                politicalTime.appendChild(noPrefs);
+            }
+            else {
+                for (codeMapKey in bhatDescMap) {
+                    desc = '(' + codeMapKey + ') ' + bhatDescMap[codeMapKey].Desc;
+                    descTitle = makeTitle(desc);
+                    if (prefIsSet(codeMapKey))
+                        politicalTime.appendChild(descTitle);
+
+                    for (mapKey in bhatMap[codeMapKey]) {
+                        newCB = makeCheckBox(mapKey);
+                        if (prefIsSet(codeMapKey))
+                            politicalTime.appendChild(newCB);
+                    }
+                }
+            }
+        }
+
+        function makeCheckBox(pLabel) {
+            var newDiv;
+            var newCheckBox;
+            var checkBoxLabel;
+
+            newDiv            = document.createElement('div');
+            checkBoxLabel     = document.createElement("Label");
+            newCheckBox       = document.createElement('input');
+            newCheckBox.type  = 'checkbox';
+            newCheckBox.id    = pLabel;
+            newCheckBox.value = pLabel;
+
+            checkBoxLabel.setAttribute("for", pLabel);
+            checkBoxLabel.innerHTML = pLabel;
+            checkBoxLabel.setAttribute('class', 'DescCheckBoxLabel');
+
+            newDiv.appendChild(newCheckBox);
+            newDiv.appendChild(checkBoxLabel);
+            newDiv.setAttribute('class', 'DescCheckboxDiv');
+
+            return newDiv;
+        }
+
+        function statusMsg(pMsg) {
+            var msgDiv;
+            var msgTN;
+
+            stepCnt ++;
+            msgDiv = document.createElement('div');
+            msgTN  = document.createTextNode(pMsg);
+            msgDiv.appendChild(msgTN);
+            msgDiv.setAttribute('class', 'StatusMsg');
+            statusDiv.appendChild(msgDiv);
+        }
+
+        function makeTitle(pLabel) {
+            var descDiv;
+            var descTN;
+
+            descDiv = document.createElement('div');
+            descTN  = document.createTextNode(pLabel);
+            descDiv.appendChild(descTN);
+            descDiv.setAttribute('class', 'TitleDesc');
+
+            return descDiv;
+        }
+
+        function checksOK() {
+            var i;
+            var checks;
+            var category;
+
+            checkedMap          = {};
+            userCheckedArray    = [];
+            userBoxCheckedArray = [];
+            checkString         = '';
+
+            checks = politicalTime.getElementsByTagName('input');
+            for(i=0;i<checks.length;i++) {
+                if(checks[i].checked) {
+                    category = checks[i].value;
+                    userBoxCheckedArray.push(category);
+                    userCheckedArray.push("'" + category + "'");
+                    checkedMap[category] = category;
+                }
+            }
+
+            if(userCheckedArray.length > 0) {
+                checkString = userCheckedArray.join();
+                return true;
+            }
+            else
+                return false;
+        }
+
+        function exportClickListener(event) {
+            exportData();
+        }
+
+        function queryClickListener(event) {
+
+            if(shownBefore) {
+                setControls('hidden');
+                mainGridDiv.setAttribute("style","height:"      + resize(0,0));
+                detailSummaryDiv.setAttribute("style","height:" + resize(0,0));
+                detailWeeklyDiv.setAttribute("style","height:"  + resize(0,0));
+                detailDiv.setAttribute("style","height:"        + resize(0,0));
+            }
+
+            if(checksOK())
+                findPoliticalTime();
+            else
+                alert('Please select at least 1 Worker Politics category to report on');
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = '';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        // Found at http://stackoverflow.com/questions/3224834/get-difference-between-2-dates-in-javascript/15289883#15289883
+        function dateDiffInDays(a, b) {
+            // a and b are javascript Date objects
+            // Discard the time and time-zone information.
+            var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+            var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+            return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+        }
+
+        function exportData() {
+            var successful;
+            var colCount;
+            var rowCount;
+            var colPtr;
+            var rowPtr;
+            var output;
+            var cell;
+
+            now           = new Date();
+            localDateTime = (now.toLocaleTimeString());
+            nowDate       = (now.toDateString());
+
+            output  = 'Political Time \n';
+            output += 'BHAT Data as of \t' + nowDate + ", " + localDateTime + "\n\n";
+
+            colCount = finalTableData.getNumberOfColumns()-1;
+            rowCount = finalTableData.getNumberOfRows()-1;
+            for(colPtr=0;colPtr<colCount;colPtr++) {
+                output += finalTableData.getColumnLabel(colPtr) + '\t';
+            }
+            output += '\n';
+
+            for(rowPtr=0;rowPtr<rowCount;rowPtr++) {
+                for(colPtr=0;colPtr<colCount;colPtr++) {
+                    cell = finalTableData.getValue(rowPtr,colPtr);
+                    if(cell)
+                        output += cell + '\t';
+                    else
+                        output += '\t';
+                }
+                output += '\n';
+            }
+            output += '\n\n';
+
+            var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "PoliticalTime.txt");
+        }
+
+        function valueGetter1(params) {
+            return 'test test';
+        }
+
+        function initAgGrid() {
+
+            initialMainSort = [
+                {colId: 'NameEEID', sort: 'asc'}
+            ];
+
+            bhatColumnDefs = [
+                {headerName: 'Code',              field: 'Code', width:  60,cellClass: 'center-align', checkboxSelection: true},
+                {headerName: 'Description',       field: 'Desc', width: 330}
+            ];
+
+            mainColumnDefs = [
+                {headerName: 'Name, EEID',         field: 'NameEEID',          width: 223, sortingOrder: ['asc','desc']},
+                {headerName: 'Political Activity', field: 'PoliticalActivity', width: 380, sortingOrder: ['asc','desc']},
+                {headerName: 'Political Hours',    field: 'PoliticalHours',    width: 130, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Political %',        field: 'PoliticalPercent',  width: 130, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'In-Kind $',          field: 'InKindTotal',       width: 130, cellClass: 'right-align', suppressMenu: true}
+            ];
+
+            detailSummaryColumnDefs = [
+                {headerName: 'Name, EEID',        field: 'NameEEID',          width: 223, sortingOrder: ['asc','desc']},
+                {headerName: 'Political Total',   field: 'PoliticalTotal',    width: 130, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Other Total',       field: 'OtherTotal',        width: 130, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Period Total',      field: 'PeriodTotalHours',  width: 130, cellClass: 'right-align', suppressMenu: true},
+                {headerName: '% Political Time',  field: 'PeriodPoliticalPC', width: 130, cellClass: 'right-align', suppressMenu: true},
+                {headerName: '% Other Time',      field: 'PeriodOtherPC',     width: 130, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'BiWeeklyWage',      field: 'BiWeeklyWage',      width: 130, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'In-Kind $',         field: 'PoliticalInKind',   width: 130, cellClass: 'right-align', suppressMenu: true}
+            ];
+
+            detailWeeklyColumnDefs = [
+                {headerName: 'WeekStart',         field: 'WeekStart', width: 100, sortingOrder: ['asc','desc']},
+                {headerName: 'Name, EEID',        field: 'NameEEID',  width: 223, sortingOrder: ['asc','desc']},
+                {headerName: 'Activity',          field: 'Activity',  width: 350, sortingOrder: ['asc','desc']},
+                {headerName: 'Total',             field: 'Total',     width: 130, cellClass: 'right-align', suppressMenu: true}
+            ];
+
+            rowBackgroundClassRules = {
+                'highlight-row' : function(params) {
+                    return params.data.Highlight == 'Y';
+                }
+            };
+
+            detailColumnDefs = [
+                {headerName: 'Date',              field: 'ActivityDate',          width: 100, sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {headerName: 'Name',              field: 'NameEEID',              width: 223, sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {headerName: 'Hours',             field: 'HoursSpent',            width:  75, sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules, cellClass: 'right-align',suppressMenu: true, },
+                {headerName: 'Details',           field: 'Details',               width: 450, sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {headerName: 'Note Name',         field: 'ActivityNoteName',      width: 420, sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {headerName: 'Note',              field: 'BhatActivityNoteOther', width: 400, sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {headerName: 'Code + Short Desc', field: 'BhatCodeAndShortDesc',  width: 200, sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {headerName: 'Week Start',        field: 'WeekStartDate',         width: 100, sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules}
+            ];
+        }
+
+        function resize(pLen,pMin) {
+            var retVal;
+
+            if(pLen > 20)
+                retVal = 693;
+            else
+                retVal = pLen * 33;
+
+            if(retVal < pMin)
+                retVal = pMin;
+
+            return retVal;
+        }
+
+        function displayGrids() {
+
+            if(shownBefore) {
+                mainGridOptions.api.destroy();
+                summaryGridOptions.api.destroy();
+                weeklyGridOptions.api.destroy();
+                detailGridOptions.api.destroy();
+            }
+            else shownBefore = true;
+
+            mainGridOptions = {
+                debug:true,
+                columnDefs: mainColumnDefs,
+                rowData: mainDataArray,
+                enableSorting: true,
+                enableFilter: true
+            };
+
+            summaryGridOptions = {
+                columnDefs: detailSummaryColumnDefs,
+                rowData: detailSummaryDataArray,
+                enableSorting: true,
+                enableFilter: true
+            };
+
+            weeklyGridOptions = {
+                columnDefs: detailWeeklyColumnDefs,
+                rowData: detailWeeklyDataArray,
+                enableSorting: true,
+                enableFilter: true
+            };
+
+            detailGridOptions = {
+                columnDefs: detailColumnDefs,
+                rowData: detailDataArray,
+                enableSorting: true,
+                enableFilter: true
+            };
+
+            new agGrid.Grid(mainGridDiv,  mainGridOptions);
+            new agGrid.Grid(detailSummaryDiv,  summaryGridOptions);
+            new agGrid.Grid(detailWeeklyDiv,  weeklyGridOptions);
+            new agGrid.Grid(detailDiv,  detailGridOptions);
+
+            // resize
+            mainGridDiv.setAttribute("style","height:" + resize(mainDataArray.length,90) + "px");
+            detailSummaryDiv.setAttribute("style","height:" + resize(detailSummaryDataArray.length,90) + "px");
+            detailWeeklyDiv.setAttribute("style","height:" + resize(detailWeeklyDataArray.length,90) + "px");
+            detailDiv.setAttribute("style","height:" + resize(detailDataArray.length,90) + "px");
+
+            setControls('visible');
+        }
+
+        function setControls(pVisible) {
+            var visStyle = 'visibility:' + pVisible ;
+            mainFilter.setAttribute("style",visStyle);
+            summaryFilter.setAttribute("style",visStyle);
+            weeklyFilter.setAttribute("style",visStyle);
+            detailFilter.setAttribute("style",visStyle);
+
+            saveAsCsvButton1.setAttribute("style",visStyle);
+            saveAsCsvButton2.setAttribute("style",visStyle);
+            saveAsCsvButton3.setAttribute("style",visStyle);
+            saveAsCsvButton4.setAttribute("style",visStyle);
+        }
+
+        function mainFilterHandler(e) {
+            var searchText = e.target.value;
+            mainGridOptions.api.setQuickFilter(searchText);
+        }
+
+        function summaryFilterHandler(e) {
+            var searchText = e.target.value;
+            summaryGridOptions.api.setQuickFilter(searchText);
+        }
+
+        function weeklyFilterHandler(e) {
+            var searchText = e.target.value;
+            weeklyGridOptions.api.setQuickFilter(searchText);
+        }
+
+        function detailFilterHandler(e) {
+            var searchText = e.target.value;
+            detailGridOptions.api.setQuickFilter(searchText);
+        }
+
+        function saveAsCsv1() {
+            mainGridOptions.api.exportDataAsCsv({fileName: 'PoliticalTime.csv'});
+        }
+
+        function saveAsCsv2() {
+            summaryGridOptions.api.exportDataAsCsv({fileName: 'PoliticalTimeSummary.csv'});
+        }
+
+        function saveAsCsv3() {
+            weeklyGridOptions.api.exportDataAsCsv({fileName: 'PoliticalTimeWeekly.csv'});
+        }
+
+        function saveAsCsv4() {
+            detailGridOptions.api.exportDataAsCsv({fileName: 'PoliticalTimeDetail.csv'});
+        }
+
+        // ***************** Globals *****************
+
+        /*\
+         |*|
+         |*|  :: cookies.js ::
+         |*|
+         |*|  A complete cookies reader/writer framework with full unicode support.
+         |*|
+         |*|  Revision #1 - September 4, 2014
+         |*|
+         |*|  https://developer.mozilla.org/en-US/docs/Web/API/document.cookie
+         |*|  https://developer.mozilla.org/User:fusionchess
+         |*|
+         |*|  This framework is released under the GNU Public License, version 3 or later.
+         |*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+         |*|
+         |*|  Syntaxes:
+         |*|
+         |*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+         |*|  * docCookies.getItem(name)
+         |*|  * docCookies.removeItem(name[, path[, domain]])
+         |*|  * docCookies.hasItem(name)
+         |*|  * docCookies.keys()
+         |*|
+         \*/
+
+        var docCookies = {
+            getItem: function (sKey) {
+                if (!sKey) { return null; }
+                return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+            },
+            setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+                if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+                var sExpires = "";
+                if (vEnd) {
+                    switch (vEnd.constructor) {
+                        case Number:
+                            sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+                            break;
+                        case String:
+                            sExpires = "; expires=" + vEnd;
+                            break;
+                        case Date:
+                            sExpires = "; expires=" + vEnd.toUTCString();
+                            break;
+                    }
+                }
+                document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+                return true;
+            },
+            removeItem: function (sKey, sPath, sDomain) {
+                if (!this.hasItem(sKey)) { return false; }
+                document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+                return true;
+            },
+            hasItem: function (sKey) {
+                if (!sKey) { return false; }
+                return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+            },
+            keys: function () {
+                var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+                for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+                return aKeys;
+            }
+        };
+
+        var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+        var eeidMap              = {};
+        var bhatMap              = {};
+        var bhatDescMap          = {};
+        var salaryMap            = {};
+        var detailMap            = {};
+        var weeklyMap            = {};
+        var periodMap            = {};
+        var checkedMap           = {};
+
+        var mainDataArray            = [];
+        var bhatDataArray            = [];
+        var detailSummaryDataArray   = [];
+        var detailWeeklyDataArray    = [];
+        var detailDataArray          = [];
+        var mainColumnDefs           = [];
+        var bhatColumnDefs           = [];
+        var detailSummaryColumnDefs  = [];
+        var detailWeeklyColumnDefs   = [];
+        var detailColumnDefs         = [];
+        var mainGridOptions          = {};
+        var bhatGridOptions          = {};
+        var summaryGridOptions       = {};
+        var weeklyGridOptions        = {};
+        var detailGridOptions        = {};
+
+        var rowBackgroundClassRules;
+        var now;
+        var localDateTime;
+        var nowDate;
+
+        var debugDiv;
+        var queryDiv;
+        var detailDiv;
+        var finalDiv;
+        var detailSummaryDiv;
+        var detailWeeklyDiv;
+
+        var recCnt;
+
+        var queryButton;
+        var exportButton;
+        var saveAsCsvButton1;
+        var saveAsCsvButton2;
+        var saveAsCsvButton3;
+        var saveAsCsvButton4;
+
+        var checkString;
+        var politicalTime;
+
+        var startDateStr;
+        var endDateStr;
+        var nameArray;
+        var eeidArray;
+        var queryStatus;
+        var twoWeekCheck;
+
+        var nameSummaryMap;
+        var statusStr;
+        var stepCnt;
+        var shownBefore;
+        var noPrefs;
+        var prefsCookie;
+
+        var mainFilter;
+        var summaryFilter;
+        var weeklyFilter;
+        var detailFilter;
+
+        var uniqueIdCnt;
+        var userCheckedArray;
+        var userBoxCheckedArray;
+        var intervalID;
+        var ticks = 0;
+
+        // ***************** Main Program Entry *****************
+
+        // Known issues: Selecting Approved_By__c,Approved_Date__c from BHAT_Activity__c give errors when logged in as Rick Singleton, even though his profile is BHAT Reviewer.
+        //               Fudge for missing 'K' code.
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            queryButton      = document.getElementById("QueryButton");
+            politicalTime    = document.getElementById("col1");
+            finalDiv         = document.getElementById("FinalDiv");
+            queryStatus      = document.getElementById("QueryStatus");
+            statusDiv        = document.getElementById("col2");
+            twoWeekCheck     = document.getElementById("2weekPeriodCB");
+            bhatDiv          = document.getElementById('BhatGrid');
+            mainGridDiv      = document.getElementById('MainGrid');
+            detailSummaryDiv = document.getElementById('DetailSummaryGrid');
+            detailWeeklyDiv  = document.getElementById('DetailWeeklyGrid');
+            detailDiv        = document.getElementById('DetailGrid');
+
+            mainFilter       = document.getElementById('MainFilterInput');
+            summaryFilter    = document.getElementById('SummaryFilterInput');
+            weeklyFilter     = document.getElementById('WeeklyFilterInput');
+            detailFilter     = document.getElementById('DetailFilterInput');
+
+            saveAsCsvButton1 = document.getElementById("SaveAsCsvButton1");
+            saveAsCsvButton2 = document.getElementById("SaveAsCsvButton2");
+            saveAsCsvButton3 = document.getElementById("SaveAsCsvButton3");
+            saveAsCsvButton4 = document.getElementById("SaveAsCsvButton4");
+
+            $("#tabContainer").tabs();
+
+            initAgGrid();
+            loadBHATdesciptions();
+            loadBHATcodes();
+            populateDivs();
+
+            mainFilter.addEventListener("input", mainFilterHandler, false);
+            summaryFilter.addEventListener("input", summaryFilterHandler, false);
+            weeklyFilter.addEventListener("input", weeklyFilterHandler, false);
+            detailFilter.addEventListener("input", detailFilterHandler, false);
+
+            queryButton.addEventListener("click",queryClickListener, false);
+            saveAsCsvButton1.addEventListener("click", saveAsCsv1, false);
+            saveAsCsvButton2.addEventListener("click", saveAsCsv2, false);
+            saveAsCsvButton3.addEventListener("click", saveAsCsv3, false);
+            saveAsCsvButton4.addEventListener("click", saveAsCsv4, false);
+
+            shownBefore  = false;
+            $("#startDatePicker").datepicker(
+                    {
+                        changeMonth : true,
+                        changeYear  : true,
+                        yearRange   : '2012:2020',
+                        dateFormat  : 'mm/dd/yy',
+                        defaultDate : new Date()
+                    }
+            );
+
+            $("#endDatePicker").datepicker(
+                    {
+                        changeMonth : true,
+                        changeYear  : true,
+                        yearRange   : '2012:2020',
+                        dateFormat  : 'mm/dd/yy',
+                        defaultDate : new Date()
+                    }
+            );
+
+        });
+
+    </script>
+
+    <div id="tabContainer">
+        <ul>
+            <li><a href="#fragment-1"><span>Main</span></a></li>
+            <li><a href="#fragment-2"><span>Preferences</span></a></li>
+        </ul>
+
+        <div class="tabpage" id="fragment-1">
+            <div id="PageTitle">Political Time - Find All time for anyone with Specified categories, for period given</div>
+            <hr/>
+            <div  id = "ContentDiv">
+                <div id="ControlsContainer">
+                    <label for="2weekPeriodCB" id="label1">Period is for 2 weeks</label>
+                    <input id="2weekPeriodCB" type="checkbox"></input>
+                    <label for="startDatePicker" id="label2">Start Date</label>
+                    <input  id="startDatePicker" type="text"></input>
+                    <label for="endDatePicker" id="label3">End Date</label>
+                    <input  id="endDatePicker" type="text"></input>
+
+                    <input id="QueryButton" type="Button" value="Execute Query"></input>
+                    <div   id="QueryStatus"></div>
+                </div>
+
+                <div id="PoliticalTimeContainer">
+                    <div id="container2">
+                        <div id="container1">
+                            <div id="col1">
+                                <!-- Column one start -->
+                                <!-- Column one end -->
+                            </div>
+                            <div id="col2">
+                                <!-- Column two start -->
+                                <!-- Column two end -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div  class="section">
+                    <span id="sp1">
+                        <input id="MainFilterInput" class="FilterInput" placeholder="Search..." type="text"/>
+                    </span>
+                    <div class="sectionText">Final Result</div>
+                    <span id="sp2">
+                        <input id="SaveAsCsvButton1" class="SaveAs" type="Button" value="Export"></input>
+                    </span>
+                </div>
+                <div id="MainGrid"          class="ag-fresh"></div>
+                <div class="section">
+                    <span id="sp3">
+                        <input id="SummaryFilterInput" class="FilterInput" placeholder="Search..." type="text"/>
+                    </span>
+                    <div class="sectionText">Detail data Summarized by Person </div>
+                    <span id="sp4">
+                        <input id="SaveAsCsvButton2" class="SaveAs" type="Button" value="Export"></input>
+                    </span>
+                </div>
+                <div id="DetailSummaryGrid" class="ag-fresh"></div>
+
+                <div  class="section">
+
+                    <input id="WeeklyFilterInput" class="FilterInput" placeholder="Search..." type="text"/>
+                    <div class="sectionText">Detail data Summarized by Person, Week, Activity </div>
+                    <input id="SaveAsCsvButton3" class="SaveAs" type="Button" value="Export"></input>
+
+                </div>
+                <div id="DetailWeeklyGrid"  class="ag-fresh"></div>
+
+                <div  class="section">
+
+                    <input id="DetailFilterInput" class="FilterInput" placeholder="Search..." type="text"/>
+                    <div class="sectionText">Detail Data</div>
+                    <input id="SaveAsCsvButton4" class="SaveAs" type="Button" value="Export"></input>
+
+                </div>
+                <div id="DetailGrid"        class="ag-fresh"></div>
+
+            </div>
+
+        </div>
+
+        <div class="tabpage" id="fragment-2">
+            <div id="PageTitle">Political Time - Find All time for anyone with Specified categories, for period given</div>
+            <hr/>
+            <div  id = "PrefsDiv">
+                <div id="BhatGrid" class="ag-fresh"></div>
+            </div>
+        </div>
+    </div>
+    </body>
+</apex:page>

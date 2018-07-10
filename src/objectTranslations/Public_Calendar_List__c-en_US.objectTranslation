@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Public Calendar List</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Public Calendar List</value>
+    </caseValues>
+    <fields>
+        <label><!-- Calendar Id --></label>
+        <name>Calendar_Id__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

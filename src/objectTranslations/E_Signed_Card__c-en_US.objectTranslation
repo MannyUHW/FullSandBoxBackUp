@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>E-Signed Card</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>E-Signed Card</value>
+    </caseValues>
+    <fields>
+        <label><!-- Account --></label>
+        <name>Account__c</name>
+        <relationshipLabel><!-- E-Signed Card --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Added To Contact --></label>
+        <name>Added_To_Contact__c</name>
+    </fields>
+    <fields>
+        <label><!-- Agree --></label>
+        <name>Agree__c</name>
+    </fields>
+    <fields>
+        <label><!-- Agreed To --></label>
+        <name>Agreed_To__c</name>
+    </fields>
+    <fields>
+        <label><!-- CP --></label>
+        <name>CP__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cell Phone Chk --></label>
+        <name>Cell_Phone_chk__c</name>
+    </fields>
+    <fields>
+        <label><!-- City --></label>
+        <name>City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date Union Authorization Submitted --></label>
+        <name>Date_Union_Authorization_Submitted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date of Hire --></label>
+        <name>Date_of_Hire__c</name>
+    </fields>
+    <fields>
+        <label><!-- Department --></label>
+        <name>Department__c</name>
+    </fields>
+    <fields>
+        <help><!-- I support forming a union with my co-workers because: --></help>
+        <label><!-- E-Signed Card Notes --></label>
+        <name>E_Signed_Card_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- First Name --></label>
+        <name>First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Getfeedback Response Link --></label>
+        <name>Getfeedback_Response_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- HP --></label>
+        <name>HP__c</name>
+    </fields>
+    <fields>
+        <label><!-- Home Phone --></label>
+        <name>Home_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Home Phone Chk --></label>
+        <name>Home_Phone_chk__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hourly Wage --></label>
+        <name>Hourly_Wage__c</name>
+    </fields>
+    <fields>
+        <label><!-- IP Address --></label>
+        <name>IP_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Title --></label>
+        <name>Job_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Last Name --></label>
+        <name>Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Lead Id --></label>
+        <name>Lead_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Lead Source --></label>
+        <name>Lead_Source__c</name>
+    </fields>
+    <fields>
+        <label><!-- Lead --></label>
+        <name>Lead__c</name>
+        <relationshipLabel><!-- E-Signed Card --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Leads Record Link --></label>
+        <name>Leads_Record_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile --></label>
+        <name>Mobile__c</name>
+    </fields>
+    <fields>
+        <label><!-- Notify Email Address --></label>
+        <name>Notify_Email_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Other Department --></label>
+        <name>Other_Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- Other Title --></label>
+        <name>Other_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone Type --></label>
+        <name>Phone_Type__c</name>
+        <picklistValues>
+            <masterLabel>Cell</masterLabel>
+            <translation><!-- Cell --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Home</masterLabel>
+            <translation><!-- Home --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>None</masterLabel>
+            <translation><!-- None --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Phone --></label>
+        <name>Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Received From --></label>
+        <name>Received_From__c</name>
+    </fields>
+    <fields>
+        <label><!-- Record Link --></label>
+        <name>Record_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Source Text --></label>
+        <name>Source_Text__c</name>
+    </fields>
+    <fields>
+        <label><!-- State --></label>
+        <name>State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status Notes --></label>
+        <name>Status_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Duplicate</masterLabel>
+            <translation><!-- Duplicate --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Email Bounced</masterLabel>
+            <translation><!-- Email Bounced --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Invalid Email Address</masterLabel>
+            <translation><!-- Invalid Email Address --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Street --></label>
+        <name>Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Work Shift --></label>
+        <name>Work_Shift__c</name>
+    </fields>
+    <fields>
+        <label><!-- Worksite --></label>
+        <name>Worksite__c</name>
+    </fields>
+    <fields>
+        <label><!-- Zip Code --></label>
+        <name>Zip_Code__c</name>
+    </fields>
+    <layouts>
+        <layout>E-Signed Card Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Other Info --></label>
+            <section>Other Info</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

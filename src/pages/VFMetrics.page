@@ -1,0 +1,195 @@
+<apex:page >
+<html>
+    <head>
+        <style>
+            /* removes outline dots from button when it gets focus */
+            :focus {outline:none;}
+            ::-moz-focus-inner {border:0;}
+
+            body {
+                background-color: white;
+            }
+
+            th:nth-child(3) {
+                text-align: right;
+                padding-right: 16px;
+           }
+
+            td:nth-child(3) { 
+                text-align: right;
+                padding-right: 14px;
+             }
+
+            #Title {
+                color:blue;
+                font-size: 22px;
+                font-weight: bold;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                padding-left: 4px;
+                width:270px;
+            }
+
+            #Title div {
+                display: inline-block;
+                font-size: 8px;
+                margin-left: 10px;
+                color:lightslategrey;
+            }
+
+            #OutputGridDiv {
+                height: 700px;
+                margin-left: 5px;
+                margin-top: 3px;
+                margin-bottom: 3px;
+                overflow: auto;
+                width: 570px;
+                float: left;
+            }
+
+            #OutputDiv {
+                width: 25%;
+                display: inline-block;
+                border: 1px solid;
+                float: left;
+                margin-top: 3px;
+                margin-left: 15px;
+            }
+
+            table {
+                padding-left: 30px;
+            }
+
+            .cellRight {
+                text-align: right;
+                padding-right:5px !important;
+                font-family: 'Roboto Mono', monospace;
+                font-size: 12px;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .cellCenter {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 12px;
+                text-align: center;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .cellLeft {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 12px;
+                text-align: left;
+                padding-left:5px !important;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+        </style>
+    </head>
+    <body>
+    <div id="Title">Visualforce Metrics<div><a href="http://bobbuzzard.blogspot.com/2017/06/visualforce-page-metrics-in-summer-17.html">blog link</a></div></div>
+    <div id="OutputGridDiv" class="ag-fresh"></div>
+    <div id="OutputDiv"> </div>
+
+    <script>
+        var __sfdcSessionId = '{!GETSESSIONID()}';
+    </script>
+
+    <script src="../../soap/ajax/40.0/connection.js" type="text/javascript"></script>
+
+    <script type="text/javascript">     
+        // http://bobbuzzard.blogspot.com/2017/06/visualforce-page-metrics-in-summer-17.html
+
+        function initAgGrid() {
+            agGrid.LicenseManager.setLicenseKey("SEIU-UWH_Site_1Devs7_February_2018__MTUxNzk2MTYwMDAwMA==f54417966e3979c429e6a1af033c1a9a");
+            outputColumnDefs = [
+                {headerName: 'Date',       field: 'ViewDate',  width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft', sort: 'desc'},
+                {headerName: 'Id',         field: 'Id',        width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft'},
+                {headerName: 'Page Name',  field: 'PageName',  width: 300, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft'},
+                {headerName: 'View Count', field: 'ViewCount', width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellRight'}
+            ];
+        }
+
+        function getMetrics()
+        {
+        let metricByDate = {},pageNamesById = {};
+        let result = sforce.connection.query(
+            "SELECT ApexPageId,DailyPageViewCount,Id,MetricsDate FROM VisualforceAccessMetrics " + 
+            "ORDER BY MetricsDate desc, DailyPageViewCount desc");
+       
+        let record,dEle;
+        let it = new sforce.QueryResultIterator(result);
+        while(it.hasNext()) {
+            record = it.next();
+            record.DateStr = new Date(record.MetricsDate + 'T12:00:00.000Z').toLocaleDateString('en-US', dateOptions);
+            dEle   = metricByDate[record.MetricsDate];      
+            if (!dEle) {
+                dEle = [];
+                metricByDate[record.MetricsDate] = dEle;
+            }
+            // add to the metrics organised by date
+            dEle.push(record);
+        }  
+        
+        result = sforce.connection.query("Select Id, Name from ApexPage order by Name desc");
+        it = new sforce.QueryResultIterator(result);
+        while(it.hasNext()) {
+            record = it.next();
+            pageNamesById[record.Id]=record.Name;
+        }
+        
+        pageViewDataArray = [];
+        let output='<table width="100%">';
+        let dt, recs, rec, idx, len, pageName, viewCount, viewDate;    
+        for (dt in metricByDate) {
+            if (metricByDate.hasOwnProperty(dt)) {
+                recs   = metricByDate[dt];
+                output+='<tr><th colspan="3" style="text-align:center; font-size:1.2em;">' + metricByDate[dt][0].DateStr + '</td></tr>';
+                output+='<tr><th>Page</th><th style="text-align:right;padding-right:30px;">Views</th></tr>';
+                for (idx=0, len=recs.length; idx<len; idx++) {
+                    rec = recs[idx];
+                    id  = rec.Id;
+                    pageName  = pageNamesById[rec.ApexPageId];
+                    viewCount = rec.DailyPageViewCount;
+                    viewDate  = rec.DateStr;
+                    pageViewDataArray.push({Id: id, ViewDate:viewDate, PageName:pageName, ViewCount:viewCount});
+                    output += '<tr><td>' + pageName + '</td>';
+                    output += '<td style="text-align:right;padding-right:30px;">'     + rec.DailyPageViewCount + '</td></tr>';
+                }
+            }
+        }
+
+        outputGridOptions = {
+            columnDefs: outputColumnDefs,
+            rowData: pageViewDataArray,
+            rowSelection: 'single',
+            enableSorting: true,
+            enableFilter: true
+        };
+        new agGrid.Grid(outputGridDiv, outputGridOptions);
+
+        output+='</table>';
+        outputDiv.innerHTML=output;
+    }
+    </script>
+    
+    <script>
+        var __sfdcSessionId = '{!GETSESSIONID()}';
+        <apex:includeScript value="{!$Resource.agGridEnterprise11}"/>;
+    </script>
+
+    <script>
+        const outputDiv       = document.getElementById('OutputDiv'); 
+        const outputGridDiv   = document.getElementById('OutputGridDiv'); 
+        const dateOptions     = { year: 'numeric', month: '2-digit', day: '2-digit'};
+        
+        let pageViewDataArray = [], outputColumnDefs, outputGridOptions;
+
+        initAgGrid();
+        getMetrics();
+    </script>
+    </body>
+</html>
+</apex:page>

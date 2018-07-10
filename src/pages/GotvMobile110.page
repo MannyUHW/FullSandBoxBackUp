@@ -1,0 +1,882 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false"
+  controller="GotvMobileController">
+  <html>
+
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"></meta>
+    <meta name="apple-mobile-web-app-capable" content="yes"></meta>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"></meta>
+    <meta name="theme-color" content="#2196f3"></meta>
+    <title>GOTV M 1.10</title>
+    <apex:stylesheet value="{!URLFOR($Resource.framework7zip206Debug, 'framework7.ios.css')}" />
+
+    <style>
+      @font-face {
+        font-family: 'Framework7 Icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url("{!URLFOR($Resource.Framework7IconsZip, 'Framework7Icons-Regular.eot')}");
+        src: local('Framework7 Icons'),
+        local('Framework7Icons-Regular'),
+        url("{!URLFOR($Resource.Framework7IconsZip, 'Framework7Icons-Regular.woff2')}") format('woff2'),
+        url("{!URLFOR($Resource.Framework7IconsZip, 'Framework7Icons-Regular.woff')}") format('woff'),
+        url("{!URLFOR($Resource.Framework7IconsZip, 'Framework7Icons-Regular.ttf')}") format('truetype');
+      }
+
+      .f7-icons,
+      .framework7-icons {
+        font-family: 'Framework7 Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 25px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-feature-settings: "liga";
+        -moz-font-feature-settings: "liga=1";
+        -moz-font-feature-settings: "liga";
+        font-feature-settings: "liga";
+      }
+
+      .tabbar a.active {
+        color: white;
+      }
+
+      .navbar-inner,
+      .toolbar-inner {
+        background-color: blueviolet;
+        color: white;
+      }
+
+      .item-inner {
+        padding-right: 9px !important;
+      }
+
+      .contact-card {
+        width: 100%;
+        margin: 0px;
+      }
+
+      .universe-card {
+        margin-top: 80px !important;
+        padding-top: 8px;
+      }
+
+      .universe-card-header,
+      .universe-card-footer {
+        text-align: center !important;
+        justify-content: center;
+      }
+
+      .contact-card-header {
+        color: green;
+        padding: 0px;
+        margin-left: 5px;
+      }
+
+      .contact-item-title-row {
+        white-space: normal;
+      }
+
+      .contact {
+        font-size: 14px;
+      }
+
+      .contact-name {
+        color: rebeccapurple !important;
+        font-weight: bold !important;
+        width: auto !important;
+        opacity: 1 !important;
+      }
+
+      .Phone {
+        padding-right: 6px;
+        font-style: italic;
+      }
+
+      .picker-popover {
+        width: 400px !important;
+      }
+
+      .picker-columns {
+        font-size: 20px !important;
+      }
+
+      #picker-universe {
+        text-align: center;
+        color: rebeccapurple;
+        font-weight: bold !important;
+      }
+
+      #debug1 {
+        margin-left: 4px;
+        border: 1px solid red;
+        color: red;
+      }
+
+      .bg-purple {
+        background-color: rebeccapurple;
+      }
+
+      .CallLbl {
+        margin-right: 3px;
+        margin-left: 1px;
+      }
+
+      ul,
+      li {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .page-content {
+        padding-top: 0px !important;
+      }
+
+      .contact-subnavbar {
+        width: 98%;
+        margin-left: 10px;
+      }
+
+      .contact-searchbar {
+        margin-left: 4px;
+      }
+
+      .contact-searchbar-inner {
+        margin-left: 4px;
+      }
+
+      .contact-search {
+        visibility: hidden;
+      }
+
+      .no-padding {
+        padding: 0px;
+      }
+
+      .view-fix {
+        height: 90% !important;
+      }
+
+      .page {
+        background-color: aqua;
+      }
+
+      .options-radio {
+        color: red !important;
+        padding-left: 8px;
+        padding-right: 9px;
+      }
+
+      .loading {
+        background-color: aqua;
+        width: 50%;
+        margin-left: 30%;
+      }
+
+      .no-disp {
+        display: none;
+      }
+
+      .yes-disp {
+        display: block;
+      }
+
+      .hide {
+        visibility: hidden;
+      }
+
+      .show {
+        visibility: visible;
+      }
+
+      .bg-purple {
+        background-color: rebeccapurple !important;
+      }
+
+      #PhoneNum {
+        color: white;
+        margin-left: 2px;
+      }
+
+      .chip-counts {
+        display: flex;
+        justify-content: center;
+        margin-top: 5px;
+        margin-bottom: 7px;
+      }
+
+      .readonly {
+        padding-left: 6px;
+        color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="title">GOTV Mobile 1.10</div>
+          </div>
+        </div>
+        <div class="toolbar tabbar tabbar-labels">
+          <div class="toolbar-inner">
+            <a href="#tab-1" class="tab-link tab-link-active">
+              <i class="icon f7-icons">world</i>
+              <span class="tabbar-label">Universes</span>
+            </a>
+            <a href="#tab-2" class="tab-link">
+              <i class="icon f7-icons">chats</i>
+              <span class="tabbar-label">Contacts</span>
+            </a>
+
+          </div>
+        </div>
+        <div class="tabs">
+          <div id="tab-1" class="tab tab-active view-main">
+            <div class="page-content">
+              <div class="block">
+
+                <div class="card universe-card">
+                  <div class="card-header universe-card-header padding-bottom">Universes</div>
+                  <div id="loading-bar" class="progressbar-infinite loading hide">
+                    <span class="progressbar-infinite"></span>
+                  </div>
+                  <div class="card-content card-content-padding">
+
+                    <div id="universe-list" class="list">
+                      <ul>
+                        <li>
+                          <div class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-input-wrap">
+                                <input placeholder="Select Universe" readonly="readonly" id="picker-universe" class="input-with-value" type="text"></input>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="chip-counts">
+                      <div id="count-chip" class="chip hide">Counts Chip</div>
+                    </div>
+
+                    <div class="item-input">
+                      <a href="#" id="DownloadBtn" class="button button-round">Download</a>
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-footer universe-card-footer">Select a Universe to download Contacts</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div id="tab-2" class="page-content tab">
+
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="title">Search Bar</div>
+                <div class="subnavbar">
+                  <form class="searchbar">
+                    <div class="searchbar-inner">
+                      <div class="searchbar-input-wrap">
+                        <input type="search" placeholder="Search"></input>
+                        <i class="searchbar-icon"></i>
+                        <span class="input-clear-button"></span>
+                      </div>
+                      <span class="searchbar-disable-button">Cancel</span>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="page-content">
+              <div class="content-block">
+                <div class="list-block cards-list">
+                  <div class="searchbar-backdrop"></div>
+                  <div class="list search-list searchbar-found">
+                    <div id="contact-container"></div>
+                  </div>
+                  <div class="block searchbar-not-found">
+                    <div class="block-inner">Nothing found</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+    <script id="contact-template" type="text/template7">
+      <div class="contact">
+          <ul>
+            {{#each Contacts}}
+            <li>
+              <div class="contact-search">{{Name}}</div>
+              <div class="item-inner">
+                  <div class="card contact-card">
+                      <form id="{{Id}}">
+                        <div class="card-header contact-card-header">
+                          <input name="contact_name" class="contact-name" type="text" disabled="true" value="{{Name}}"></input>
+                        </div>
+                        <div class="card-content">
+  
+                          <div class="item-content">
+                            <div>
+                              {{#js_if "this.Department != 'Unknown'"}}
+                                <span class="Department">{{Department}}</span>
+                              {{/js_if}}                               
+                              {{#js_if "this.Shift != 'Unknown'"}}
+                                <span class="Shift">({{Shift}})</span>
+                              {{/js_if}}                                                           
+                            </div>
+                          </div> 
+
+                          <div class="item-content">
+                              <div class="chip bg-purple">
+                                  {{#js_if "this.Phone != 'Do not call'"}}
+                                    <span class="CallLbl">Call</span>
+                                  {{/js_if}}
+                                  <div class="chip-label" id="PhoneLbl"><a id="PhoneNum" href="#" onClick="formCall('{{Phone}}')">{{Phone}}</a></div>
+                                </div>
+                          </div>
+
+                          <div class="item-content">
+                              <div class="item-inner">
+                                <label class="item-checkbox item-content">
+                                  {{#js_if "this.ThreeTouchVC"}}
+                                    <input name="st_checkbox" type="checkbox" checked="true"></input>
+                                  {{else}}  
+                                    <input name="st_checkbox" type="checkbox"></input>
+                                  {{/js_if}}                         
+                                  <i class="icon icon-checkbox"></i>
+                                    <div class="item-title">Three Touch ST</div>
+                                </label>
+                              </div>
+                            </div>
+
+                          <div class="item-content">
+                            <div class="item-inner">
+                              <label class="item-checkbox item-content">
+                                {{#js_if "this.ThreeTouchVC"}}
+                                  <input name="vc_checkbox" type="checkbox" checked="true"></input>
+                                {{else}}  
+                                  <input name="vc_checkbox" type="checkbox"></input>
+                                {{/js_if}}                         
+                                <i class="icon icon-checkbox"></i>
+                                  <div class="item-title">Three Touch VC</div>
+                              </label>
+                            </div>
+                          </div>
+
+                          <div class="item-content">
+                              <div class="item-inner">
+                                <label class="item-checkbox item-content">
+                                  {{#js_if "this.ThreeTouchVC"}}
+                                    <input name="ob_checkbox" type="checkbox" disabled="true" checked="true"></input>
+                                  {{else}}  
+                                    <input name="ob_checkbox" type="checkbox" disabled="true"></input>
+                                  {{/js_if}}                         
+                                  <i class="icon icon-checkbox"></i>                                  
+                                  <div class="item-title">Three Touch OB</div><span class="readonly">(read only)</span>
+                                </label>
+                              </div>
+                            </div>
+  
+                          <div class="item-content">
+                            <div class="item-inner">
+                                <p><a href="#" onClick="formSave('#{{Id}}')" class="button button-round save">Save</a><p>
+                                {{#js_if "this.GotvExactVoteTime"}}
+                                  <span class="EVT">EVT: {{GotvExactVoteTime}}</span>
+                                {{/js_if}}
+                            </div>
+                          </div> 
+                                    
+                      </div>
+                    </div>
+                  </form> 
+              </div>
+            </li>
+            {{/each}}
+          </ul>
+        </div>
+  </script>
+
+    <script type="text/javascript">
+      'use strict';
+
+      var formSave = function (formId) {
+        let stChecked = false, vcChecked = false;
+        const id = formId.substr(1, 15);
+        const formData = myApp.formToData(formId)
+        if (formData.st_checkbox.length > 0)
+          stChecked = true;
+        if (formData.vc_checkbox.length > 0)
+          vcChecked = true;
+        updateSalesforce(id, stChecked, vcChecked);
+      }
+
+      var formCall = function (numToCall) {
+        if (numToCall != 'Do not call' && numToCall != 'Missing') {
+          if (phoneEnabled) {
+            sforce.one.navigateToURL(`tel:${numToCall}`);
+          }
+          else {
+            notificationPhoneOnly.open();
+          }
+        }
+      }
+
+      function clean(s) {
+        let s1, s2, s3, s4, s5, s6, s7, s8, s9 = '';
+        if (s) {
+          s1 = s.replace(r1, "&");
+          s2 = s1.replace(r2, "'");
+          s3 = s2.replace(r3, "&");
+          s4 = s3.replace(r4, "'");
+          s5 = s4.replace(r5, "'");
+          s6 = s5.replace(r6, ">");
+          s7 = s6.replace(r7, ">");
+          s8 = s6.replace(r8, "<");
+          s9 = s6.replace(r8, "<");
+        }
+        return s9;
+      }
+
+      function toProperCase(s) {
+        // My version - handles hyphenated names correctly :)
+        let s1, s2;
+        if (s == null)
+          s2 = '';
+        else {
+          s1 = s.trim().toLowerCase();
+          s2 = clean(s1);
+          s2 = s2.replace(/\b[a-zA-Z]/g, function ($1) { return $1.toUpperCase(); });
+        }
+        return s2;
+      }
+
+      function getUniverseData() {
+        // Controller:
+        // SELECT Id,Account__c,Name,Description__c,FilterSoql__c FROM Gotv_Universe__c ORDER BY Name Asc
+        return new Promise(function (resolve, reject) {
+          GotvMobileController.getUniverseData((result, event) => {
+            if (event.status) {
+              console.log('Retrieved Universe data');
+              resolve(result);
+            }
+            else {
+              console.log('Error retrieving Universe data');
+              reject(event);
+            }
+          });
+        });
+      }
+
+      function processUniverseData(results) {
+        return new Promise(function (resolve, reject) {
+          let i, rec, id, len, accountId, name, description, filterSoql, count, displayVal;
+          universeMap = {};
+          universePickerValues = [];
+          universePickerDisplay = [];
+          len = results.length;
+          if (len > 0) {
+            for (i = 0; i < len; i++) {
+              rec = results[i];
+              id = rec.Id;
+              accountId = rec.Account__c;
+              name = rec.Name;
+              description = rec.Description__c || '';
+              filterSoql = rec.FilterSoql__c;
+              count = rec.Count__c;
+              displayVal = `${name}  (${count})`;
+              if (!universeMap[accountId])
+                universeMap[accountId] = {};
+              universeMap[accountId][id] = { Id: id, AccountId: accountId, Name: name, Description: description, FilterSoql: filterSoql, Count: count };
+              universePickerValues.push(id);
+              universePickerDisplay.push(displayVal);
+            }
+            console.log('universePickerValues');
+            console.log(universePickerValues);
+            resolve('ok');
+          }
+        });
+      }
+
+      function getContactsForUniverse(universeId) {
+        $$('#loading-bar').addClass('show');
+        $$('#loading-bar').removeClass('hide');
+        getContactData(universeId).then(contactData => {
+          processContacts(contactData);        
+        }).then(function (dlCount) {
+          $$('#loading-bar').addClass('hide');
+          $$('#loading-bar').removeClass('show');
+          $$('#count-chip').addClass('show');
+          $$('#count-chip').removeClass('hide');
+          $$('#count-chip').html(`Downloaded ${contactCount}`);
+          console.log('All good');
+          $$('#contact-container').html(compiledContactTemplate(mainContactData));
+          myApp.tab.show('#tab-2');
+        }).catch(error => {
+          console.log('Error' + error);
+        });
+      }
+
+      function getContactData(id) {
+        /*
+         controller code - getContactData(Id):
+          SELECT  Id, AccountId, LastName, FirstName, MobilePhone, HomePhone, Phone, Shift__c, Department,
+          Three_Touch_ST__c, Three_Touch_VC__c, Three_Touch__c, Reconfirmed_GOTV__c,
+          GOTV_Exact_Vote_Time__c, GOTV_Inside_Plan_Notes__c, GOTV_Off_Both_Days__c, GOTV_Plan_Type__c, GOTV_Slip__c,
+          GOTV_Where_After_Voting__c, GOTV_Where_Before_Voting__c, GOTV_Works_Night_Before_Eday1__c,GOTV_Works_Eday_1__c, Assigned_to_VC_Name__c, GOTV_Gettable__c,GOTV_Vote_Block_Time__c 
+          FROM Contact + filterSoql
+         */
+        return new Promise(function (resolve, reject) {
+          GotvMobileController.getContactData(id, (result, event) => {
+            if (event.status) {
+              console.log('Contact data downloaded successfully');
+              resolve(result);
+            }
+            else {
+              console.log('Contact data downloaded error');
+              reject(event);
+            }
+          });
+        });
+      }
+
+      function processContacts(results) {
+        return new Promise(function (resolve, reject) {
+          let i, len, rec;
+          let id, accountId, name, lastName, firstName, cellPhone, homePhone, phone, doNotCall, usePhone, department, shift, threeTouchST, threeTouchVC, threeTouchOB, gotvReconfirmed, gotvExactVoteTime, gotvInsidePlanNotes, gotvOffBothDays, gotvPlanType, gotvSlip, gotvWhereBeforeVoting, gotvWhereAfterVoting, gotvWorksNightBeforeEday1, assignedVcName, voteBlockTime;
+          mainContactData = { Contacts: [] };
+          contactNames = [];
+          formData = [];
+          contactMap = {};
+          contactCount = 0;
+          len = results.length;
+
+          for (i = 0; i < len; i++) {
+            id = accountId = name = lastName = firstName = cellPhone = homePhone = phone = usePhone = doNotCall = department = shift = threeTouchST = threeTouchVC = threeTouchOB = gotvReconfirmed = gotvExactVoteTime = gotvInsidePlanNotes = gotvOffBothDays = gotvPlanType = gotvSlip = gotvWhereBeforeVoting = gotvWhereAfterVoting = gotvWorksNightBeforeEday1 = assignedVcName = '';
+            rec = results[i];
+            if (rec) {
+              contactCount++;
+              id = rec.Id;
+              accountId = rec.AccountId,
+              firstName = toProperCase(rec.FirstName);
+              lastName = toProperCase(rec.LastName);
+              cellPhone = phoneFormat(rec.MobilePhone);
+              homePhone = phoneFormat(rec.HomePhone);
+              phone = phoneFormat(rec.Phone);
+              shift = toProperCase(rec.Shift__c);
+              department = toProperCase(rec.Department);
+              doNotCall = rec.DoNotCall || '';
+              threeTouchST = rec.Three_Touch_ST__c || '';
+              threeTouchVC = rec.Three_Touch_VC__c || '';
+              threeTouchOB = rec.Three_Touch__c || '';
+              voteBlockTime = rec.GOTV_Vote_Block_Time__c || '';
+              gotvInsidePlanNotes = rec.GOTV_Inside_Plan_Notes__c;
+              gotvOffBothDays = rec.GOTV_Off_Both_Days__c;
+              gotvPlanType = rec.GOTV_Plan_Type__c;
+              gotvReconfirmed = rec.Reconfirmed_GOTV__c;
+              gotvSlip = rec.GOTV_Slip__c;
+              gotvWhereAfterVoting = rec.GOTV_Where_After_Voting__c;
+              gotvWhereBeforeVoting = rec.GOTV_Where_Before_Voting__c;
+              gotvWorksNightBeforeEday1 = rec.GOTV_Works_Night_Before_Eday1__c;
+              assignedVcName = rec.Assigned_to_VC_Name__c || '';
+              if (rec.GOTV_Exact_Vote_Time__c) {
+                gotvExactVoteTime = new Date(rec.GOTV_Exact_Vote_Time__c).toLocaleString('en-US', dateOptions2);
+              }
+
+              name = lastName + ', ' + firstName;
+              contactNames.push({ Name: name });
+
+              if (doNotCall) {
+                usePhone = 'Do not call';
+              }
+              else {
+                if (cellPhone)
+                  usePhone = cellPhone;
+                else if (homePhone)
+                  usePhone = homePhone;
+                else if (phone)
+                  usePhone = phone;
+              }
+
+              console.log('name:', name, 'department:', department);
+
+              mainContactData.Contacts.push({
+                Id: id,
+                AccountId: accountId,
+                Name: name,
+                FirstName: firstName,
+                LastName: lastName,
+                Department: department,
+                Phone: usePhone,
+                Shift: shift,
+                ThreeTouchST: threeTouchST,
+                ThreeTouchVC: threeTouchVC,
+                ThreeTouchOB: threeTouchOB,
+                GotvExactVoteTime: gotvExactVoteTime,
+                GotvInsidePlanNotes: gotvInsidePlanNotes,
+                GotvOffBothDays: gotvOffBothDays,
+                GotvPlanType: gotvPlanType,
+                GotvReconfirmed: gotvReconfirmed,
+                GotvSlip: gotvSlip,
+                GotvWhereAfterVoting: gotvWhereAfterVoting,
+                GotvWhereBeforeVoting: gotvWhereBeforeVoting,
+                GotvWorksNightBeforeEday1: gotvWorksNightBeforeEday1,
+                VC: assignedVcName,
+                VoteBlockTime: voteBlockTime
+              });
+            }
+            else {
+              console.log('record error');
+            }
+          }
+          console.log(mainContactData);
+          resolve('ok');
+        });
+      }
+
+      function updateSalesforce(pId, pSt, pVc) {
+        return new Promise(function (resolve, reject) {
+          GotvMobileController.updateContact(pId, pSt, pVc, (result, event) => {
+            if (event.status) {
+              myApp.addNotification({
+                title: 'Success!',
+                message: 'Salesforce updated'
+              });
+              resolve(result);
+            }
+            else {
+              let eType = event.type;
+              let eMsg = event.message;
+              let eWhere = event.where;
+              alert('Salesforce update error: ' + eMsg);
+              console.log(eType);
+              console.log(eMsg);
+              if (eWhere != undefined) console.log(eWhere);
+              reject(event);
+            }
+          })
+        });
+      }
+
+      function errorAlert(e, src) {
+        let eType = e.type;
+        let eMsg = e.message;
+        let eWhere = e.where;
+        alert(`{$src}, ${eMsg}`);
+        console.log(eType);
+        console.log(eMsg);
+        if (eWhere != undefined) console.log(eWhere);
+      }
+
+      function phoneFormat(s) {
+        let s1;
+        if (s == null || s.trim().length < 10)
+          s1 = '';
+        else {
+          s1 = s.trim().replace(/[^0-9]/g, '');
+          s1 = '(' + s1.substr(0, 3) + ') ' + s1.substr(3, 3) + '-' + s1.substr(6);
+        }
+        return s1;
+      }
+
+      function log(pStr) {
+        $$('#debug-textarea').append(pStr + '\n');
+      }
+
+      async function getData() {
+        universeData = await getUniverseData();
+        let status = await processUniverseData(universeData);
+        return status;
+      }
+
+      var selectedUniverseId, changedField, changeTo;
+      var mainContactData = { Contacts: [] };
+      var contactNames = [];
+      var universeMap = {}, universeData;
+      var contactMap = {}, contactData, contactCount, formData = [];
+      var universePickerValues = [];
+      var universePickerDisplay = [];
+      var universePicker, selectedId, selectedUniverse, searchbar, virtualList;
+
+      const dateOptions1 = { year: 'numeric', month: 'numeric', day: 'numeric' };
+      const dateOptions2 = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+
+      const r1 = new RegExp(/&amp/, 'gm');
+      const r2 = new RegExp(/&#39/, 'gm');
+      const r3 = new RegExp(/&;/, 'gm');
+      const r4 = new RegExp(/&quot/, 'gm');
+      const r5 = new RegExp(/';/, 'gm');
+      const r6 = new RegExp(/&gt/, 'gm');
+      const r7 = new RegExp(/>;/, 'gm');
+      const r8 = new RegExp(/&lt/, 'gm');
+      const r9 = new RegExp(/<;/, 'gm');
+      const removeCntRegEx = new RegExp(/([(0-9)])/, 'gm');
+
+      // ***************** Main Program Entry *****************
+
+      // Dummy items array
+      var items = [];
+      for (var i = 1; i <= 10000; i++) {
+        items.push({
+          title: 'Item ' + i,
+          subtitle: 'Subtitle ' + i
+        });
+      }
+      const userId = '{!$User.Id}';
+
+      var myApp = new Framework7({
+        id: 'gotv-m',
+        root: '#app',
+        theme: 'ios',
+        modalTitle: 'GOTV Mobile 1.10',
+        fastClicks: true
+      });
+
+      var notificationPhoneOnly = myApp.notification.create({
+        title: 'Sorry',
+        subtitle: 'Only available on iPhone',
+        closeTimeout: 4000
+      });
+
+      var notificationUpdate = myApp.notification.create({
+        title: 'Success',
+        subtitle: 'Salesforce updated',
+        closeTimeout: 4000
+      });
+
+      if (typeof sforce != 'undefined') {
+        console.log('Debug:', sforce);
+      } else {
+        console.log('not on a mobile device');
+      }
+
+      var $$ = Dom7;
+
+      var contactTemplate = $$('#contact-template').html();
+      var compiledContactTemplate = Template7.compile(contactTemplate);
+      var mainView = myApp.views.create('.view-main');
+
+      var phoneEnabled = false, device, deviceOs, osVersion;
+      deviceOs = myApp.device.os;
+      osVersion = myApp.device.osVersion;
+      if (deviceOs == 'ios') {
+        if (myApp.device.ipad) {
+          device = 'iPad';
+        }
+        if (myApp.device.iphone) {
+          device = 'iPhone';
+        }
+        if (typeof sforce == 'undefined') {
+          console.log('not using sforce mobile');
+          $$('#PhoneLbl').html('Not Mobile');
+        }
+        else {
+          if (sforce) {
+            if (sforce.one) {
+              phoneEnabled = true;
+              $$('#PhoneLbl').html('Mobile');
+            }
+            else {
+              //            console.log('failed 2');
+            }
+          }
+          else {
+            //          console.log('failed 1');
+          }
+        }
+      }
+
+      $$('#DownloadBtn').on('click', function (e) {
+        if (selectedId) {
+          console.log('Downloading contcts for Universe ', selectedUniverse);
+          getContactsForUniverse(selectedId)
+        }
+      });
+
+      $$('input[id="options-radio-kaiser"]').on('change', function () {
+        $$('#count-chip').addClass('hide');
+        $$('#count-chip').removeClass('show');
+        displayList('K');
+      });
+
+      $$('input[id="options-radio-dignity"]').on('change', function () {
+        $$('#count-chip').addClass('hide');
+        $$('#count-chip').removeClass('show');
+        displayList('D');
+      });
+
+      getData().then(v => {
+        universePicker = myApp.picker.create({
+          rotateEffect: true,
+          formatValue: function (values, displayValues) {
+            // removes (###) from name
+            let dv1 = displayValues[0];
+            let iEnd = dv1.search(removeCntRegEx);
+            let dv2 = dv1.substr(0, iEnd).trim();
+            return dv2;
+          },
+          inputEl: '#picker-universe',
+          toolbarCloseText: 'Select',
+          cols: [
+            {
+              textAlign: 'center',
+              values: universePickerValues,
+              displayValues: universePickerDisplay,
+              onChange: function (picker, value, displayValue) {
+                $$('#count-chip').addClass('hide');
+                $$('#count-chip').removeClass('show');
+                selectedId = value;
+                selectedUniverse = displayValue;
+                console.log('Selected Value: ', selectedId, selectedUniverse);
+              }
+            }
+          ]
+        }), // Note: searchIn has to be a child of li element.  .contact-name doesn't work.
+          searchbar = myApp.searchbar.create({
+            el: '.searchbar',
+            customSearch: false,
+            searchContainer: '.search-list',
+            searchIn: '.contact-search',
+            on: {
+              enable: function () {
+                console.log('Searchbar enabled');
+              },
+              search(sb, query, previousQuery) {
+                console.log(query, previousQuery);
+              }
+            }
+          });
+      });
+
+    </script>
+
+    <script>        
+      <apex:includeScript value="{!URLFOR($Resource.framework7zip206Debug,'framework7.js')}" /> 
+    </script>
+  </body>
+
+  </html>
+</apex:page>

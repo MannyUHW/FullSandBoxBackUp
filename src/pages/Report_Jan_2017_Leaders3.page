@@ -1,0 +1,1698 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<link rel="stylesheet" href="{!URLFOR($Resource.mo_assets, '/mo_assets/css/tablesorter/tablesorter_blue_style.css')}" type="text/css" id="" media="print, projection, screen" />
+<style type="text/css" media="screen,print">
+   .page-breaker {
+     display: block;
+     page-break-after: always;
+     border :1px solid black
+   }
+</style>
+<div align="center">
+<font size="+2"><div id="titleDiv">Leader Reach Jan 2017 </div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+
+ 
+
+<br>&nbsp;</br>
+
+<font color="green">
+<div align="center" id="filterDiv"></div>
+</font>
+
+<font size="+2"><div align="center" id="progressDiv">0%</div></font>
+
+<a name="divAnchor"></a>
+<div id="divTitle"><font size="+1">Divisions</font></div>
+<div align="center" id="countDiv"></div>
+
+
+<a name="regionAnchor"></a>
+<div id="regionDivTitle"><font size="+1">Regions</font></div>
+<div align="center" id="regionDiv"></div>
+
+
+<a name="coordinatorAnchor"></a>
+<div id="coordinatorDivTitle"><font size="+1">Coordinators</font></div>
+<div align="center" id="coordinatorDiv"></div>
+
+
+<a name="organizerAnchor"></a>
+<div id="organizerDivTitle"><font size="+1">Organizers</font></div>
+<div align="center" id="organizerDiv"></div>
+
+
+
+
+<a name="leaderAnchor"></a>
+<div id="leaderDivTitle"><font size="+1">Leaders</font></div>
+<div align="center" id="leaderDiv"></div>
+
+
+<a name="deptAnchor"></a>
+<!--<div id="deptDivTitle"><font size="+1">Departments</font></div>--> 
+<div id="deptDivTitle"><font size="+1"></font></div>
+<div align="center" id="deptDiv"></div>
+
+<a name="empAnchor"></a>
+<!--<div id="deptDivTitle"><font size="+1">Departments</font></div>--> 
+<div id="empDivTitle"><font size="+1"></font></div>
+<div align="center" id="empDiv"></div>
+
+
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+
+<script language="JavaScript">
+var debugString = "";
+
+var lastRecord = null;
+
+var ALL = "ALL";
+
+var CODE_TEST = "J01";
+var CODE_REACH = "J02";
+var CODE_ESPANOL = "EO1";
+
+var LEADER = "LEADER";
+
+
+var DISTRICT = "DISTRICT";
+var SEAT = "SEAT";
+var EMPLOYER = "EMPLOYER";
+var EBOARD = "EBOARD";
+var LEADERS = "LEADERS";
+var SIGNATURES = "SIGNATURES";
+var TURF = "TURF";
+var COORDINATOR = "COORDINATOR";
+var ORGANIZER = "ORGANIZER";
+
+var COPE = "COPE";
+var SHIFT = "SHIFT";
+var AGE_RANGE = "AGE_RANGE";
+
+var REGIONAL_DIRECTOR = "REGIONAL_DIRECTOR";
+var DIVISION = "DIVISION";
+
+var OVERRIDE = "OVERRIDE";
+var GOAL = "GOAL";
+
+var BU = "BU";
+var DEPARTMENT = "DEPARTMENT";
+
+var LDRLDR = "LDRLDR";
+ 
+var LAST_7_DAYS = "LAST_7_DAYS"; 
+ 
+var DIVS = ["HOSPITAL", "KAISER"];
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              pWorksite = pWorksite.replace(/\./g,'');
+              pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return toProperCase(dept);
+}
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == null || mode == "null" || mode == "") {
+  mode = "summary"; 
+}
+mode = mode.toLowerCase();
+if (mode == "espanol") {
+  $("#filterDiv").html("Mode = L&iacute;deres en Espa&ntilde;ol");
+} else if (mode == "eboard") {
+  $("#filterDiv").html("Mode = Incoming Executive Board");
+} else if (mode == "departments2") {
+  $("#filterDiv").html("Mode = Departments Sorted by Reach Percent (Min 10 Mbrs in Dept BU)");
+} else if (mode == "departments1") {
+  $("#filterDiv").html("Mode = Departments Sorted by Reach Count");  
+} else { 
+  $("#filterDiv").html("Mode = " + toProperCase(mode));
+}
+
+
+var filter = "{!$CurrentPage.parameters.filter}";
+
+//$(function() {
+
+if (filter == null || filter == "null" || filter == "") {
+  filter = null;
+} else {
+  filter = filter.toLowerCase();
+  $("#filterDiv").html($("#filterDiv").html() + "<br/>Filter = " + toProperCase(filter) );
+}
+$("#filterDiv").html($("#filterDiv").html() +  "<br/>&nbsp;<br/>");
+
+
+var corporation = "{!$CurrentPage.parameters.corporation}";
+if (corporation == null || corporation == "null" || corporation == "") {
+  corporation = null;
+}
+if (corporation != null) {
+  $("#filterDiv").html("Mode = " + toProperCase(mode) + "<br/>" + "Corporation = " + toProperCase(corporation) +  "<br/>&nbsp;<br/>");
+}
+
+var Turf = {};
+
+function getEmployers(pStaff) {
+  var emWriter = "";
+  for (var emName in Turf) {
+     var turfa = Turf[emName];
+     if (turfa.Organizer.toLowerCase()  == pStaff.toLowerCase()  || turfa.Coordinator.toLowerCase() == pStaff.toLowerCase() || turfa.RegionalDirector.toLowerCase()  == pStaff.toLowerCase() )   {
+       if (emWriter != "") {
+         emWriter += "; ";
+       }
+       emWriter += toProperCase(emName);
+     }
+   }
+   return emWriter;
+}
+
+
+var uid = null;
+var title = null;
+var userFullName = null;
+
+var divisionSet = new Array();
+var districtSet = new Array();
+var seatSet = new Array();
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var user = sforce.connection.getUserInfo();
+    var userName = user.userName;
+    var query = "SELECT ID, Name, Division, Title from User WHERE User.username=\'" + userName + "\'";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length != 1) throw "unable to find user";
+    uid = records[0].Id;
+    userFullName = records[0].Name;
+    title = records[0].Title;
+    division = records[0].Division;
+    var division2 = division.toLowerCase();
+    
+    var isOrganizer = false;
+    var isCoordinator = false;    
+    var isKaiser = false;
+    var isHospital = false;    
+    if (division2.indexOf("kaiser") >= 0 || division2.indexOf("hosp") >= 0) {
+      if (title.toLowerCase().indexOf("organizer") >= 0 || title.toLowerCase().indexOf("rep/org") >= 0) {
+        isOrganizer = true;
+        //alert(" is an organizer!");
+      }
+      if (title.toLowerCase().indexOf("coordinator") >= 0) {
+        isCoordinator = true;
+        //alert(" is a coordinator!");        
+      }
+      if (division2.indexOf("kaiser") >= 0) {
+        isKaiser = true;
+      } else {
+        isHospital = true;
+      }
+    }
+  
+    //
+    //  get department counts
+    //  partitioned by Division and Employer ID to avoid hitting governor limits.
+    //  
+    var deptSet = new Array();
+    var deptSet2 = new Array();    
+    
+    var shiftSet = new Array();
+    var ageRangeSet = new Array();
+    
+    if (isOrganizer || isCoordinator || mode.indexOf("departments") == 0 || mode == "all") {     
+      
+      for (var i = 0; i < 20; i++) {    
+        var division = "HOSPITAL";
+        if (i % 2 == 1) {
+          division = "KAISER";
+        }
+        var query = "select account.name, Worksite__c, Department, count(id) from contact where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND  In_Current_BU__c = true and (account.Account_Group__c = \'" + division + "\' and account.employer_id__c like \'%" + Math.floor(i/2) + "\') group by account.name, Worksite__c, Department"
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+        for(var j=0;j < records1.length; j++){
+          if (records1[j].Department == null || records1[j].Department == "null" || records1[j].Department == "") {
+            records1[j].Department = "Unknown";
+          } 
+          var dept = getModDepartment(records1[j].Name, records1[j].Worksite__c, records1[j].Department);
+     
+          incrementCounter([DEPARTMENT, BU, records1[j].Name, dept ], parseFloat(records1[j].expr0));
+          if (deptSet2.indexOf(JSON.stringify([records1[j].Name, dept ])) < 0) {
+            deptSet.push([records1[j].Name, dept ]);
+            deptSet2.push(JSON.stringify([records1[j].Name, dept ]));             
+          }
+        }
+      }
+    } else if (mode == "employers") {
+       
+      for (var i = 0; i < 200; i++) {    
+        document.getElementById("progressDiv").innerHTML = "" + (i / 4).toFixed(0) + "%";      
+
+       
+        var query = "select account.name, Worksite__c, Department, Shift__c, Age_Range__c, COPE_Pledge__c from contact where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND  In_Current_BU__c = true AND "
+        query += " Account.Account_Group__c = ";
+        if (i % 2 == 0) {
+          query += "\'HOSPITAL\'";
+        } else {
+          query += "\'KAISER\'";        
+        }
+        query += " AND ";
+        if (i < 20) {
+          query += " FID__c like \'%0" + Math.floor(i/2).toFixed(0) + "\' ";       
+        } else {
+          query += " FID__c like \'%" + Math.floor(i/2).toFixed(0) + "\' ";        
+        }
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+        for(var j=0;j < records1.length; j++){
+          incrementCounter([EMPLOYER, BU, records1[j].Account.Name], 1.0);
+          var dept = getModDepartment(records1[j].Account.Name, records1[j].Worksite__c, records1[j].Department);
+          incrementCounter([DEPARTMENT, BU, records1[j].Account.Name, dept ], 1.0);
+          if (deptSet2.indexOf(JSON.stringify([records1[j].Account.Name, dept ])) < 0) {
+            deptSet.push([records1[j].Account.Name, dept ]);
+            deptSet2.push(JSON.stringify([records1[j].Account.Name, dept ]));             
+          }
+          if (  records1[j].COPE_Pledge__c != null && records1[j].COPE_Pledge__c != "null" && records1[j].COPE_Pledge__c != "") {                  
+            incrementCounter([DEPARTMENT, COPE, records1[j].Account.Name, dept ], parseFloat(records1[j].COPE_Pledge__c));        
+            incrementCounter([EMPLOYER, COPE, records1[j].Account.Name], parseFloat(records1[j].COPE_Pledge__c));        
+          }
+          var shift = "Unknown";
+          if (records1[j].Shift__c != null && records1[j].COPE_Pledge__c != "null" && records1[j].COPE_Pledge__c != "") { 
+            shift = records1[j].Shift__c;
+          }
+          var shiftKey = JSON.stringify([records1[j].Account.Name, shift]);
+          if (shiftSet.indexOf(shiftKey) < 0) {
+            shiftSet.push(shiftKey);
+          }
+          incrementCounter([DEPARTMENT, SHIFT, BU, records1[j].Account.Name, dept, shift ], 1.0);        
+          incrementCounter([EMPLOYER, SHIFT, BU,  records1[j].Account.Name, shift], 1.0);        
+          
+          if (records1[j].Age_Range__c.indexOf("25") >= 0 || records1[j].Age_Range__c.indexOf("35") >= 0) {
+            records1[j].Age_Range__c = "35 and Under";
+          }
+          if (ageRangeSet.indexOf(records1[j].Age_Range__c) < 0) {
+            ageRangeSet.push(records1[j].Age_Range__c);
+          }
+          incrementCounter([EMPLOYER, AGE_RANGE, BU, records1[j].Account.Name, records1[j].Age_Range__c], 1.0);  
+                                
+        }      
+      }    
+    }
+
+    var emCorpMap = {};
+        
+    var query = "select Id, Name, Employer_Id__c, Region__c, Account_Group__c, Regional_Director__r.Name, Coordinator__r.Name, Organizer_1__r.Name, District_2017__r.Name, Constituency__r.Name, Hospital_System__c  from Account where MO_Active__c = true AND (NOT Name like \'pomona valley%\') AND (NOT Name like \'parkview%\') AND ( Account_Group__c = \'KAISER\' OR Account_Group__c = \'HOSPITAL\' ) ";
+    if (isOrganizer) {
+       query += " AND (Organizer_1__c = \'" + uid + "\' OR Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       query += " AND (Coordinator__c = \'" + uid + "\' ) ";    
+    }
+    if (isKaiser) {
+      //query += " AND Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account_Group__c like \'HOSPITAL%\' ";
+    } 
+    if (corporation != null) {
+      query += " AND Hospital_System__c like \'" + corporation + "%\' ";
+    }    
+    var emSet = [];
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      
+      if (1 == 1) {
+
+        emCorpMap[records1[i].Name.toLowerCase()] = records1[i].Hospital_System__c;
+      
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+        Turf[records1[i].Name].RegionalDirector = "Vacant";
+        if (records1[i].Regional_Director__r != null) {    
+          Turf[records1[i].Name].RegionalDirector = records1[i].Regional_Director__r.Name;         
+        } else {
+          Turf[records1[i].Name].RegionalDirector = "Vacant";         
+        }
+        
+
+        if (records1[i].Account_Group__c.trim().toUpperCase() == "HOSPITAL") {
+          Turf[records1[i].Name].RegionalDirector = records1[i].Region__c + " - " + Turf[records1[i].Name].RegionalDirector;         
+        }  
+        Turf[records1[i].Name].RegionalDirector = Turf[records1[i].Name].RegionalDirector.replace("(Kathryn) ", "");
+             
+        Turf[records1[i].Name].Organizer = "Vacant";
+        if (records1[i].Organizer_1__r != null) {         
+          Turf[records1[i].Name].Organizer = records1[i].Organizer_1__r.Name;
+        }
+        Turf[records1[i].Name].Coordinator = "Vacant";
+        if (records1[i].Coordinator__r != null) {         
+          Turf[records1[i].Name].Coordinator = records1[i].Coordinator__r.Name;
+        }
+        
+
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+      
+        if (divisionSet.indexOf(records1[i].Account_Group__c) < 0) {
+          divisionSet.push(records1[i].Account_Group__c);
+        }
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+
+        if (emSet.indexOf(records1[i].Name) < 0) {
+          emSet.push(records1[i].Name);
+        }
+        if (records1[i].District_2017__r != null && districtSet.indexOf(records1[i].District_2017__r.Name) < 0) {
+          districtSet.push(records1[i].District_2017__r.Name);
+        }
+        if (records1[i].Constituency__r != null && seatSet.indexOf(records1[i].Constituency__r.Name) < 0) {
+          seatSet.push(records1[i].Constituency__r.Name);
+        }
+        Turf[records1[i].Name].District = records1[i].District_2017__r.Name;
+      }
+    }
+    
+    var query = "select Account.Name, Count(Id) from Contact where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND (Account.Account_Group__c = \'KAISER\' OR Account.Account_Group__c = \'HOSPITAL\' ) and In_Current_BU__c = true "
+    if (isOrganizer) {
+       query += " AND (Account.Organizer_1__c = \'" + uid + "\' OR Account.Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       query += " AND (Account.Coordinator__c = \'" + uid + "\' ) ";    
+    }
+    if (isKaiser) {
+      //query += " AND Account.Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account.Account_Group__c like \'HOSPITAL%\' ";
+    }     
+    if (corporation != null) {
+      query += " AND Account.Hospital_System__c like \'" + corporation + "%\' ";
+    }
+    query += " group by Account.Name";
+    
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      //alert(records1[i].Name + "=" + records1[i].expr0); 
+      
+      if (Turf[records1[i].Name] != null) {
+        
+        Turf[records1[i].Name].BU_Count = records1[i].expr0;
+      
+        var organizer = Turf[records1[i].Name].Organizer;
+        var coordinator = Turf[records1[i].Name].Coordinator;
+        var regionalDirector = Turf[records1[i].Name].RegionalDirector;   
+        var div = Turf[records1[i].Name].Division;
+        var district = Turf[records1[i].Name].District;
+      
+        incrementCounter([ALL, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([DIVISION, div, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU], parseFloat(records1[i].expr0));           
+        incrementCounter([COORDINATOR, div, regionalDirector, coordinator, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([EMPLOYER, records1[i].Name],  parseFloat(records1[i].expr0));
+        incrementCounter([District, district],  parseFloat(records1[i].expr0));        
+      }
+    }    
+    
+    if (isOrganizer || isCoordinator) {
+      //alert(" employers = " + JSON.stringify(emSet));
+    }
+    //alert("retrieving users");
+    
+
+    var leaderSortSet = new Array();    
+    var turfSortSet = new Array();
+    var coorSortSet = new Array();    
+    var regDirSortSet = new Array();  
+    
+    for (var emName in Turf) {
+        var turfa = Turf[emName];
+        //alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer]);
+        var div = turfa.Division.toLowerCase().trim();
+        if (turfSortSet.indexOf(turfKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          turfSortSet.push(turfKey);
+        }
+        
+        var coorKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator]);
+        if (coorSortSet.indexOf(coorKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant" && turfa.Coordinator.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            coorSortSet.push(coorKey);
+          }
+        }    
+        
+        var regDirKey = JSON.stringify([turfa.Division, turfa.RegionalDirector]);
+        if (regDirSortSet.indexOf(regDirKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            regDirSortSet.push(regDirKey);
+          }
+        }   
+        
+    }
+    
+    turfSortSet.sort();
+    coorSortSet.sort();
+    regDirSortSet.sort();
+    
+    //alert("got Account Team");
+
+ 
+    var ccSet = [];
+    var ccMap = {};    
+
+    var ldrRoleMap = {};
+
+    //
+    //  get Survey Responses for Jan 2017 Leader Test and Reach
+    //
+    var leaderAssessMap = {};
+    
+    var divArray = ["HOSPITAL", "KAISER"];
+    
+    for (var d = 0; d < divArray.length; d++) {
+      for (a = 0; a < 10; a++) {  
+        if (mode == "employers") {
+          document.getElementById("progressDiv").innerHTML = "" + (50 + ((25 * d) + (a * 2.5))).toFixed(0) + "%";
+        } else { 
+          document.getElementById("progressDiv").innerHTML = "" + ((50 * d) + (a * 5)) + "%";
+        } 
+  
+        var query = "select Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, Contact__r.Worksite__c, Department__c, Contact__r.Shift__c, Contact__r.Age_Range__c, Question_Name__c, Survey_Code__c, Response_Value__c, Add_Info_Numeric__c, Collected_By__c, Collected_By_Name__c, Collected_By_Employer_Name__c, Contact__r.Ethnicity__c, Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, Contact__r.COPE_Pledge__c, Add_Info__c, Collected_By__r.Worksite__c, Collected_By__r.Department, Contact__r.In_Current_BU__c, Collected_By__r.Age_Range__c, Collected_By__r.Shift__c, Collected_By__r.In_Current_BU__c, Survey_How_Old__c from Survey_Response__c where CreatedDate >= 2016-12-18T14:04:00Z AND (";
+        if (a ==0) {
+          query += " FID__c = null OR ";
+        }
+        query += " FID__c like \'%" + a + "\' ) ";
+        //query += " AND (Division__c = \'KAISER\' OR Division__c = \'HOSPITAL\' ) ";      
+        query += " AND Division__c = \'" + divArray[d] + "\' ";            
+        query += " AND (NOT Employer_Name__c like \'pomona valley%\') AND (NOT Employer_Name__c like \'parkview%\') ";
+        query += " AND ( Survey_Code__c = \'J01\' OR Survey_Code__c = \'J02\' OR Survey_Code__c = \'EO1\' )  ";
+        if (corporation != null) {
+          query += " AND ( Contact__r.Account.Hospital_System__c like \'" + corporation + "%\' OR  Collected_By__r.Account.Hospital_System__c like \'" + corporation + "%\' ) ";
+        } 
+        if (isCoordinator || isOrganizer) {
+          query += " AND ( ";
+          for (var j = 0; j < emSet.length; j++) {
+            if (j > 0) {
+              query += " OR ";
+            }
+            query += " Employer_Name__c = \'" + emSet[j] + "\' ";
+          }        
+          query += " ) ";
+        }      
+        //query += " AND (Response_Value__c like \'y%\' or Response_Value__c like \'a%\')";      
+
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+
+        debugString += query + " - " + records1.length + "<br/>";
+
+        for(var i=0;i < records1.length; i++){ 
+          //alert(JSON.stringify(records1[i]));
+          
+
+          
+          lastRecord = records1[i];
+          var organizer = "Vacant";
+          var coordinator = "Vacant";
+          var regionalDirector = "Vacant"; 
+          var div = records1[i].Division__c;  
+          var district = "";         
+          if (records1[i].Collected_By_Employer_Name__c != null && records1[i].Collected_By_Employer_Name__c != "" && Turf[records1[i].Collected_By_Employer_Name__c ] != null) {
+              organizer = Turf[records1[i].Collected_By_Employer_Name__c ].Organizer;
+              coordinator = Turf[records1[i].Collected_By_Employer_Name__c ].Coordinator;
+              regionalDirector = Turf[records1[i].Collected_By_Employer_Name__c ].RegionalDirector;                      
+              district = Turf[records1[i].Collected_By_Employer_Name__c ].District;                                    
+          } else if (Turf[records1[i].Employer_Name__c] != null) {
+              organizer = Turf[records1[i].Employer_Name__c].Organizer;
+              coordinator = Turf[records1[i].Employer_Name__c].Coordinator;
+              regionalDirector = Turf[records1[i].Employer_Name__c].RegionalDirector;              
+              district = Turf[records1[i].Employer_Name__c].District;                            
+          } 
+        
+          var response = records1[i].Response_Value__c.toLowerCase().trim().substring(0, 1);
+          ccMap[records1[i].Contact__c] = records1[i];          
+          if (records1[i].Survey_Code__c == CODE_TEST &&  response == "y") {
+              incrementCounter([ALL, CODE_TEST, response], 1.0);          
+              incrementCounter([DIVISION, div, CODE_TEST, response], 1.0);          
+              incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_TEST, response], 1.0);          
+              incrementCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_TEST, response], 1.0);          
+              incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_TEST, response], 1.0);          
+              incrementCounter([EMPLOYER, CODE_TEST, records1[i].Employer_Name__c], 1.0);            
+              incrementCounter([DISTRICT, CODE_TEST, district], 1.0);                          
+          }
+          if (mode == "espanol" && records1[i].Survey_Code__c == CODE_ESPANOL && response == "a") {
+              //alert("found leader en espanol = " + records1[i].Contact_Name__c);
+              ldrRoleMap[records1[i].Contact__c] = CODE_ESPANOL;
+              var inBu = records1[i].Contact__r.In_Current_BU__c;
+              if (ccSet.indexOf(records1[i].Contact__c) < 0 && (inBu == "true" || inBu == true)) {
+                ccSet.push(records1[i].Contact__c);  
+                leaderSortSet.push(JSON.stringify([div,  regionalDirector, coordinator, organizer, records1[i].Contact_Name__c,  records1[i].Contact__c]));                      
+              }
+          }    
+          if (mode == "eboard"  && records1[i].Contact__c != null && records1[i].Contact__r.Executive_Body_Title__c != null && records1[i].Contact__r.Executive_Body_Title__c != "null" && records1[i].Contact__r.Executive_Body_Title__c != "") {
+
+           if (records1[i].Contact_Name__c.toLowerCase().indexOf("stephanie") >= 0 && records1[i].Contact_Name__c.toLowerCase().indexOf("allen") >= 0) {
+                   //alert("Found Stephanie Allen.\n" + JSON.stringify(records1[i]));
+            } 
+
+            ldrRoleMap[records1[i].Contact__c] = records1[i].Contact__r.Executive_Body_Title__c;
+
+            if (ccSet.indexOf(records1[i].Contact__c) < 0) {
+                ccSet.push(records1[i].Contact__c);  
+                leaderSortSet.push(JSON.stringify([div,  regionalDirector, coordinator, organizer, records1[i].Contact_Name__c,  records1[i].Contact__c]));                      
+            }    
+        
+          }    
+          if (records1[i].Survey_Code__c == CODE_REACH && response == "y") {
+            var emName = records1[i].Employer_Name__c;
+            if (records1[i].Collected_By_Employer_Name__c != null && records1[i].Collected_By_Employer_Name__c != "null" && records1[i].Collected_By_Employer_Name__c != "") {
+              emName = records1[i].Collected_By_Employer_Name__c ;
+            }
+            if (records1[i].Collected_By__c != null && ccSet.indexOf(records1[i].Collected_By__c) < 0) {
+              incrementCounter([ALL, LEADER, response], 1.0);           
+              incrementCounter([DIVISION, div, LEADER, response], 1.0);          
+              incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, LEADER, response], 1.0);          
+              incrementCounter([COORDINATOR, div, regionalDirector, coordinator, LEADER, response], 1.0);          
+              incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, LEADER, response], 1.0);                    
+              incrementCounter([EMPLOYER, emName, LEADER, response], 1.0);   
+              incrementCounter([DISTRICT, district, LEADER, response], 1.0);                 
+              if ( records1[i].Collected_By__r.Age_Range__c.indexOf("25") >= 0 || records1[i].Collected_By__r.Age_Range__c.indexOf("35") >= 0 ) {
+                records1[i].Collected_By__r.Age_Range__c = "35 and Under";
+              } 
+              incrementCounter([EMPLOYER, AGE_RANGE, LEADER, emName, records1[i].Collected_By__r.Age_Range__c], 1.0);                                          
+              if (records1[i].Collected_By__r.Department == null) {
+                records1[i].Collected_By__r.Department = "Unknown";
+              } 
+              var dept = getModDepartment(records1[i].Employer_Name__c, "Unknown", "Unknown"); 
+              if (records1[i].Collected_By__r != null) {
+                dept = getModDepartment(records1[i].Collected_By_Employer_Name__c, records1[i].Collected_By__r.Worksite__c, records1[i].Collected_By__r.Department);            
+              }                               
+              incrementCounter([DEPARTMENT, LEADER, records1[i].Collected_By_Employer_Name__c, dept], 1.0);            
+              if ( records1[i].Collected_By__r.Shift__c == null || records1[i].Collected_By__r.Shift__c == "null" || records1[i].Collected_By__r.Shift__c == "") {
+                records1[i].Collected_By__r.Shift__c = "Unknown";
+              } 
+              incrementCounter([EMPLOYER, SHIFT, LEADER, emName, records1[i].Collected_By__r.Shift__c], 1.0);                                                        
+              ccSet.push(records1[i].Collected_By__c);  
+              leaderSortSet.push(JSON.stringify([div,  regionalDirector, coordinator, organizer, records1[i].Collected_By_Name__c,  records1[i].Collected_By__c]));
+            }
+            incrementCounter([ALL, CODE_REACH , response], 1.0);          
+            incrementCounter([DIVISION, div, CODE_REACH , response], 1.0);          
+            incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_REACH , response], 1.0);          
+            incrementCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_REACH , response], 1.0);          
+            incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_REACH , response], 1.0);                    
+            incrementCounter([LEADER, div, regionalDirector, coordinator, organizer, records1[i].Collected_By__c, CODE_REACH, response], 1.0);
+            incrementCounter([EMPLOYER, records1[i].Employer_Name__c, CODE_REACH, response], 1.0);
+            incrementCounter([DISTRICT, district, CODE_REACH, response], 1.0);            
+            
+            if (parseFloat(records1[i].Survey_How_Old__c) <= 7.0) {
+              incrementCounter([ALL, CODE_REACH , response, LAST_7_DAYS], 1.0);          
+              incrementCounter([DIVISION, div, CODE_REACH , response, LAST_7_DAYS], 1.0);          
+              incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_REACH , response, LAST_7_DAYS], 1.0);          
+              incrementCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_REACH , response, LAST_7_DAYS], 1.0);          
+              incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_REACH , response, LAST_7_DAYS], 1.0);                    
+              incrementCounter([LEADER, div, regionalDirector, coordinator, organizer, records1[i].Collected_By__c, CODE_REACH, response, LAST_7_DAYS], 1.0);
+              incrementCounter([EMPLOYER, records1[i].Employer_Name__c, CODE_REACH, response, LAST_7_DAYS], 1.0);            
+            }
+            
+                          
+            var dept = getModDepartment(records1[i].Employer_Name__c, "Unknown", "Unknown"); 
+            if (records1[i].Contact__r != null) {
+              dept = getModDepartment(records1[i].Employer_Name__c, records1[i].Contact__r.Worksite__c, records1[i].Department__c);            
+            } 
+            incrementCounter([DEPARTMENT, CODE_REACH, records1[i].Employer_Name__c, dept], 1.0);                                  
+            if (records1[i].Contact__r != null) {
+              if ( records1[i].Contact__r.Age_Range__c.indexOf("25") >= 0 || records1[i].Contact__r.Age_Range__c.indexOf("35") >= 0 ) {
+                  records1[i].Contact__r.Age_Range__c = "35 and Under";
+              } 
+              incrementCounter([EMPLOYER, AGE_RANGE, CODE_REACH, records1[i].Employer_Name__c, records1[i].Contact__r.Age_Range__c], 1.0);                                                    
+            }
+            var shift = "Unknown";
+            if (records1[i].Contact__r != null && records1[i].Contact__r.Shift__c != null && records1[i].Contact__r.Shift__c != "null" && records1[i].Contact__r.Shift__c != "") {
+                shift = records1[i].Contact__r.Shift__c;
+            } 
+            incrementCounter([EMPLOYER, SHIFT, CODE_REACH, emName, shift], 1.0);   
+          }        
+        }
+      }
+    }
+
+
+
+    //
+    //  Division Writer
+    //
+    var countWriter = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\"><tr valign=\"middle\">\n";
+    countWriter += "<tr valign=\"bottom\">\n";    
+    countWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Division</font></td>\n";      
+    countWriter += "  <td bgcolor=\"#481C60\" width=\"1%\"></td>\n";
+    if (0 == 1) {
+      countWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Unassd<br/>Ldrs</font></td>\n";      
+    }
+    countWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Ldrs Yes<br/>Tested</font></td>\n";          
+    //countWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Yes Tested<br/>Pct</font></td>\n";              
+    countWriter += "  <td bgcolor=\"#481C60\" width=\"1%\"></td>\n";    
+    countWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Ldrs<br/>Reaching</font></td>\n";      
+    countWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Mbrs<br/>Reached</font></td>\n";     
+    if (1 == 1) {
+        countWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Last 7<br/>Days</font></td>\n";    
+    }     
+    countWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Reach<br/>Per Ldr</font></td>\n";              
+    countWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">BU Reach<br/>Pct</font></td>\n";                  
+    countWriter += "</tr>\n\n";
+
+    var rowCounter = 0;
+    for (var i = 0; i < DIVS.length; i++) {    
+      var rowWriter = "";
+      rowWriter += "<tr valign=\"top\">\n";     
+      var div = DIVS[i];         
+      var buCount = getCounter([DIVISION, div, BU]);
+      var unassessed = getCounter([DIVISION, div, CODE_TEST , "u"]);
+      var testYes = getCounter([DIVISION, div, CODE_TEST , "y"]);
+      var ldrCount = getCounter([DIVISION, div, LEADER, "y"]); 
+      var reachCount = getCounter([DIVISION, div, CODE_REACH, "y"]);       
+      var last7Count =       getCounter([DIVISION, div, CODE_REACH, "y", LAST_7_DAYS]);  
+      rowWriter += "<td align=\"center\"><a href=\"?mode=summary&filter=" + encodeURIComponent(div) + "\">" + toProperCase(div) + "</a></td>\n";  
+      rowWriter += "<td bgcolor=\"#481C60\"></td>\n";   
+      if (0 == 1) {
+        rowWriter += "<td align=\"center\">" + unassessed.toFixed(0) + "</td>\n";
+      }        
+      //rowWriter += "<td align=\"center\">" + testYes.toFixed(0) + "</td>\n";              
+      rowWriter += "<td align=\"center\">" + ((100 * testYes)/(testYes + unassessed)).toFixed(0) + "%</td>\n"; 
+      rowWriter += "<td bgcolor=\"#481C60\"></td>\n";   
+      rowWriter += "<td align=\"center\">" + ldrCount.toFixed(0) + "</td>\n";        
+      rowWriter += "<td align=\"center\">" + reachCount.toFixed(0) + "</td>\n";        
+      if (1 == 1) {
+            rowWriter += "<td align=\"center\">" + last7Count.toFixed(0) + "</td>\n"; 
+      }
+      rowWriter += "<td align=\"center\">"
+      if (ldrCount == 0) {
+        rowWriter += "0";      
+      } else {
+        rowWriter += (reachCount/ldrCount).toFixed(1);
+      }
+      rowWriter += "</td>\n";                               
+      rowWriter += "<td align=\"center\">" + ((100 * reachCount)/(buCount)).toFixed(1) + "%</td>\n";                   
+      rowWriter += "</tr>";     
+      if ((filter == null && corporation==null) || (filter != null && div.toLowerCase() == filter) || (corporation != null && div.toLowerCase() == 'hospital')) {
+        countWriter += rowWriter;
+        rowCounter++;
+      } 
+    }
+    if (rowCounter > 1) {
+      countWriter += "<tr valign=\"middle\">\n";     
+ 
+      var buCount = getCounter([ALL, BU]);
+      var unassessed = getCounter([ALL, CODE_TEST , "u"]);
+      var testYes = getCounter([ALL, CODE_TEST , "y"]);
+      var ldrCount = getCounter([ALL, LEADER, "y"]); 
+      var reachCount = getCounter([ALL, CODE_REACH, "y"]);       
+      var last7Days = getCounter([ALL, CODE_REACH, "y", LAST_7_DAYS]);  
+                  
+      countWriter += "<td align=\"center\"><b>All&nbsp;&nbsp;&nbsp;</b></td>\n";  
+      countWriter += "<td bgcolor=\"#481C60\"></td>\n";   
+      if (0 == 1) {
+        countWriter += "<td align=\"center\"><b>" + unassessed.toFixed(0) + "</b></td>\n";        
+      }
+      countWriter += "<td align=\"center\"><b>" + testYes.toFixed(0) + "</b></td>\n";              
+      //countWriter += "<td align=\"center\"><b>" + ((100 * testYes)/(testYes + unassessed)).toFixed(0) + "%</b></td>\n"; 
+      countWriter += "<td bgcolor=\"#481C60\"></td>\n";   
+      countWriter += "<td align=\"center\"><b>" + ldrCount.toFixed(0) + "</b></td>\n";        
+      countWriter += "<td align=\"center\"><b>" + reachCount.toFixed(0) + "</b></td>\n";  
+      if (1 == 1) {
+        countWriter += "<td align=\"center\">" + last7Days.toFixed(0) + "</td>\n"; 
+      }            
+      countWriter += "<td align=\"center\"><b>"
+      if (ldrCount == 0) {
+        countWriter += "0";      
+      } else {
+        countWriter += (reachCount/ldrCount).toFixed(1);
+      }
+      countWriter += "</td>\n";                               
+      countWriter += "<td align=\"center\"><b>" + ((100 * reachCount)/(buCount)).toFixed(1) + "%</b></td>\n";                   
+      countWriter += "</tr>";       
+    
+
+       
+    }
+    countWriter += "</table><br>&nbsp;</br>"; 
+          
+    if (!isCoordinator && !isOrganizer && rowCounter > 0) {  
+      document.getElementById("countDiv").innerHTML = countWriter;
+    } else {
+      document.getElementById("divTitle").innerHTML = "";      
+    }
+    
+    //
+    //  Regional Writer
+    //
+    var regionWriter = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\"><tr valign=\"middle\">\n";
+    regionWriter += "<tr valign=\"bottom\">\n";    
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Division</font></td>\n";      
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Region</font></td>\n";          
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"1%\"></td>\n";
+    if (0 == 1) {   
+      regionWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Unassd<br/>Ldrs</font></td>\n";      
+    }
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Ldrs Yes<br/>Tested</font></td>\n";          
+    //regionWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Yes Tested<br/>Pct</font></td>\n";              
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"1%\"></td>\n";    
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Ldrs<br/>Reaching</font></td>\n";      
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Mbrs<br/>Reached</font></td>\n";
+    if (1 == 1) {
+      regionWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Last 7<br/>Days</font></td>\n";
+    }
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Reach<br/>Per Ldr</font></td>\n";              
+    regionWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">BU Reach<br/>Pct</font></td>\n";                  
+    regionWriter += "</tr>\n\n";
+    var rowCounter = 0;
+    for (var i = 0; i < regDirSortSet.length; i++) {  
+      var rowWriter = "";
+      rowWriter += "<tr valign=\"top\">\n";     
+      var div = JSON.parse(regDirSortSet[i])[0];         
+      var regionalDirector = JSON.parse(regDirSortSet[i])[1];         
+      
+      var buCount = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]);
+      var unassessed = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_TEST, "u"]);
+      var testYes = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_TEST, "y"]);
+      var ldrCount = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, LEADER, "y"]); 
+      var reachCount = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_REACH, "y"]);       
+      var last7Count = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_REACH, "y", LAST_7_DAYS]);       
+                  
+      rowWriter += "<td align=\"center\"><a href=\"?mode=summary&filter=" + encodeURIComponent(div) + "\">" + toProperCase(div) + "</td>\n";  
+      rowWriter += "<td align=\"center\"><a href=\"?mode=summary&filter=" + encodeURIComponent(regionalDirector) + "\">" + toProperCase(regionalDirector) + "</td>\n";        
+      rowWriter += "<td bgcolor=\"#481C60\"></td>\n";   
+      if (0 == 1) {   
+        rowWriter += "<td align=\"center\">" + unassessed.toFixed(0) + "</td>\n";        
+      }
+      rowWriter += "<td align=\"center\">" + testYes.toFixed(0) + "</td>\n";              
+      //rowWriter += "<td align=\"center\">" + ((100 * testYes)/(testYes + unassessed)).toFixed(0) + "%</td>\n"; 
+      rowWriter += "<td bgcolor=\"#481C60\"></td>\n";   
+      rowWriter += "<td align=\"center\">" + ldrCount.toFixed(0) + "</td>\n";        
+
+      rowWriter += "<td align=\"center\">" + reachCount.toFixed(0) + "</td>\n"; 
+      if (1 == 1) {         
+        rowWriter += "<td align=\"center\">" + last7Count.toFixed(0) + "</td>\n";     
+      }
+      rowWriter += "<td align=\"center\">"
+      if (ldrCount == 0) {
+        rowWriter += "0";      
+      } else {
+        rowWriter += (reachCount/ldrCount).toFixed(1);
+      }
+      rowWriter += "</td>\n";                               
+      rowWriter += "<td align=\"center\">" + ((100 * reachCount)/(buCount)).toFixed(1) + "%</td>\n";                   
+      rowWriter += "</tr>";   
+      if (filter == null ||  div.toLowerCase() == filter || regionalDirector.toLowerCase() == filter) {
+        regionWriter += rowWriter;
+        rowCounter++;
+      }          
+    }
+    regionWriter += "</table><br>&nbsp;</br>";        
+  
+    if (!isCoordinator && !isOrganizer && rowCounter > 0) {
+      document.getElementById("regionDiv").innerHTML = regionWriter ;
+    } else {
+      document.getElementById("regionDivTitle").innerHTML = "" ;
+    }
+    //
+    //  Coordinator Writer
+    //
+    var coordWriter = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\"><tr valign=\"middle\">\n";
+    coordWriter += "<tr valign=\"bottom\">\n";    
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Division</font></td>\n";      
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"16%\" align=\"center\"><font color=\"white\">Region</font></td>\n";          
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"16%\" align=\"center\"><font color=\"white\">Coordinator</font></td>\n";              
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"1%\"></td>\n";
+    if (0 == 1) {   
+      coordWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Unassd<br/>Ldrs</font></td>\n";      
+    }
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Ldrs Yes<br/>Tested</font></td>\n";          
+    //coordWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Yes Tested<br/>Pct</font></td>\n";              
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"1%\"></td>\n";    
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Ldrs<br/>Reaching</font></td>\n";      
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Mbrs<br/>Reached</font></td>\n";          
+    if (1 == 1) { 
+      coordWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Last 7<br/>Days</font></td>\n";          
+    }
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Reach<br/>Per Ldr</font></td>\n";              
+    coordWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">BU Reach<br/>Pct</font></td>\n";                  
+    coordWriter += "</tr>\n\n";
+
+    var rowCounter = 0;
+    for (var i = 0; i < coorSortSet.length; i++) {  
+      var rowWriter = "";
+      rowWriter += "<tr valign=\"top\">\n";     
+      var div = JSON.parse(coorSortSet[i])[0];         
+      var regionalDirector = JSON.parse(coorSortSet[i])[1];    
+      var coordinator =  JSON.parse(coorSortSet[i])[2];        
+      
+      var buCount = getCounter([COORDINATOR, div, regionalDirector, coordinator, BU]);
+      var unassessed = getCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_TEST, "u"]);
+      var testYes = getCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_TEST, "y"]);
+      var ldrCount = getCounter([COORDINATOR, div, regionalDirector, coordinator, LEADER, "y"]); 
+      var reachCount = getCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_REACH, "y"]);       
+      var last7Count = getCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_REACH, "y", LAST_7_DAYS]);           
+            
+      rowWriter += "<td align=\"center\"><a href=\"?mode=summary&filter=" + encodeURIComponent(div) + "\">" + toProperCase(div) + "</a></td>\n";  
+      rowWriter += "<td align=\"left\"><a href=\"?mode=summary&filter=" + encodeURIComponent(regionalDirector) + "\">" + toProperCase(regionalDirector) + "</a></td>\n";        
+      rowWriter += "<td align=\"left\"><a href=\"?mode=summary&filter=" + encodeURIComponent(coordinator) + "\">" + toProperCase(coordinator) + "</a></td>\n";           
+      rowWriter += "<td bgcolor=\"#481C60\"></td>\n"; 
+      if (0 == 1) {
+        rowWriter += "<td align=\"center\">" + unassessed.toFixed(0) + "</td>\n";        
+      }
+      rowWriter += "<td align=\"center\">" + testYes.toFixed(0) + "</td>\n";   
+      /*
+      if (   (testYes + unassessed) > 0) {        
+        rowWriter += "<td align=\"center\">" + ((100 * testYes)/(testYes + unassessed)).toFixed(0) + "%</td>\n"; 
+      } else {
+        rowWriter += "<td align=\"center\">0%</td>\n";       
+      }
+      */
+      rowWriter += "<td bgcolor=\"#481C60\"></td>\n";   
+      rowWriter += "<td align=\"center\">" + ldrCount.toFixed(0) + "</td>\n";        
+      rowWriter += "<td align=\"center\">" + reachCount.toFixed(0) + "</td>\n";   
+      if (1 == 1) {         
+        rowWriter += "<td align=\"center\">" + last7Count.toFixed(0) + "</td>\n";     
+      }   
+      rowWriter += "<td align=\"center\">"
+      if (ldrCount == 0) {
+        rowWriter += "0";      
+      } else {
+        rowWriter += (reachCount/ldrCount).toFixed(1);
+      }
+      rowWriter += "</td>\n";                               
+      rowWriter += "<td align=\"center\">" + ((100 * reachCount)/(buCount)).toFixed(1) + "%</td>\n";                   
+      rowWriter += "</tr>";   
+      if (filter == null || div.toLowerCase() == filter || regionalDirector.toLowerCase() == filter || coordinator.toLowerCase() == filter) {
+        coordWriter += rowWriter;
+        rowCounter++;
+      }          
+    }
+          
+    
+
+    coordWriter += "</table><br>&nbsp;</br>";        
+    if (!isOrganizer && rowCounter > 0) {
+      document.getElementById("coordinatorDiv").innerHTML = coordWriter ;
+    } else {
+      document.getElementById("coordinatorDivTitle").innerHTML = "" ;
+    }
+    
+    //
+    //  Organizer Writer
+    //
+    var orgWriter = "<table border=\"0\" cellspacing=\"0\" cellpadding=\"5\"><tr valign=\"middle\">\n";
+    orgWriter += "<tr valign=\"bottom\">\n";
+    if (corporation == null) {    
+      orgWriter += "  <td bgcolor=\"#481C60\" width=\"9%\" align=\"center\"><font color=\"white\">Division</font></td>\n";      
+    }
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"9%\" align=\"center\"><font color=\"white\">Region</font></td>\n";          
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Coordinator</font></td>\n";              
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Organizer</font></td>\n";                  
+    if (corporation != null) {
+      orgWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Employers</font></td>\n";      
+    }
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"1%\"></td>\n";
+    if (0 == 1) {   
+      orgWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Unassd<br/>Ldrs</font></td>\n";      
+    }
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Ldrs Yes<br/>Tested</font></td>\n";          
+    //orgWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Yes Tested<br/>Pct</font></td>\n";              
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"1%\"></td>\n";    
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Ldrs<br/>Reaching</font></td>\n";      
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Mbrs<br/>Reached</font></td>\n";          
+    if (1 == 1) {
+      orgWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Last 7<br/>Days</font></td>\n";          
+    }   
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Reach<br/>Per Ldr</font></td>\n";              
+    orgWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">BU Reach<br/>Pct</font></td>\n";                  
+    orgWriter += "</tr>\n\n";
+
+    for (var i = 0; i < turfSortSet.length; i++) {  
+      var rowWriter =  "";
+      rowWriter += "<tr valign=\"top\">\n";     
+      var div = JSON.parse(turfSortSet[i])[0];         
+      var regionalDirector = JSON.parse(turfSortSet[i])[1];    
+      var coordinator =  JSON.parse(turfSortSet[i])[2];        
+      var organizer =  JSON.parse(turfSortSet[i])[3];           
+      
+      var buCount = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU]);
+      var unassessed = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_TEST, "u"]);
+      var testYes = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_TEST, "y"]);
+      var ldrCount = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, LEADER, "y"]); 
+      var reachCount = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_REACH, "y"]);       
+      var last7Days = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_REACH, "y", LAST_7_DAYS]);       
+      
+      if (corporation == null) {            
+        rowWriter += "<td align=\"center\"><a href=\"?mode=summary&filter=" + encodeURIComponent(div) + "\">" + toProperCase(div) + "</a></td>\n";  
+      }
+      rowWriter += "<td align=\"left\"><a href=\"?mode=summary&filter=" + encodeURIComponent(regionalDirector) + "\">" + toProperCase(regionalDirector) + "</a></td>\n";        
+      rowWriter += "<td align=\"left\"><a href=\"?mode=summary&filter=" + encodeURIComponent(coordinator) + "\">" + toProperCase(coordinator) + "</a></td>\n";           
+      rowWriter += "<td align=\"left\"><a href=\"?mode=all&filter=" + encodeURIComponent(organizer) + "\">" + toProperCase(organizer) + "</a></td>\n";          
+      if (corporation != null) {
+        rowWriter += "<td align=\"left\"><font size=\"-1\">" + getEmployers(organizer) + "</font></td>";
+      }
+      rowWriter += "<td bgcolor=\"#481C60\"></td>\n"; 
+      if (0 == 1) {       
+        rowWriter += "<td align=\"center\">" + unassessed.toFixed(0) + "</td>\n";        
+      }
+      rowWriter += "<td align=\"center\">" + testYes.toFixed(0) + "</td>\n";    
+      /*
+      rowWriter += "<td align=\"center\">";
+      if ((testYes + unassessed) == 0) {    
+        rowWriter += "0";
+      } else {      
+        rowWriter += ((100 * testYes)/(testYes + unassessed)).toFixed(0);
+      }
+      rowWriter += "%</td>\n"; 
+      */
+      rowWriter += "<td bgcolor=\"#481C60\"></td>\n";   
+      rowWriter += "<td align=\"center\">" + ldrCount.toFixed(0) + "</td>\n";        
+      rowWriter += "<td align=\"center\">" + reachCount.toFixed(0) + "</td>\n";        
+      if (1 == 1) {   
+        rowWriter += "<td align=\"center\">" + last7Days.toFixed(0) + "</td>\n";        
+      }   
+      rowWriter += "<td align=\"center\">"
+      if (ldrCount == 0) {
+        rowWriter += "0";      
+      } else {
+        rowWriter += (reachCount/ldrCount).toFixed(1);
+      }
+      rowWriter += "</td>\n";                               
+      rowWriter += "<td align=\"center\">" + ((100 * reachCount)/(buCount)).toFixed(1) + "%</td>\n";                   
+      rowWriter += "</tr>"; 
+      if (filter == null || div.toLowerCase() == filter || regionalDirector.toLowerCase() == filter || organizer.toLowerCase() == filter  || coordinator.toLowerCase() == filter) {
+        orgWriter += rowWriter;
+        rowCounter++;
+      }              
+    }
+          
+    
+
+    orgWriter += "</table><br>&nbsp;</br>";        
+  
+    document.getElementById("organizerDiv").innerHTML = orgWriter ;    
+    
+
+    //
+    //  Leader Writer
+    //
+    if (isOrganizer || isCoordinator || mode == "leaders" || mode == "all" || mode == "espanol" || mode == "eboard" ) {
+      if (mode == "leaders" || mode == "espanol" || mode == "eboard") {
+          document.getElementById("regionDiv").innerHTML = "";    
+          document.getElementById("regionDivTitle").innerHTML = "";    
+          document.getElementById("organizerDiv").innerHTML = "";    
+          document.getElementById("organizerDivTitle").innerHTML = "";    
+          document.getElementById("coordinatorDiv").innerHTML = "";    
+          document.getElementById("coordinatorDivTitle").innerHTML = "";    
+          document.getElementById("deptDiv").innerHTML = "";    
+          document.getElementById("deptDivTitle").innerHTML = "";            
+          document.getElementById("countDiv").innerHTML = "";    
+          document.getElementById("divTitle").innerHTML = "";                                                                          
+      }
+      leaderSortSet.sort();    
+    
+      var leaderWriter = "<table cellpadding=\"5\" >\n";
+      leaderWriter += "<tr valign=\"bottom\">\n";    
+
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Div</td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"11%\" align=\"center\"><font color=\"white\">Reg<br/>Dirctr</td>";   
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"11%\" align=\"center\"><font color=\"white\">Coord</td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"11%\" align=\"center\"><font color=\"white\">Orgnzr</td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"17%\" align=\"center\"><font color=\"white\">Leader</td>";        
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"17%\" align=\"center\"><font color=\"white\">Employer</td>";        
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"17%\" align=\"center\"><font color=\"white\">Dept</td>";        
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Reach<br/>Count</td>";                    
+      leaderWriter += "</tr>\n"; 
+      var extraCount = 0;
+      var rowCounter = 0;
+      for (var i = 0; i < leaderSortSet.length; i++) { 
+        var rowWriter = "";
+        var aarray = JSON.parse(leaderSortSet[i]);
+        var cid = aarray[5];
+        var crecord = ccMap[cid];
+        var ldrName = "Unknown";
+        var dept = "Unknown";
+        var employer = "Unknown";
+        if (crecord == null) {
+          extraCount++;
+          var query = "select LastName, FirstName, MiddleName, Account.Name, Department from Contact where Id = \'" + cid + "\' ";
+          //alert(query);
+          var records = sforce.connection.query(query); 
+          var records1 = records.getArray('records');    
+          for (var j = 0; j < records1.length; j++) {
+            ldrName = records1[j].LastName + ", " + records1[j].FirstName;
+            if (records1[j].MiddleName != null) {
+              ldrName += " " + records1[j].MiddleName;
+            }
+            dept = records1[j].Department;
+            employer = records1[j].Account.Name;
+          }
+        } else {
+          ldrName = crecord.Contact_Name__c;
+          dept = crecord.Department__c;
+          employer = crecord.Employer_Name__c;
+        }
+        if (employer.toLowerCase().indexOf("seiu") < 0) {
+          rowWriter += "<tr valign=\"top\">\n";     
+  
+          if (Turf[employer] == null) {
+            //alert("Cant find Turf for " + employer);
+            Turf[employer] = {};
+            Turf[employer].Organizer = "Other";
+            Turf[employer].Coordinator = "Other";
+            Turf[employer].RegionalDirector = "Other";                        
+            if (employer.toLowerCase().indexOf("kaiser") == 0) {
+              Turf[employer].Division = "KAISER";
+            } else {
+              Turf[employer].Division = "HOSPITAL";            
+            }
+          }
+
+          var organizer = Turf[employer].Organizer;
+          var coordinator = Turf[employer].Coordinator;
+          var regionalDirector = Turf[employer].RegionalDirector;   
+          var div = Turf[employer].Division;       
+
+          var reachCount = getCounter([LEADER, div, regionalDirector, coordinator, organizer, cid, CODE_REACH, "y"]);       
+
+          var bgColor = "WHITE";
+          if (reachCount <= 4) {
+            bgColor = "#FFA0A0";
+          } else if (reachCount <= 7) {
+            bgColor = "#FFFFA0";
+          } else {
+            bgColor = "#A8FFB0";
+          }
+          //bgColor = "WHITE";
+          
+          rowWriter += "<td bgcolor=\"" + bgColor + "\" align=\"center\">";
+          
+          rowWriter += "<a href=\"?mode=leaders&filter=" + encodeURIComponent(div) + "\">" + toProperCase(div) + "</a></td>\n";  
+          rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"left\"><a href=\"?mode=leaders&filter=" + encodeURIComponent(regionalDirector) + "\">" + toProperCase(regionalDirector) + "</a></td>\n";        
+          rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"left\"><a href=\"?mode=leaders&filter=" + encodeURIComponent(coordinator) + "\">" + toProperCase(coordinator) + "</a></td>\n";           
+          rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"left\"><a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer) + "\">" + toProperCase(organizer) + "</a></td>\n";          
+          rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"left\">&nbsp;&nbsp;";
+          if (reachCount <= 4) {          
+            rowWriter += "<font color=\"red\" size=\"+1\"><b>&#x2718;</b></font>";
+          } else if (reachCount <= 7) {
+            rowWriter += "<font color=\"#D0D820\" size=\"+2\"><b>&#x2194;</b></font>";          
+          } else {
+            rowWriter += "<font color=\"#20FF40\" size=\"+1\"><b>&#x2714;</b></font>";
+          }
+          rowWriter += "&nbsp;&nbsp;" + toProperCase(ldrName);
+          if (ldrRoleMap[cid] != null) {
+            if (ldrRoleMap[cid] == CODE_ESPANOL) {
+              rowWriter += "&nbsp;&nbsp;<i><font size=\"-2\">(Ldr en Esp)</font></i>";            
+            } else {
+              rowWriter += "&nbsp;&nbsp;<i><font size=\"-2\">(" + ldrRoleMap[cid] + ")</font></i>";            
+            }
+          }
+          rowWriter += "</td>\n"; 
+          rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"left\">" + toProperCase(employer) + "</td>\n"; 
+          rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"left\">" + toProperCase(dept) + "</td>\n";                           
+          rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"center\">" + reachCount.toFixed(0) + "</td>\n";                    
+          rowWriter += "</tr>";  
+          if (filter == null || div.toLowerCase() == filter || regionalDirector.toLowerCase() == filter || organizer.toLowerCase() == filter  || coordinator.toLowerCase() == filter) {
+            if (mode == "espanol" && (ldrRoleMap[cid] == null || ldrRoleMap[cid] != CODE_ESPANOL)) {
+              //ignore
+            } else if (mode == "eboard" && ldrRoleMap[cid] == null) {
+              //ignore
+            } else {   
+              if (reachCount > 0 || mode == "espanol" || mode == "eboard") {    
+                leaderWriter += rowWriter; 
+                rowCounter++;
+              }
+            }
+          }               
+        }
+      }
+      //alert("extra count = " + extraCount);      
+       leaderWriter += "</table><br>&nbsp;</br>"; 
+  
+       document.getElementById("leaderDiv").innerHTML = leaderWriter ;        
+     } else {
+       document.getElementById("leaderDivTitle").innerHTML = "";             
+     }    
+     
+     //
+     //  Department Writer
+     //   
+     if (isOrganizer || isCoordinator || mode.indexOf("departments") == 0 || mode == "all") { 
+       if ( mode.indexOf("departments") == 0) {
+          document.getElementById("regionDiv").innerHTML = "";    
+          document.getElementById("regionDivTitle").innerHTML = "";    
+          document.getElementById("organizerDiv").innerHTML = "";    
+          document.getElementById("organizerDivTitle").innerHTML = "";    
+          document.getElementById("coordinatorDiv").innerHTML = "";    
+          document.getElementById("coordinatorDivTitle").innerHTML = "";    
+          document.getElementById("leaderDiv").innerHTML = "";    
+          document.getElementById("leaderDivTitle").innerHTML = "";            
+          document.getElementById("countDiv").innerHTML = "";    
+          document.getElementById("divTitle").innerHTML = "";                                                                          
+       }         
+       var deptSortSet = new Array();
+       for (var i = 0; i < deptSet.length; i++) {
+         if (i == 0) {
+           //alert(JSON.stringify(deptSet[i]));
+         }
+         var emName = deptSet[i][0];
+         var dept = deptSet[i][1];      
+         var buCount = getCounter([DEPARTMENT, BU, emName, dept]);
+         var ldrCount = getCounter([DEPARTMENT, LEADER, emName, dept]);
+         var reachCount = getCounter([DEPARTMENT, CODE_REACH, emName, dept]); 
+         var notCount = buCount - reachCount; 
+         //debugString = debugString + "<br/>" + JSON.stringify([(9999999 - notCount), emName, dept]);
+         if (notCount < 0) {
+           notCount = 0;
+         }
+         if (mode == "departments2") {
+           deptSortSet.push(JSON.stringify([(9999999 - (100.0 * notCount / buCount).toFixed(0)), emName, dept]));            
+         } else if (mode == "departments1") {           
+           deptSortSet.push(JSON.stringify([(9999999 - reachCount), emName, dept]));                     
+         } else {
+           deptSortSet.push(JSON.stringify([(9999999 - notCount), emName, dept]));            
+         }
+       }
+
+       deptSortSet.sort();       
+       var deptWriter = "<table cellpadding=\"5\" >\n";
+       deptWriter += "<tr valign=\"bottom\">\n";    
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"7%\" align=\"center\"><font color=\"white\">Div</td>";    
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Reg<br/>Dirctr</td>";   
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Coord</td>";    
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Orgnzr</td>";    
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Employer</td>";        
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Dept</td>";        
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"7%\" align=\"center\"><font color=\"white\">BU<br/>Count</td>";                    
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"7%\" align=\"center\"><font color=\"white\">Ldrs</td>";                      
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"7%\" align=\"center\"><font color=\"white\">Reach<br/>Count</td>";                    
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"7%\" align=\"center\"><font color=\"white\">Not<br/>Reached<br/>Count</td>";                         
+       deptWriter += "  <td bgcolor=\"#481C60\" width=\"7%\" align=\"center\"><font color=\"white\">Reach<br/>Pct</td>";                         
+       deptWriter += "</tr>\n";     
+       var rowCounter = 0; 
+       for (var i = 0; i < deptSortSet.length; i++) {
+         if (i < 5) {
+           //alert(i + ". " + deptSortSet[i]);
+         }     
+         var aarray = JSON.parse(deptSortSet[i]);
+
+         var employer = aarray[1];
+         var dept = aarray[2];   
+          
+         var buCount = getCounter([DEPARTMENT, BU, employer , dept]);
+         var ldrCount = getCounter([DEPARTMENT, LEADER, employer , dept]);
+         var reachCount = getCounter([DEPARTMENT, CODE_REACH, employer , dept]); 
+         var notCount = buCount - reachCount; 
+         if (notCount < 0) {
+           notCount = 0;
+         }
+         
+         var cantFind = false;
+         if (Turf[employer] == null) {
+            cantFind = true;
+            //alert("Cant find Turf for " + employer);
+            Turf[employer] = {};
+            Turf[employer].Organizer = "Other";
+            Turf[employer].Coordinator = "Other";
+            Turf[employer].RegionalDirector = "Other";                        
+            if (employer.toLowerCase().indexOf("kaiser") == 0) {
+              Turf[employer].Division = "KAISER";
+            } else {
+              Turf[employer].Division = "HOSPITAL";            
+            }
+         }
+         var organizer = Turf[employer].Organizer;
+         var coordinator = Turf[employer].Coordinator;
+         var regionalDirector = Turf[employer].RegionalDirector;   
+         var div = Turf[employer].Division;       
+         var rowWriter = "";
+       
+         rowWriter += "<td align=\"center\">";
+
+           rowWriter += "<a href=\"?mode=" +  mode + "&filter=" + encodeURIComponent(div) + "\">" + toProperCase(div) + "</a></td>\n";  
+           rowWriter += "<td align=\"left\"><a href=\"?mode=" +  mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + toProperCase(regionalDirector) + "</a></td>\n";        
+           rowWriter += "<td align=\"left\"><a href=\"?mode=" +  mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + toProperCase(coordinator) + "</a></td>\n";                      
+
+         rowWriter += "<td align=\"left\"><a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer) + "\">" + toProperCase(organizer) + "</a></td>\n";          
+         rowWriter += "<td align=\"left\">" + toProperCase(employer) + "</td>\n"; 
+         rowWriter += "<td align=\"left\">" + toProperCase(dept) + "</td>\n";                           
+         rowWriter += "<td align=\"center\">" + buCount.toFixed(0) + "</td>\n";                    
+         rowWriter += "<td align=\"center\">" + ldrCount.toFixed(0) + "</td>\n";                    
+         rowWriter += "<td align=\"center\">" + reachCount.toFixed(0) + "</td>\n";                    
+         rowWriter += "<td align=\"center\">" + notCount.toFixed(0) + "</td>\n";                                         
+         rowWriter += "<td align=\"center\">" + (100.0 * reachCount / buCount).toFixed(0) + "%</td>\n";                                                
+         rowWriter += "</tr>";  
+         if (filter == null || div.toLowerCase() == filter || regionalDirector.toLowerCase() == filter || organizer.toLowerCase() == filter  || coordinator.toLowerCase() == filter) {
+            if (organizer != "Other") {
+              if (mode != "departments2" || (buCount >= 10.0)) {
+                deptWriter += rowWriter;
+                rowCounter++;
+              }
+              if (mode == "departments2" && organizer.toLowerCase() == filter) {
+                $("#filterDiv").html("Mode = Bottom 10 Depts Sorted by Reach Pct (Min 10 Mbrs in Dept BU)");
+                if (rowCounter >= 10) {
+                  break;
+                }
+              }  else if (mode == "departments" && organizer.toLowerCase() == filter) {
+                $("#filterDiv").html("Mode = Bottom 10 Depts Sorted by Not Reached");
+                if (rowCounter >= 10) { 
+                  break;
+                }
+              } 
+            } 
+         }                      
+       }  
+       deptWriter += "</table>"; 
+       if (mode.indexOf("departments") == 0) {
+         document.getElementById("deptDiv").innerHTML = deptWriter ;  
+       } else {
+         document.getElementById("deptDivTitle").innerHTML = "";             
+       }
+       
+     } else {
+       document.getElementById("deptDivTitle").innerHTML = "";             
+     }  
+
+    //
+    //  Employer Writer
+    //   
+    if (mode == "employers") { 
+
+        ageRangeSet.sort();
+        shiftSet.sort();
+
+        document.getElementById("regionDiv").innerHTML = "";    
+        document.getElementById("regionDivTitle").innerHTML = "";    
+        document.getElementById("organizerDiv").innerHTML = "";    
+        document.getElementById("organizerDivTitle").innerHTML = "";    
+        document.getElementById("coordinatorDiv").innerHTML = "";    
+        document.getElementById("coordinatorDivTitle").innerHTML = "";    
+        document.getElementById("leaderDiv").innerHTML = "";    
+        document.getElementById("leaderDivTitle").innerHTML = "";            
+        document.getElementById("countDiv").innerHTML = "";    
+        document.getElementById("divTitle").innerHTML = "";                                                                          
+        document.getElementById("deptDivTitle").innerHTML = "";   
+        document.getElementById("deptDiv").innerHTML = "";                       
+
+       var deptSortPercentSet = new Array();
+       var deptSortNotCountSet = new Array();       
+       for (var i = 0; i < deptSet.length; i++) {
+         var emName = deptSet[i][0];
+         var dept = deptSet[i][1];      
+         var buCount = getCounter([DEPARTMENT, BU, emName, dept]);
+         var ldrCount = getCounter([DEPARTMENT, LEADER, emName, dept]);
+         var reachCount = getCounter([DEPARTMENT, CODE_REACH, emName, dept]); 
+         var notCount = buCount - reachCount; 
+         //debugString = debugString + "<br/>" + JSON.stringify([(9999999 - notCount), emName, dept]);
+         if (notCount < 0) {
+           notCount = 0; 
+         } 
+         deptSortPercentSet.push(JSON.stringify([(9999999 - (100.0 * reachCount / buCount).toFixed(0)), emName, dept]));            
+         deptSortNotCountSet.push(JSON.stringify([(9999999 - notCount), emName, dept]));            
+       }
+      deptSortPercentSet.sort();
+      deptSortNotCountSet.sort(); 
+      var empWriter = "";
+       
+      for (var i = 0; i < turfSortSet.length; i++) {  
+        var rowWriter =  "";
+        rowWriter += "<tr valign=\"top\">\n";     
+        var div = JSON.parse(turfSortSet[i])[0];         
+        var regionalDirector = JSON.parse(turfSortSet[i])[1];    
+        var coordinator =  JSON.parse(turfSortSet[i])[2];        
+        var organizer =  JSON.parse(turfSortSet[i])[3];           
+        for (var emName in Turf) {
+          var turfa = Turf[emName];       
+          var buCount = getCounter([EMPLOYER, BU, emName]);
+          if (turfa.Coordinator == coordinator && turfa.Organizer == organizer && buCount > 10) {
+            empWriter += "<div class=\"page-breaker\"></div>";
+            empWriter += "<i>Updated " + (new Date).toLocaleString() + "</i><br/>&nbsp;<br/>\n";
+            empWriter += "<font size=\"+2\">" + toProperCase(emName) + "</font><br/>\n";
+            empWriter += "Regional Director: " + toProperCase(regionalDirector ) + "<br/>\n";
+            empWriter += "Coordinator: " + toProperCase(coordinator ) + "<br/>\n";
+            empWriter += "Organizer: " + toProperCase(organizer ) + "<br/>\n";                                    
+            empWriter += "<br/>&nbsp;<br/>\n";
+
+            empWriter += "<font size=\"+1\">BU Count = " + buCount.toFixed(0) + "<br/>\n";                        
+            empWriter += "Stretch Goal (25%)  = " + (buCount / 4).toFixed(0) + "<br/>\n";                                    
+            empWriter += "COPE Average = $" + (getCounter([EMPLOYER, COPE, emName]) / buCount).toFixed(2) + "<br/>\n";                        
+            empWriter += "Leader Count = " + getCounter([EMPLOYER, emName, LEADER, "y"]) + "<br/>\n";                        
+            empWriter += "Reach Count = " + getCounter([EMPLOYER, emName, CODE_REACH, "y"]) + "<br/>\n";                        
+            empWriter += "Reach Percent = " + (100.0 * getCounter([EMPLOYER, emName, CODE_REACH, "y"]) / buCount).toFixed(0) + "%<br/>\n";                        
+            empWriter += "</font><br/>&nbsp;<br/>\n";        
+            
+            empWriter += "<font size=\"+1\">Age Range Analysis</font><br/>";             
+
+            empWriter += "<br/>&nbsp;<br/>\n";                    
+
+            empWriter += "<table cellpadding=\"5\">\n";
+            empWriter += "<tr valign=\"bottom\">";
+            empWriter += "  <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">Age Range</td>";              
+            empWriter += "  <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">BU<br/>Pct</td>";              
+            empWriter += "  <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">Reach<br/>Pct</td>";                                      
+            empWriter += "  <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">Leader<br/>Pct</td>";                                                  
+            empWriter += "</tr>"; 
+
+            var buUnknown = getCounter([EMPLOYER, AGE_RANGE, BU, emName, "Unknown"]);
+            var reachUnknown = getCounter([EMPLOYER, AGE_RANGE, CODE_REACH, emName, "Unknown"]);            
+            var ldrUnknown = getCounter([EMPLOYER, AGE_RANGE, LEADER, emName, "Unknown"]);                        
+            for (var q = 0; q < ageRangeSet.length; q++) {
+              if (ageRangeSet[q] != "Unknown") {
+                empWriter += "<tr valign=\"top\">";            
+                empWriter += "  <td align=\"center\">" + ageRangeSet[q] + "</td>";
+                var buCount2 = getCounter([EMPLOYER, AGE_RANGE, BU, emName,  ageRangeSet[q]]);
+                var reachCount2 = getCounter([EMPLOYER, AGE_RANGE, CODE_REACH, emName,  ageRangeSet[q]]);
+                var ldrCount2 = getCounter([EMPLOYER, AGE_RANGE, LEADER, emName,  ageRangeSet[q]]);                            
+                var pct = 0;
+                if (buCount > 0) { 
+                  pct = (100.0 * buCount2 / (buCount - buUnknown));
+                }                
+                empWriter += "  <td align=\"center\">" + pct.toFixed(0) + "%</td>";
+                var pct = 0;
+                if (getCounter([EMPLOYER, emName, CODE_REACH, "y"]) > 0) {
+                  pct = (100.0 * reachCount2   / (getCounter([EMPLOYER, emName, CODE_REACH, "y"]) - reachUnknown));
+                } 
+                empWriter += "  <td align=\"center\">" + pct.toFixed(0) + "%</td>";
+                var pct = 0;
+                if (getCounter([EMPLOYER, emName, LEADER, "y"]) > 0) {
+                  pct = (100.0 * ldrCount2 / (getCounter([EMPLOYER, emName, LEADER, "y"]) - ldrUnknown));
+                }               
+                empWriter += "  <td align=\"center\">" + pct.toFixed(0) + "%</td>";
+                empWriter += "</tr>\n";
+              }                                                        
+            }
+            
+            empWriter += "</table>";
+            empWriter += "<br/>&nbsp;<br/>";
+            
+            empWriter += "<font size=\"+1\">Shift Analysis</font><br/>";             
+
+
+            empWriter += "<br/>&nbsp;<br/>\n";                    
+
+            empWriter += "<table cellpadding=\"5\">\n";
+            empWriter += "<tr valign=\"bottom\">";
+            empWriter += "  <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">Shift</td>";              
+            empWriter += "  <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">BU<br/>Pct</td>";              
+            empWriter += "  <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">Reach<br/>Pct</td>";                                      
+            empWriter += "  <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">Leader<br/>Pct</td>";                                                  
+            empWriter += "</tr>"; 
+
+     
+            for (var q = 0; q < shiftSet.length; q++) {
+              var aarray = JSON.parse(shiftSet[q]);
+              var buCount2 = getCounter([EMPLOYER, SHIFT, BU, emName,  aarray[1] ]);
+              if (emName.toLowerCase() == aarray[0].toLowerCase() && buCount > 0 &&  buCount2 > 0 && (buCount2 / buCount) >= 0.005 ) {
+                empWriter += "<tr valign=\"top\">";            
+                empWriter += "  <td align=\"center\">" + aarray[1] + "</td>";
+
+                var reachCount2 = getCounter([EMPLOYER, SHIFT, CODE_REACH, emName,  aarray[1] ]);
+                var ldrCount2 = getCounter([EMPLOYER, SHIFT, LEADER, emName,  aarray[1] ]);                            
+                var pct = 0;
+                if (buCount > 0) { 
+                  pct = (100.0 * buCount2 / (buCount));
+                }                
+                empWriter += "  <td align=\"center\">" + pct.toFixed(0) + "%</td>";
+                var pct = 0;
+                if (getCounter([EMPLOYER, emName, CODE_REACH, "y"]) > 0) {
+                  pct = (100.0 * reachCount2   / (getCounter([EMPLOYER, emName, CODE_REACH, "y"])));
+                } 
+                empWriter += "  <td align=\"center\">" + pct.toFixed(0) + "%</td>";
+                var pct = 0;
+                if (getCounter([EMPLOYER, emName, LEADER, "y"]) > 0) {
+                  pct = (100.0 * ldrCount2 / (getCounter([EMPLOYER, emName, LEADER, "y"])));
+                }               
+                empWriter += "  <td align=\"center\">" + pct.toFixed(0) + "%</td>";
+                empWriter += "</tr>\n";
+              }                                                        
+            }
+            
+            empWriter += "</table>";
+
+            empWriter += "<br/>&nbsp;<br/>";            
+            
+            for (var p = 0; p < 2; p++) {
+              empWriter += "<div class=\"page-breaker\"></div>";
+              var deptSortSet = deptSortPercentSet;
+              var section = "Departments by Reach Percent";     
+              if (p > 0) {
+                section = "Departments by Not Reach Count";     
+                deptSortSet = deptSortNotCountSet;
+              }
+              empWriter += "<font size=\"+1\">" + section + "</font><br/>";                          
+              empWriter += "<table cellpadding=\"5\" >\n";
+              empWriter += "<tr valign=\"bottom\">\n";           
+              empWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Dept</td>";        
+              empWriter  += "  <td bgcolor=\"#481C60\" width=\"15%\" align=\"center\"><font color=\"white\">BU<br/>Count</td>";                    
+              empWriter  += "  <td bgcolor=\"#481C60\" width=\"13%\" align=\"center\"><font color=\"white\">COPE<br/>Avg</td>"       
+              empWriter += "  <td bgcolor=\"#481C60\" width=\"13%\" align=\"center\"><font color=\"white\">Ldrs</td>";                      
+              empWriter += "  <td bgcolor=\"#481C60\" width=\"13%\" align=\"center\"><font color=\"white\">Reach<br/>Count</td>";                    
+              empWriter += "  <td bgcolor=\"#481C60\" width=\"13%\" align=\"center\"><font color=\"white\">Not<br/>Reached<br/>Count</td>";                         
+              empWriter += "  <td bgcolor=\"#481C60\" width=\"13%\" align=\"center\"><font color=\"white\">Reach<br/>Pct</td>";                         
+              empWriter += "</tr>\n";
+            
+              var otherBuCount = 0;
+              var otherReachCount = 0;              
+              var otherLdrCount = 0;              
+              var otherCOPESum = 0;
+            
+              for (var j = 0; j < deptSortSet.length; j++) {
+                var aarray = JSON.parse(deptSortSet[j])
+                var emName2 = aarray[1];
+                var dept = aarray[2];             
+                if (emName.toLowerCase() == emName2.toLowerCase()) {
+                  var rowWriter = "";
+                  rowWriter += "<tr valign=\"top\">\n";               
+                  rowWriter += "<td align=\"left\">" + toProperCase(dept) + "</td>\n";
+                  var buCount = getCounter([DEPARTMENT, BU, emName , dept ]);
+                  var ldrCount = getCounter([DEPARTMENT, LEADER, emName , dept]);
+                  var reachCount = getCounter([DEPARTMENT, CODE_REACH, emName , dept]); 
+                  var notCount = buCount - reachCount; 
+                  if (notCount < 0) {
+                    notCount = 0;
+                  }                
+                  rowWriter += "<td align=\"center\">" + buCount.toFixed() + "</td>\n";
+                  rowWriter += "<td align=\"center\">$" + (getCounter([DEPARTMENT, COPE, emName , dept ]) / buCount).toFixed(2) + "</td>\n";                
+                  rowWriter += "<td align=\"center\">" + ldrCount.toFixed(0) + "</td>\n";                    
+                  rowWriter += "<td align=\"center\">" + reachCount.toFixed(0) + "</td>\n";                    
+                  rowWriter += "<td align=\"center\">" + notCount.toFixed(0) + "</td>\n";                                         
+                  rowWriter += "<td align=\"center\">" + (100.0 * reachCount / buCount).toFixed(0) + "%</td>\n";                  
+                  rowWriter += "</tr>\n";   
+                  
+                  if (buCount >= 10) {
+                    empWriter += rowWriter;
+                  } else {
+                    otherBuCount += buCount;
+                    otherCOPESum += getCounter([DEPARTMENT, COPE, emName , dept ]) ;
+                    otherLdrCount += ldrCount;
+                    otherReachCount += reachCount;
+                  }             
+                } 
+               }    
+               if (otherBuCount > 0) {
+                  var rowWriter = "";
+                  rowWriter += "<tr valign=\"top\">\n";               
+                  rowWriter += "<td align=\"left\">Other Departments</td>\n";               
+                  rowWriter += "<td align=\"center\">" + otherBuCount.toFixed() + "</td>\n";
+                  rowWriter += "<td align=\"center\">$" + (otherCOPESum  / otherBuCount).toFixed(2) + "</td>\n";                
+                  rowWriter += "<td align=\"center\">" + otherLdrCount.toFixed(0) + "</td>\n";                    
+                  rowWriter += "<td align=\"center\">" + otherReachCount.toFixed(0) + "</td>\n";                    
+                  rowWriter += "<td align=\"center\">" + (otherBuCount - otherReachCount).toFixed(0) + "</td>\n";                                         
+                  rowWriter += "<td align=\"center\">" + (100.0 * otherReachCount / otherBuCount).toFixed(0) + "%</td>\n";                  
+                  rowWriter += "</tr>\n"; 
+                  empWriter += rowWriter;                  
+               }               
+               empWriter += "</table>\n\n";
+               empWriter += "<br/>&nbsp;<br/>\n";
+             }
+             
+             leaderSortSet.sort();    
+             empWriter += "<div class=\"page-breaker\"></div>";
+             empWriter += "<font size=\"+1\">Leaders</font><br/>";     
+             empWriter += "<table cellpadding=\"5\" >\n";
+             empWriter  += "<tr valign=\"bottom\">\n";    
+   
+             empWriter  += "  <td bgcolor=\"#481C60\" width=\"17%\" align=\"center\"><font color=\"white\">Leader</td>";               
+             empWriter  += "  <td bgcolor=\"#481C60\" width=\"17%\" align=\"center\"><font color=\"white\">COPE</td>";        
+             empWriter  += "  <td bgcolor=\"#481C60\" width=\"17%\" align=\"center\"><font color=\"white\">Dept</td>";              
+             empWriter  += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Reach<br/>Count</td>";                    
+             empWriter  += "</tr>\n"; 
+             var extraCount = 0;
+             var rowCounter = 0;
+             for (var j = 0; j < leaderSortSet.length; j++) { 
+               lastRecord = j + ". " + leaderSortSet[j] + "\n" + JSON.stringify(ccMap[cid]);
+               var rowWriter = "";
+               var aarray = JSON.parse(leaderSortSet[j]);
+               var cid = aarray[5];
+               var crecord = ccMap[cid];             
+               var ldrName = "Unknown";
+               var dept = "Unknown";
+               var employer2 = "Unknown";
+               if (crecord == null) {
+                 extraCount++;
+                 var query = "select LastName, FirstName, MiddleName, Account.Name, Worksite__c, Department, COPE_Pledge__c from Contact where Id = \'" + cid + "\' ";
+                 //alert(query);
+                 var records = sforce.connection.query(query); 
+                 var records1 = records.getArray('records');    
+                 for (var k = 0; k < records1.length; k++) {
+                   crecord = records1[k];
+                   
+                   ldrName = records1[k].LastName + ", " + records1[k].FirstName;
+                   if (records1[k].MiddleName != null && records1[k].MiddleName != "null" && records1[k].MiddleName != "") {
+                     ldrName += " " + records1[k].MiddleName;
+                   }
+                   
+                   dept = records1[k].Department;
+                   if (dept == null || dept == "null" || dept == "") {
+                     dept = "Unknown";
+                   }
+                   employer2 = records1[k].Account.Name;
+                   dept = getModDepartment(employer2, records1[k].Worksite__c, dept);
+                   crercord = {};
+                   crecord.Contact__r = {};
+                   crecord.Contact__r.Worksite__c = records1[k].Worksite__c;
+                   crecord.Department__c = records1[k].Department;
+                   crecord.Employer_Name__c = records1[k].Account.Name;
+                   crecord.Contact__r.COPE_Pledge__c = records1[k].COPE_Pledge__c;
+                   crecord.Contact_Name__c = ldrName;
+                   ccMap[cid] = crecord;
+                 }
+               } else { 
+                 lastRecord = crecord;
+                 ldrName = crecord.Contact_Name__c;
+                 employer2 = crecord.Employer_Name__c;
+                 dept = getModDepartment(employer2, crecord.Contact__r.Worksite__c, crecord.Department__c);
+               }
+               if (employer2.toLowerCase().indexOf("seiu") < 0 && employer2.toLowerCase() == emName.toLowerCase()) {
+                 rowWriter += "<tr valign=\"top\">\n";     
+       
+                 var reachCount = getCounter([LEADER, div, regionalDirector, coordinator, organizer, cid, CODE_REACH, "y"]);       
+
+                 var bgColor = "WHITE";
+                 if (reachCount <= 4) {
+                   bgColor = "#FFA0A0";
+                 } else if (reachCount <= 7) {
+                   bgColor = "#FFFFA0";
+                 } else {
+                   bgColor = "#A8FFB0";
+                 }
+                 //bgColor = "WHITE";
+
+                 rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"left\">&nbsp;&nbsp;";
+                 if (reachCount <= 4) {          
+                   rowWriter += "<font color=\"red\" size=\"+1\"><b>&#x2718;</b></font>";
+                 } else if (reachCount <= 7) {
+                   rowWriter += "<font color=\"#D0D820\" size=\"+2\"><b>&#x2194;</b></font>";          
+                 } else {
+                   rowWriter += "<font color=\"#20FF40\" size=\"+1\"><b>&#x2714;</b></font>";
+                 }
+                 rowWriter += "&nbsp;&nbsp;" + toProperCase(ldrName);
+                 if (ldrRoleMap[cid] != null) {
+                   if (ldrRoleMap[cid] == CODE_ESPANOL) {
+                     rowWriter += "&nbsp;&nbsp;<i><font size=\"-2\">(Ldr en Esp)</font></i>";            
+                   }
+                 }
+                 rowWriter += "</td>\n"; 
+                 var cope = 0;
+                 if (crecord.Contact__r.COPE_Pledge__c != null  && crecord.Contact__r.COPE_Pledge__c != "null" && crecord.Contact__r.COPE_Pledge__c != "") {
+                   cope = crecord.Contact__r.COPE_Pledge__c;
+                 } else if (crecord.COPE_Pledge__c != null && crecord.COPE_Pledge__c != "null" && crecord.COPE_Pledge__c != "") {
+                   cope = crecord.COPE_Pledge__c;
+                 }
+                 rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"center\">$" + cope  + "</td>\n"; 
+                 rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"left\">" + toProperCase(dept) + "</td>\n";                           
+                 rowWriter += "<td bgcolor=\"" + bgColor + "\"  align=\"center\">" + reachCount.toFixed(0) + "</td>\n";                    
+                 rowWriter += "</tr>";  
+                 empWriter += rowWriter;
+                 rowCounter++;
+               }
+            }
+            empWriter += "</table><br>&nbsp;</br>"; 
+            if (rowCounter == 0) {
+              empWriter += "No Leaders at Employer.<br/>";
+            }
+
+          }
+        }
+      }
+      
+      
+      
+      
+      document.getElementById("empDivTitle").innerHTML = empWriter;   
+      document.getElementById("empDiv").innerHTML = "";      
+    }
+     
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+
+  document.getElementById("progressDiv").innerHTML = ""; 
+  
+//});
+
+
+  //document.getElementById("debugDiv").innerHTML = debugString; 
+   
+</script> 
+  
+</apex:page>

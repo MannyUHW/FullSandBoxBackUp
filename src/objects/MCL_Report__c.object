@@ -1,0 +1,802 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <content>MCL_Report</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>MCL</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>false</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>false</enableSharing>
+    <enableStreamingApi>false</enableStreamingApi>
+    <fields>
+        <fullName>Add_SOQL_Criteria__c</fullName>
+        <description>Additional SOQL Criteria.  For Sys Admins only.</description>
+        <externalId>false</externalId>
+        <label>Add SOQL Criteria</label>
+        <length>8192</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Units__c</fullName>
+        <description>Comma-separated list of selected bargaining units.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Units</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Code_List__c</fullName>
+        <description>Codes to ignore responses of</description>
+        <externalId>false</externalId>
+        <label>Code List</label>
+        <length>200</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Columns__c</fullName>
+        <externalId>false</externalId>
+        <label>Columns</label>
+        <precision>1</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Coordinator__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Employer__r.Coordinator__c), &quot;Vacant&quot;, 
+Employer__r.Coordinator__r.FirstName &amp; &quot; &quot; &amp; Employer__r.Coordinator__r.LastName)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Coordinator</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Custom_CSS__c</fullName>
+        <externalId>false</externalId>
+        <label>Custom CSS</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Departments__c</fullName>
+        <description>Comma-separated list of selected departments.</description>
+        <externalId>false</externalId>
+        <label>Departments</label>
+        <length>8192</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>text(Employer__r.Account_Group__c)</formula>
+        <label>Division</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employer__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Employer</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipName>MCL_Report_Formats</relationshipName>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Filter_Survey_Question__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Filter Survey Question</label>
+        <referenceTo>Survey_Question__c</referenceTo>
+        <relationshipLabel>MCL Reports</relationshipLabel>
+        <relationshipName>MCL_Reports</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Filter_Survey_Response__c</fullName>
+        <externalId>false</externalId>
+        <label>Filter Survey Response</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Job_Classes__c</fullName>
+        <description>Comma-separated list of selected job classes.</description>
+        <externalId>false</externalId>
+        <label>Job Classes</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Map_Gamma__c</fullName>
+        <defaultValue>0.2</defaultValue>
+        <externalId>false</externalId>
+        <label>Map Gamma</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Map_Height__c</fullName>
+        <defaultValue>300</defaultValue>
+        <externalId>false</externalId>
+        <label>Map Height</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Map_Width__c</fullName>
+        <defaultValue>300</defaultValue>
+        <externalId>false</externalId>
+        <label>Map Width</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Map_Zoom_Level__c</fullName>
+        <defaultValue>14</defaultValue>
+        <externalId>false</externalId>
+        <label>Map Zoom Level</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Organizer__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Employer__r.Organizer_1__c), &quot;Vacant&quot;, 
+Employer__r.Organizer_1__r.FirstName &amp; &quot; &quot; &amp; Employer__r.Organizer_1__r.LastName)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Organizer</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Orientation__c</fullName>
+        <externalId>false</externalId>
+        <label>Orientation</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Portrait</fullName>
+                    <default>false</default>
+                    <label>Portrait</label>
+                </value>
+                <value>
+                    <fullName>Landscape</fullName>
+                    <default>false</default>
+                    <label>Landscape</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Page_Size__c</fullName>
+        <externalId>false</externalId>
+        <label>Page Size</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Letter (8.5x11)</fullName>
+                    <default>false</default>
+                    <label>Letter (8.5x11)</label>
+                </value>
+                <value>
+                    <fullName>Legal (8.5x14)</fullName>
+                    <default>false</default>
+                    <label>Legal (8.5x14)</label>
+                </value>
+                <value>
+                    <fullName>A4</fullName>
+                    <default>false</default>
+                    <label>A4</label>
+                </value>
+                <value>
+                    <fullName>Envelope #10</fullName>
+                    <default>false</default>
+                    <label>Envelope #10</label>
+                </value>
+                <value>
+                    <fullName>11x17</fullName>
+                    <default>false</default>
+                    <label>11x17</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Prefilter_By_Current_BU__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Prefilter By Current BU</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Prefilter_Report_Tags__c</fullName>
+        <description>Comma separated list of tags.  If any Contact record contains that tag in that record&apos;s Report Tags field, the Contact record will be included.</description>
+        <externalId>false</externalId>
+        <label>Prefilter Report Tags</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Print_Link__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/apex/MCL_Print?scontrolCaching=1&amp;id=&quot; &amp;  Id , Name)</formula>
+        <label>Print Link</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Records_with_no_responses__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Only return records that don&apos;t have a survey response for the listed codes</description>
+        <externalId>false</externalId>
+        <label>Ignore Contacts with following SR codes</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Reg_Director__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Employer__r.Regional_Director__c), text(Employer__r.Region__c) &amp; &quot; - Vacant&quot;, 
+Employer__r.Regional_Director__r.FirstName &amp; &quot; &quot; &amp; Employer__r.Regional_Director__r.LastName)</formula>
+        <label>Reg Director</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Row_height__c</fullName>
+        <defaultValue>4.0</defaultValue>
+        <description>The number of headers that consume the same amount of vertical space as one record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The number of headers that consume the same amount of vertical space as one record.</inlineHelpText>
+        <label>Row height (in headers)</label>
+        <precision>9</precision>
+        <required>true</required>
+        <scale>3</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rows__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Maximum number of records to be displayed in one column.</inlineHelpText>
+        <label>Rows</label>
+        <precision>2</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sorting_Config__c</fullName>
+        <externalId>false</externalId>
+        <label>Sorting Config</label>
+        <length>1024</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Template__c</fullName>
+        <externalId>false</externalId>
+        <label>Template</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Turf_String__c</fullName>
+        <externalId>false</externalId>
+        <formula>Division__c &amp; &quot;/&quot; &amp;  Reg_Director__c &amp; &quot;/&quot; &amp;  Coordinator__c &amp; &quot;/&quot; &amp; Organizer__c  &amp; &quot;/&quot; &amp;   Employer__r.Name</formula>
+        <label>Turf String</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Campaign_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>UHW_Campaign__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>UHW Campaign Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Campaign__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>UHW Campaign</label>
+        <referenceTo>UHW_Campaign__c</referenceTo>
+        <relationshipName>MCL_Report_Formats</relationshipName>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>MCL Report</label>
+    <listViews>
+        <fullName>Dignity</fullName>
+        <columns>NAME</columns>
+        <columns>Employer__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>UHW_Campaign__c</field>
+            <operation>contains</operation>
+            <value>Phase 6</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Dignity</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Uncovered</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Commits</value>
+        </filters>
+        <label>Dignity-Phase 6 Uncovered with Commits</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dignity_Full_Employer_List</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Dignity Full Employer List</value>
+        </filters>
+        <label>Dignity-Full Employer Lists</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dignity_Non_Covered_Nominated_Leader</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Employer__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>UHW_Campaign__c</field>
+            <operation>contains</operation>
+            <value>Phase 6</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Dignity-Non</value>
+        </filters>
+        <label>Dignity-Non Covered Nominated Leader</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dignity_Phase_6_Picket_Sign_in</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Dignity Phase 6 Picket Sign-in</value>
+        </filters>
+        <label>Dignity Phase 6 Picket Sign-in</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dignity_Phase_6_Uncovered_Lists</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Dignity Phase 6 Uncovered</value>
+        </filters>
+        <label>Dignity-Phase 6 Uncovered Lists</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dignity_Uncovered_Nominated_Leader_Phase</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>notContain</operation>
+            <value>Non</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Dignity-Uncovered Nominated Leader</value>
+        </filters>
+        <label>Dignity-Uncovered Nom. Leader Phase 6</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>EG_Kaiser_Phase_6_Picket_Sign_in_Lists</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Kaiser Phase 6 Picket Sign-in</value>
+        </filters>
+        <label>EG-Kaiser Phase 6 Picket Sign-in Lists</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_Non_Covered_Nominated_Leader</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Employer__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>UHW_Campaign__c</field>
+            <operation>contains</operation>
+            <value>Phase 6</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Kaiser-Non</value>
+        </filters>
+        <label>Kaiser-Non Covered Nominated Leader</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_PTR_2018</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>UHW_Campaign__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>startsWith</operation>
+            <value>PTR</value>
+        </filters>
+        <label>Kaiser PTR 2018</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_Phase_6_CRE_Sign_In_List</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>UHW_Campaign_Name__c</field>
+            <operation>contains</operation>
+            <value>Phase 6</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>sign-in</value>
+        </filters>
+        <label>Kaiser-Phase 6 CRE Sign-In List</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_Phase_6_New_Nom_Ldrs_Supp_CCR</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Kaiser-Phase 6 New Nom Ldrs &amp; Supp -CCR</value>
+        </filters>
+        <label>Kaiser-Phase 6 New Nom Ldrs &amp; Supp -CCR</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_Picket_R2_Sign_in_Lists</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>startsWith</operation>
+            <value>Kaiser Picket R2 Sign-in</value>
+        </filters>
+        <label>Kaiser Picket R2 Sign-in Lists</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>AAs_Kaiser</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_Post_Turf_Review_Uncovered</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UHW_Campaign_Name__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>PTR Uncvrd</value>
+        </filters>
+        <label>Kaiser-Post-Turf Review Uncovered</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_R2_Full_Facility_List</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>startsWith</operation>
+            <value>Kaiser R2 Full Facility List</value>
+        </filters>
+        <label>Kaiser R2 Full Facility List</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>AAs_Kaiser</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_Turf_Review</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Kaiser-Turf Review</value>
+        </filters>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>equals</operation>
+            <value>Mary Ann Minjoe</value>
+        </filters>
+        <label>Kaiser-Turf Review</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Kaiser_Uncovered_Nominated_Leader_Phase</fullName>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Kaiser-Uncovered Nominated Ldrs Phase 6</value>
+        </filters>
+        <label>Kaiser-Uncovered Nom. Leader Phase 6</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Non_Dignity_Full_Employer_List</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Non Dignity Full Employer List</value>
+        </filters>
+        <label>Non Dignity-Full Employer List</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Non_Dignity_Phase_6_Uncovered</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Non-Dig Phase 6 Uncovere</value>
+        </filters>
+        <label>Non Dignity- Phase 6 Uncovered</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Public_Hospitals</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>- Public Hospital</value>
+        </filters>
+        <label>Public Hospitals</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Full_Access_Group</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Sutter_Barg_Full_Lists</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Sutter Barg Full List</value>
+        </filters>
+        <label>Sutter Barg Full Lists</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>MCL Report Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>MCL Reports</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>Clone</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Clone</masterLabel>
+        <openType>noSidebar</openType>
+        <page>MCLReportClone</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Export_to_CSV_Excel</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Export to CSV/Excel</masterLabel>
+        <openType>replace</openType>
+        <page>MCL_Report_CSV</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Print</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>page</linkType>
+        <masterLabel>Print</masterLabel>
+        <openType>replace</openType>
+        <page>MCL_Print</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Print_Some</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>page</linkType>
+        <masterLabel>Print Some</masterLabel>
+        <openType>newWindow</openType>
+        <page>MCL_Print_Some</page>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+    </webLinks>
+</CustomObject>

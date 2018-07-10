@@ -1,0 +1,1291 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.agGridEnterprise910}"/>
+        <apex:includeScript value="{!$Resource.MomentJs}"/>
+        <apex:includeScript value="{!$Resource.Pikaday}"/>
+        <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono"/>
+
+        <style>
+
+            .no-show {
+                display:none;
+            }
+
+            .show {
+                display:block;
+            }
+
+            #GrandTotalGridDiv {
+                height: 60px;
+            }
+
+            #TotalsGridDiv {
+                height: 200px;
+            }
+
+            #StatsGridDiv {
+                height: 300px;
+            }
+
+            .hide {
+                display:none;
+            }
+
+            .sectionText {
+                font-size: 2em;
+                padding-left: 10px;
+                color: #fac1de;
+                padding-bottom: 3px;
+                padding-top: 5px;
+                width: 30%;
+                display: inline-block;
+            }
+
+            .saveAs {
+                visibility: visible;
+                float: right;
+                margin-top: 10px;
+                margin-right: 29px;
+            }
+
+            .cellClass1 {
+                text-align: right;
+                padding-right:5px !important;
+                /*                font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace; */
+                font-size: 16px;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .cellClass2 {
+                text-align: center;
+                font-size: 16px;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .cellClass3 {
+                text-align: left;
+                padding-left:5px !important;
+                font-size: 16px;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .fontTest1 {
+                font-family: 'Roboto Condensed', sans-serif;
+                color:red;
+            }
+
+            .fontTest2 {
+                font-family: 'Roboto Mono', monospace;
+                /*   color:#8412ef; */
+            }
+            /* removes outline dots from button when it gets focus */
+            :focus {outline:none;}
+            ::-moz-focus-inner {border:0;}
+
+            .GroupHeader {
+                background-color: #799BA6 !important;
+            }
+
+            body {
+                font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+                font-size: 14px;
+                background-color: #9D37FF;
+                color:white;
+            }
+
+            .right-align {
+                text-align: right;
+                padding-top:12px !important;
+                padding-right:5px !important;
+            }
+
+            #hr1 {
+                clear:both;
+            }
+
+            #Controls {
+                padding-top: 10px;
+                padding-left: 10px;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+                background-color: #4040de;
+            }
+
+            #Title {
+                text-align: center;
+                clear: both;
+                color:white;
+            }
+
+            #DatePicker {
+                width: 109px;
+                margin-left: 10px;
+                color:#8412ef;
+                background-color: white;
+                font-size: 1em;
+                font-family: 'Roboto Condensed', sans-serif;
+                padding-left: 5px;
+            }
+
+            #Content {
+                width: 1555px;
+                height: 690px;
+            }
+
+            #RepeatCountGridDiv {
+                height: 600px !important;
+                padding-right: 5px;
+                margin-right: 2px;
+            }
+
+            #SingleCountGridDiv {
+                height: 600px !important;
+            }
+
+            #ContainerA {
+                padding-left: 5px;
+                padding-top: 10px;
+            }
+
+            #Container0 {
+                padding-left: 5px;
+                padding-top: 10px;
+            }
+
+            #Container1 {
+                clear:both;
+            }
+
+            #Container2 {
+                padding-top: 10px;
+                width: 50%;
+                float: left;
+            }
+
+            #Container3 {
+                padding-top: 10px;
+                width: 50%;
+                float: left;
+            }
+
+            #MessageDiv {
+                height: 21px;
+                display:inline-block;
+                color:#b3b3e6;
+                margin-left: 5px;
+            }
+
+           .shadow {
+                padding: 10px 10px 10px 10px;
+                background-color: #9B4FE1;
+                box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+                -moz-box-shadow: 0 1px 2px rgba(34,25,25,0.4);
+                -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+            }
+
+            @charset "UTF-8";
+            /*!
+             * Pikaday
+             * Copyright © 2014 David Bushell | BSD MIT license | http://dbushell.com/
+             */
+
+            .pika-single {
+                z-index: 9999;
+                display: block;
+                position: relative;
+                color: #333;
+                background: #fff;
+                border: 1px solid #ccc;
+                border-bottom-color: #bbb;
+                font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            }
+
+            /*
+            clear child float (pika-lendar), using the famous micro clearfix hack
+            http://nicolasgallagher.com/micro-clearfix-hack/
+            */
+            .pika-single:before,
+            .pika-single:after {
+                content: " ";
+                display: table;
+            }
+            .pika-single:after { clear: both }
+            .pika-single { *zoom: 1 }
+
+            .pika-single.is-hidden {
+                display: none;
+            }
+
+            .pika-single.is-bound {
+                position: absolute;
+                box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
+            }
+
+            .pika-lendar {
+                float: left;
+                width: 240px;
+                margin: 8px;
+            }
+
+            .pika-title {
+                position: relative;
+                text-align: center;
+            }
+
+            .pika-label {
+                display: inline-block;
+                *display: inline;
+                position: relative;
+                z-index: 9999;
+                overflow: hidden;
+                margin: 0;
+                padding: 5px 3px;
+                font-size: 14px;
+                line-height: 20px;
+                font-weight: bold;
+                background-color: #fff;
+            }
+            .pika-title select {
+                cursor: pointer;
+                position: absolute;
+                z-index: 9998;
+                margin: 0;
+                left: 0;
+                top: 5px;
+                filter: alpha(opacity=0);
+                opacity: 0;
+            }
+
+            .pika-prev,
+            .pika-next {
+                display: block;
+                cursor: pointer;
+                position: relative;
+                outline: none;
+                border: 0;
+                padding: 0;
+                width: 20px;
+                height: 30px;
+                /* hide text using text-indent trick, using width value (it's enough) */
+                text-indent: 20px;
+                white-space: nowrap;
+                overflow: hidden;
+                background-color: transparent;
+                background-position: center center;
+                background-repeat: no-repeat;
+                background-size: 75% 75%;
+                opacity: .5;
+                *position: absolute;
+                *top: 0;
+            }
+
+            .pika-prev:hover,
+            .pika-next:hover {
+                opacity: 1;
+            }
+
+            .pika-prev,
+            .is-rtl .pika-next {
+                float: left;
+                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==');
+                *left: 0;
+            }
+
+            .pika-next,
+            .is-rtl .pika-prev {
+                float: right;
+                background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAU0lEQVR42u3VOwoAMAgE0dwfAnNjU26bYkBCFGwfiL9VVWoO+BJ4Gf3gtsEKKoFBNTCoCAYVwaAiGNQGMUHMkjGbgjk2mIONuXo0nC8XnCf1JXgArVIZAQh5TKYAAAAASUVORK5CYII=');
+                *right: 0;
+            }
+
+            .pika-prev.is-disabled,
+            .pika-next.is-disabled {
+                cursor: default;
+                opacity: .2;
+            }
+
+            .pika-select {
+                display: inline-block;
+                *display: inline;
+            }
+
+            .pika-table {
+                width: 100%;
+                border-collapse: collapse;
+                border-spacing: 0;
+                border: 0;
+            }
+
+            .pika-table th,
+            .pika-table td {
+                width: 14.285714285714286%;
+                padding: 0;
+            }
+
+            .pika-table th {
+                color: #999;
+                font-size: 12px;
+                line-height: 25px;
+                font-weight: bold;
+                text-align: center;
+            }
+
+            .pika-button {
+                cursor: pointer;
+                display: block;
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                outline: none;
+                border: 0;
+                margin: 0;
+                width: 100%;
+                padding: 5px;
+                color: #666;
+                font-size: 12px;
+                line-height: 15px;
+                text-align: right;
+                background: #f5f5f5;
+            }
+
+            .pika-week {
+                font-size: 11px;
+                color: #999;
+            }
+
+            .is-today .pika-button {
+                color: #33aaff;
+                font-weight: bold;
+            }
+
+            .is-selected .pika-button {
+                color: #fff;
+                font-weight: bold;
+                background: #33aaff;
+                box-shadow: inset 0 1px 3px #178fe5;
+                border-radius: 3px;
+            }
+
+            .is-inrange .pika-button {
+                background: #D5E9F7;
+            }
+
+            .is-startrange .pika-button {
+                color: #fff;
+                background: #6CB31D;
+                box-shadow: none;
+                border-radius: 3px;
+            }
+
+            .is-endrange .pika-button {
+                color: #fff;
+                background: #33aaff;
+                box-shadow: none;
+                border-radius: 3px;
+            }
+
+            .is-disabled .pika-button,
+            .is-outside-current-month .pika-button {
+                pointer-events: none;
+                cursor: default;
+                color: #999;
+                opacity: .3;
+            }
+
+            .pika-button:hover {
+                color: #fff;
+                background: #ff8000;
+                box-shadow: none;
+                border-radius: 3px;
+            }
+
+            /* styling for abbr */
+            .pika-table abbr {
+                border-bottom: none;
+                cursor: help;
+            }
+
+            /* Modal css found here: http://jsfiddle.net/kumarmuthaliar/GG9Sa/1/
+                right: 0;
+                bottom: 0;
+            */
+
+            .modalDialog {
+                position: fixed;
+                font-family: Arial, Helvetica, sans-serif;
+                top: 100px;
+                left: 50px;
+                width: 80%;
+                height: 80%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 99999;
+                opacity: 0.8;
+                pointer-events: none;
+            }
+
+            .modalDialog > div {
+                width: 400px;
+                position: relative;
+                margin: 10% auto;
+                padding: 5px 20px 13px 20px;
+                border-radius: 10px;
+                background: #fff;
+                background: -moz-linear-gradient(#fff, #999);
+                background: -webkit-linear-gradient(#fff, #999);
+                background: -o-linear-gradient(#fff, #999);
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+    <div id="ModalLoadingDiv" class="modalDialog no-show">
+        <div>
+            <h2>Loading data...</h2>
+        </div>
+    </div>
+
+    <div id="Content">
+        <div id="Title">
+            <div id="fontTest2" class="fontTest2">
+                <h2>Recruit Counts</h2>
+            </div>
+        </div>
+        <hr/>
+
+        <div id="C0">
+            <div id="C1" class="shadow">
+                <div id="Controls">
+                    <div id = "Container">
+                        Start date:
+                        <input  id="DatePicker" type="text" placeholder="Choose date"></input>
+                        <div id="MessageDiv"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr/>
+
+        <div id = "Container0">
+            <div class="sectionText" id="Desc0">Totals</div>
+            <input id="SaveAsCsvTotalsBtn" type="Button" value="Save As .csv" class="saveAs"></input>
+            <div id="TotalsGridDiv"  class="ag-fresh"></div>
+        </div>
+
+        <div id = "ContainerA">
+            <div class="sectionText" id="DescG">Grand Total</div>
+            <input id="SaveAsCsvGrandTotalBtn" type="Button" value="Save As .csv" class="saveAs"></input>
+            <div id="GrandTotalGridDiv"  class="ag-fresh"></div>
+        </div>
+
+        <div id = "Container1">
+            <div class="sectionText" id="Desc1">Statistics</div>
+            <input id="SaveAsCsvStatsBtn" type="Button" value="Save As .csv" class="saveAs"></input>
+            <div id="StatsGridDiv"  class="ag-fresh"></div>
+        </div>
+
+        <div id = "Container2">
+            <div class="sectionText" id="Desc2">Repeat Attendees</div>
+            <input id="SaveAsCsvRepeatBtn" type="Button" value="Save As .csv" class="saveAs"></input>
+            <div id="RepeatCountGridDiv"  class="ag-fresh"></div>
+        </div>
+
+        <div id = "Container3">
+            <div class="sectionText" id="Desc3">Single Attendees</div>
+            <input id="SaveAsCsvSingleBtn" type="Button" value="Save As .csv" class="saveAs"></input>
+            <div id="SingleCountGridDiv"  class="ag-fresh"></div>
+        </div>
+
+        <div id="hr1">
+            <hr/>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        'use strict';
+
+        function loadRecruits() {
+            
+            let recruitQuery = ` SELECT Recruit__c, Division__c,Volunteer_Date__c,Id,Location__c,Alt_First_Name__c,Alt_Last_Name__c,Alt_Phone__c,Credit__c, Recruit__r.FirstName,Recruit__r.LastName,Recruit__r.MobilePhone, Recruit__r.HomePhone 
+                                 FROM Recruit__c Where Attended__c = true And Credit__c In ('Full','Half') And Volunteer_Date__c >= ${ddv}
+                                 ORDER BY Division__c `;
+            console.log(recruitQuery);
+            messageDiv.innerHTML = 'Retrieving ... ';
+
+  //          try {
+                let recruitResults = sforce.connection.query(recruitQuery);
+                processRecruits(recruitResults);
+  //          }
+  //          catch (e) {
+  //              alert('An error occurred retrieving data: ' + e.faultstring);
+  //              noError = false;
+  //          }
+        }
+
+        function processRecruits(results) {
+            let cnt,i,id,isMbr,rec,firstName,lastName,nameTest,name,phone,cellPhone,homePhone,location,credit,type,volDate;
+            let records;
+            let batCnt = 0;
+            let processedAll = false;
+            cnt = memberCount = nonMemberCount = desiredRecCount = 0;
+
+            if (results.size > 0) {
+                desiredRecCount = results.size;
+                while (!processedAll) {
+                    records = results.getArray('records');
+                    console.log(' [Retrieved : ' + records.length + ' records (batch: ' + batCnt + ')]');
+                    for (i = 0; i < records.length; i++) {
+                        cnt++;
+                        firstName = lastName = '';
+                        isMbr     = false;
+                        rec       = records[i];
+                        id        = rec.id;
+                        volDate   = moment(rec.Volunteer_Date__c).format('MM/DD/YYYY');
+                        location  = rec.Location__c;
+                        credit    = rec.Credit__c;
+                        type      = toProperCase(rec.Division__c);
+                        phone     = phoneFormat(rec.Phone__c);
+
+                        if ('Recruit__r' in rec) { 
+                            if(rec.Recruit__r) {
+                                firstName = toProperCase(rec.Recruit__r.FirstName);
+                                lastName  = toProperCase(rec.Recruit__r.LastName);
+                                cellPhone = rec.Recruit__r.MobilePhone, 
+                                homePhone = rec.Recruit__r.HomePhone;
+                                if(!phone)
+                                    phone = cellPhone ? cellPhone : homePhone;
+
+                                if(type == 'Kaiser' || type == 'Hospital') {
+                                   isMbr = true;
+                                   memberCount++;
+                               }
+                            }
+                            else {
+                                isMbr     = false;
+                                firstName = toProperCase(rec.Alt_First_Name__c);
+                                lastName  = toProperCase(rec.Alt_Last_Name__c);
+                                if(!phone)
+                                    phone = phoneFormat(rec.Alt_Phone__c);
+                                nonMemberCount++;
+                            }
+                        }
+                        else {
+                            firstName = toProperCase(rec.Alt_First_Name__c);
+                            lastName  = toProperCase(rec.Alt_Last_Name__c);
+                            phone     = phoneFormat(rec.Alt_Phone__c);                            
+                            isMbr     = false;
+                            nonMemberCount++;
+                        }
+
+                        nameTest = firstName.trim() + lastName.trim();
+                        if (nameTest) {
+                            name = lastName.trim() + ', ' + firstName.trim();
+
+                            if (!typeLocationNameMap[type])
+                                 typeLocationNameMap[type] = {};
+
+                            if (!typeLocationNameMap[type][location])
+                                 typeLocationNameMap[type][location] = {};
+
+                            if (!typeLocationNameMap[type][location][nameTest])
+                                typeLocationNameMap[type][location][nameTest] = {Name: name, Phone: phone};
+
+                            if (!typeLocNameCreditMap[type])
+                                typeLocNameCreditMap[type] = {};
+
+                            if (!typeLocNameCreditMap[type][location])
+                                typeLocNameCreditMap[type][location] = {};
+
+                            if (!typeLocNameCreditMap[type][location][nameTest])
+                                typeLocNameCreditMap[type][location][nameTest] = {};
+
+                            if (!typeLocNameCreditMap[type][location][nameTest][credit])
+                                typeLocNameCreditMap[type][location][nameTest][credit] = {
+                                    Location: location,
+                                    Name: name,
+                                    Phone: phone,
+                                    Member: isMbr,
+                                    Type: type,
+                                    VolDate: volDate,
+                                    Count: 1
+                                };
+                            else
+                                typeLocNameCreditMap[type][location][nameTest][credit].Count++;
+                        }
+                        else console.log(`Record ${id} is bad.  Check it out!`);
+                    }
+                
+                    if (results.done == 'true') {
+                        processedAll = true;
+                        peopleCnt = memberCount + nonMemberCount;
+                        messageDiv.innerHTML = `Finished - ${cnt} records out of ${desiredRecCount} processed `;
+                    }
+                    else {
+                        batCnt++;
+                        results = sforce.connection.queryMore(results.queryLocator);
+                    }
+                }
+            }
+            else {
+                messageDiv.innerHTML = 'No records found for start date ';
+                setControls('hidden');
+                hideGrids();
+            }
+        }
+
+        function summarize() {
+            let typeLocNameCreditMapKey, locNameCreditMapKey, nameCreditMap, nameCreditMapKey, creditMap, creditKey, type, volDate;
+            let loc,mbr,cnt,recCnt,nameCnt,typeCnt,fullCreditCount,halfCreditCount,name,phone;
+
+            statsDataArray       = [];
+            repeatCountDataArray = [];
+            singleCountDataArray = [];
+            repeatMemberCount    = 0;
+            repeatNonMemberCount = 0;
+            singleMemberCount    = 0;
+            singleNonMemberCount = 0;
+            locCnt               = 0;
+            recCnt  = 0;
+            typeCnt = 0;
+            nameCnt = 0;
+
+            for (typeLocNameCreditMapKey in typeLocNameCreditMap) {
+                typeCnt++;
+                locNameCreditMap = typeLocNameCreditMap[typeLocNameCreditMapKey];
+                for(locNameCreditMapKey in locNameCreditMap) {
+                    locCnt++;
+                    loc = locNameCreditMapKey;      
+                    nameCreditMap = locNameCreditMap[locNameCreditMapKey];
+                    repeatMemberCount = repeatNonMemberCount = singleMemberCount = singleNonMemberCount = 0;
+                    nameCnt = 0;
+                    for (nameCreditMapKey in nameCreditMap) {
+                        nameCnt++;
+                        name = nameCreditMapKey;
+                        creditMap = nameCreditMap[nameCreditMapKey];
+                        fullCreditCount = halfCreditCount = 0;
+                    
+                        for (creditKey in creditMap) {
+                            phone   = creditMap[creditKey].Phone;
+                            mbr     = creditMap[creditKey].Member;
+                            cnt     = creditMap[creditKey].Count;
+                            type    = creditMap[creditKey].Type;
+                            volDate = creditMap[creditKey].VolDate;
+
+                            if (creditKey.toLowerCase() == 'full')
+                                fullCreditCount = cnt;
+                            else
+                                halfCreditCount = cnt;
+                        }
+
+                        if (fullCreditCount + halfCreditCount > 1) {
+                            if (mbr) repeatMemberCount++;
+                            else repeatNonMemberCount++;
+
+                            repeatCountDataArray.push({
+                                VolDate:volDate,
+                                Type: type,
+                                Location: loc,
+                                Name: name,
+                                Phone: phone,
+                                Member: mbr,
+                                FullCredit: fullCreditCount,
+                                HalfCredit: halfCreditCount
+                            });
+                        }
+                        else {
+                            if (mbr) singleMemberCount++;
+                            else singleNonMemberCount++;
+
+                            singleCountDataArray.push({
+                                VolDate:volDate,
+                                Type: type,                            
+                                Location: loc,
+                                Name: name,
+                                Phone: phone,
+                                Member: mbr,
+                                FullCredit: fullCreditCount,
+                                HalfCredit: halfCreditCount
+                            });
+                        }
+                    }
+                    statsDataArray.push({Voldate:volDate, Type:type, TypeCnt:typeCnt, Location:loc, NameCnt:nameCnt, RepeatMemberCount:repeatMemberCount,SingleMemberCount:singleMemberCount, RepeatNonMemberCount:repeatNonMemberCount, SingleNonMemberCount:singleNonMemberCount});
+                }
+            }
+        }
+
+        function makeTotals() {
+            totalsDataArray     = [];
+            grandTotalDataArray = [];
+            let i,j,rec,recType,type,typeTotal,nameTotal,repeatMemberTotal,singleMemberTotal,repeatNonMemberTotal,singleNonMemberTotal;
+            let typeGrandTotal, nameGrandTotal, repeatMemberGrandTotal, singleMemberGrandTotal, repeatNonMemberGrandTotal, singleNonMemberGrandTotal;
+            i = j = 0;
+            typeGrandTotal = nameGrandTotal = repeatMemberGrandTotal = singleMemberGrandTotal = repeatNonMemberGrandTotal = singleNonMemberGrandTotal = 0;
+            while(i < statsDataArray.length) {
+                typeTotal = nameTotal = repeatMemberTotal = singleMemberTotal = repeatNonMemberTotal = singleNonMemberTotal = 0;
+                recType = statsDataArray[i].Type;
+                while(i < statsDataArray.length && recType == statsDataArray[i].Type) {
+                    rec = statsDataArray[i];
+                    type                  = rec.Type;
+                    typeTotal            += rec.TypeCnt;
+                    nameTotal            += rec.NameCnt;
+                    repeatMemberTotal    += rec.RepeatMemberCount;
+                    singleMemberTotal    += rec.SingleMemberCount;
+                    repeatNonMemberTotal += rec.RepeatNonMemberCount;
+                    singleNonMemberTotal += rec.SingleNonMemberCount;
+                    i++;
+                }
+                totalsDataArray.push({Type:type, TypeTotal:typeTotal, NameTotal:nameTotal, RepeatMemberTotal:repeatMemberTotal,SingleMemberTotal:singleMemberTotal, RepeatNonMemberTotal:repeatNonMemberTotal, SingleNonMemberTotal:singleNonMemberTotal});
+                j++;
+                typeGrandTotal            += typeTotal;
+                nameGrandTotal            += nameTotal;
+                repeatMemberGrandTotal    += repeatMemberTotal;
+                singleMemberGrandTotal    += singleMemberTotal;
+                repeatNonMemberGrandTotal += repeatNonMemberTotal;
+                singleNonMemberGrandTotal += singleNonMemberTotal;
+            }
+            grandTotalDataArray.push({Type:'All', TypeTotal:typeGrandTotal, NameTotal:nameGrandTotal, RepeatMemberTotal:repeatMemberGrandTotal,SingleMemberTotal:singleMemberGrandTotal, RepeatNonMemberTotal:repeatNonMemberGrandTotal, SingleNonMemberTotal:singleNonMemberGrandTotal});
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+
+        function statsRepeatTotaltPcValueGetter(params) {
+            if(params.data.NameCnt > 0 && params.data.RepeatMemberCount + params.data.RepeatNonMemberCount > 0 )
+                return ((params.data.RepeatMemberCount + params.data.RepeatNonMemberCount) / params.data.NameCnt) * 100;
+            else
+                return 0;
+        }
+
+        function statsSingleTotalPcValueGetter(params) {
+            if(params.data.NameCnt > 0 && params.data.SingleMemberCount + params.data.SingleNonMemberCount > 0 )
+                return ((params.data.SingleMemberCount + params.data.SingleNonMemberCount) / params.data.NameCnt) * 100;
+            else
+                return 0;
+        }
+
+        function totalRepeatPcValueGetter(params) {
+        if(params.data.NameTotal > 0 && params.data.RepeatMemberTotal + params.data.RepeatNonMemberTotal > 0 )
+                return ((params.data.RepeatMemberTotal + params.data.RepeatNonMemberTotal) / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function totalSinglePcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.SingleMemberTotal + params.data.SingleNonMemberTotal > 0 )
+                return ((params.data.SingleMemberTotal + params.data.SingleNonMemberTotal) / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function statsTotalRepeatPcCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function statsTotalSinglePcCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function totalRepeatPcCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function totalSinglePcCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function repeatMemberCountCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function singleMemberCountCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function repeatNonMemberCountCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function singleNonMemberCountCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function singleMemberTotalCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function singleNonMemberTotalCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function repeatMemberTotalCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function repeatNonMemberTotalCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function singleMemberGrandTotalCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function singleNonMemberGrandTotalCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function repeatMemberGrandTotalCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function repeatNonMemberGrandTotalCellRenderer(params) {
+            return number_format(params.value,2);
+        }
+
+        function repeatMemberCountPcValueGetter(params) {
+            if(params.data.NameCnt > 0 && params.data.RepeatMemberCount > 0 )
+                return (params.data.RepeatMemberCount / params.data.NameCnt) * 100;
+            else
+                return 0;
+        }
+
+        function singleMemberCountPcValueGetter(params) {
+            if(params.data.NameCnt > 0 && params.data.SingleMemberCount > 0 )
+                return (params.data.SingleMemberCount / params.data.NameCnt) * 100;
+            else
+                return 0;
+        }
+
+        function repeatNonMemberCountPcValueGetter(params) {
+            if(params.data.NameCnt > 0 && params.data.RepeatNonMemberCount > 0 )
+                return (params.data.RepeatNonMemberCount / params.data.NameCnt) * 100;
+            else
+                return 0;
+        }
+
+        function singleMemberTotalPcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.SingleMemberTotal > 0 )
+                return (params.data.SingleMemberTotal / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function singleNonMemberCountPcValueGetter(params) {
+            if(params.data.NameCnt > 0 && params.data.SingleNonMemberCount > 0 )
+                return (params.data.SingleNonMemberCount / params.data.NameCnt) * 100;
+            else
+                return 0;
+        }
+
+        function repeatMemberTotalPcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.RepeatMemberTotal > 0 )
+                return (params.data.RepeatMemberTotal / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function repeatNonMemberTotalPcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.RepeatNonMemberTotal > 0 )
+                return (params.data.RepeatNonMemberTotal / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function singleNonMemberTotalPcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.SingleNonMemberTotal > 0 )
+                return (params.data.SingleNonMemberTotal / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function repeatMemberGrandTotalPcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.RepeatMemberTotal > 0 )
+                return (params.data.RepeatMemberTotal / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function repeatNonMemberGrandTotalPcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.RepeatNonMemberTotal > 0 )
+                return (params.data.RepeatNonMemberTotal / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function singleMemberGrandTotalPcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.SingleMemberTotal > 0 )
+                return (params.data.SingleMemberTotal / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function singleNonMemberGrandTotalPcValueGetter(params) {
+            if(params.data.NameTotal > 0 && params.data.SingleNonMemberTotal > 0 )
+                return (params.data.SingleNonMemberTotal / params.data.NameTotal) * 100;
+            else
+                return 0;
+        }
+
+        function initAgGrid() {
+            agGrid.LicenseManager.setLicenseKey("SEIU-UWH_Site_1Devs7_February_2018__MTUxNzk2MTYwMDAwMA==f54417966e3979c429e6a1af033c1a9a");
+
+            initialSort = [
+                {colId: 'Type',       sort: 'asc'},
+                {colId: 'VolDate',    sort: 'asc'},
+                {colId: 'FullCredit', sort: 'asc'}
+            ];
+
+            statsInitialSort = [
+                {colId: 'Type',       sort: 'asc'},
+                {colId: 'Location',   sort: 'asc'}
+            ];
+
+            totalsInitialSort = [
+                {colId: 'Type',       sort: 'asc'}
+            ]; 
+
+            repeatCountColumnDefs = [
+                {headerName: 'Type',        field: 'Type',        width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'Date',        field: 'VolDate',     width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'Location',    field: 'Location',    width: 210, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'Name',        field: 'Name',        width: 250, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'Member',      field: 'Member',      width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass2' },
+                {headerName: 'Full Credit', field: 'FullCredit',  width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: 'Half Credit', field: 'HalfCredit',  width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: 'Phone',       field: 'Phone',       width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' }
+
+            ];
+
+            singleCountColumnDefs = [
+                {headerName: 'Type',        field: 'Type',        width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'Date',        field: 'VolDate',     width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'Location',    field: 'Location',    width: 210, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'Name',        field: 'Name',        width: 250, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'Member',      field: 'Member',      width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass2' },
+                {headerName: 'Full Credit', field: 'FullCredit',  width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: 'Half Credit', field: 'HalfCredit',  width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: 'Phone',       field: 'Phone',       width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' }
+            ];
+
+            statsColumnDefs = [
+                {headerName: 'Type',            field: 'Type',                  width: 150, suppressMenu: false, sortingOrder: ['asc','desc'], cellClass: 'cellClass3'},
+                {headerName: 'Location',        field: 'Location',              width: 210, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass3' },
+                {headerName: 'People Count',    field: 'NameCnt',               width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: 'Repeat Member',   field: 'RepeatMemberCount',     width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',               field: 'RepeatMemberCountPC',   width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: repeatMemberCountPcValueGetter, cellRenderer:repeatMemberCountCellRenderer},
+                {headerName: 'Single Member',   field: 'SingleMemberCount',     width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',               field: 'SingleMemberCountPC',   width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: singleMemberCountPcValueGetter, cellRenderer:singleMemberCountCellRenderer},
+                {headerName: 'Repeat NonMember',field: 'RepeatNonMemberCount',  width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',               field: 'RepeatNonMemberCountPC',width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: repeatNonMemberCountPcValueGetter, cellRenderer:repeatNonMemberCountCellRenderer},
+                {headerName: 'Single NonMember',field: 'SingleNonMemberCount',  width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',               field: 'SingleNonMemberCountPC',width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: singleNonMemberCountPcValueGetter, cellRenderer:singleNonMemberCountCellRenderer},
+                {headerName: 'Total Repeat %',  width:  150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: statsRepeatTotaltPcValueGetter, cellRenderer:statsTotalRepeatPcCellRenderer},
+                {headerName: 'Total Single %',  width:  150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: statsSingleTotalPcValueGetter, cellRenderer:statsTotalSinglePcCellRenderer}
+            ];
+
+            totalsColumnDefs = [
+                {headerName: 'Type',                   field: 'Type',                  width: 150, suppressMenu: false, sortingOrder: ['asc','desc'], cellClass: 'cellClass3'},
+                {headerName: 'Loc/Time Count',         field: 'TypeTotal',             width: 150, suppressMenu: false, sortingOrder: ['asc','desc'], cellClass: 'cellClass1'},
+                {headerName: 'People Total',           field: 'NameTotal',             width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: 'Repeat Member Total',    field: 'RepeatMemberTotal',     width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',                      field: 'RepeatMemberTotalPC',   width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: repeatMemberTotalPcValueGetter, cellRenderer:repeatMemberTotalCellRenderer},                
+                {headerName: 'Single Member Total',    field: 'SingleMemberTotal',     width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',                      field: 'SingleMemberTotalPC',   width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: singleMemberTotalPcValueGetter, cellRenderer:singleMemberTotalCellRenderer},                                
+                {headerName: 'Repeat NonMember Total', field: 'RepeatNonMemberTotal',  width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',                      field: 'RepeatNonMemberTotalPC',width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: repeatNonMemberTotalPcValueGetter, cellRenderer:repeatNonMemberTotalCellRenderer},                
+                {headerName: 'Single NonMember Total', field: 'SingleNonMemberTotal',  width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',                      field: 'SingleNonMemberTotalPC',width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: singleNonMemberTotalPcValueGetter, cellRenderer:singleNonMemberTotalCellRenderer},
+                {headerName: 'Total Repeat %',  width:  150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: totalRepeatPcValueGetter, cellRenderer:totalRepeatPcCellRenderer},
+                {headerName: 'Total Single %',  width:  150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: totalSinglePcValueGetter, cellRenderer:totalSinglePcCellRenderer}
+            ];                
+
+/*
+({Type, TypeTotal, NameTotal, RepeatMemberTotal:repeatMemberTotal,SingleMemberTotal:singleMemberTotal, RepeatNonMemberTotal:repeatNonMemberTotal, SingleNonMemberTotal:singleNonMemberTotal});
+
+                {headerName: '%',                      field: 'RepeatNonMemberTotalPC',width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: repeatNonMemberGrandTotalPcValueGetter, cellRenderer:repeatNonMemberTotalCellRenderer},                
+                {headerName: 'Total Repeat %',  width:  150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: totalRepeatPcValueGetter, cellRenderer:grandTotalRepeatPcCellRenderer},
+                {headerName: 'Total Single %',  width:  150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: totalSinglePcValueGetter, cellRenderer:grandTotalSinglePcCellRenderer}
+*/
+            grandTotalColumnDefs = [
+                {headerName: 'Type',                   field: 'Type',                     width: 150, suppressMenu: false, sortingOrder: ['asc','desc'], cellClass: 'cellClass3'},
+                {headerName: 'Loc/Time Total',         field: 'TypeTotal',                width: 150, suppressMenu: false, sortingOrder: ['asc','desc'], cellClass: 'cellClass1'},
+                {headerName: 'People Total',           field: 'NameTotal',                width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: 'Repeat Member Total',    field: 'RepeatMemberTotal',        width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',                      field: 'RepeatMemberGrandTotalPC', width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: repeatMemberGrandTotalPcValueGetter, cellRenderer:repeatMemberGrandTotalCellRenderer},                
+                {headerName: 'Single Member Total',    field: 'SingleMemberTotal',        width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',                      field: 'SingleNonMemberTotalPC',   width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: singleMemberGrandTotalPcValueGetter, cellRenderer:singleMemberGrandTotalCellRenderer},
+                {headerName: 'Repeat NonMember Total', field: 'RepeatNonMemberTotal',     width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',                      field: 'RepeatMemberGrandTotalPC', width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: repeatNonMemberGrandTotalPcValueGetter, cellRenderer:repeatNonMemberGrandTotalCellRenderer},                
+                {headerName: 'Single NonMember Total', field: 'SingleNonMemberTotal',     width: 150, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1' },
+                {headerName: '%',                      field: 'SingleNonMemberTotalPC',   width:  90, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellClass1', valueGetter: singleNonMemberGrandTotalPcValueGetter, cellRenderer:singleNonMemberTotalCellRenderer}
+            ];
+        }
+
+        function hideGrids() {
+console.log('shownBefore::',shownBefore);
+            if(shownBefore) {
+                repeatCountGridOptions.api.destroy();
+                singleCountGridOptions.api.destroy();
+                statsGridOptions.api.destroy();
+                totalsGridOptions.api.destroy();
+                grandTotalGridOptions.api.destroy();
+                shownBefore = false;
+            }
+        }
+
+        function showGrids() {
+            hideGrids();
+            shownBefore = true;
+
+            repeatCountGridOptions = {
+                columnDefs: repeatCountColumnDefs,
+                rowData: repeatCountDataArray,
+                rowSelection: 'single',
+                enableSorting: true
+            };
+            new agGrid.Grid(repeatCountGridDiv, repeatCountGridOptions);
+            repeatCountGridOptions.api.setSortModel(initialSort);
+
+            singleCountGridOptions = {
+                columnDefs: singleCountColumnDefs,
+                rowData: singleCountDataArray,
+                rowSelection: 'single',
+                enableSorting: true
+            };
+            new agGrid.Grid(singleCountGridDiv, singleCountGridOptions);
+            singleCountGridOptions.api.setSortModel(initialSort);
+
+            statsGridOptions = {
+                columnDefs: statsColumnDefs,
+                rowData: statsDataArray,
+                rowSelection: 'single',
+                enableSorting: true,
+                groupUseEntireRow: false,
+                groupIncludeFooter: true,
+                debug: false
+            };
+            new agGrid.Grid(statsGridDiv, statsGridOptions);
+            statsGridOptions.api.setSortModel(statsInitialSort);
+
+            totalsGridOptions = {
+                columnDefs: totalsColumnDefs,
+                rowData: totalsDataArray,
+                rowSelection: 'single',
+                enableSorting: true
+            };
+            new agGrid.Grid(totalsGridDiv, totalsGridOptions);
+            totalsGridOptions.api.setSortModel(totalsInitialSort);
+
+            grandTotalGridOptions = {
+                columnDefs: grandTotalColumnDefs,
+                rowData: grandTotalDataArray
+            };
+            new agGrid.Grid(grandTotalGridDiv, grandTotalGridOptions);
+            
+        }
+
+        function dateChangeHandler(dVal,dStr) {
+
+            ddv = dStr;
+            ptr = 0;
+    //        repeatCount          = 0;
+            peopleCnt            = 0;
+            locNameCreditMap     = {};
+            typeLocNameCreditMap = {};
+            typeLocationNameMap  = {};
+            locationNameMap      = {};
+            locationArray        = [];
+
+       //    setControls('hidden');
+       //     hideGrids();
+
+            showLoadingMsg(true);
+            loadRecruits();
+            showLoadingMsg(false);
+
+            if(noError) {
+                if (peopleCnt > 0) {
+                    setControls('visible');
+                    summarize();
+                    makeTotals();
+                    showGrids();
+                }
+            }
+        }
+
+        function setControls(pVisible) {
+            var visStyle = 'visibility:' + pVisible ;
+            saveAsCsvRepeatBtn.setAttribute("style",visStyle);
+            saveAsCsvSingleBtn.setAttribute("style",visStyle);
+            saveAsCsvStatsBtn.setAttribute("style",visStyle);
+            saveAsCsvTotalsBtn.setAttribute("style",visStyle);
+            SaveAsCsvGrandTotalBtn.setAttribute("style",visStyle);
+            DescG.setAttribute("style",visStyle);
+            Desc0.setAttribute("style",visStyle);
+            desc1.setAttribute("style",visStyle);
+            desc2.setAttribute("style",visStyle);
+            desc3.setAttribute("style",visStyle);
+        }
+
+        function init() {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            modalLoadingDiv         = document.getElementById('ModalLoadingDiv');
+            messageDiv              = document.getElementById('MessageDiv');
+            repeatCountGridDiv      = document.getElementById('RepeatCountGridDiv');
+            singleCountGridDiv      = document.getElementById('SingleCountGridDiv');
+            statsGridDiv            = document.getElementById('StatsGridDiv');
+            totalsGridDiv           = document.getElementById('TotalsGridDiv');
+            grandTotalGridDiv       = document.getElementById('GrandTotalGridDiv');
+            saveAsCsvRepeatBtn      = document.getElementById("SaveAsCsvRepeatBtn");
+            saveAsCsvSingleBtn      = document.getElementById("SaveAsCsvSingleBtn");
+            saveAsCsvStatsBtn       = document.getElementById("SaveAsCsvStatsBtn");
+            saveAsCsvTotalsBtn      = document.getElementById("SaveAsCsvTotalsBtn");
+            saveAsCsvGrandTotalBtn  = document.getElementById("SaveAsCsvGrandTotalBtn");
+
+            messageDiv.innerHTML = '';
+            saveAsCsvRepeatBtn.addEventListener("click", saveAsCsvR, false);
+            saveAsCsvSingleBtn.addEventListener("click", saveAsCsvS, false);
+            saveAsCsvStatsBtn.addEventListener("click",  saveAsCsvStats, false);
+            saveAsCsvTotalsBtn.addEventListener("click", saveAsCsvTotals, false);
+            saveAsCsvGrandTotalBtn.addEventListener("click", saveAsCsvGrandTotal, false);
+
+            descG = document.getElementById('DescG');
+            desc0 = document.getElementById('Desc0');
+            desc1 = document.getElementById('Desc1');
+            desc2 = document.getElementById('Desc2');
+            desc3 = document.getElementById('Desc3');
+
+            setControls('hidden');
+            shownBefore = false;
+
+            var datePicker = document.getElementById('DatePicker');
+            picker = new Pikaday({
+                field: datePicker,
+                format: 'L',
+                onSelect: function() {
+                    let dv = this.getMoment().format('L');
+                    let ds = this.getMoment().format('YYYY-MM-DD');
+                    picker.hide();
+                    dateChangeHandler(dv, ds);
+                }
+            });
+        }
+
+        function saveAsCsvR() {
+            let fileName = 'Repeat Sign-In counts (starting: ' + ddv + ').csv';
+            repeatCountGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function saveAsCsvS() {
+            let fileName = 'Single Sign-In counts (starting: ' + ddv + ').csv';
+            singleCountGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function saveAsCsvStats() {
+            let fileName = 'Sign-In Statistics (starting: ' + ddv + ').csv';
+            statsGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+        
+        function saveAsCsvTotals() {
+            let fileName = 'Sign-In Totals (starting: ' + ddv + ').csv';
+            totalsGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function saveAsCsvGrandTotal() {
+            let fileName = 'Sign-In Grand Totals (starting: ' + ddv + ').csv';
+            grandTotalGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function showLoadingMsg(show) {
+            if(show) // modal window fake
+                modalLoadingDiv.setAttribute('class', 'modalDialog');
+            else
+                modalLoadingDiv.setAttribute('class', 'no-show');
+        }
+
+        function phoneFormat(s) {
+            let s1;
+            if(s == null || s.trim().length < 10)
+                s1 = '';
+            else {
+                s1 = s.trim().replace(/[^0-9]/g,'');
+                s1 = '(' + s1.substr(0,3) + ') ' + s1.substr(3,3) + '-' + s1.substr(6);
+            }
+            return s1;
+        }
+
+        function toProperCase(s) {
+            // My version - handles hyphenated names correctly :)
+            let s1 = '';
+            if(s)
+                s1 = s.trim().toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function dateFmt(dStr) {
+            let localDate;
+            yyyy      = dStr.substr(0,4);
+            mm        = dStr.substr(5,2);
+            dd        = dStr.substr(8,2);
+            localDate = mm + '/' + dd + '/' + yyyy;
+            return localDate;
+        }
+
+        function dateRenderer(params) {
+            keyDate   = params.data.Date;
+            return dateFmt(keyDate);
+        }
+
+        var locNameCreditMap,locationNameMap,typeLocationNameMap, typeLocNameCreditMap;
+        var locationArray,repeatCountDataArray,singleCountDataArray,statsDataArray,totalsDataArray,grandTotalDataArray;
+        var totalsColumnDefs,statsColumnDefs,repeatCountColumnDefs,singleCountColumnDefs,repeatCountGridOptions,singleCountGridOptions,statsGridOptions;
+        var grandTotalColumnDefs,totalsGridOptions,grandTotalGridOptions,picker;
+        var modalLoadingDiv,messageDiv, repeatCountGridDiv, singleCountGridDiv,statsGridDiv,totalsGridDiv,grandTotalGridDiv;
+        var repeatCount,repeatMemberCount,repeatNonMemberCount,singleMemberCount,singleNonMemberCount,locCnt;
+        var shownBefore,ptr,saveAsCsvRepeatBtn,saveAsCsvSingleBtn,saveAsCsvStatsBtn,saveAsCsvTotalsBtn,saveAsCsvGrandTotalBtn;
+        var ddv, yyyy,mm,dd;
+        var showModal = false;
+        var noError   = true;
+        var desiredRecCount,peopleCnt,memberCount,nonMemberCount,initialSort,statsInitialSort,totalsInitialSort;
+        var descG,desc0,desc1,desc2,desc3;
+
+        // ***************** Main Program Entry *****************
+        init();
+        initAgGrid();
+
+    </script>
+    </body>
+</apex:page>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>UnpaidInterns2</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>UnpaidInterns2</value>
+    </caseValues>
+    <fields>
+        <label><!-- A10 --></label>
+        <name>A10__c</name>
+    </fields>
+    <fields>
+        <label><!-- A11 --></label>
+        <name>A11__c</name>
+    </fields>
+    <fields>
+        <label><!-- A12 --></label>
+        <name>A12__c</name>
+    </fields>
+    <fields>
+        <label><!-- A13 --></label>
+        <name>A13__c</name>
+    </fields>
+    <fields>
+        <label><!-- A14 --></label>
+        <name>A14__c</name>
+    </fields>
+    <fields>
+        <label><!-- A15 --></label>
+        <name>A15__c</name>
+    </fields>
+    <fields>
+        <label><!-- A1 --></label>
+        <name>A1__c</name>
+    </fields>
+    <fields>
+        <label><!-- A2 --></label>
+        <name>A2__c</name>
+    </fields>
+    <fields>
+        <label><!-- A3 --></label>
+        <name>A3__c</name>
+    </fields>
+    <fields>
+        <label><!-- A4 --></label>
+        <name>A4__c</name>
+    </fields>
+    <fields>
+        <label><!-- A5_Other --></label>
+        <name>A5_Other__c</name>
+    </fields>
+    <fields>
+        <label><!-- A5 --></label>
+        <name>A5__c</name>
+    </fields>
+    <fields>
+        <label><!-- A6 --></label>
+        <name>A6__c</name>
+    </fields>
+    <fields>
+        <label><!-- A7 --></label>
+        <name>A7__c</name>
+    </fields>
+    <fields>
+        <label><!-- A8 --></label>
+        <name>A8__c</name>
+    </fields>
+    <fields>
+        <label><!-- A9 --></label>
+        <name>A9__c</name>
+    </fields>
+    <fields>
+        <label><!-- ContactId --></label>
+        <name>ContactId__c</name>
+        <relationshipLabel><!-- UnpaidInterns2 --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- EthnicGroup --></label>
+        <name>EthnicGroup__c</name>
+    </fields>
+    <fields>
+        <label><!-- Gender --></label>
+        <name>Gender__c</name>
+    </fields>
+    <fields>
+        <label><!-- Has a good story --></label>
+        <name>Has_a_good_story__c</name>
+    </fields>
+    <fields>
+        <label><!-- InterviewDate --></label>
+        <name>InterviewDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- InterviewerId --></label>
+        <name>InterviewerId__c</name>
+        <relationshipLabel><!-- UnpaidInterns2 --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- MemberName --></label>
+        <name>MemberName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Notes --></label>
+        <name>Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- PrimaryLanguage --></label>
+        <name>PrimaryLanguage__c</name>
+    </fields>
+    <fields>
+        <label><!-- UpdatedDate --></label>
+        <name>UpdatedDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- Updated --></label>
+        <name>Updated__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

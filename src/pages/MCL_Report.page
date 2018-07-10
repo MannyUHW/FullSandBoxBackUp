@@ -1,0 +1,422 @@
+<apex:page standardController="MCL_Report__c" extensions="ContactReportConfigControllerExt" showHeader="true" sidebar="false">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
+
+    <apex:includeScript value="{!$Resource.JQuery}"/>
+
+    <style>
+
+        .activeTab {background-color: #236FBD; color:white;
+            background-image:none}
+        .inactiveTab { background-color: lightgrey; color:black;
+            background-image:none}
+        .vertical-align {
+            display: flex;
+            align-items: center;
+        }
+        .field-container {
+            border: 1px solid grey;
+            min-height: 100px;
+        }
+        #template-container {
+            border: 1px solid black;
+            height: 300px;
+            width: 100%;
+            margin-top: 10px;
+            margin-bottom: 10px
+        }
+        .template-field {
+            display: inline-block;
+            background-color: #CDE8F0;
+            padding: 5px;
+            margin: 2px;
+        }
+        #template-table {
+            min-width: 80px;
+            min-height: 40px;
+        }
+        #template-table > tbody > tr {
+            height: 40px;
+        }
+        #template-table > tbody > tr > td {
+            /* border: 1px solid green; */
+            min-width: 80px;
+        }
+
+        #sort-field-form > div {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+        #sort-fields > li > div {
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        #sort-fields-table {
+            padding-left: 25px;
+            padding-right: 25px;
+        }
+        #sort-fields-table > tbody > tr > td {
+            width: 25%;
+        }
+        .errorMessage {
+            color: red;
+            font-weight: bold;
+        }
+        .multiselect-container > li > a > label {
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-weight: normal;
+        }
+        .sort-field {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-radius: 5px;
+            background-color: #CDE8F0;
+            margin-bottom: 10px;
+        }
+        .sort-field > div {
+            flex: 1;
+            align-items: center;
+            text-align: center;
+        }
+        .sort-field.selected {
+            border: 1px solid black;
+        }
+        .sort-field > div > label {
+            font-weight: normal;
+        }
+        .sort-field-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 150px;
+            margin-left: 30px;
+            width: 700px;
+        }
+        .sort-controls {
+            padding: 5px;
+            border: 1px #DDDDDD solid;
+            border-radius: 5px;
+            margin-left: 30px;
+        }
+        .contactPreview {
+        }
+    </style>
+
+    <div align="center">
+        <apex:outputLink target="_BLANK" value="{!$Page.MCL_Tips_Page}"><i>Click here for MCL tips, tricks, and gotchas.</i></apex:outputLink>
+    </div>
+
+
+    <script type="text/html" id="sort-field-tmpl">
+        <div class="vertical-align sort-field" data-bind="css : { selected : $parent.selectedField() === $data }">
+            <div class=""><a class="btn btn-primary" href="#" data-bind="click : $parent.selectField" style="text-decoration: none; width: 50px"><i class="fa fa-bars fa-2x"></i></a></div>
+            <div data-bind="text : label" style="width : 130px"></div>
+            <div data-bind="text : sortOrder" style="width : 100px"></div>
+            <div><label><input type="checkbox" data-bind="checked: header, disable: disableControls" /> header</label></div>
+            <div><label><input type="checkbox" data-bind="checked: pageBreak, disable: disableControls" /> page break</label></div>
+        </div>
+    </script>
+
+    <div role="tabpanel">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#details" aria-controls="details" role="tab" data-toggle="tab">Details</a></li>
+            <li role="presentation"><a href="#filters" aria-controls="filters" role="tab" data-toggle="tab">Filters</a></li>
+            <li role="presentation"><a href="#sorting" aria-controls="sorting" role="tab" data-toggle="tab">Sorting</a></li>
+            <li role="presentation"><a href="#template" aria-controls="template" role="tab" data-toggle="tab">Record Template</a></li>
+        </ul>
+
+        <!-- tab contents -->
+        <div class="tab-content">
+            <!-- RECORD DETAIL TAB -->
+            <div role="tabpanel" class="tab-pane active" id="details">
+                <apex:detail relatedList="false" title="true"/>
+            </div>
+            <!-- FILTERS TAB -->
+            <div role="tabpanel" class="tab-pane" id="filters" data-bind="with: filtersVm">
+                <apex:form styleClass="form container">
+                    <div class="row">
+                        <div class="col-lg-12" style="text-align: center">
+                            <input type="button" class="btn" value="Save" data-bind="click : saveFilters"/>
+                            <apex:outputPanel id="saveFiltersOutput">
+                                <apex:actionStatus startText="Saving filters ..." stopText="Filters saved." id="saveFiltersStatus">
+                                    <apex:facet name="stop"><span class="errorMessage">{!saveFiltersError}</span></apex:facet>
+                                </apex:actionStatus>
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+
+                    <div id="filter-fields">
+                        <!-- Filter components will be dynamically inserted here from the list of filterFields
+                              defined in the FiltersViewModel in MCL_Report_JS -->
+                    </div>
+
+                    <div class="form-group">
+                        <label>Survey Question: </label>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <select class="form-control"
+                                        data-bind="options: surveyQuestions, optionsText: 'question', value: filterSurveyQuestion, optionsCaption: '[None]'">
+                                </select>
+                            </div>
+                            <div class="col-lg-3" data-bind="if: filterSurveyQuestion()">
+                                <select class="form-control"
+                                        data-bind="options: filterSurveyQuestion().allowedResponses, value: filterSurveyResponse">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <apex:actionFunction name="sfdcSaveFilters" action="{!saveFilters}" rerender="saveFiltersOutput" status="saveFiltersStatus" oncomplete="root.filtersVm.saveFiltersCallback();">
+                        <apex:param name="selectedBargainingUnits" value=""/>
+                        <apex:param name="selectedJobClasses" value=""/>
+                        <apex:param name="selectedDepartments" value=""/>
+                        <apex:param name="filterSurveyQuestion" value=""/>
+                        <apex:param name="filterSurveyResponse" value=""/>
+                    </apex:actionFunction>
+                </apex:form>
+            </div>
+            <!-- SORTING TAB -->
+            <div role="tabpanel" class="tab-pane" id="sorting" data-bind="with : sortingVm">
+                <div class="row">
+                    <div class="col-lg-12" style="text-align: center">
+                        <apex:form >
+                            <input type="button" class="btn" value="Save" data-bind="click : saveSortConfig"/>
+                            <span data-bind="text : statusMessage"></span>
+                            <div data-bind="if : errorMessage">
+                                <br/>
+                                <span data-bind="text : errorMessage"></span>
+                            </div>
+                        </apex:form>
+                    </div>
+                </div>
+                <div class="row" style="padding-top: 10px;padding-bottom: 10px">
+                    <div class="col-lg-12">
+                        <div style="display:flex; flex-direction: row">
+                            <div style="font-size:150%" data-bind="if : !sortFields().length">No sort fields defined.</div>
+                            <div class="sort-field-container" data-bind="template: { name: 'sort-field-tmpl', foreach: sortFields}">
+                            </div>
+                            <div style="display:flex;flex-direction: column;justify-content:center;align-items:center">
+                                <div style="display:flex" class="sort-controls">
+                                    <a class="btn btn-primary sort-btn" href="#" data-bind="click : moveFieldUp, enable : selectedField()"><i class="fa fa-chevron-up fa-2x"></i></a>
+                                    <a class="btn btn-primary sort-btn" href="#" data-bind="click : moveFieldDown, enable : selectedField()"><i class="fa fa-chevron-down fa-2x"></i></a>
+                                    <a class="btn btn-primary sort-btn" href="#" data-bind="click : deleteField, enable : selectedField()"><i class="fa fa-trash fa-2x"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>Add sort fields using the form below.</p>
+                        <form class="form-inline" id="sort-field-form">
+                            <div class="form-group">
+                                <label for="sortFieldName">Field Name</label>
+                                <select class="form-control" id="sortFieldName" data-bind="options : availableSortFields, optionsText : 'label', value : newSortField,
+                  optionsCaption : 'Select a field ...', optionsAfterRender : setOptionDisabled">
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sortOrder">Sort Order</label>
+                                <select class="form-control" id="sortOrder" data-bind="value : addFieldSortOrder">
+                                    <option>Ascending</option>
+                                    <option>Descending</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" data-bind="checked : addFieldHeader"/>
+                                        Show header
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox" value="" data-bind="checked : addFieldPageBreak"/>
+                                        Page break
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-left: 10px;">
+                                <a class="btn btn-default" href="#" data-bind="click : addField" style="vertical-align: middle">
+                                    <i class="fa fa-plus fa-lg" style="padding: 5px;"></i> Add Field</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- RECORD TEMPLATE TAB -->
+            <div role="tabpanel" class="tab-pane" id="template">
+
+                <div class="panel panel-default" data-bind="with : templateVm">
+                    <div class="panel-heading">
+                        Define the report's Contact record template using the editor below.
+                    </div>
+                    <div class="panel-body">
+
+                        <apex:outputPanel id="saveOutput">
+                            <apex:actionStatus startText="Saving ..." stopText="Saved!" id="saveStatus">
+                                <apex:facet name="stop"><span class="errorMessage">{!saveTemplateError}</span></apex:facet>
+                            </apex:actionStatus>
+                        </apex:outputPanel>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <apex:form >
+                                        <apex:outputPanel id="saveTemplateOutput">
+                                            <apex:actionStatus startText="Saving template ..." stopText="Template saved." id="saveTemplateStatus">
+                                                <apex:facet name="stop"><span class="errorMessage">{!saveTemplateError}</span></apex:facet>
+                                            </apex:actionStatus>
+                                        </apex:outputPanel>
+                                        <apex:inputHidden html-class="saveTemplateStatus" value="{!saveTemplateStatus}"/>
+                                        <apex:actionFunction name="sfdcSaveTemplate" action="{!saveTemplate}" oncomplete="root.templateVm.saveTemplateCallback();" status="saveTemplateStatus" rerender="saveTemplateOutput">
+                                            <apex:param name="contents" assignTo="{!templateContents}" value=""/>
+                                        </apex:actionFunction>
+                                        <textarea class="templateEditor">{!templateContents}</textarea>
+                                    </apex:form>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="templateErrors">
+                                        <ul data-bind="foreach : templateErrors">
+                                            <li class="text-danger" data-bind="text : $data"></li>
+                                        </ul>
+                                    </div>
+                                    <div class="contactPreview">
+                                        <h4>Preview:</h4>
+                                        <div data-bind="html : preview">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        $(function() {
+console.log('doc ready...');
+            window.addEventListener('focus', onFocus);
+        });
+
+        function refreshButton(rButton,i) {
+            var printSomeElements = document.getElementsByName(rButton);
+            var printSome      = printSomeElements[i];
+            var printSomeCount = docCookies.getItem('MclPrintSomeCount');
+            if(printSomeCount)
+                printSome.value = 'Print Some: ' + printSomeCount;
+            else
+                printSome.value = 'Print Some';
+        }
+
+        function onFocus() {
+console.log('onFocus called');
+            refreshButton('print_some',0);
+            refreshButton('print_some',1);
+        }
+
+        var docCookies = {
+            getItem: function (sKey) {
+                if (!sKey) { return null; }
+                return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+            },
+            setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+                if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+                var sExpires = "";
+                if (vEnd) {
+                    switch (vEnd.constructor) {
+                        case Number:
+                            sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+                            break;
+                        case String:
+                            sExpires = "; expires=" + vEnd;
+                            break;
+                        case Date:
+                            sExpires = "; expires=" + vEnd.toUTCString();
+                            break;
+                    }
+                }
+                document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+                return true;
+            },
+            removeItem: function (sKey, sPath, sDomain) {
+                if (!this.hasItem(sKey)) { return false; }
+                document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+                return true;
+            },
+            hasItem: function (sKey) {
+                if (!sKey) { return false; }
+                return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+            },
+            keys: function () {
+                var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+                for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+                return aKeys;
+            }
+        };
+
+
+        function toArray(s) {
+            if (!s || s.length == 0) return [];
+            return s.split(",").map(function (val) { return val.replace("\,", ",");})
+        }
+
+        var initData = {
+            sfSessionId : "{!$Api.Session_Id}",
+            mclReportId: "{!reportConfig.Id}",
+            employerId: "{!reportConfig.Employer__c}",
+            campaignId: "{!reportConfig.UHW_Campaign__c}",
+            selectedBUs : toArray("{!reportConfig.Bargaining_Units__c}"),
+            selectedJobClasses : toArray("{!reportConfig.Job_Classes__c}"),
+            selectedDepartments : toArray("{!reportConfig.Departments__c}"),
+            surveyQuestions : [],
+            selectedSurveyQuestionId : "{!reportConfig.Filter_Survey_Question__c}",
+            selectedSurveyResponse : "{!reportConfig.Filter_Survey_Response__c}",
+            sortFields : []
+        };
+
+        <apex:repeat value="{!relatedSurveyQuestions}" var="sq">
+        initData.surveyQuestions.push({
+            id : "{!sq.Id}",
+            code : "{!sq.Survey_Code__c}",
+            question : "{!sq.Description__c}",
+            allowedResponses : "{!sq.Allowed_Responses__c}".split(",")
+        });
+        </apex:repeat>
+
+        <apex:repeat value="{!sortFields}" var="field">
+        initData.sortFields.push({
+            Id : "{!field.Id}",
+            Name : "{!field.Name}",
+            Contact_Field_Name__c : "{!field.Contact_Field_Name__c}",
+            MCL_Report__c : "{!field.MCL_Report__c}",
+            Page_Break__c : {!field.Page_Break__c},
+        Header__c : {!field.Header__c},
+        Sort_Order__c : "{!field.Sort_Order__c}",
+                Sort_Level__c : {!field.Sort_Level__c},
+        Survey_Question__c : "{!field.Survey_Question__c}"
+        });
+
+        </apex:repeat>
+
+    </script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="{!$Resource.Knockout_JS}"></script>
+    <script src="{!URLFOR($Resource.TinyMCE, '/tinymce/js/tinymce/tinymce.min.js')}"></script>
+    <script src="{!$Resource.bs_multiselect_custom}"></script>
+    <script src="{!$Resource.async_js}"></script>
+    <script src="{!$Resource.handlebars_js}"></script>
+    <script src="{!$Resource.JSForce}"></script>
+    <script src="{!$Resource.MCL_Report_JS}"></script>
+</apex:page>

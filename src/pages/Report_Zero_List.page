@@ -1,0 +1,138 @@
+<apex:page sidebar="false" showHeader="false">
+<div align="center">
+<div id="titleDiv"></div>
+
+<script language="JavaScript">
+document.write("<div align=\"center\"><i>Generated " + (new Date()) + "</i></div>");
+</script>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<br>&nbsp;</br>
+<div id="warningDiv"></div>
+<br>&nbsp;</br>
+<script language="JavaScript">
+var i = 0;
+var debugRecord = null;
+ 
+ var emid = "{!$CurrentPage.parameters.emid}";
+ var qcode = "{!$CurrentPage.parameters.qcode}";
+ 
+ if (emid == null || emid == "" || emid == "null") {
+   emid = "5530";
+ }
+
+ if (qcode == null || qcode == "" || qcode == "null") {
+   qcode = "ESP";
+ } 
+ 
+ try{ 
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var query = "select Name from Survey_Question__c where survey_code__c = \'" + qcode + "\'";
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records'); 
+    var qname = "";
+    for(var i=0;i<records0.length;i++){ 
+      qname = records0[i].Name;
+    }
+ 
+    var query = "select Name from Account where Employer_ID__c = \'" + emid + "\'";
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records'); 
+    var emname = "";
+    for(var i=0;i<records0.length;i++){ 
+      emname = records0[i].Name;
+    }
+    document.getElementById("titleDiv").innerHTML = "<font size=\"+2\">Zeros for " + toProperCase(emname) + "<br/>Question: " + toProperCase(qname) + "</font>";
+
+
+    var filterOutArray = new Array();
+    for (var i = 0; i < 10; i++) {
+          var query = "select FID__c, Response_Value__c from Survey_Response__c where Survey_Code__c=\'" + qcode + "\' and Contact__r.Account.Name = \'" + emname + "\' and name like \'%" + i + "\' ";
+          var records = sforce.connection.query(query); 
+          var records0 = records.getArray('records'); 
+          for(var j=0; j<records0.length; j++){ 
+            if (records0[j].Response_Value__c != "" && records0[j].Response_Value__c.trim().substring(0, 1) != "0" && records0[j].Response_Value__c.trim().substring(0, 1) != "N") {
+              filterOutArray.push(records0[j].FID__c);
+            }
+          }
+    }
+
+    var sortArray = new Array();
+    var sortMap = new Array();
+    
+    for (var i = 0; i < 10; i++) {
+          var query = "select Id, FID__c, LastName, FirstName, MiddleName, Department, Title, Shift__c, HomePhone, MobilePhone, MailingCity, MailingPostalCode from Contact where In_Current_BU__c = true and Account.Name = \'" + emname + "\' and fid__c like \'%" + i + "\' ";
+          var records = sforce.connection.query(query); 
+          var records0 = records.getArray('records'); 
+          for(var j=0; j<records0.length; j++){ 
+            if (filterOutArray.indexOf(records0[j].FID__c) < 0) {
+              if (records0[j].MiddleName == null|| records0[j].MiddleName=="null") {
+                records0[j].MiddleName = "";
+              }
+              if (records0[j].Department== null|| records0[j].Department =="null") {
+                records0[j].Department = "Unknown";
+              }
+              if (records0[j].Shift__c == null|| records0[j].Shift__c =="null") {
+                records0[j].Shift__c = "Unknown";
+              }
+              if (records0[j].Title == null|| records0[j].Title =="null") {
+                records0[j].Title = "Unknown";
+              }              
+              if (records0[j].HomePhone == null|| records0[j].HomePhone =="null") {
+                records0[j].HomePhone = "";
+              }
+              if (records0[j].MobilePhone == null|| records0[j].MobilePhone =="null") {
+                records0[j].MobilePhone = "";
+              }
+              var sortKey = ("K" + records0[j].Department + records0[j].Shift__c + records0[j].LastName + records0[j].FirstName + records0[j].MiddleName + records0[j].FID__c).toLowerCase();
+              sortArray.push(sortKey);   
+              sortMap[sortKey] = records0[j];
+            }
+          }
+    }
+
+    document.write("<table cellpadding=\"5\">");
+      document.write("<tr valign=\"bottom\">");    
+      document.write("<th>FID</th>");
+      document.write("<th>Name</th>");
+      document.write("<th>Department</th>");
+      document.write("<th>Shift</th>");
+      document.write("<th>Job Class</th>");
+      document.write("<th>Home<br/>Phone</th>");                              
+      document.write("<th>Cell<br/>Phone</th>");          
+      document.write("<th>City</th>");  
+      document.write("<th>Zip</th>");                            
+      document.write("</tr>");   
+      
+    sortArray.sort();
+    for (var i=0; i < sortArray.length; i++) {
+      var arecord = sortMap[sortArray[i]];
+      document.write("<tr valign=\"top\">");
+      document.write("<td align=\"center\">" + arecord.FID__c + "</td>");
+      
+      document.write("<td align=\"left\"><a target=\"Salesforce\" href=\"/" + arecord.Id + "\">" + (arecord.LastName + ", " + arecord.FirstName + " " + arecord.MiddleName).trim() + "</a></td>");
+      document.write("<td align=\"left\">" + arecord.Department + "</td>");
+      document.write("<td align=\"center\">" + arecord.Shift__c + "</td>");
+      document.write("<td align=\"left\">" + arecord.Title + "</td>");      
+      document.write("<td align=\"center\">" + arecord.HomePhone + "</td>");      
+      document.write("<td align=\"center\">" + arecord.MobilePhone + "</td>");   
+      document.write("<td align=\"left\">" + arecord.MailingCity + "</td>");                    
+      document.write("<td align=\"center\">" + arecord.MailingPostalCode + "</td>");                    
+      document.write("</tr>");                        
+    }
+    document.write("</table>");
+
+    document.getElementById("warningDiv").innerHTML = "Count = " +    sortArray.length; 
+            
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(debugRecord)); 
+}       
+
+</script>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+</apex:page>

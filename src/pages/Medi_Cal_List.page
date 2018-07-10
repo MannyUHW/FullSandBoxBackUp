@@ -1,0 +1,258 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" >
+<meta name="viewport" content="width=device-width, initial-scale=0.75,minimum-scale=0.5, maximum-scale=1.5, user-scalable=yes"></meta>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<meta name="viewport" content="width=device-width, initial-scale=0.75"></meta>
+<script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+
+<style type="text/css">
+#pleaseWait {
+  width:40.9%;
+  min-height:9.9%;
+  height:auto;
+  z-index:0;
+  position:absolute;
+  left:25%;
+  top:30%;
+  padding: 10%, 10%;
+  text-align:center;
+}
+</style>
+
+<div align="center" id="pleaseWait"><font size="+2">Processing, please wait.</font></div>
+
+<script language="JavaScript">
+
+var mode = "interviewer";
+if (      sessionStorage.getItem("medi-cal_survey_mode") != null) {
+  mode = sessionStorage.getItem("medi-cal_survey_mode");
+}
+//alert("mode = " + mode);
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) { 
+  ////alert("[navigateTo] start " + pUrl); 
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+ 
+</script>
+
+
+<a name="topofpage"></a>
+<div align="center"> 
+
+
+<table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.Medi_Cal_Enter_Survey}');"> <img border="0" src="{!URLFOR($Resource.Lift_Up_2016)}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.Medi_Cal_Search}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+
+  <font size="+2"><div id="titleDiv"></div></font>
+<br>&nbsp;</br>
+<div id="countDiv"></div>
+
+
+<script language="JavaScript">
+
+var debugRecord = "";
+var sortArray = new Array();
+var sortMap = {};
+        
+try{ 
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+ 
+    var paramSearch = (" {!$CurrentPage.parameters.search} ").trim(); 
+    if (paramSearch == null || paramSearch == "") {
+      paramSearch = "maria evs"; 
+    }
+    var user = sforce.connection.getUserInfo(); 
+    ////alert(JSON.stringify(user)); 
+    var userName = user.userFullName.toLowerCase(); 
+     
+
+
+
+    var query = "SELECT Id, FID__c, LastName, FirstName, MiddleName, Account.Account_Group__c, Account.Name, Department, Title, Job_Group__c, Shift__c, HomePhone, MobilePhone, COPE_Pledge__c from Contact where In_Current_BU__c = true ";
+    query += " AND ( ";
+    //var query += " and FID__c like \'%" + p + "\" (";
+    var paramArray = paramSearch.toLowerCase().split(" ");
+    for (var b = 0; b < paramArray.length; b++) {
+        if (b > 0) {
+          query += " OR ";
+        }
+        var aparam = paramArray[b];
+        if (aparam.length > 3) {
+          aparam = aparam.substring(0,3);
+        }
+        query += " FirstName like \'" +  aparam + "%\' OR LastName like \'" + aparam + "%\' ";
+    }
+    query += " ) limit 1000";
+      
+    ////alert(query);
+
+    
+    var records = sforce.connection.query(query);
+    var records0 = records.getArray('records');   
+    for(var i=0;i < records0.length; i++){ 
+        debugRecord = records0[i];
+        var recordString = JSON.stringify(records0[i]).toLowerCase();
+        var matchCount = 0.0;
+        for (var b = 0; b < paramArray.length; b++) {
+          if (recordString.indexOf(paramArray[b]) >= 0) {
+            matchCount = matchCount + 2.0;
+          } else if (paramArray[b].length > 5 && recordString.indexOf(paramArray[b].substring(0,5)) >= 0) {
+            matchCount = matchCount + 1.0;
+          } else if (paramArray[b].length > 5 && recordString.indexOf(paramArray[b].substring(0,5)) >= 0) {
+            matchCount = matchCount + 0.5;
+          }
+        }
+        if (matchCount >= 1.0) {
+          var skey = 999999.0 - matchCount;
+          var loopSafe = 0;
+          while (sortArray.indexOf(skey) >= 0 && loopSafe < 5000) {
+            skey = skey - 0.00001;
+            loopSafe++;
+          }
+          if (records0[i].Account != null) {
+            sortArray.push(skey );
+            sortMap[("S" + skey )] = records0[i];
+          }
+        }
+    } 
+
+    if (sortArray.length > 0) {
+      sortArray.sort();
+      document.write("<table cellpadding=\"7\">\n");    
+      document.write("<tr valign=\"bottom\">\n");          
+      document.write("<td align=\"center\" bgcolor=\"#481C60\"><font color=\"white\">Name</font></td>\n");
+      document.write("<td align=\"center\" bgcolor=\"#481C60\"><font color=\"white\">Job</font></td>\n");      
+      document.write("<td align=\"center\" bgcolor=\"#481C60\"><font color=\"white\">Phones</font></td>\n");            
+      document.write("<td align=\"center\" bgcolor=\"#481C60\"><font color=\"white\">COPE</font></td>\n");            
+      document.write("</tr>");
+      sortArray.sort();
+      for (var i = 0; i < sortArray.length; i++) {
+        var score =  999999.0 - sortArray[i];
+        var arecord = sortMap[("S" + sortArray[i])];
+        document.write("<tr valign=\"top\">\n");  
+        var linkstart = "<a href=\"javascript:navigateTo(\'{! $Page.Medi_Cal_Enter_Survey}?fid";
+        if (mode == "interviewee") {
+          linkstart += "1";
+        } else {
+          linkstart += "2";          
+        } 
+        linkstart += "=" + arecord.FID__c + "\');\">";
+        document.write("<td>" + linkstart + arecord.LastName + ", " + arecord.FirstName);
+        if (arecord.MiddleName != null &&  arecord.MiddleName != "") {
+          document.write(" " + arecord.MiddleName);
+        } 
+        //document.write("<br/>" + score);
+        document.write("</a></td>");        
+        document.write("<td>");
+        document.write(arecord.Account.Name);
+        if (arecord.Account.Account_Group__c.trim().toUpperCase() == "HOSPITAL" || arecord.Account.Account_Group__c.trim().toUpperCase() == "KAISER") {
+          if (arecord.Department == null || arecord.Department == "" || arecord.Department == "null") {
+            arecord.Department = "Unknown Dept";
+          }
+          if (arecord.Title == null || arecord.Title == "" || arecord.Title == "null") {
+            arecord.Title = "Unknown Job";
+          }          
+          document.write("<br/>" + arecord.Department + "<br/>" + arecord.Title);       
+        }
+        document.write("</td>");        
+        document.write("<td>");
+        if (arecord.MobilePhone != null) {
+          document.write("C: " + arecord.MobilePhone + "<br/>");        
+        }
+        if (arecord.HomePhone != null) {
+          document.write("H: " + arecord.HomePhone);        
+        }        
+        document.write("</td>\n\n");        
+        document.write("<td>\n");                
+        if (arecord.COPE_Pledge__c != null && parseFloat(arecord.COPE_Pledge__c) > 0) {
+          document.write("$" +  parseFloat(arecord.COPE_Pledge__c).toFixed(2));                        
+        }        
+        document.write("</td>\n\n");        
+        document.write("</tr>");
+      }
+      
+      
+      document.write("</table>\n\n");
+      
+    } else {
+      document.write("<br/><font color=\"red\"><b>No results please try another search.</b></font>");
+    }
+
+    
+    if (paramSearch != null && paramSearch.trim() != "" && paramSearch.trim().toLowerCase() != "null") {
+      document.write("<font color=\"blue\"><b>Search:</b> " + paramSearch + "</b></font><br/>");      
+    }
+
+    
+
+    
+} catch(e) { 
+
+   //alert('An Error has occurred. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(debugRecord)); 
+ 
+}
+
+
+document.getElementById("countDiv").innerHTML = "Count = " + sortArray.length;
+
+
+</script>
+
+
+
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+
+<script> 
+(function(){try{var a=navigator.userAgent;if((a.indexOf('Salesforce')!=-1)&&(a.indexOf('iPhone')!=-1||a.indexOf('iPad')!=-1)&&(a.indexOf('OS/8')!=-1||a.indexOf('OS 8')!=-1)&&(a.indexOf('Safari')==-1)){ 
+var s=document.createElement('style'); 
+s.innerHTML="html,html body{overflow: auto;-webkit-overflow-scrolling:touch;}body{position:absolute;left:0;right:0;top:0;bottom:0;}"; 
+document.getElementsByTagName('head')[0].appendChild(s);}}catch(e){}})(); 
+</script> 
+
+ 
+<div id="debugDiv"></div>
+<script> 
+//document.getElementById("debugDiv").innerHTML = debugWriter;
+
+$("#pleaseWait").hide();
+
+</script>
+</apex:page>

@@ -1,0 +1,466 @@
+<apex:page sidebar="false" showHeader="false">
+<div align="center">
+  <font size="+2">Hospitals: June 2nd</font>
+</div>
+<div align="center" id="coordtitle">
+</div>
+
+<script language="JavaScript">
+document.write("<div align=\"center\"><i>Generated " + (new Date()) + "</i></div>");
+</script>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></scrip
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.TurfMap)}"/>
+
+<h3>Summary</h3>
+<div id="summaryDiv"></div>
+
+<br>&nbsp;</br>
+<div id="warningDiv"></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<h3>Details</h3>
+<script language="JavaScript">
+var i = 0;
+
+
+    var turfDataMap = new Array();
+    var turfSortList = new Array();    
+
+
+try{ 
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+    var query = "select Id, Name, Region__c from Account where Account_Group__c=\'Hospital\'";
+    var records = sforce.connection.query(query); 
+
+
+      var records0 = records.getArray('records'); 
+      for(var i=0;i < records0.length; i++){ 
+
+        var region = records0[i].Region__c;
+        if (i == 0) {
+          //alert(records0[i].Region__c);
+        }
+        var emName = records0[i].Name.toUpperCase().trim();
+        if (turfMap[emName] != null) {
+          var coordinator = turfMap[emName][1];
+          var organizer = turfMap[emName][2];      
+          var turfKey = (region + "~" + coordinator + "~" + organizer).toLowerCase();
+          turfDataMap[turfKey] = ["", 0, 0, 0, toProperCase(region), coordinator, organizer, 0, 0, 0, 0, 0, 0, 0];
+          if (turfSortList.indexOf(turfKey) < 0) {
+            turfSortList.push(turfKey);
+            //special Cedars-Sinai logic
+            if (turfKey.toUpperCase().indexOf("MATTHEW CLINE")>= 0) {
+              var turfKey2 = (region + "~" + coordinator + "~MICHELLE COLLINS").toLowerCase();
+              turfSortList.push(turfKey2);
+              turfDataMap[turfKey2] = ["", 0, 0, 0, toProperCase(region), coordinator, "Michelle Collins", 0, 0, 0, 0, 0, 0, 0];            
+            }
+          }
+        }
+      }
+    
+    var pcoord = "{!$CurrentPage.parameters.coordinator}";
+    if (pcoord == null || pcoord == "" || pcoord == "null") {
+      pcoord = null;
+    } else {
+      document.getElementById("coordtitle").innerHTML = "<font size=\"+1\">Coordinator: " + toProperCase(pcoord) + "</font>";
+    }
+      
+    var sortList2 = new Array();
+    var sortMap2 = new Array();
+    
+    var leaderIdList = new Array();
+    var leaderCountMap = new Array();  
+    for (var w = 0; w < 10; w++) {    
+      var query = "select Id, FID__c, Contact__r.Id, Contact_Name__c, Employer_Name__c, Alt_Person_Type__c, Contact__c, Contact__r.Department, Contact__r.Title, Contact__r.Shift__c, Collected_By__c, Collected_By_Name__c, Contact__r.COPE_Pledge__c, Region__c, Response_Value__c, Phone_Home__c, Phone_Cell__c    from Survey_Response__c where ";
+      query += " Division__c = \'Hospital\' and ";
+      query += "  Employer_Name__c != \'Pomona Valley Hospital Medical Center\' and ";      
+      query += " Survey_Code__c=\'J2A\' and (Response_Value__c like \'M%\' OR Response_Value__c like \'B%\' OR Response_Value__c like \'R%\'  OR Response_Value__c like \'D%\' OR Response_Value__c like \'W%\'  OR Response_Value__c like \'S%\') and";
+      query += " Name like \'%" + w + "\' ";
+      query += " limit 2000";
+ 
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+    
+      if (records1.length >= 2000) {
+        alert("<font color=\"red\"><b>Over 2000 records were found and these results have been cutoff.  Please contact your AA if you want to get a full list for your facilities.</b></font>");
+      }
+    
+  
+    
+      for(var i=0;i < records1.length; i++){ 
+
+        if (i == 0) {
+          //alert(records1[i]);
+        }
+
+        var region = records1[i].Region__c;
+        if (region == null || region == "" || region == "null") {
+          records1[i].Region__c = "NORTH";
+        }
+       
+        if (turfMap[records1[i].Employer_Name__c.toUpperCase().trim()] == null)  {
+          alert(i + ". can't find turf for _" + records1[i].Employer_Name__c + "_");
+          turfMap[records1[i].Employer_Name__c.toUpperCase().trim()] = ["Unknown", "Unknown"];
+        }
+
+        var coordinator = turfMap[records1[i].Employer_Name__c.toUpperCase().trim()][1];
+        var organizer = turfMap[records1[i].Employer_Name__c.toUpperCase().trim()][2];  
+        //&& records1[i].Employer_Name__c.toUpperCase().indexOf("CEDARS-SINAI") == 0   
+        if (organizer.toLowerCase().trim() == "matthew cline" ) {
+          if (records1[i].Contact__c != null && records1[i].Contact__r.Title != null && records1[i].Contact__r.Title != "" && records1[i].Contact__r.Title != "null" && records1[i].Contact__r.Title.toUpperCase().indexOf("CLINICAL") != 0 && records1[i].Contact__r.Title.toUpperCase().indexOf("LVN") != 0) {
+            organizer = "Michelle Collins";    
+          }
+        }
+      
+      
+        var sortKey2 = (region + "~" + coordinator  + "~" + organizer + "~" + records1[i].Collected_By_Name__c + "~" + records1[i].Contact_Name__c + "~" + records1[i].Id).toLowerCase();
+        sortList2.push(sortKey2);
+        sortMap2[sortKey2] = records1[i];
+      
+        if (records1[i].Collected_By__c != null && records1[i].Collected_By__c != "" &&  records1[i].Collected_By__c != "null") {
+          if (leaderIdList.indexOf(records1[i].Collected_By__c) < 0) {
+            leaderIdList.push(records1[i].Collected_By__c);
+          }
+          var lcount = 0;
+          if (leaderCountMap[records1[i].Collected_By__c] != null) {
+            lcount = leaderCountMap[records1[i].Collected_By__c];
+          }
+          lcount++;
+          leaderCountMap[records1[i].Collected_By__c] = lcount;
+        }
+      }
+    }
+    //alert("sorting");
+    sortList2.sort();
+    document.getElementById("warningDiv").innerHTML = "Count = " + sortList2.length;
+    
+    var detailCount = 0;
+    
+    document.write("<table cellpadding=\"10\">\n");
+    document.write("<tr valign=\"bottom\">\n");  
+    if (pcoord == null) {
+      document.write("<th>Region</th>\n");        
+      document.write("<th>Coordinator</th>\n");
+    }
+    document.write("<th>Organizer</th>\n");    
+    document.write("<th>Name</th>\n");
+    document.write("<th>Leader</th>\n");    
+    document.write("<th>Employer</th>\n");    
+    document.write("<th>Department</th>\n");
+    document.write("<th>Job Class</th>\n");
+    document.write("<th>Shift</th>\n");
+    document.write("<th>Collector</th>\n");    
+    document.write("<th>COPE</th>\n");      
+    document.write("<th>Home Phone</th>\n");  
+    document.write("<th>Cell Phone</th>\n");  
+    document.write("<th>Response</th>\n");          
+    document.write("</tr>\n"); 
+    
+
+    for (var i = 0; i < sortList2.length; i++) {
+    
+
+      var sortKey2 = sortList2[i];
+      var record2 = sortMap2[sortKey2];
+
+
+    
+
+      var coordinator = turfMap[record2.Employer_Name__c.toUpperCase().trim()][1];
+      var organizer = turfMap[record2.Employer_Name__c.toUpperCase().trim()][2];  
+      
+      if (organizer.toLowerCase().trim() == "matthew cline" ) {
+        if (record2.Contact__c != null && record2.Contact__r.Title != null && record2.Contact__r.Title != "" && record2.Contact__r.Title != "null" && record2.Contact__r.Title.toUpperCase().indexOf("CLINICAL") != 0 && record2.Contact__r.Title.toUpperCase().indexOf("LVN") != 0) {
+          organizer = "Michelle Collins";    
+        }
+      }
+      
+      
+      var region = record2.Region__c;        
+      var turfKey = (region + "~" + coordinator + "~" + organizer).toLowerCase();
+      if (turfDataMap[turfKey] == null) {
+        turfDataMap[turfKey] = ["", 0, 0, 0, toProperCase(region), coordinator, organizer, 0, 0, 0, 0, 0, 0, 0];
+        turfSortList.push(turfKey);
+      }
+      
+      if (record2.Contact__c != null || record2.Alt_Person_Type__c == "Member") {
+        if (record2.Response_Value__c.indexOf("M") == 0) {
+          turfDataMap[turfKey][1] = turfDataMap[turfKey][1] + 1;
+        } else if (record2.Response_Value__c.indexOf("R") == 0) {
+          turfDataMap[turfKey][10] = turfDataMap[turfKey][10] + 1;          
+        } else if (record2.Response_Value__c.indexOf("D") == 0) {
+          turfDataMap[turfKey][11] = turfDataMap[turfKey][11] + 1; 
+        } else if (record2.Response_Value__c.indexOf("W") == 0) {
+          turfDataMap[turfKey][12] = turfDataMap[turfKey][12] + 1;                     
+        } else if (record2.Response_Value__c.indexOf("S") == 0) {
+          turfDataMap[turfKey][13] = turfDataMap[turfKey][13] + 1;            
+        } else {
+          turfDataMap[turfKey][8] = turfDataMap[turfKey][8] + 1;
+        }
+      } else {
+        turfDataMap[turfKey][7] = turfDataMap[turfKey][7] + 1;
+      }
+      
+      
+      var s = "";
+      s+= "<tr valign=\"top\">\n";
+      
+    
+
+      if (pcoord == null) {      
+      
+        s+= "<td align=\"left\">";
+        s += toProperCase(region);
+        s+= "</td>";
+        s+="\n\n";  
+      
+        s+= "<td align=\"left\">";
+        s += coordinator;
+        s+= "</td>";
+        s+="\n\n";      
+      }
+      
+      s+= "<td align=\"left\">";
+      s += organizer;
+      s+= "</td>";
+      s+="\n\n";      
+      
+      s+= "<td align=\"left\">";
+      s += toProperCase(record2.Contact_Name__c);
+      s+= "</td>";
+      s+="\n\n";      
+      
+      s+= "<td align=\"center\">";
+      
+      if (record2.Contact__c != null && leaderIdList.indexOf(record2.Contact__r.Id) >= 0 && leaderCountMap[record2.Contact__r.Id] >= 1) {
+        turfDataMap[turfKey][2] = turfDataMap[turfKey][2] + 1;
+        if (leaderCountMap[record2.Contact__r.Id] >= 2) {
+                turfDataMap[turfKey][9] = turfDataMap[turfKey][9] + 1;
+        }
+        s+= "yes";           
+      } else {
+        s+= "&nbsp;";
+      }
+      s+= "</td>";
+      s+="\n\n";      
+      
+      
+      s+= "<td align=\"left\">";
+      s += toProperCase(record2.Employer_Name__c);
+      s+= "</td>";
+      s+="\n\n";      
+      
+      s+= "<td align=\"left\">";    
+      if (record2.Alt_Person_Type__c != null && record2.Alt_Person_Type__c != "" && record2.Alt_Person_Type__c != "null" ) {
+        s += record2.Alt_Person_Type__c + "";
+      } else {
+        s += toProperCase(record2.Contact__r.Department);
+      }
+      s+= "</td>";
+      s+="\n\n";
+      
+      s+= "<td align=\"left\">";
+      if (record2.Contact__c != null && record2.Contact__r.Title != null && record2.Contact__r.Title != "" && record2.Contact__r.Title != "null" ) {
+        s+= toProperCase(record2.Contact__r.Title);
+      } else {
+        s+="";
+      }
+      s+= "</td>";
+      s+="\n\n";
+
+      
+      s+= "<td align=\"center\">";
+      if (record2.Contact__c != null && record2.Contact__r.Shift__c != null && record2.Contact__r.Shift__c != "" && record2.Contact__r.Shift__c!= "null" ) {
+        s+= record2.Contact__r.Shift__c;
+      } else {
+        s+="";
+      }
+      s+= "</td>";
+      s+="\n\n";
+
+      s+= "<td align=\"left\">";
+      if (record2.Collected_By_Name__c != null && record2.Collected_By_Name__c.trim() != "" != null && record2.Collected_By_Name__c != "null" ) {
+        s+= toProperCase(record2.Collected_By_Name__c);
+      } else {
+        s+="";
+      }
+      s+= "</td>";
+               s+="\n\n";   
+            
+      s+= "<td align=\"center\">";
+      if (record2.Contact__c != null) {
+        if (record2.Contact__r.COPE_Pledge__c != null && record2.Contact__r.COPE_Pledge__c != "" && record2.Contact__r.COPE_Pledge__c) {
+          s += "$" + record2.Contact__r.COPE_Pledge__c;
+          if (record2.Contact__r.COPE_Pledge__c >= 9.2) {
+            turfDataMap[turfKey][3] = turfDataMap[turfKey][3] + 1;
+          }
+        } else {
+          s += "$0";
+        }
+      } else {
+        s += "NA";
+      }
+      s+= "</td>";            
+      s+="\n\n";
+      
+      s+= "<td align=\"center\">";
+      if (record2.Phone_Home__c != null && record2.Phone_Home__c != "" && record2.Phone_Home__c != "null" && record2.Phone_Home__c != "0") {
+        s += record2.Phone_Home__c ;
+      }
+      s+= "</td>";
+      s+="\n\n";
+      
+      s+= "<td align=\"center\">";
+      if (record2.Phone_Cell__c != null && record2.Phone_Cell__c != "" && record2.Phone_Cell__c != "null" && record2.Phone_Cell__c != "0") {
+        s += record2.Phone_Cell__c ;
+      }
+      s+= "</td>";
+      s+="\n\n";
+      
+      s+= "<td align=\"left\">";
+      s += toProperCase(record2.Response_Value__c);
+      s+= "</td>";
+      s+="\n\n"; 
+      
+      s+= "</tr>\n";    
+      
+      if (pcoord == null || coordinator.toLowerCase() == pcoord.toLowerCase()) {
+        document.write(s);
+        detailCount++;
+      }
+    }
+    
+    document.getElementById("warningDiv").innerHTML = "Count = " + detailCount;
+    
+    document.write("</table>\n\n");
+    document.write("<br>&nbsp;</br>");    
+
+    //alert("creating summary.");
+
+    var summary = "<table cellpadding=\"10\">";
+    summary += ("<tr valign=\"bottom\">\n"); 
+    if (pcoord == null) {         
+      summary += ("<th>Region</th>\n");       
+      summary += ("<th>Coordinator</th>\n");
+    }
+    summary += ("<th>Organizer</th>\n");    
+    summary += ("<th>Mbr<br/>Committeds</th>\n");
+    summary += ("<th>Non-Mbrs</th>\n");    
+    summary += ("<th>Mbr<br/>Confirmeds</th>\n");  
+    summary += ("<th>Mbr<br/>Reconfirmeds</th>\n");     
+    summary += ("<th>Mbr<br/>Reminds</th>\n");   
+    summary += ("<th>Mbr<br/>Wait Listed</th>\n");           
+    summary += ("<th>Mbr<br/>Wait List Slotted</th>\n");               
+    summary += ("<th>Mbr Totals</th>\n");     
+    summary += ("<th>COPE $10+</th>\n");        
+    summary += ("<th>Leaders</th>\n");    
+    summary += ("<th>Leaders with 2+</th>\n");       
+    summary += ("</tr>\n"); 
+    
+    turfSortList.sort();
+    for (var i = 0; i < turfSortList.length; i++) {
+      var turfKey = turfSortList[i];
+      var turfData = turfDataMap[turfKey];
+      
+      var region = turfData[4];
+      var coordinator = turfData[5];      
+      var organizer = turfData[6];
+      var s = "<tr valign=\"top\">\n";
+
+      if (pcoord == null) {                     
+        s+= "<td align=\"left\">";
+        s+= toProperCase(region);
+        s+= "</td>";
+        s+="\n\n";               
+
+            
+        s+= "<td align=\"left\">";
+        s+= coordinator;
+        s+= "</td>";
+        s+="\n\n";   
+      }
+      
+      s+= "<td align=\"left\">";
+      s+= organizer;
+      s+= "</td>";
+      s+="\n\n";
+      
+      s+= "<td align=\"center\">";
+      s+= turfData[1];
+      s+= "</td>";
+      s+="\n\n";
+
+      s+= "<td align=\"center\">";
+      s+= turfData[7];
+      s+= "</td>";
+      s+="\n\n";
+
+      s+= "<td align=\"center\">";
+      s+= turfData[8];
+      s+= "</td>";
+      s+="\n\n";
+
+      s+= "<td align=\"center\">";
+      s+= turfData[10];
+      s+= "</td>";
+      s+="\n\n";
+
+      s+= "<td align=\"center\">";
+      s+= turfData[11];
+      s+= "</td>";
+      s+="\n\n";
+      
+            s+= "<td align=\"center\">";
+      s+= turfData[12];
+      s+= "</td>";
+      s+="\n\n";
+      
+                  s+= "<td align=\"center\">";
+      s+= turfData[13];
+      s+= "</td>";
+      s+="\n\n";
+
+
+      s+= "<td align=\"center\" bgcolor=\"#E0F0D0\">";
+      s+= turfData[1] + turfData[8] + turfData[10]  + turfData[11]  + turfData[12]  + turfData[13];
+      s+= "</td>";
+      s+="\n\n";
+
+      s+= "<td align=\"center\">";
+      s+= turfData[3];
+      s+= "</td>";
+      s+="\n\n";
+
+      s+= "<td align=\"center\">";
+      s+= turfData[2];
+      s+= "</td>";
+      
+      s+= "<td align=\"center\">";
+      s+= turfData[9];
+      s+= "</td>";
+      
+      s+="\n\n";
+      s+="</tr>\n\n\n"; 
+              
+      if (pcoord == null || coordinator.toLowerCase() == pcoord.toLowerCase()) {       
+        summary += s;
+      }
+    }
+    summary += "</table>";
+
+    document.getElementById("summaryDiv").innerHTML = summary;
+
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i); 
+}
+
+</script>
+<br>&nbsp;</br>
+<div align="center"><i>CONFIDENTIAL</i></div>
+</apex:page>

@@ -1,0 +1,1029 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  sessionStorage.setItem("mo_last_page", "MO_Manage_Teams");
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+<div align="center">
+
+
+  <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MO_Search_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+  
+
+
+
+  <h1 id="h1Title">Manage Teams</h1>
+
+<div id="messageDiv"></div>
+<div id="mainDiv">
+<div id="countDiv"></div>
+
+<table>
+  <tr valign="bottom">
+    <td>
+    EBoard:<br/>
+    <select id="eboardSelect" onchange="showFollowers(true)"></select>
+    </td>
+    <td>
+        <div id="eboardRunDiv"></div>
+    </td>
+  </tr>
+  <tr valign="middle">
+    <td>
+    Leader:<br/>
+    <select id="leaderSelect" onchange="showFollowers(true)"></select>
+    <font size="-2"><div id="statusDiv"></div></font>
+    </td>
+    <td align="right">
+        <font size="-2">&nbsp;<br/></font>
+        <div id="startRunDiv"><font size="-2"><a href="javascript:startRun()">&nbsp;&nbsp;Start Run by EBoard</a></font></div>
+        <div id="stopRunDiv"><font size="-2"><a href="javascript:stopRun()">&nbsp;&nbsp;Stop Run by EBoard</a></font></div>        
+        <div id="notLeaderDiv"><font size="-2">Not a Leader</font></div>                
+    </td>
+  </tr>
+</table>
+<br/>&nbsp;
+<br/>
+<div id="buttonDiv">
+  <table cellpadding="3">
+    <tr>
+      <td width="25%">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="switchEBoard()"><font size="-1">&nbsp;&nbsp;Switch EB&nbsp;&nbsp;</font></button>
+      </td>
+      <td width="25%">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="showMove()"><font size="-1">&nbsp;&nbsp;&nbsp;Move&nbsp;&nbsp;&nbsp;</font></button>
+      </td>
+      <td width="25%">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="deleteFollowers()"><font size="-1">&nbsp;Remove&nbsp;&nbsp;</font></button>
+      </td>
+      <td width="25%">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="addFollowers()"><font size="-1">&nbsp;&nbsp;Add&nbsp;&nbsp;</font></button>
+      </td>      
+    </tr>
+  </table>
+</div>
+&nbsp;<br/>
+<div id="teamDiv">Loading...</div>
+</div>
+<div id="searchDiv">
+  <font size="+1">Search for Supporter</font><br/>    
+      
+      <input size="40" id="searchterms"></input>
+      <br>&nbsp;</br>
+
+      <button class="btn btn-primary" type="button" onclick="search();">
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_small.png')}"></img>
+      &nbsp;&nbsp;
+      Search
+      &nbsp;&nbsp;&nbsp;&nbsp;
+      </button>
+
+      <button class="btn btn-primary" type="button" onclick="cancelSearch();">     
+      &nbsp;&nbsp;
+      Cancel
+      &nbsp;&nbsp;
+      </button>
+      
+      <br></br>
+
+
+
+      <br>&nbsp;</br>  
+      <div id="searchResultsDiv"><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br></div>
+      <br>&nbsp;</br>  
+</div>
+<div id="moveDiv">
+
+      <button class="btn btn-primary" type="button" onclick="cancelMove();">     
+      &nbsp;&nbsp;
+      Cancel
+      &nbsp;&nbsp;
+      </button>
+      <table>
+        <tr valign="top">
+          <td align="left">
+            <div id="moveTreeDiv"></div>
+          </td>
+        </tr>
+      </table>
+</div>    
+<br/>
+<div id="debugDiv"></div>
+<br/>
+
+<script language="JavaScript">
+
+$("#searchDiv").hide();
+$("#moveDiv").hide();
+$("#stopRunDiv").hide()
+
+//$("#buttonDiv").hide();  
+
+var lastRecord = null;
+var debugWriter = "";
+
+    var emids =  localStorage.getItem("mo_sync_emids");
+    var emnames =  localStorage.getItem("mo_sync_emnames");
+    var emsfids =  localStorage.getItem("mo_sync_emsfids");
+    var syncTs = localStorage.getItem("mo_last_sync");
+    var currentTs = (new Date()).getTime();
+    if (emnames == null || emnames == "" || emsfids == null || emsfids == "") {
+      navigateTo('{! $Page.MO_Choose_Page}');
+    } else if (currentTs - syncTs > (24 * 60 * 60 * 1000)) {
+      navigateTo('{! $Page.MO_Sync_Page}?emids=' + emids);
+    }
+
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+var qcodeQidMap = {};
+for (var i = 0; i < qids.length; i++) {
+  qcodeQidMap[qcodes[i]] = qids[i];
+}
+
+var emidArray = emids.replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnameArray = emnames.replace("[", "").replace("]","").replace("\"", "").split(",");
+var emNameIdMap = new Array();
+var emIdNameMap = new Array();
+for (var i = 0; i < emidArray.length; i++ ) { 
+  emNameIdMap[emnameArray[i].toLowerCase()] = emidArray[i];
+  emIdNameMap[emidArray[i]] = emnameArray[i];  
+}
+
+var teamMap = {};
+
+var buCount = 0;
+for (var rr = 0; rr < localStorage.length; rr++) {
+  if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+    buCount++;
+    var compressedContactArray = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+    var crecord = uncompressContact(compressedContactArray); 
+    var srcrecord = (JSON.stringify(compressedContactArray)).toLowerCase();
+
+    var lastname = crecord.LastName;
+    var firstname = crecord.FirstName;
+    var middlename = crecord.MiddleName;       
+    if (middlename == null || middlename == "null") {
+        middlename = "";
+    }     
+    var fullname1 = (lastname + ", " + firstname + " " + middlename).toLowerCase().trim();
+    var fullname2 = (firstname + " " + lastname).trim();     
+    crecord.FullName = fullname2;
+    if (crecord.COPE_Pledge__c == null) {
+      crecord.COPE_Pledge__c = 0;
+    }
+    teamMap[crecord.FID__c] = crecord; 
+  }
+}
+
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == "" || mode == "null") {
+      mode = "MO";
+}
+mode = mode.toLowerCase().trim();
+
+
+var message = sessionStorage.getItem("mo_manage_teams_message");
+if (message != null && message != "" && message != "null") {
+  $("#messageDiv").html("<font color=\"green\">" + message + "</font>");
+  sessionStorage.setItem("mo_manage_teams_message", null);
+}
+
+sessionStorage.setItem("mo_from_manage_teams", null);
+sessionStorage.getItem("mo_enter_survey_rselect", null);
+
+var ldrEboardMap = {};
+var followerLdrMap = {};
+var ldrSet = [];
+var eboardSet = [];
+var promotedSet = [];
+var teamSet = [];
+var fidIdMap = {};
+var eboardTeamLdrSet = [];
+
+try{ 
+    
+    var moveWriter = "<br/><b>Move Members To New Leader:<b><br/>";
+    
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var contactSelectFields = "select Id, Account.Employer_ID__c, FID__c, Name, LastName, FirstName, Stretch_EBoard_Leader_Name__c, Tier_1_Leader__r.Name, Tier_1_Leader__r.FirstName, Tier_1_Leader__r.LastName, Tier_1_Leader__r.FID__c, Stretch_Leader_Name__c, Stretch_Leader__r.FID__c, Stretch_Leader__c, Stretch_Member_Card_Signed__c, Stretch_Ldr_Promotion_Status__c, Stretch_Ldr_Run_By_EBoard__c,  Stretch_EBoard_Team__c, Stretch_Leader__r.Tier_1_Leader__r.FID__c, Department_Mod__c, Executive_Body_Title__c, Account.Name, Department, Mbr_Ldr_App_Tier__c, COPE_Pledge__c, MobilePhone, Email, Stretch_Team_Intake_Phase__c  from Contact ";
+          
+    var xset = [];
+    var statusMap = {};
+    var completedSet = [];
+    query = " select FID__c, Survey_Code__c, Response_Value__c from Survey_Response__c where (Survey_Code__c = \'6A1\' OR Survey_Code__c = \'6A2\') AND "
+    query += " (";
+    var emArray = emids.split(",");
+    for (var emdex = 0; emdex < emArray.length; emdex++) {
+              if (emdex > 0) {
+                query = query + " OR ";
+              }
+              query = query + " Employer_Id__c =\'" + emArray[emdex].replace("\"", "").replace("\"", "") + "\' ";         
+    }
+    query += ") ";
+    console.log(query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records');   
+    for (var i = 0; i < records1.length; i++) {
+      if (records1[i].Survey_Code__c == "6A2") {
+        if (records1[i].Response_Value__c.toLowerCase().indexOf("x") == 0) {
+          xset.push(records1[i].FID__c);
+        }
+        statusMap[records1[i].FID__c] = records1[i].Response_Value__c;
+      } else if (records1[i].Survey_Code__c == "6A1") {
+        if (records1[i].Response_Value__c.toLowerCase().indexOf("y") == 0 || records1[i].Response_Value__c.toLowerCase().indexOf("w") == 0) {
+          completedSet.push(records1[i].FID__c);
+        }      
+      }
+    }
+        
+    //var partitions = 10;
+    var partitions = 1;
+    var moveLeaderSortList = [];
+
+
+    var query = "select FID__c from Contact where "
+    query += " Stretch_Ldr_Run_By_EBoard__c = true AND ";
+    query += " (";
+    var emArray = emids.split(",");
+    for (var emdex = 0; emdex < emArray.length; emdex++) {
+              if (emdex > 0) {
+                query = query + " OR ";
+              }
+              query = query + " Account.Employer_ID__c=\'" + emArray[emdex].replace("\"", "").replace("\"", "") + "\' ";         
+              query = query + " OR Stretch_Leader__r.Account.Employer_ID__c=\'" + emArray[emdex].replace("\"", "").replace("\"", "") + "\' ";                     
+    }
+    query += ") ";  
+    console.log(query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for( var j = 0; j < records1.length; j++ ) {     
+      eboardTeamLdrSet.push(records1[j].FID__c);    
+    }
+          
+
+    
+    for (var i = 0; i < partitions; i++) {
+      var query = contactSelectFields;
+      query += "  where (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6) ";
+      query += "  and ((Stretch_Leader_Name__c != null and Stretch_Same_Facility__c = true) OR (Stretch_Ldr_Promotion_Status__c != null AND Stretch_Ldr_Promotion_Status__c != \'Demoted\') OR Executive_Body_Title__c = \'Executive Board\' OR Mbr_Ldr_App_Tier__c = \'Tier 1\')   AND ";
+      query += " (";
+      var emArray = emids.split(",");
+      for (var emdex = 0; emdex < emArray.length; emdex++) {
+              if (emdex > 0) {
+                query = query + " OR ";
+              }
+              query = query + " Account.Employer_ID__c=\'" + emArray[emdex].replace("\"", "").replace("\"", "") + "\' ";         
+              query = query + " OR Stretch_Leader__r.Account.Employer_ID__c=\'" + emArray[emdex].replace("\"", "").replace("\"", "") + "\' ";                     
+      }
+      query += ")  ";
+      query += " order by Stretch_EBoard_Leader_Name__c, Stretch_Leader_Name__c ";
+    
+
+
+
+      
+      if (i == 0) {
+        //alert(query); 
+      }
+      console.log(query);
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      debugWriter += query + "<br/>" + "count = " + records1.length + "<br/>\n";
+      
+      if (records1.length == 2000) {
+        alert("Team size exceeds 2000 records.  Please contact Data Team to resolve this issue.");
+      }
+
+      if (records1.length == 0){
+          var scaffoldEB = {};
+          scaffoldEB.Name = "No Eboard";
+          records1.push(scaffoldEB);
+      }
+      
+      for( var j = 0; j < records1.length; j++ ) { 
+             
+        lastRecord = records1[j];
+        lastRecord.Dex = j;
+        var a = records1[j];
+        
+        if (a.Stretch_Ldr_Promotion_Status__c != null && a.Stretch_Ldr_Promotion_Status__c != "Demoted" && promotedSet.indexOf(a.FID__c) < 0) {
+          promotedSet.push(a.FID__c);
+        }
+        
+        if (a.Stretch_Leader__r == null) {
+          a.Stretch_Leader__r = {};
+        }
+        
+        if (a.Mbr_Ldr_App_Tier__c != null && a.Mbr_Ldr_App_Tier__c == "Tier 1") {
+          a.Executive_Body_Title__c = "Executive Board";
+        }
+        
+        if (a.Executive_Body_Title__c != "Executive Board") {
+          if (a.Stretch_Leader__r.Tier_1_Leader__r == null) {
+            a.Stretch_Leader__r.Tier_1_Leader__r = {};
+            var blankFid = "0000-000000000";
+            a.Stretch_Leader__r.Tier_1_Leader__r.FID__c = blankFid;
+            teamMap[blankFid] = {};
+            teamMap[blankFid].FullName = " Not Turfed";
+          }
+          if (a.Tier_1_Leader__r == null) {
+            a.Tier_1_Leader__r = {};
+            var blankFid = "0000-000000000";
+            a.Tier_1_Leader__r.FID__c = blankFid;
+            a.Tier_1_Leader__r.Name = " Not Turfed";         
+            teamMap[blankFid] = {};
+             teamMap[blankFid].FullName = " Not Turfed";
+          }
+        } else {
+          a.Stretch_Leader__r.FID__c = a.FID__c;
+          a.Tier_1_Leader__r = {};
+          a.Tier_1_Leader__r.FID__c = a.FID__c;          
+          a.Stretch_Leader__r.Tier_1_Leader__r = {};
+          a.Stretch_Leader__r.Tier_1_Leader__r.FID__c = a.FID__c;
+          a.Tier_1_Leader__r.FirstName = a.FirstName;
+          a.Tier_1_Leader__r.LastName = a.LastName;          
+          a.Stretch_Leader__r.Tier_1_Leader__r.FirstName = a.FirstName;
+          a.Stretch_Leader__r.Tier_1_Leader__r.LastName = a.LastName;
+          if (eboardSet.indexOf(a.FID__c) < 0) {
+            eboardSet.push(a.FID__c);
+          }          
+        }
+        
+        followerLdrMap[a.FID__c] = a.Stretch_Leader__r.FID__c;
+        
+        fidIdMap[a.FID__c] = a.Id;
+        if (a.Stretch_Leader__c != null) {
+          fidIdMap[a.Stretch_Leader__r.FID__c] = a.Stretch_Leader__c;
+        }
+        
+        if (a.FID__c == "9000-002211084") {
+          //alert(JSON.stringify(a));
+        }
+        
+        if (((a.Stretch_Ldr_Promotion_Status__c != null && a.Stretch_Ldr_Promotion_Status__c != "Demoted") || a.Executive_Body_Title__c == "Executive Board") && ldrSet.indexOf(a.FID__c) < 0) {
+          //alert("find promoted person - " + JSON.stringify(a));
+          fidIdMap[a.FID__c] = a.Id;
+          ldrEboardMap[a.FID__c] = a.Tier_1_Leader__r.FID__c;
+          if (ldrSet.indexOf(a.FID__c) < 0) {
+            ldrSet.push(a.FID__c);
+            var sortKey = JSON.stringify([a.Tier_1_Leader__r.FirstName + " " + a.Tier_1_Leader__r.LastName, a.Name + " - " + a.Department_Mod__c, a.FID__c, a.Stretch_EBoard_Team__c]);
+            moveLeaderSortList.push(sortKey);            
+          }
+          a.Stretch_Leader__r = {};
+          a.Stretch_Leader__r.FID__c = a.FID__c;
+        }
+        
+        if (a.Stretch_Leader__r.Tier_1_Leader__r !=null) {
+          ldrEboardMap[a.Stretch_Leader__r.FID__c] = a.Stretch_Leader__r.Tier_1_Leader__r.FID__c;
+        }
+        if (ldrSet.indexOf(a.Stretch_Leader__r.FID__c) < 0 || (((a.Stretch_Ldr_Promotion_Status__c != null && a.Stretch_Ldr_Promotion_Status__c != "Demoted") || a.Executive_Body_Title__c == "Executive Board") && ldrSet.indexOf(a.FID__c) < 0)) {
+          var sortKey = JSON.stringify([a.Stretch_EBoard_Leader_Name__c, a.Stretch_Leader_Name__c, a.Stretch_Leader__r.FID__c, a.Stretch_EBoard_Team__c]);
+          moveLeaderSortList.push(sortKey);
+                  
+          ldrSet.push(a.Stretch_Leader__r.FID__c);
+          
+        }
+        if (a.Stretch_Leader__r.Tier_1_Leader__r !=null && eboardSet.indexOf( a.Stretch_Leader__r.Tier_1_Leader__r.FID__c ) < 0) {
+          eboardSet.push( a.Stretch_Leader__r.Tier_1_Leader__r.FID__c );
+          ldrEboardMap[ a.Stretch_Leader__r.FID__c] =  a.Stretch_Leader__r.Tier_1_Leader__r.FID__c;
+        }  
+        teamSet.push(a.FID__c);
+        
+      console.log(a);
+        var crecord = teamMap[a.FID__c];
+        if (crecord != null) {
+          crecord.Stretch_Member_Card_Signed__c  = a.Stretch_Member_Card_Signed__c;
+          if (a.Stretch_EBoard_Team__c != null && (a.Stretch_EBoard_Team__c == true || a.Stretch_EBoard_Team__c == "true") && eboardTeamLdrSet.indexOf(a.Stretch_Leader__r.FID__c) < 0) {
+            //alert("found leader run by EBoard = " + a.Stretch_Leader__r.FID__c);
+            //eboardTeamLdrSet.push(a.Stretch_Leader__r.FID__c);
+          }
+        
+          teamMap[a.FID__c] = crecord;   
+        }
+      }     
+    }     
+    var missingSet = [];
+    for (var j = 0; j < ldrSet.length; j++) {
+      var fid = ldrSet[j];
+      followerLdrMap[fid] = fid;
+      if (teamMap[records1[j].FID__c] == null || teamMap[records1[j].FID__c].Stretch_Member_Card__c == null) {
+        missingSet.push(fid);
+      }
+    }
+    if (missingSet.length > 0) {
+      var query = contactSelectFields + " where ";
+      for (var mdex = 0; mdex < missingSet.length; mdex++) {
+        var fid = missingSet[mdex];
+        if (mdex > 0) {
+          query += " OR ";
+        }
+        query += " FID__c = \'" + fid + "\' ";
+      }
+      //alert("missing query = " + query);
+       
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      //alert("records1.length = " + records1.length);
+      for( var j = 0; j < records1.length; j++ ) {       
+        teamMap[records1[j].FID__c] = records1[j];
+      }
+      
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+    }
+        
+    for (fid in teamMap) {
+      if (teamMap[fid].FullName == null) {
+        teamMap[fid].FullName = teamMap[fid].FirstName + " " + teamMap[fid].LastName;
+      }
+    }
+    
+    
+    
+    moveLeaderSortList.sort();
+    var lastEBoard = "";
+    for (var sortDex = 0; sortDex < moveLeaderSortList.length; sortDex++) {
+      if (sortDex == 0) {
+        //alert(moveLeaderSortList[sortDex]);
+      }
+      var larray = JSON.parse(moveLeaderSortList[sortDex]);
+      var ldrFid = larray[2];
+      var ldrName = larray[1];
+      var eboardName = larray[0];
+      var eboardTeam = larray[3];
+      
+          if (lastEBoard != eboardName ) {
+            moveWriter += "<br/>&nbsp;&nbsp;&nbsp;&nbsp;" + eboardName  + "<br/>"
+          }  
+          
+          //alert("writing Leader = " +  a.Stretch_Leader_Name__c);   
+          moveWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"javascript:moveFollowers(\'" + ldrFid + "\')\">" + ldrName;
+          if (eboardTeam == true) {
+            moveWriter += "*";
+          }
+          moveWriter += "</a><br/>";      
+          lastEBoard = eboardName ;            
+    }
+    
+    $("#moveTreeDiv").html(moveWriter);
+    
+    var countWriter = "Ldrs = " + ldrSet.length + ", Total Team Mbrs = " + teamSet.length;
+    $("#countDiv").html(countWriter);
+    
+    //debugWriter += JSON.stringify(eboardSet);
+    
+    for (var j = 0; j < eboardSet.length; j++) {
+      if (teamMap[eboardSet[j]] != null) {
+        $('#eboardSelect').append($('<option>', { value : eboardSet[j] }).text(teamMap[eboardSet[j]].FullName + "                   "));
+        debugWriter += eboardSet[j] + " = " + teamMap[eboardSet[j]].FullName + "<br/>\n";
+      }
+    }
+
+    
+    showFollowers(false);
+    $("#stopRunDiv").hide();
+    $("#searchDiv").hide();    
+    $("#moveDiv").hide();     
+    //alert(localStorage.getItem("mo_manage_teams_eboard") + ", " + localStorage.getItem("mo_manage_teams_ldr"));
+    if (localStorage.getItem("mo_manage_teams_ldr") != null) {
+      $('#eboardSelect').val(localStorage.getItem("mo_manage_teams_eboard"));
+      showFollowers(false);
+      $('#leaderSelect').val(localStorage.getItem("mo_manage_teams_ldr"));
+      showFollowers(false);      
+    }
+    
+    //alert("done!");
+
+
+      //$("#debugDiv").html(debugWriter);    
+
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\nRecord=" + JSON.stringify(lastRecord)); 
+}
+
+function toggleRun(pStartRun) {
+  var lastRecord =  {};
+  var responses = [];    
+  try {
+    var ldrFid = $('#leaderSelect').val();
+    var eboardFid = $('#eboardSelect').val();
+    var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + ldrFid));
+    //alert("ldr = " + ldrFid + ", eboard = " + eboardFid);
+    var ldrRecord = uncompressContact(compressedContactArray); 
+    //var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + eboardFid));
+    //var eboardRecord = uncompressContact(compressedContactArray); 
+    var c = new sforce.SObject("Contact");       
+    c.Id = ldrRecord.Id;;
+    c.Stretch_Ldr_Run_By_EBoard__c = pStartRun;
+    responses.push(c);      
+    if (pStartRun && !window.confirm("Confirm Leader " + ldrRecord.FirstName + " " + ldrRecord.LastName + " will be run by EBoard Member " + $("#eboardSelect option:selected").text().trim() + "?")) {
+        cancelMove();
+        return false;
+    }  
+    var results = null;
+    results = sforce.connection.update(responses); 
+    if (!results[0].getBoolean("success")) { 
+        alert("failed to remove Leader-Supporter relations. " + results[0] + "\n\n" + JSON.stringify(responses)); 
+    }          
+    var message = "Leader " + ldrRecord.FirstName + " " + ldrRecord.LastName + " now being run by  EBoard Member " + $("#eboardSelect option:selected").text() + ".";
+    if (pStartRun == false) {
+      message = "Leader " + ldrRecord.FirstName + " " + ldrRecord.LastName + " no longer being run by  EBoard Member " + $("#eboardSelect option:selected").text() + ".";
+    }
+    sessionStorage.setItem("mo_manage_teams_message", message)
+    navigateTo('{! $Page.MO_Manage_Teams}'); 
+      
+  } catch(e) { 
+    alert('An Error has Occured. Error:' +e + "\nRecord=" + JSON.stringify(lastRecord)); 
+  }
+  return false;
+}
+
+function startRun() {
+  toggleRun(true);
+}
+
+function stopRun() {
+  toggleRun(false);
+}
+
+function showFollowers(pSaveSelection) {
+  var selectedLdr =   $('#leaderSelect').val();
+  
+  $('#leaderSelect').html("");
+  for (var j = 0; j < ldrSet.length; j++) {
+    if ($('#eboardSelect').val() == ldrEboardMap[ldrSet[j]] || ldrSet[j] == $("#eboardSelect").val()) {
+      if (eboardSet.indexOf(ldrSet[j]) < 0 || ldrSet[j] == $("#eboardSelect").val()) {
+        var ldrOption = "<option>"
+        var ldrRun = "";
+        if (eboardSet.indexOf(ldrSet[j]) >= 0) {
+          ldrRun = " (EB)";        
+        } else if (eboardTeamLdrSet.indexOf(ldrSet[j]) >= 0) {
+          ldrRun = "*";
+        }
+        if (teamMap[ldrSet[j]] != null) {
+          $('#leaderSelect').append($(ldrOption, { value : ldrSet[j] }).text(teamMap[ldrSet[j]].FullName + ldrRun + "         "));
+        }
+      }        
+    }
+  }
+  $('#leaderSelect').val(selectedLdr);
+  $("#statusDiv").html("");
+  if (xset.indexOf($('#leaderSelect').val()) >= 0) {
+    $("#startRunDiv").hide();   
+    $("#stopRunDiv").hide();         
+    $("#notLeaderDiv").html("Not a Leader");             
+    $("#notLeaderDiv").show();             
+  } else if (eboardSet.indexOf($('#leaderSelect').val()) >= 0) {
+    $("#startRunDiv").hide();   
+    $("#stopRunDiv").hide();         
+    $("#notLeaderDiv").html("EBoard");             
+    $("#notLeaderDiv").show();  
+  } else if (eboardTeamLdrSet.indexOf($('#leaderSelect').val()) >= 0) {
+    $("#startRunDiv").hide();
+    $("#stopRunDiv").show();    
+    $("#notLeaderDiv").hide();             
+  } else {
+    $("#startRunDiv").show();
+    $("#stopRunDiv").hide();   
+    $("#notLeaderDiv").hide();                 
+  }
+  if (statusMap[$('#leaderSelect').val()] != null) {
+    $("#statusDiv").html("Status: <a href=\"javascript:assessLeader()\">" + statusMap[$('#leaderSelect').val()]) + "</a>";
+  } else {
+    $("#statusDiv").html("Status: <a href=\"javascript:assessLeader()\">Unassessed</a>");
+  }
+  
+  var teamWriter = "<table>";
+  var ldrFid = $("#leaderSelect").val();
+  //alert("ldrFid = " + ldrFid);
+  var sortSet = [];
+  for (var fid in followerLdrMap) {
+    if (teamMap[fid] != null) {
+      var akey = [teamMap[fid].Department, teamMap[fid].FullName, fid];
+      sortSet.push(JSON.stringify(akey));
+    }
+  }
+  sortSet.sort();
+  var teamCount = 0;
+  for (var j = 0; j < sortSet.length; j++) {
+    var fid = JSON.parse(sortSet[j])[2];
+    var mbrName = teamMap[fid].FullName;
+    if (followerLdrMap[fid] == ldrFid ) {
+      teamWriter += "<tr valign=\"top\"><td width=\"5%\" align=\"left\">";
+      teamWriter += "<input type=\"checkbox\" class=\"followerCheck\" id=\"check" + fid + "\"></input></td><td width=\"40%\"><b>" +  mbrName + "</b><br/>";
+      if (emids.length > 1) {
+         teamWriter += "<font size=\"-1\">&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(teamMap[fid].Account.Name) + "</font><br/>\n";         
+      }
+      teamWriter += "<font size=\"-1\">&nbsp;&nbsp;&nbsp;&nbsp;"
+      teamWriter += toProperCase(teamMap[fid].Department);
+      teamWriter += "</font><br/><font size=\"-2\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      if (ldrSet.indexOf(fid) < 0) { 
+        teamWriter += "<a href=\"javascript:promote(\'" + fid + "\')\">Promote to Ldr</a>";
+      } else {
+        teamWriter += "Already a Ldr";
+      }
+      teamWriter += "</font><br/><br/></td>";
+      teamWriter += "\n<td width=\"15%\"  align=\"center\"><font size=\"-2\">Potential Supporter:</font><br/>"
+      if (teamMap[fid].Stretch_Team_Intake_Phase__c != null && teamMap[fid].Stretch_Team_Intake_Phase__c.toLowerCase().indexOf("phase 4") >= 0) {
+        teamWriter += "<font size=\"+2\">&#x2714;</font>";
+      }
+      teamWriter += "</td>\n";
+      
+      /*
+      teamWriter += "\n<td width=\"15%\"  align=\"center\"><font size=\"-2\">Mbr Card:</font><br/>"
+
+      if (teamMap[fid].Stretch_Member_Card_Signed__c != null && (teamMap[fid].Stretch_Member_Card_Signed__c == true || teamMap[fid].Stretch_Member_Card_Signed__c == "true")) {
+        teamWriter += "<font size=\"+2\">&#x2714;</font>";
+      }
+      teamWriter += "</td>\n";
+      teamWriter += "<td width=\"15%\" align=\"center\"><font size=\"-2\">Updated Info:</font><br/>";
+      if (teamMap[fid].Email != null && teamMap[fid].MobilePhone != null) {
+        teamWriter += "<font size=\"+2\">&#x2714;</font>";      
+      }
+      teamWriter += "</td>\n";      
+      */
+      teamWriter += "<td width=\"15%\" align=\"center\"><font size=\"-2\">COPE:</font><br/>";
+      if (parseFloat(teamMap[fid].COPE_Pledge__c) > 0) {
+       teamWriter += "<font size=\"+1\">$" + parseFloat(teamMap[fid].COPE_Pledge__c).toFixed(0) + "</font>";            
+      }
+      teamWriter += "</td>\n";
+      teamWriter += "<td width=\"10%\" align=\"center\"><font size=\"-2\">Dialysis Compltd:</font><br/>";
+      if (completedSet.indexOf(fid) >= 0) {
+        teamWriter += "<font size=\"+2\">&#x2714;</font>";   
+      }
+      teamWriter += "</td>\n";
+      teamWriter += "</tr>"; 
+      teamCount++;     
+    }
+  }
+  teamWriter += "</table>";
+  teamWriter = "Team Count = " + teamCount + "<br/>&nbsp;<br/>" + teamWriter;
+  $("#teamDiv").html( teamWriter );  
+  //alert(teamWriter);
+  if (pSaveSelection) {
+      localStorage.setItem("mo_manage_teams_eboard", $('#eboardSelect').val());
+      localStorage.setItem("mo_manage_teams_ldr", $('#leaderSelect').val());
+  }    
+  return false;
+}
+
+var selectedFids = [];
+
+function moveFollowers(pFid) {
+  var lastRecord = {};
+  var responses = [];    
+  var fidArray = [];
+  var cidArray = [];  
+  try {
+      var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + pFid));
+      var arecord = uncompressContact(compressedContactArray); 
+      lastRecord = arecord;
+      var lastname = arecord.LastName;
+      var firstname = arecord.FirstName;
+      var middlename = arecord.MiddleName;       
+      if (middlename == null || middlename == "null") {
+        middlename = "";
+      }     
+      var fullname1 = (lastname + ", " + firstname + " " + middlename).trim();      
+      var fullname2 = (firstname + " " + lastname).trim();            
+      
+      $("#teamDiv input:checkbox:checked").each(function() {
+        fidArray.push(this.id);
+        var cid = null;
+        if (teamMap[this.id.substring(5)] != null) {
+          cid = teamMap[this.id.substring(5)].Id;
+        } 
+        if (cid == null) {
+          alert("Can't find FID " + this.id.substring(5));
+        }
+        cidArray.push(cid);
+        var c = new sforce.SObject("Contact");       
+        c.Id = cid;
+        c.Stretch_Leader__c = arecord.Id;
+        responses.push(c);      
+      });   
+      if (!window.confirm("Confirm moving " + fidArray.length + " Members to Leader " + fullname2.trim() + "?")) {
+        cancelMove();
+        return false;
+      }  
+      var results = null;
+      results = sforce.connection.update(responses); 
+      if (!results[0].getBoolean("success")) { 
+          alert("failed to remove Leader-Supporter relations. " + results[0] + "\n\n" + JSON.stringify(responses)); 
+      } 
+      sessionStorage.setItem("mo_manage_teams_message", "Move successful.");         
+      navigateTo('{! $Page.MO_Manage_Teams}');      
+  } catch(e) { 
+    alert('An Error has Occured. Error:' +e + "\nRecord=" + JSON.stringify(lastRecord)); 
+  }
+  return false;
+}
+
+function showMove() {
+  var lastRecord = "";
+  var idArray = [];
+    $("#teamDiv input:checkbox:checked").each(function() {
+      idArray.push(this.id);
+      //selectedFids.push();
+    });
+  if (idArray.length == 0) {
+    alert("Please select at least one person to move.");
+    return false;
+  }
+  //alert("Moving " + idArray.length + " Members.");
+  $("#mainDiv").hide();
+  $("#searchDiv").hide();
+  $("#moveDiv").show();      
+  $("#messageDiv").html("");   
+}
+
+
+function deleteFollowers() {
+  var lastRecord = "";
+  try {
+    var fidArray = [];
+    var cidArray = [];
+    var responses = [];     
+    $("#teamDiv input:checkbox:checked").each(function() {
+      fidArray.push(this.id);
+      var cid = null;
+      if (teamMap[this.id.substring(5)] != null) {
+        cid = teamMap[this.id.substring(5)].Id;
+      } 
+      if (cid == null) {
+        alert("Can't find FID " + this.id.substring(5));
+      }
+      cidArray.push(cid);
+      var c = new sforce.SObject("Contact");       
+      c.Id = cid;
+      c.Stretch_Leader__c = null;
+      responses.push(c);      
+    });   
+    if (!window.confirm("Confirm deletion of Leader-Supporter relations for these " + fidArray.length + " Members?")) {
+      return false;
+    }
+    var results = null;
+    results = sforce.connection.update(responses); 
+    if (!results[0].getBoolean("success")) { 
+        alert("failed to remove Leader-Supporter relations. " + results[0] + "\n\n" + JSON.stringify(responses)); 
+    }  
+    sessionStorage.setItem("mo_manage_teams_message", "Remove successful.");
+    navigateTo('{! $Page.MO_Manage_Teams}');
+  } catch(e) { 
+    alert('An Error has Occured. Error:' +e + "\nRecord=" + JSON.stringify(lastRecord)); 
+  }
+  return false;
+}
+
+
+function addFollowers() {
+  $("#mainDiv").hide();
+  $("#searchDiv").show();
+  $("#moveDiv").hide(); 
+  $("#messageDiv").html(""); 
+  return false;
+}
+
+function search() {  
+
+  document.getElementById("searchResultsDiv").innerHTML = "Searching...";
+
+
+  var terms = document.getElementById("searchterms").value.toLowerCase().trim(); 
+  if (terms == "") {
+    return;
+  }
+   
+  var tarray = terms.split(" "); 
+  var resultsArray = new Array();
+  
+  for (var rr = 0; rr < localStorage.length; rr++) {
+    if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+      var compressedContactArray = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+      var arecord = uncompressContact(compressedContactArray); 
+      var score = 0.0;
+      for (var kk = 0; kk < tarray.length; kk++) {
+        if (JSON.stringify(arecord).toLowerCase().indexOf("\"" + tarray[kk]) > 0) {
+          score += 7;
+        } else if (JSON.stringify(arecord).toLowerCase().indexOf(" " + tarray[kk]) > 0) {
+          score += 6;          
+        } else if (JSON.stringify(arecord).toLowerCase().indexOf(tarray[kk]) > 0) {
+          score += 5;
+        } else if (tarray[kk].length >= 5 && JSON.stringify(arecord).toLowerCase().indexOf(tarray[kk].substring(0, 5)) > 0) {
+          score += 3;
+        } else if (tarray[kk].length >= 3 && JSON.stringify(arecord).toLowerCase().indexOf(tarray[kk].substring(0, 3)) > 0) {
+          score += 1;
+        }
+      } 
+      if (score > 0) {
+        resultsArray.push(JSON.stringify([(99999999 - score), arecord]));
+      }
+    }
+  }
+
+  //alert("search results count = " + resultsArray.length);
+ 
+  resultsArray.sort();
+
+  
+  if (resultsArray.length == 0) {
+      document.getElementById("searchResultsDiv").innerHTML = "<font color=\"red\"><i>No Results Found</i><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br></font>";
+  } else {
+
+      var s = "<table border=\"0\"><tr><td>";        
+      for (var i = 0; i < resultsArray.length; i++) {
+        if (i > 10) {
+          s += "<br>Search results have been truncated.<br/>Please enter more specific terms.</br>";
+          break;
+        }
+        var sortKey = resultsArray[i];
+        var crecord = JSON.parse(sortKey)[1];     
+        s += "<font size=\"+1\"><a href=\"javascript:selectPerson(\'" + crecord.FID__c + "\');\">" + crecord.LastName + ", " + crecord.FirstName + " - " + crecord.Department + "</a></font><br/>\n";
+        s += "<font size=\"-2\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(crecord.Account.Name) + "</font><br/>";
+        s += "<br/>\n";
+      }
+      s += "<br>&nbsp;</br><br>&nbsp;</br>";
+      s += "</td></tr></table>";
+      document.getElementById("searchResultsDiv").innerHTML = s;
+  }
+  $("#mainDiv").hide();
+  $("#moveDiv").hide();
+  $("#searchDiv").show();
+  $("#messageDiv").html("");  
+}
+
+function selectPerson(pFid) {
+  var lastRecord = "";
+  try {
+      var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + pFid));
+      var arecord = uncompressContact(compressedContactArray); 
+      lastRecord = arecord;
+      var existingLeader = null;
+      var lastname = arecord.LastName;
+      var firstname = arecord.FirstName;
+      var middlename = arecord.MiddleName;       
+      if (middlename == null || middlename == "null") {
+        middlename = "";
+      }     
+      var fullname1 = (lastname + ", " + firstname + " " + middlename).trim();
+      var confirmMessage = "Adding " + fullname1 + " to R&S Team led by " + $("#leaderSelect option:selected").text().trim() + ".  ";     
+      if (followerLdrMap[pFid] != null) {
+        var previousLdrFid = followerLdrMap[pFid];
+        confirmMessage += "Previously assigned to " + teamMap[previousLdrFid].FullName + ".  ";
+      }
+      confirmMessage += "  Click okay to continue.";
+      if (!window.confirm(confirmMessage)) {
+        navigateTo('{! $Page.MO_Manage_Teams}');      
+      }
+      var response = new sforce.SObject("Contact"); 
+      var responses = []; 
+      response.Id = arecord.Id;
+      response.Stretch_Leader__c = fidIdMap[$("#leaderSelect").val()];
+      responses.push(response); 
+      var results = null;
+      //alert($("#leaderSelect").val() + "; " + fidIdMap[$("#leaderSelect").val()] + "; " + JSON.stringify(responses));
+      results = sforce.connection.update(responses); 
+      if (results[0].getBoolean("success")) { 
+        //alert("Response submitted successfully."); 
+        //window.history.back();
+        //window.close();
+      } else { 
+        alert("failed to create Leader-Supporter relations " + results[0]); 
+      }       
+      sessionStorage.setItem("mo_manage_teams_message", "Addition successful.");         
+      navigateTo('{! $Page.MO_Manage_Teams}');
+      
+  } catch(e) { 
+    alert('[selectPerson] An Error has Occured. Error:' +e + "\nRecord=" + JSON.stringify(lastRecord)); 
+  }
+  $("#mainDiv").show();
+  $("#searchDiv").hide();
+  $("#moveDiv").hide();  
+  return false;
+}
+
+document.getElementById("searchterms").addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+        search();
+    }
+});
+
+function promote(pFid) {
+  var lastRecord = {};
+  try {
+      var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + pFid));
+      var arecord = uncompressContact(compressedContactArray); 
+      lastRecord = arecord;
+
+      var response = new sforce.SObject("Contact"); 
+      var responses = []; 
+      response.Id = arecord.Id;
+      response.Stretch_Ldr_Promotion_Status__c = "New Phase 6 Nom";
+      response.Stretch_Leader__c = null;
+      response.X80_Leader__c = 1;
+      responses.push(response); 
+      var results = null;
+      results = sforce.connection.update(responses); 
+      if (results[0].getBoolean("success")) { 
+        //alert("Response submitted successfully."); 
+      } else { 
+        alert("failed to promote, " + results[0]); 
+      }          
+      sessionStorage.setItem("mo_manage_teams_message", "Leader promoted.");
+      navigateTo('{! $Page.MO_Manage_Teams}');      
+                  
+  } catch(e) { 
+    alert('[promote] An Error has Occured. Error:' +e + "\nRecord=" + JSON.stringify(lastRecord)); 
+  }      
+}
+  
+function cancelSearch() {
+  $("#mainDiv").show();
+  $("#searchDiv").hide();
+  $("#moveDiv").hide();  
+  $("#messageDiv").html("");
+}
+
+function cancelMove() {
+  $("#mainDiv").show();
+  $("#searchDiv").hide();
+  $("#moveDiv").hide();  
+  $("#messageDiv").html("");  
+}
+
+function switchEBoard() {
+  alert("To switch EBoard assignment of Leader " + $("#leaderSelect option:selected").text().trim() + ", please set the \"Collected By\" in the Leader Assessment to appropriate EBoard member.");
+  assessLeader();
+}
+
+function assessLeader() {
+  sessionStorage.setItem("mo_enter_survey_fid1", $("#leaderSelect").val());  
+  localStorage.setItem("mo_enter_survey_qselect", qcodeQidMap["D02"]); 
+  sessionStorage.setItem("mo_from_manage_teams", "yes");
+  if (statusMap[$("#leaderSelect").val()] != null) {
+    sessionStorage.setItem("mo_enter_survey_rselect", statusMap[$("#leaderSelect").val()]);
+  }
+  navigateTo('{! $Page.MO_Enter_Survey_Page}');
+  return false;
+}
+
+//$("#debugDiv").html(JSON.stringify(fidIdMap));
+//$("#debugDiv").html(moveWriter);
+
+    //$("#moveDiv").show();  
+
+</script>
+
+<br>&nbsp;</br>
+
+<a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+
+</div>
+</apex:page>

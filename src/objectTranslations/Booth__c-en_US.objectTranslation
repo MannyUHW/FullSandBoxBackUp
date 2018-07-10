@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Booth</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Booths</value>
+    </caseValues>
+    <fields>
+        <help><!-- The Area on the trade show floor where the Booth is located --></help>
+        <label><!-- Area --></label>
+        <name>Area_Zone__c</name>
+        <relationshipLabel><!-- Booths --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Description of what will be shown or demonstrated at this particular booth --></help>
+        <label><!-- Booth Description --></label>
+        <name>Booth_Description__c</name>
+    </fields>
+    <fields>
+        <help><!-- The function of the Booth --></help>
+        <label><!-- Booth Type --></label>
+        <name>Booth_Type__c</name>
+        <picklistValues>
+            <masterLabel>Demo Station</masterLabel>
+            <translation><!-- Demo Station --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Shift Manager</masterLabel>
+            <translation><!-- Shift Manager --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Success Clinic</masterLabel>
+            <translation><!-- Success Clinic --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Remaining Shifts to be Staffed --></label>
+        <name>Remaining_Shifts_to_be_Staffed__c</name>
+    </fields>
+    <fields>
+        <help><!-- Number of Shifts currently Staffed for this Booth --></help>
+        <label><!-- Total Shifts Staffed --></label>
+        <name>Total_Shifts_Staffed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Shifts to be Staffed --></label>
+        <name>Total_Shifts_to_be_Staffed__c</name>
+    </fields>
+    <fields>
+        <help><!-- This dictates what users will be allowed to sign up for this Booth. --></help>
+        <label><!-- User Booth Staffing Roles Allowed --></label>
+        <name>User_Booth_Staff__c</name>
+        <picklistValues>
+            <masterLabel>Coordinator</masterLabel>
+            <translation><!-- Coordinator --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Director</masterLabel>
+            <translation><!-- Director --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive</masterLabel>
+            <translation><!-- Executive --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Organizer</masterLabel>
+            <translation><!-- Organizer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Staff</masterLabel>
+            <translation><!-- Staff --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- A logical or physical grouping of Booths that share a common theme. --></help>
+        <label><!-- Zone --></label>
+        <name>Zone__c</name>
+    </fields>
+    <layouts>
+        <layout>Booth Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Description --></label>
+            <section>Description</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

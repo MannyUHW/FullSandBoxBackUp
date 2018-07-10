@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AutoResponseRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <autoResponseRule>
+        <fullName>eCard - Web Leads Auto Response</fullName>
+        <active>true</active>
+        <ruleEntry>
+            <criteriaItems>
+                <field>Lead.LeadSource</field>
+                <operation>equals</operation>
+                <value>Web,eCard</value>
+            </criteriaItems>
+            <senderEmail>organize@seiu-uhw.org</senderEmail>
+            <senderName>SEIU-UHW</senderName>
+            <template>unfiled$public/Email_Confirmation_For_UHW_Web_To_Lead</template>
+        </ruleEntry>
+    </autoResponseRule>
+</AutoResponseRules>

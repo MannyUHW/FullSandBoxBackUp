@@ -1,0 +1,980 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Consolidation Worksheet</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+<style type="text/css" media="screen,print">
+   .page-breaker {
+     display: block;
+     page-break-after: always;
+     border :1px solid black
+   }
+</style>
+
+<script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+</head>
+
+<body>
+<div id="progressDiv" align="center"></div>
+<div id="mainDiv" align="center">
+  <div class="employerTemplate">
+    <font size="-1">Consolidation Worksheet</font><br/>
+    <font size="+2"><b><u>{{employer}}</u></b></font><br/>
+    <u>Reg. Director:</u> {{regDirector}}<br/>
+    <u>Coordinator:</u> {{coordinator}}<br/>
+    <u>Organizer:</u> {{organizer}}<br/>
+    &nbsp;<br/>
+    {{ecomm}}<br/>
+    <div class="eboardDiv">
+    {{eboard}}<br/>
+    </div>    
+    &nbsp;<br/>
+    <div align="left">
+    <b>Mission:</b> Test your current leaders’ following by getting leaders to confirm contact information and get membership cards for those for whom we do not have them.<br/>
+<b>Timeframe:</b> August 7-September 18th<br/>
+<b>Your Goals:</b>
+<ul>  
+<li>100% of your leaders moved into action by August 19th  (Blitz to deploy as many leaders as possible August 8, 9, 10, 11);</li>
+<li>All of your leaders completed (completed means they have confirmed contact information for all of their followers and collected membership cards from those for whom we need it) by September 18th;</li>
+<li>Your soft goals (you can adjust these as needed for your turf) is to have 20% of your leaders completed by August 28, 60% by September 5th, 80% by September 11th, and then 100% by September 18th;</li>
+<li>Each EBoard member has moved 5 leaders to completion.</li>
+</ul>
+    </div>
+    &nbsp;<br/>    
+    <font size="+1"><b><u>Metrics</u></b></font><br/>
+    <table cellpadding="7">
+    <tr>
+    <td>
+    BU: &nbsp;&nbsp;&nbsp;&nbsp; {{bu}}<br/>
+    Leaders: &nbsp;&nbsp;&nbsp;&nbsp; {{leaders}}<br/>     
+    Reach: &nbsp;&nbsp;&nbsp;&nbsp; {{reach}} &nbsp;&nbsp;&nbsp;&nbsp; ({{(100.0 * reach / bu).toFixed(0)}}%)<br/>
+    Stretch: &nbsp;&nbsp;&nbsp;&nbsp; {{stretch}} &nbsp;&nbsp;&nbsp;&nbsp;   ({{(100.0 * stretch / bu).toFixed(0)}}%)<br/>
+    &nbsp;<br/>
+    <u>Consolidated Targets:</u> &nbsp;&nbsp;&nbsp;&nbsp; {{consolidated}} &nbsp;&nbsp;&nbsp;&nbsp;  ({{(100.0 * consolidated/ bu).toFixed(0)}}%)<br/>
+    <table width="100%">
+    <tr valign="bottom">
+      <td width="20%"></td>
+      <td width="20%" align="center"><b>Count</b></td>
+      <td width="20%" align="center"><b>Pct</b></td>
+      <td width="20%" align="center"><b>Div Pct</b></td>
+      <td width="20%" align="center"><b>UHW Pct</b></td>      
+    </tr>
+    <tr valign="top">
+      <td><nobr>No Membership Cards:</nobr></td>
+      <td align="center">{{needCards}}</td>
+      <td align="center">{{(100.0 * needCards / consolidated).toFixed(0)}}%</td>
+      <td  align="center">{{(100.0 * divNeedCards / divConsolidated).toFixed(0)}}%</td>
+      <td  align="center">{{(100.0 * allNeedCards / allConsolidated).toFixed(0)}}%</td>      
+    </tr>
+    <!--
+    <tr valign="top">
+      <td><nobr>Missing Contact Info:</nobr></td>
+      <td  align="center">{{needInfo}}</td>
+      <td  align="center">{{(100.0 * needInfo / consolidated).toFixed(0)}}%</td>
+      <td  align="center">{{(100.0 * divNeedInfo / divConsolidated).toFixed(0)}}%</td>
+      <td  align="center">{{(100.0 * allNeedInfo / allConsolidated).toFixed(0)}}%</td>      
+    </tr>
+    <tr valign="top">
+      <td><nobr>Either Missing:</nobr></td>
+      <td  align="center">{{eitherCount}}</td>
+      <td  align="center">{{(100.0 * eitherCount / consolidated).toFixed(0)}}%</td>
+      <td  align="center">{{(100.0 * divEitherCount / divConsolidated).toFixed(0)}}%</td>
+      <td  align="center">{{(100.0 * allEitherCount / allConsolidated).toFixed(0)}}%</td>      
+    </tr>
+    -->
+    <tr valign="top">
+      <td><nobr>COPE Below $10:</nobr></td>
+      <td  align="center">{{underCope10}}</td>
+      <td  align="center">{{(100.0 * underCope10/ consolidated).toFixed(0)}}%</td>
+      <td  align="center">{{(100.0 * divUnderCope10 / divConsolidated).toFixed(0)}}%</td>
+      <td  align="center">{{(100.0 * allUnderCope10 / allConsolidated).toFixed(0)}}%</td>      
+    </tr>   
+    </table>
+    </td>
+    </tr>
+    </table>
+    &nbsp;<br/>
+    &nbsp;<br/>    
+    <font size="-1"><i>Note: Reach and Stretch numbers only include people with an active Member Leader assigned to them.<br/>
+Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+</font>
+</div>
+   
+
+    <div align="left" class="eboardTemplate">
+      &nbsp;<br/> 
+      <div class="page-breaker"></div>
+      <table width="100%"><tr valign="top"><td width="66%" align="center"><font size="-1">
+      {{division}} / {{regDirector}} / {{coordinator}} / {{organizer}} / {{employer}}
+      </font></td>
+      <td width="34%" align="center">
+      Survey Link:<br/><font size="+1">http://bit.ly/2uRVN6q</font>
+      </td>
+      </tr>
+      </table>
+      
+      <table width="100%">
+      <tr><td bgcolor="#202020"><font size="+1" color="white">
+      EBoard Leader: 
+      <b>
+      {{eboardName}} 
+      </b>
+      </font>
+      </td>
+      </tr>
+      </table>
+      <br/>      
+    </div>
+    <div align="left" class="leaderTemplate">
+      <!--<div class="page-breaker"></div>-->
+      &nbsp;<br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;R&amp;S Leader: 
+      <b>
+      {{leaderName}}
+      </b>
+      <br/>
+      Status: {{status}}
+    </div>   
+
+    <div class="teamTemplate">  
+    <table cellpadding="2" cellspacing="0">
+      <tr valign="bottom">
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td bgcolor="#481C60" width="18%" align="center"><font color="white">Mbr Name</font></td>
+        <td bgcolor="#481C60" width="18%" align="center"><font color="white">Department</font></td>
+        <td bgcolor="#481C60" width="8%" align="center"><font color="white">Shift</font></td>
+        <td bgcolor="#481C60" width="10%" align="center"><font color="white">Cell Phone</font></td>
+        <td bgcolor="#481C60" width="2%" align="center"></td>
+        <td bgcolor="#481C60" width="15%" align="center"><font color="white">Email</font></td>
+        <td bgcolor="#481C60" width="2%" align="center"></td>
+        <td bgcolor="#481C60" width="8%" align="center"><font color="white">Mbr Card<br/>Signed?</font></td>
+        <td bgcolor="#481C60" width="8%" align="center"><font color="white">COPE</font></td>                                        
+        <td bgcolor="#481C60" width="8%" align="center"><font color="white">Compltd</font></td>                                                
+      </tr>
+      <tbody class="rowTemplate">  
+      <tr valign="middle">
+        <td>&nbsp;</td>
+        <td align="center"><font size="-1">{{contactName}}</font></td>
+        <td align="center"><font size="-2">{{contactDepartment}}</font></td>
+        <td align="center"><font size="-1">{{contactShift}}</font></td>                
+        <td align="center"><font size="-2">{{contactCellPhone}}</font></td>                        
+        <td align="center"><font size="+2">{{contactCellCheck}}</font></td>         
+        <td align="center"><font size="-2">{{contactEmail}}</font></td>                                
+        <td align="center"><font size="+2">{{contactEmailCheck}}</font></td>         
+        <td align="center"><font size="-1">{{contactCardSigned}}</font></td>                                        
+        <td align="center"><font size="-1">{{contactCope}}</font></td>                                                
+        <td align="center"><font size="-1">{{completedAssess}}</font></td>                                                        
+      </tr>
+      </tbody>
+    </table>
+    </div> 
+
+
+</div>
+
+
+<script language="JavaScript">
+
+
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              //pWorksite = pWorksite.replace(/\./g,'');
+              //pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return dept;
+}
+
+var lastRecord = {};
+
+function processTemplate(pTemplate) {
+ var templateVars = pTemplate.match(/{{([^{}]+)}}/g);
+ var newWriter = pTemplate;
+ for (var q = 0; q < templateVars.length; q++) {   
+   lastRecord.debug = "evaluating var " + templateVars[q];
+   var evalCode = templateVars[q].substring(2, templateVars[q].length -2);
+   var evalValue = eval(evalCode);
+   newWriter = newWriter.replace(templateVars[q], evalValue);
+ }
+ lastRecord.debug = "";
+ return newWriter;
+}
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+
+
+var user = sforce.connection.getUserInfo();
+
+var leaderSet = [];
+
+var LEADERS = "LEADERS";
+var TAG_REACH = "Reach2017";
+var TAG_STRETCH2 = "Stretch2Complete";
+var TAG_STRETCH3 = "Stretch3Target";
+
+var ALL = "ALL";
+var DIVISION = "DIVISION";
+var EMPLOYER = "EMPLOYER";
+
+var BU = "BU";
+var NEED_CARD = "NEED_CARD";
+var COPE_BELOW_10 = "COPE_BELOW_10";
+var EITHER = "EITHER";
+var NEED_INFO = "NEED_INFO";
+
+var emSortSet = [];
+var conECommMap = {};
+var conEBoardMap = {};
+
+$(".employerTemplate").hide();
+$(".eboardTemplate").hide();
+$(".leaderTemplate").hide();
+$(".teamTemplate").hide();
+
+var filter = "{!$CurrentPage.parameters.filter}";
+
+var mode = "{!$CurrentPage.parameters.mode}";
+
+//$(function() {
+
+if (mode == null || mode == "null" || mode == "") {
+  mode = null;
+} else {
+  mode = mode.toLowerCase();
+}
+
+
+if (filter == null || filter == "null" || filter == "") {
+  filter = null;
+} else {
+  filter = filter.toLowerCase();
+}
+
+var adate = new Date();
+
+try {
+
+    var debugWriter = "<br>Debug:<br/>";
+    
+    var xset = [];
+    var completedSet = [];    
+    var statusMap = {};
+    var partitions = 10;
+    for (var p = 0; p < partitions; p++) {    
+      query = " select FID__c, Survey_Code__c, Response_Value__c from Survey_Response__c where (Survey_Code__c = \'D02\' OR Survey_Code__c = \'D01\' ) ";
+      if (filter != null) {
+        query += " AND (Division__c = \'" + filter + "\' OR ";
+        query += " Regional_Director__c=\'" + filter + "\' OR ";
+        if (filter == "vacant") {
+          query += " Coordinator__c = null OR ";
+          query += " Organizer_1__c = null OR ";        
+        } else {
+          query += " Coordinator__c =\'" + filter + "\' OR ";
+          query += " Organizer_1__c =\'" + filter + "\' OR ";
+        }
+        query += " Employer_Name__c =\'" + filter + "\'  ";
+        query += ") ";        
+      }
+      query += " AND FID__c like \'%" + p + "\' ";
+      
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      if (records1.length == 2000) {
+        alert("Query for Consolidated assessments have hit the Salesforce governor limit.  Please contact Data Group so they can re-partition the data.");
+      }
+      //alert("status count = " + records1.length);  
+      for (var i = 0; i < records1.length; i++) {
+        if (records1[i].Survey_Code__c == "D02") {
+          if (records1[i].Response_Value__c.toLowerCase().indexOf("x") == 0) {
+            xset.push(records1[i].FID__c);
+          }
+          statusMap[records1[i].FID__c] = records1[i].Response_Value__c;
+        } else if (records1[i].Survey_Code__c == "D01") {
+          if (records1[i].Response_Value__c.toLowerCase().indexOf("y") == 0) {
+            completedSet.push(records1[i].FID__c);
+          }
+        }
+      }    
+    }
+    
+    //alert("completed set = " + completedSet.length);
+    
+    var partitions = 100;
+    if (filter != null && ((filter.indexOf("kaiser") == 0 && filter.length > 8) || filter.indexOf("hospital") > 0 || filter.indexOf("med ctr") > 0 || filter.indexOf("stanford") == 0)) {
+      partitions = 10;
+    }
+    
+    for (var p = 0; p < partitions; p++) {
+      
+      var pct = ((100 * p) / partitions).toFixed(0);
+      $("#progressDiv").html("" + pct + "%");
+      
+      
+      var query = " Select Account.Account_Group__c, Account.Regional_Director__r.Name, Account.Coordinator__r.Name, Account.Organizer_1__r.Name,  Account.Name, Stretch_Leader_Employer_Name__c, Stretch_Leader__r.Constituency_Name_2017__c, Constituency_Name_2017__c, Account.District_2017__r.ConstituencyName__c, FID__c, Stretch_Leader_FID__c, Name, Worksite__c, Department, Department_Mod__c, Report_Tags__c, COPE_Pledge__c, Stretch_Member_Card_Signed__c, Email, MobilePhone, Executive_Body_Title__c from Contact where (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6) AND  (NOT Stretch_Leader_Employer_Name__c like \'pomona valley%\') AND (NOT Stretch_Leader_Employer_Name__c like \'parkview%\') AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND (Account.Account_Group__c = \'KAISER\' OR Account.Account_Group__c = \'HOSPITAL\' ) AND Account.Regional_Director__c != null AND FID__c like \'%";
+      if (partitions == 100 && p < 10) {
+        query += "0" + p + "\' ";
+      } else {
+        query += "" + p + "\' ";
+      }
+      if (filter != null) {
+        query += " AND (Account.Account_Group__c=\'" + filter + "\' OR ";
+        query += " Account.Regional_Director__r.Name=\'" + filter + "\' OR ";
+        if (filter == "vacant") {
+          query += " Account.Coordinator__c = null OR ";
+          query += " Account.Organizer_1__c = null OR ";        
+        } else {
+          query += " Account.Coordinator__r.Name=\'" + filter + "\' OR ";
+          query += " Account.Organizer_1__r.Name=\'" + filter + "\' OR ";
+        }
+        query += " Account.Name=\'" + filter + "\'  ";
+        query += ") ";        
+      }
+      var result = sforce.connection.query(query);
+      //alert(query);
+        var records = result.getArray("records");  
+        for (var i = 0; i < records.length; i++) {
+          var c = records[i];
+          lastRecord = c;
+          var division = c.Account.Account_Group__c.toLowerCase();
+          var district = c.Account.District_2017__r.ConstituencyName__c;
+                    
+          if (c.Executive_Body_Title__c != null) {
+            if (c.Executive_Body_Title__c == "Executive Board") {      
+              var ewriter = "";
+              if (conEBoardMap[c.Constituency_Name_2017__c.toLowerCase()] != null) {
+                ewriter = conEBoardMap[c.Constituency_Name_2017__c.toLowerCase()] + "<br/>";
+              }
+              ewriter += "<u>EBoard</u>: " + c.Name + " - " + toProperCase(c.Account.Name) + " - " + toProperCase(c.Department);
+              conEBoardMap[c.Constituency_Name_2017__c.toLowerCase()] = ewriter;
+            } else if (c.Executive_Body_Title__c == "Executive Committee") {      
+              var ewriter = "";
+              if (conECommMap[district.toLowerCase()] != null) {
+                ewriter = conECommMap[district .toLowerCase()] + "<br/>";
+              }
+              ewriter += "<u>EComm</u>: " + c.Name + " - " + toProperCase(c.Account.Name) + " - " + toProperCase(c.Department);
+              conECommMap[district.toLowerCase()] = ewriter;        
+            }
+          }
+          if (leaderSet.indexOf(c.Stretch_Leader_FID__c) < 0) {
+            leaderSet.push(c.Stretch_Leader_FID__c);
+            incrementCounter([EMPLOYER, LEADERS, c.Stretch_Leader_Employer_Name__c], 1.0);
+          }
+          var regDirector = c.Account.Regional_Director__r.Name;
+          var coordinator = c.Account.Coordinator__r.Name;      
+          var organizer = "Vacant";
+          if (c.Account.Organizer_1__r != null) {
+            organizer = c.Account.Organizer_1__r.Name;         
+          }   
+          var emName = c.Account.Name;
+
+          var sortKey = JSON.stringify([division, regDirector, coordinator, organizer, emName, c.Constituency_Name_2017__c, district]);
+          if (emSortSet.indexOf(sortKey) < 0) {
+            emSortSet.push(sortKey);
+          }
+       
+          var tags = c.Report_Tags__c;
+          if (tags != null) {
+            tags = tags.toLowerCase();
+          } else {
+            tags = "";
+          }
+          incrementCounter([EMPLOYER, BU, c.Account.Name], 1.0);
+          if (c.Stretch_Leader__r != null && tags.indexOf(TAG_STRETCH3.toLowerCase()) >= 0) {
+            incrementCounter([EMPLOYER, TAG_STRETCH3, c.Stretch_Leader_Employer_Name__c], 1.0);
+            incrementCounter([DIVISION, TAG_STRETCH3, division], 1.0);                               
+            incrementCounter([ALL, TAG_STRETCH3], 1.0);                      
+            var either = false;
+            if (c.Stretch_Member_Card_Signed__c == false || c.Stretch_Member_Card_Signed__c == "false") {
+              incrementCounter([EMPLOYER, NEED_CARD, c.Stretch_Leader_Employer_Name__c], 1.0);                 
+              incrementCounter([DIVISION, NEED_CARD, division], 1.0);                               
+              incrementCounter([ALL, NEED_CARD], 1.0);                                             
+              either = true;
+            }
+            if (c.COPE_Pledge__c == null || c.COPE_Pledge__c < 9.0) {
+              incrementCounter([EMPLOYER, COPE_BELOW_10, c.Stretch_Leader_Employer_Name__c], 1.0);                 
+              incrementCounter([DIVISION, COPE_BELOW_10, division], 1.0);                               
+              incrementCounter([ALL, COPE_BELOW_10], 1.0);                   
+            }
+            if (c.MobilePhone == null || c.Email == null || c.MobilePhone.length < 10 || c.Email.trim().length < 5) {
+              incrementCounter([EMPLOYER, NEED_INFO, c.Stretch_Leader_Employer_Name__c], 1.0);                 
+              incrementCounter([DIVISION, NEED_INFO, division], 1.0);                               
+              incrementCounter([ALL, NEED_INFO], 1.0);              
+              either = true;           
+            }
+            if (either) {
+              incrementCounter([EMPLOYER, EITHER, c.Stretch_Leader_Employer_Name__c], 1.0);                 
+              incrementCounter([DIVISION, EITHER, division], 1.0);                               
+              incrementCounter([ALL, EITHER], 1.0);                     
+            }        
+            if (tags.indexOf(TAG_STRETCH2.toLowerCase()) >= 0) {
+              incrementCounter([EMPLOYER, TAG_STRETCH2, c.Stretch_Leader_Employer_Name__c], 1.0);                       
+            }
+            if (tags.indexOf(TAG_REACH.toLowerCase()) >= 0) {
+              incrementCounter([EMPLOYER, TAG_REACH, c.Stretch_Leader_Employer_Name__c], 1.0);         
+            }            
+          }       
+        }
+  }
+
+  var contactSelectFields = "select Id, Account.Employer_ID__c, FID__c, Name, LastName, FirstName, Stretch_EBoard_Leader_Name__c, Tier_1_Leader__r.Name, Tier_1_Leader__r.FirstName, Tier_1_Leader__r.LastName, Tier_1_Leader__r.FID__c, Stretch_Leader_Name__c, Stretch_Leader__r.FID__c, Stretch_Leader__c, Stretch_Member_Card_Signed__c, Stretch_Ldr_Promotion_Status__c, Stretch_Ldr_Run_By_EBoard__c,  Stretch_EBoard_Team__c, Stretch_Leader__r.Tier_1_Leader__r.FID__c, Department_Mod__c, Executive_Body_Title__c, Shift_Standardized__c, MobilePhone, COPE_Pledge__c, Email from Contact ";
+
+  //alert("sorting...");
+  emSortSet.sort();
+  var emWriter = "";
+  var emTemplate = $(".employerTemplate").html();    
+  var lastEmployer = "";
+  for (var i = 0; i < emSortSet.length; i++) {
+
+    var a = JSON.parse(emSortSet[i]);
+    var division = toProperCase(a[0]);
+    var regDirector = toProperCase(a[1]);
+    var coordinator = toProperCase(a[2]);
+    var organizer = toProperCase(a[3]);
+    var employer = toProperCase(a[4]);     
+    if (employer != lastEmployer) {
+
+      var constituency = a[5];
+      var district = a[6];    
+      var bu = getCounter([EMPLOYER, BU, employer]);
+      var consolidated = getCounter([EMPLOYER, TAG_STRETCH3, employer ]);
+      
+      if (bu > 10 && (consolidated > 0 || employer.toLowerCase().indexOf("sequ") == 0)) {
+
+        var alreadyPageBroke = false;
+        if (mode != "followers" && i > 0) {
+          emWriter += "<div class=\"page-breaker\"></div>";
+          alreadyPageBroke = true;
+        }
+
+        var reach = getCounter([EMPLOYER, TAG_REACH, employer ]);          
+        var stretch = getCounter([EMPLOYER, TAG_STRETCH2, employer ]);
+
+        var divConsolidated = getCounter([DIVISION, TAG_STRETCH3, division ]);
+        var allConsolidated = getCounter([ALL, TAG_STRETCH3 ]);      
+      
+        var leaders  = getCounter([EMPLOYER, LEADERS, employer ]);
+      
+        var needCards = getCounter([EMPLOYER, NEED_CARD, employer ]);
+        var divNeedCards = getCounter([DIVISION, NEED_CARD, division ]);
+        var allNeedCards = getCounter([ALL, NEED_CARD]);
+      
+        var needInfo = getCounter([EMPLOYER, NEED_INFO, employer ]);
+        var divNeedInfo = getCounter([DIVISION, NEED_INFO, division ]);
+        var allNeedInfo = getCounter([ALL, NEED_INFO]);
+            
+        var eitherCount = getCounter([EMPLOYER, EITHER, employer ]);
+        var divEitherCount = getCounter([DIVISION, EITHER, division ]);
+        var allEitherCount = getCounter([ALL, EITHER]);
+            
+        var underCope10 = getCounter([EMPLOYER, COPE_BELOW_10, employer ]);
+        var divUnderCope10 = getCounter([DIVISION, COPE_BELOW_10, division ]);
+        var allUnderCope10 = getCounter([ALL, COPE_BELOW_10]);
+      
+        var eboard = "<u>EBoard:</u> Vacant";
+        if (conEBoardMap[constituency.toLowerCase()] != null) {
+          eboard = conEBoardMap[constituency.toLowerCase()];
+        }    
+        var ecomm = conECommMap[district.toLowerCase()];
+
+        //
+        //  process and populate template
+        //
+        var processedWriter = processTemplate(emTemplate );  
+        if (mode != "followers") {
+          emWriter += processedWriter;  
+        }
+      
+        var moveLeaderSortList = [];
+        var ldrSet = [];
+        var promotedSet = [];
+        var fidIdMap = {};
+        var teamMap = {};
+        var teamSet = [];
+        var eboardSet = [];
+        var followerLdrMap = {};
+        var ldrEboardMap = {};
+        var eboardTeamLdrSet = [];
+        
+        var query = contactSelectFields;
+        query += " where ((NOT Stretch_Leader_Name__c like \'_Not Covered%') OR Stretch_Ldr_Promotion_Status__c = \'Promoted\' OR Executive_Body_Title__c = \'Executive Board\') AND Stretch_Same_Facility__c = true ";
+        query += "  AND (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6) ";
+        query += " AND (Account.Name = \'" + employer +  "\' OR Stretch_Leader__r.Account.Name  = \'" + employer +  "\' ) "     
+        query += " order by Account.Name, Stretch_EBoard_Leader_Name__c, Stretch_Leader_Name__c, LastName, FirstName ";
+        var result = sforce.connection.query(query);
+        var records1 = result.getArray("records");        
+        if (records1.length == 2000) {
+          alert("Governor limit reached for Leader and Followers list for " + employer + ". Please contact Data Team to adjust partitioning.");
+        }     
+        
+   //
+   //
+   //  START LOGIC FROM MOBILE ORGANIZER
+   //
+   //
+        //alert("query = " + query);
+        //alert("found team = " + records1.length);
+        for( var j = 0; j < records1.length; j++ ) { 
+              
+          lastRecord = records1[j];
+          lastRecord.Dex = j;
+          var a = records1[j];
+          teamMap[a.FID__c] = a;
+          
+          if (a.Stretch_Ldr_Promotion_Status__c == "Promoted" && promotedSet.indexOf(a.FID__c) < 0) {
+            promotedSet.push(a.FID__c);
+          }
+        
+          if (a.Stretch_Leader__r == null) {
+             a.Stretch_Leader__r = {};
+          }
+          
+          if (a.Executive_Body_Title__c != "Executive Board") {
+            if (a.Stretch_Leader__r.Tier_1_Leader__r == null) {
+              a.Stretch_Leader__r.Tier_1_Leader__r = {};
+              var blankFid = "0000-000000000";
+              a.Stretch_Leader__r.Tier_1_Leader__r.FID__c = blankFid;
+              teamMap[blankFid] = {};
+              teamMap[blankFid].FullName = " Not Turfed";
+            }
+            if (a.Tier_1_Leader__r == null) {
+              a.Tier_1_Leader__r = {};
+              var blankFid = "0000-000000000";
+              a.Tier_1_Leader__r.FID__c = blankFid;
+              a.Tier_1_Leader__r.Name = " Not Turfed";         
+              teamMap[blankFid] = {};
+              teamMap[blankFid].FullName = " Not Turfed";
+            }
+          } else {
+            a.Stretch_Leader__r.FID__c = a.FID__c;
+            a.Tier_1_Leader__r = {};
+            a.Tier_1_Leader__r.FID__c = a.FID__c;          
+            a.Stretch_Leader__r.Tier_1_Leader__r = {};
+            a.Stretch_Leader__r.Tier_1_Leader__r.FID__c = a.FID__c;
+            a.Tier_1_Leader__r.FirstName = a.FirstName;
+            a.Tier_1_Leader__r.LastName = a.LastName;          
+            a.Stretch_Leader__r.Tier_1_Leader__r.FirstName = a.FirstName;
+            a.Stretch_Leader__r.Tier_1_Leader__r.LastName = a.LastName;
+            if (eboardSet.indexOf(a.FID__c) < 0) {
+              eboardSet.push(a.FID__c);
+            }          
+          } 
+          
+          followerLdrMap[a.FID__c] = a.Stretch_Leader__r.FID__c;
+        
+          fidIdMap[a.FID__c] = a.Id;
+          if (a.Stretch_Leader__c != null) {
+            fidIdMap[a.Stretch_Leader__r.FID__c] = a.Stretch_Leader__c;
+          }
+        
+          if (a.FID__c == "9000-002211084") {
+            //alert(JSON.stringify(a));
+          }
+        
+          if ((a.Stretch_Ldr_Promotion_Status__c == "Promoted" || a.Executive_Body_Title__c == "Executive Board") && ldrSet.indexOf(a.FID__c) < 0) {
+            //alert("find promoted person - " + JSON.stringify(a));
+            fidIdMap[a.FID__c] = a.Id;
+            ldrEboardMap[a.FID__c] = a.Tier_1_Leader__r.FID__c;
+            if (ldrSet.indexOf(a.FID__c) < 0) {
+              ldrSet.push(a.FID__c);
+              var sortKey = JSON.stringify([a.Tier_1_Leader__r.FirstName + " " + a.Tier_1_Leader__r.LastName, a.Name + " - " + a.Department_Mod__c, a.FID__c, a.Stretch_EBoard_Team__c]);
+              moveLeaderSortList.push(sortKey);            
+            }
+            a.Stretch_Leader__r = {};
+            a.Stretch_Leader__r.FID__c = a.FID__c;
+          }
+        
+          if (a.Stretch_Leader__r.Tier_1_Leader__r !=null) {
+            ldrEboardMap[a.Stretch_Leader__r.FID__c] = a.Stretch_Leader__r.Tier_1_Leader__r.FID__c;
+          }
+          if (ldrSet.indexOf(a.Stretch_Leader__r.FID__c) < 0 || ((a.Stretch_Ldr_Promotion_Status__c == "Promoted" || a.Executive_Body_Title__c == "Executive Board") && ldrSet.indexOf(a.FID__c) < 0)) {
+            var sortKey = JSON.stringify([a.Stretch_EBoard_Leader_Name__c, a.Stretch_Leader_Name__c, a.Stretch_Leader__r.FID__c, a.Stretch_EBoard_Team__c]);
+            moveLeaderSortList.push(sortKey);
+                  
+            ldrSet.push(a.Stretch_Leader__r.FID__c);
+          
+          }
+          if (a.Stretch_Leader__r.Tier_1_Leader__r !=null && eboardSet.indexOf( a.Stretch_Leader__r.Tier_1_Leader__r.FID__c ) < 0) {
+            eboardSet.push( a.Stretch_Leader__r.Tier_1_Leader__r.FID__c );
+            ldrEboardMap[ a.Stretch_Leader__r.FID__c] =  a.Stretch_Leader__r.Tier_1_Leader__r.FID__c;
+          }  
+          teamSet.push(a.FID__c);
+          var crecord = teamMap[a.FID__c];
+          if (crecord != null) {
+            crecord.Stretch_Member_Card_Signed__c  = a.Stretch_Member_Card_Signed__c;
+            if (a.Stretch_EBoard_Team__c != null && (a.Stretch_EBoard_Team__c == true || a.Stretch_EBoard_Team__c == "true") && eboardTeamLdrSet.indexOf(a.Stretch_Leader__r.FID__c) < 0) {
+              //alert("found leader run by EBoard = " + a.Stretch_Leader__r.FID__c);
+              eboardTeamLdrSet.push(a.Stretch_Leader__r.FID__c);
+            }
+            teamMap[a.FID__c] = crecord;   
+          }
+        }     
+      
+      //alert("missing query...");
+      //alert("anthony k in ldrSet = " + ldrSet.indexOf("9000-001201731"));     
+      var missingSet = [];
+      for (var j = 0; j < ldrSet.length; j++) {
+        var fid = ldrSet[j];
+        followerLdrMap[fid] = fid;
+        if (teamMap[fid] == null) {
+          missingSet.push(fid);
+        }
+      }
+      if (missingSet.length > 0) {
+        var query = contactSelectFields + " where ";
+        for (var mdex = 0; mdex < missingSet.length; mdex++) {
+          var fid = missingSet[mdex].trim();
+          if (mdex > 0) {
+            query += " OR ";
+          }
+          query += " FID__c = \'" + fid + "\' ";
+        }
+        //alert("missing query = " + query);
+       
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+        //alert("missing count = " + records1.length);     
+        for( var j = 0; j < records1.length; j++ ) {       
+          teamMap[records1[j].FID__c] = records1[j];
+        }
+      }
+
+   //
+   //
+   //  END LOGIC FROM MOBILE ORGANIZER
+   //
+   //
+
+      for (var j = 0; j < ldrSet.length; j++) {
+        var fid = ldrSet[j];
+        if (teamMap[fid] != null) {
+          followerLdrMap[fid] = fid;
+          if (teamMap[fid].Tier_1_Leader__r == null) {
+            teamMap[fid].Tier_1_Leader__r = {};
+            teamMap[fid].Tier_1_Leader__r.Name = "Not Turfed";
+          }
+          teamMap[fid].Stretch_EBoard_Leader_Name__c = teamMap[fid].Tier_1_Leader__r.Name;
+          teamMap[fid].Stretch_Leader_Name__c = teamMap[fid].FullName;        
+        }
+      }   
+
+    var sortSet = [];
+    var scount = 0;
+    var scount2 = 0;    
+    for (var fid in followerLdrMap) {
+      scount++;
+      if (teamMap[fid] != null) {
+        var akey = [teamMap[fid].Stretch_EBoard_Leader_Name__c, teamMap[fid].Stretch_Leader_Name__c, teamMap[fid].Department_Mod__c, teamMap[fid].FullName, fid];
+        scount2++;
+        sortSet.push(JSON.stringify(akey));
+      } else {
+        //alert("cant find FID = " + fid);
+      }
+    }
+    //alert("scount = " + scount + ", " + scount2);
+    
+    sortSet.sort();          
+        
+        var lastEBoard = null;
+        var lastLeader = null;
+
+        var eboardTemplate = $(".eboardTemplate").html();        
+        var leaderTemplate = $(".leaderTemplate").html();        
+        var teamTemplate = $(".teamTemplate").html();                    
+        var rowTemplate = $(".rowTemplate").html();        
+        var rowWriter = "";
+        var teamCount = 0;
+
+        moveLeaderSortList.sort();
+
+        var records = [];
+        //alert("moveLeaderSortList = " + moveLeaderSortList.length);
+        //alert("sortSet = " + sortSet.length);
+        for (var xi = 0; xi < moveLeaderSortList.length; xi++) {
+          var larray = JSON.parse(moveLeaderSortList[xi]);
+          var ldrFid = larray[2];        
+          //records.push(teamMap[ldrFid]);
+          for (var xj = 0; xj < sortSet.length; xj++) {
+            var fid = JSON.parse(sortSet[xj])[4];        
+            var ldrFid2 = followerLdrMap[fid];
+            if (ldrFid == ldrFid2) {
+              records.push(teamMap[fid]);
+            }        
+          }
+        }
+        //alert("records = " + records.length);
+              
+        var lastEBoard = null;
+        var lastLeader = null;
+
+        var eboardTemplate = $(".eboardTemplate").html();        
+        var leaderTemplate = $(".leaderTemplate").html();        
+        var teamTemplate = $(".teamTemplate").html();                    
+        var rowTemplate = $(".rowTemplate").html();        
+        var rowWriter = "";
+        var teamCount = 0;
+        for (var k = 0; k < records.length; k++) {
+          teamCount++;
+          var a = records[k];
+          lastRecord = a;
+          lastRecord.dex = k;
+          //var fid = a.FID__c;
+
+
+          var tname = "Anthony Kemp";
+          if (a.Name == tname) {
+            //alert("1. debug start for " + tname + ", " + JSON.stringify(a));
+          }        
+            
+          if (a.Stretch_EBoard_Leader_Name__c == null || a.Stretch_EBoard_Leader_Name__c == "null") {
+            a.Stretch_EBoard_Leader_Name__c = "Not Turfed";
+          }
+          
+          if (a.Stretch_Leader_Name__c == null || a.Stretch_Leader_Name__c == "null" ||  a.Stretch_Leader_Name__c == "") {
+            if (ldrSet.indexOf(a.FID__c) >= 0) {
+              for (var zfid in teamMap) {
+                if (teamMap[zfid].FID__c != a.FID__c && teamMap[zfid].Stretch_Leader__r != null && teamMap[zfid].Stretch_Leader__r.FID__c == a.FID__c && teamMap[zfid].Stretch_Leader_Name__c != null) {                
+                  a.Stretch_Leader_Name__c = teamMap[zfid].Stretch_Leader_Name__c.trim();
+                  a.Stretch_EBoard_Leader_Name__c = teamMap[zfid].Stretch_EBoard_Leader_Name__c;
+                  break;
+                }
+              }
+            }
+          }
+          
+          if (a.Name == tname) {
+            //alert("2. debug eboard leader " + tname);
+          }        
+          
+          
+          var eboardName = toProperCase(a.Stretch_EBoard_Leader_Name__c);
+          var leaderName = "";
+          if (a.Stretch_Leader_Name__c != null) {
+            leaderName = toProperCase(a.Stretch_Leader_Name__c);   
+          }
+
+          var status = "Unassessed";
+          if (statusMap[followerLdrMap[fid]] != null) {
+            status = statusMap[followerLdrMap[fid]];
+          }
+          
+          if (a.Name == tname) {
+            //alert("3. debug " + tname);
+          }        
+          
+          var contactName = a.Name
+          var contactDepartment = toProperCase(a.Department_Mod__c);
+          var contactShift = a.Shift_Standardized__c;
+          var contactCellPhone = a.MobilePhone;
+          var contactCellCheck = "";
+          if (contactCellPhone == null) {
+            contactCellPhone = "";
+          } else {
+            contactCellCheck += "&#x25a1;"
+          }        
+          var contactEmail = a.Email;
+          var contactEmailCheck = "";        
+          if (contactEmail == null) {
+            contactEmail = "";
+          } else {
+            contactEmailCheck += "&#x25a1;"
+          }        
+          var contactCardSigned = "";
+          if (a.Stretch_Member_Card_Signed__c != null && (a.Stretch_Member_Card_Signed__c == "true" || a.Stretch_Member_Card_Signed__c == true)) {
+            contactCardSigned = "&#x2714;";        
+          } else {
+            contactCardSigned = "<font size=\"+2\">&#x25a1;</font>";
+          }
+          var contactCope = a.COPE_Pledge__c;
+          if (contactCope == null) {
+            contactCope = 0.0;
+          } else {
+            contactCope = parseFloat(a.COPE_Pledge__c);
+          }
+          if (contactCope > 0) {
+            contactCope = "$" + contactCope.toFixed(0);
+          } else {
+            contactCope = "";
+          }
+          var completedAssess = "";
+          if (completedSet.indexOf(a.FID__c) >= 0) {
+            completedAssess = "&#x2714;";        
+          } else {
+            completedAssess = "<font size=\"+2\">&#x25a1;</font>";
+          }
+          
+          if (a.Name == tname) {
+            //alert("4. debug " + tname);
+          }   
+          
+          if (k > 0 && leaderName.trim().toLowerCase() != lastLeader.trim().toLowerCase()) {
+            if (mode == "followers") { 
+              //alert("change from leader _" + lastLeader + "_ to _" + leaderName + "_");
+              var tableWriter = teamTemplate;       
+              //alert(tableWriter);
+              //emWriter += "<table width=\"100%\">" + rowWriter + "</table>";
+              //emWriter += tableWriter.replace(/<tbody class=\"rowTemplate\">*<\/tbody>/i, rowWriter);
+              //emWriter += tableWriter;
+              emWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + ( teamCount ) + " followers<br/>\n";            
+              emWriter += tableWriter.substring(0, tableWriter.indexOf("<tbody class=\"rowTemplate\">"));
+              //rowWriter += processTemplate(rowTemplate);
+              emWriter += rowWriter;
+              emWriter += "</table>";
+              emWriter += "<font size=\"-1\"><br/>Updated: " + adate.toLocaleString() + "</font>";
+            }
+            teamCount = 0;
+            rowWriter = "";
+          }
+
+          if (a.Name == tname) {
+            //alert("5. debug " + tname);
+          }   
+          
+          
+          if (k == 0 || eboardName != lastEBoard) {
+            emWriter += processTemplate(eboardTemplate);
+            lastLeader = null;
+            alreadyPageBroke = true;
+          }       
+          if (k == 0 || leaderName != lastLeader) {
+            if (!alreadyPageBroke && mode == "followers") {
+              emWriter += "<div class=\"page-breaker\"></div>";   
+              emWriter += "<table width=\"100%\"><tr valign=\"top\"><td width=\"66%\" align=\"center\"><font size=\"-1\">"
+              emWriter += "" + division + " / " + regDirector + " / " + coordinator + " / " + organizer + " / " + employer;
+              emWriter += "</font></td>";
+              emWriter += "<td align=\"center\">";              
+              emWriter += "Survey Link:<br/><font size=\"+1\">http://bit.ly/2uRVN6q</font>";
+              emWriter += "</td></tr></table>";
+            }
+            alreadyPageBroke = false;
+            emWriter += processTemplate(leaderTemplate);
+            teamCount = 0;
+          }       
+          rowWriter += processTemplate(rowTemplate);
+          if (a.Name == tname) {
+            alert("rowWriter = " + rowWriter);
+          }            
+          var lastEBoard = eboardName;
+          var lastLeader = leaderName;       
+        }
+        
+        if (a.Name == tname) {
+            //alert("6. debug " + tname);
+        }   
+          
+        
+        if (rowWriter.length > 0) {
+            if (mode == "followers") { 
+              var tableWriter = teamTemplate;            
+              emWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + teamCount + " followers<br/>\n";            
+              emWriter += tableWriter.substring(0, tableWriter.indexOf("<tbody class=\"rowTemplate\">"));
+              emWriter += rowWriter;
+              emWriter += "</table>";
+              emWriter += "<font size=\"-1\"><br/>Updated: " + adate.toLocaleString() + "</font>";
+              emWriter += "<br/>" ;     
+            }
+        }
+        if (a.Name == tname) {
+            //alert("8. debug " + tname);
+        }           
+      }
+      lastEmployer = employer;
+      lastLeader = leaderName;
+      
+      if (a.Name == tname) {
+            //alert("999. debug done " + tname);
+      }        
+    }
+  }
+  $(".employerTemplate").html(emWriter);
+  $(".employerTemplate").show();
+  //$("#debugDiv").html(debugWriter);  
+  $("#progressDiv").html("");  
+
+  
+
+  
+} catch(e) { 
+       alert('An Error has Occured. Error:' +e + "\n" + JSON.stringify(lastRecord)); 
+}  
+
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

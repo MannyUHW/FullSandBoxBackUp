@@ -1,0 +1,282 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<!--<meta http-equiv="refresh" content="300"></meta>-->
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+<div align="center">
+<h2 id="h1Title"></h2>
+
+<h4 id="h4Count"></h4>
+
+<script language="JavaScript">
+
+var PARTITIONS = 10;
+
+var paramEmid = "{!$CurrentPage.parameters.emid}";
+var emid = 8817;
+//alert("paramcode="  + paramEmid );
+if (paramEmid != null && paramEmid != "" && paramEmid != "null") {
+  emid = paramEmid ;
+}
+//alert("rcode0="  + rcode);
+
+var paramFields = "{!$CurrentPage.parameters.fields}";
+var fields = new Array();
+//alert("paramcode="  + paramEmid );
+if (paramFields != null && paramFields != "" && paramFields  != "null") {
+  fields = paramFields.trim().split(",");
+}
+
+try{ 
+
+
+
+    var sfidNotesMap = new Array();
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+    var voteBlockMap = new Array();
+    for (var p = 0; p < 10; p++) {
+       var query = "select Contact__c, FID__c, Response_Value__c from Survey_Response__c where Survey_Question__r.Name like '%vote block%' and Contact__r.Account.Employer_Id__c = \'" + emid + "\' and FID__c like \'%" + p + "\'";
+       var records = sforce.connection.query(query);
+       var records0 = records.getArray('records'); 
+       for(var i=0;i < records0.length; i++){ 
+         voteBlockMap[records0[i].Contact__c] = records0[i].Response_Value__c; 
+       }      
+     }
+
+    var partMap = new Array();
+    
+    var userMap = new Array();
+    var query = "Select Id, Name, MobilePhone FROM User WHERE IsActive = true ";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for (var i=0;i<records1.length;i++) {
+      var mobile = "no phone";
+      if (records1[i].MobilePhone != null) {
+        mobile = records1[i].MobilePhone.replace("(", " ").replace(")", " ").replace("-", " ").replace("-", " ").replace("  ", " ").replace("  ", " ").trim();
+      } 
+      userMap[records1[i].Id] = records1[i].Name + " (" + mobile + ")";
+      var part = i % PARTITIONS;
+        //if (partMap[part] == null) {
+        //  partMap[part] = new Array();
+        //}
+        //partMap[part].push(records1[i].Id);      
+    }    
+
+    
+    
+    
+    var query = "Select Id, Name from Account where Employer_ID__c=\'" + emid + "\'";
+    //alert(query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var accountId = null;
+    var emName = null;
+    if (records1.length > 0) {
+      accountId = records1[0].Id;
+      emName  = records1[0].Name;
+    } else {
+      alert("Cannot find Employer Id " + emid);
+    }        
+    
+    $("#h1Title").html("Contact Field History for " + emName);    
+    $("#h4Count").html("<font size=\"+2\">In Progress 0.0%</font>");  
+    
+    
+    var idRecordMap = new Array();
+
+    var ccount = 0;
+        
+    for (var p = 0; p < 10; p++) {
+      var query = "SELECT Id, FID__c, LastName, FirstName, MiddleName, Department, Title FROM Contact where Account.Name=\'" + emName + "\' and FID__c like \'%" + p + "\'";
+      //alert(query);
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records');
+      //alert("count = " + records1.length);
+      for (var i=0;i<records1.length;i++) {
+        var contactId = records1[i].Id;
+        var crecord = records1[i];
+        if (crecord.Department == null) {
+          crecord.Department = "";
+        }
+        if (crecord.MiddleName == null) {
+          crecord.MiddleName = "";
+        }        
+
+        idRecordMap[contactId] = crecord;   
+        var fid = records1[i].FID__c.trim();     
+
+        //ccount++;
+        
+        if (partMap[p] == null) {
+          partMap[p] = "\'" + records1[i].Id + "\'";
+        } else {
+          partMap[p] += ",\'" + records1[i].Id + "\'";
+        }   
+      }
+    }
+
+
+      
+    var sortSet = new Array();
+    var sortMap = new Array();
+
+    for (var p = 0; p < PARTITIONS; p++) {
+
+      $("#h4Count").html("<font size=\"+2\">In Progress " + (p * 100/PARTITIONS).toFixed(1) + "%</font>");       
+    
+      if (partMap[p] != null) {
+        var query = "Select Id,ContactId, CreatedById, CreatedDate, Field, OldValue, NewValue FROM ContactHistory where CreatedDate >= YESTERDAY ";
+
+        /*
+        if (fields.length > 0) {
+          query += " AND (";        
+          for (var fdex = 0; fdex < fields.length; fdex++) {
+            if (fdex > 0) {
+              query += " OR ";
+            }
+            query += " Field like \'" + fields[fdex] + "%\' ";           
+          }
+          query += ") ";
+        }         
+        */
+        
+        query += " AND ContactId in (" + partMap[p] + ") " ;
+
+
+        /*
+        query += " AND CreatedById in (";
+        for (var cdex = 0; cdex < partMap[p].length; cdex++) {
+          if (cdex > 0) {
+            query += ",";
+          }
+          query += "\'" + partMap[p][cdex] + "\'";
+        }
+        query += ") ";
+        */
+
+         
+        //alert("[" + p + "] = " + query);
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+        if (records1.length >= 2000) {
+          alert("You may have hit the limit on number of records and Salesforce governor limits will truncate the results.  Ask the Data Group to up the number of query partitions to resolve.");
+        }
+        
+        if (records1.length > 0) {
+          for(var i=0;i<records1.length;i++) {
+            if (idRecordMap[records1[i].ContactId] != null) {
+              var ckey = records1[i].CreatedDate + records1[i].Id;
+              sortSet.push(ckey);
+              sortMap[ckey] = records1[i];
+            }
+          }
+        }
+      }
+    }
+     
+    sortSet.sort();
+    sortSet.reverse();
+    
+  
+    
+    if (fields.length > 0) {
+      document.write("<h4>filtered by fields: " + JSON.stringify(fields) + "</h4><br/>");    
+    }
+    
+    document.write("<i>updated " + (new Date()).toLocaleString() + "</i><br/>&nbsp;<br/>");
+    
+    document.write("<table cellpadding=\"10\" border=\"1\" width=\"100%\">\n");
+    document.write("  <tr valign=\"bottom\">\n");
+    document.write("    <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Timestamp</font></td>\n");         
+    document.write("    <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">User</font></td>\n");        
+    document.write("    <td bgcolor=\"#481C60\" width=\"25%\" align=\"center\"><font color=\"white\">Name</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\" width=\"15%\" align=\"center\"><font color=\"white\">Field Changed</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\" width=\"15%\" align=\"center\"><font color=\"white\">New Value</fon></td>\n");    
+    document.write("    <td bgcolor=\"#481C60\" width=\"15%\" align=\"center\"><font color=\"white\">Previous Value</font></td>\n");    
+    document.write("  </tr>\n");    
+    for (var ckDex = 0; ckDex < sortSet.length; ckDex++) {
+      var ckey = sortSet[ckDex];
+      //alert(ckey); 
+      var frecord = sortMap[ckey];
+      var crecord = idRecordMap[frecord.ContactId];
+      //alert(ckey + " = " + JSON.stringify(crecord)); 
+      document.write("  <tr valign=\"top\">\n");
+      var dsrc = frecord.CreatedDate;   
+      var month = parseInt(dsrc.substring(5,7));
+      month = month - 1;
+      //alert(dsrc + " = " + dsrc.substring(0,4) + "," +  + "," + dsrc.substring(8,10)+ "," +dsrc.substring(11,13)+ "," + dsrc.substring(14,16) + "," +  dsrc.substring(17,19) + "," + 0);
+      var d = new Date(dsrc.substring(0,4), month, dsrc.substring(8,10), dsrc.substring(11,13), dsrc.substring(14,16), dsrc.substring(17,19), 0);
+      
+      var d2 = new Date(d.getTime() - 28800000);
+      
+      var doOutput = false;
+      for (var pdex = 0; pdex < fields.length; pdex++) {
+        if (frecord.Field.toLowerCase().indexOf(fields[pdex].toLowerCase().trim()) >= 0) {
+          doOutput = true;
+        }
+      } 
+      //alert(d.getTime());
+      //suppress Three Touch before EDay
+      //                  1453350623000
+      //alert(d.getTime() + " vs. " + (1453318570490 + 32800000) + "; diff = " + (1453318570490 + 32800000 - d2.getTime()));
+      var d3 = new Date(2016, 0, 21, 01, 59, 0, 0);
+      //alert(d2.getTime() + " vs. " + d3.getTime() + "; " + (d2.getTime() <= d3.getTime()) + "; Field = " + frecord.Field + "; " + frecord.Field.toLowerCase().indexOf("three_touch"));
+      var suppress = false;
+      if (d2.getTime() <= d3.getTime() && frecord.Field.toLowerCase().indexOf("three_touch") >= 0) {
+        suppress = true;
+      }
+       
+      if ((fields.length == 0 || doOutput) && !suppress) {
+      
+        document.write("    <td align=\"center\">" + d2.toLocaleString() + "</td>\n");      
+        document.write("    <td align=\"left\">" + userMap[frecord.CreatedById] + "</td>\n");
+        document.write("    <td align=\"left\"><a target=\"_BLANK\" href=\"/" + frecord.ContactId + "\">");
+        document.write(       toProperCase(crecord.LastName) + ", ");      
+        document.write(       toProperCase(crecord.FirstName));
+        document.write(       " " + toProperCase(crecord.MiddleName) + "</a><br/>\n");
+        document.write(       "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(crecord.Department) + "<br/>\n");
+        document.write(       "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(crecord.Title) + "<br/>\n");            
+        document.write(       "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Vote Block:");
+        if (voteBlockMap[frecord.ContactId] != null) {
+          document.write(       voteBlockMap[frecord.ContactId]);
+        }
+        document.write("    </td>\n");
+        document.write("    <td align=\"left\">" + frecord.Field  + "</font></td>\n");      
+        if (frecord.NewValue  == null || frecord.NewValue  == "" || frecord.NewValue  == "null") {
+          frecord.NewValue  = "";
+        }      
+        document.write("    <td bgcolor=\"#ffee80\" align=\"center\">" + frecord.NewValue  + "</font></td>\n");      
+        if (frecord.OldValue == null || frecord.OldValue == "" || frecord.OldValue == "null") {
+          frecord.OldValue = "";
+        }
+        document.write("    <td align=\"center\">" + frecord.OldValue  + "</font></td>\n");            
+        document.write("  </tr>\n"); 
+        ccount++;
+      }       
+    }    
+    document.write("</table>\n");
+    
+    document.write("<br/>&nbsp;<br/><div align=\"center\">CONFIDENTIAL</div>");
+    
+    $("#h4Count").html("Count " + ccount );  
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+
+</div>
+</apex:page>

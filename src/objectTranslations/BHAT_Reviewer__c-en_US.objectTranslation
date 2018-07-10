@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BHAT Reviewer</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BHAT Reviewers</value>
+    </caseValues>
+    <fields>
+        <label><!-- Division/Dept --></label>
+        <name>Division_Dept__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Region --></label>
+        <name>Region__c</name>
+        <picklistValues>
+            <masterLabel>No Cal</masterLabel>
+            <translation><!-- No Cal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>So Cal</masterLabel>
+            <translation><!-- So Cal --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Statewide</masterLabel>
+            <translation><!-- Statewide --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Reviewer --></label>
+        <name>Reviewer__c</name>
+        <relationshipLabel><!-- BHAT Reviewers --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Total Staff To Review --></label>
+        <name>Total_Staff_To_Review__c</name>
+    </fields>
+    <layouts>
+        <layout>BHAT Reviewer Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

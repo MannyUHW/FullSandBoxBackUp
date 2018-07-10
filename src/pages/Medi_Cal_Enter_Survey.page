@@ -1,0 +1,704 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+    <title>Medi-Cal Story</title>
+
+    <!-- Bootstrap core CSS -->
+        <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">-->
+    
+    
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+
+<script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+var iArray = ["fix_medi-cal", "isMember", "lastname", "firstname", "employer", "street", "city", "zipcode", "email", "homephone", "mobilephone", "other_lang", "hasMediCal", "dialysis", "question_unable",                                                                                                        "question_turned_away",    "question_waited",                  "question_distance",      "question_suffered",           "story_original",                   "story_what_happened",         "story_consequences", "story_hope_achieve", "besttime"];
+var fArray = ["Count_Me_In__c", "", "Alt_Last_Name__c", "Alt_First_Name__c", "Alt_Employer_Name__c", "Alt_Street__c", "Alt_City__c", "Alt_Zip_Code__c", "Alt_Email__c", "Home_Phone__c", "Mobile_Phone__c", "Language_Other__c", "MediCal_Last_5_Years__c", "Kidney_Disease__c", "Question_Unable_To_Get_Appt__c", "Question_Turned_Away__c", "Question_Wait_More_Than_Month__c", "Question_Travel_Far__c", "Question_Health_Suffered__c", "Story_Original_Health_Problem__c", "Story_Tried_To_Get_Care__c",  "Story_Problems_From_No_Care__c", "Story_Hope_To_Achieve__c", "Story_Best_Time_To_Contact__c" ]; 
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+
+
+</script>   
+  </head>
+<body>
+<div align="center">
+<table border="0">
+<tr valign="top">
+<td align="center">
+    <table border="0">
+      <tr valign="middle">
+        <td align="left" width="25%">
+          &nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+        <td align="center" width="50%">
+          <img border="0" src="{!URLFOR($Resource.Lift_Up_2016)}"/>
+        </td>
+        <td width="25%">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+      </tr>
+    </table>
+    
+    <br><font color="#481C60" size="+2"><b>Tell Your Medi-Cal Story</b></font></br>
+    <a target="_BLANK" href="https://twitter.com/hashtag/healthcarejustice">#HEALTHCAREJUSTICE</a>
+    <br>&nbsp;</br>
+
+    
+    <table width="100%">
+        
+        <tr valign="middle">
+        <td  align="center" bgcolor="#F8C828">
+          <b>YES, count me in!<br/> I want to help fix Medi-Cal.</b>  
+        </td>
+        <td align="left"  bgcolor="#F0C840">
+          <input type="checkbox" id="fix_medi-cal"></input>
+        </td>
+        </tr>   
+    <tr valign="top">
+    
+    <td align="center" colspan="2">
+    <font size="-2">&nbsp;</font>
+    </td>
+    </tr>
+    
+    <tr valign="top">
+    
+    <td align="center">
+    Is the interviewee a SEIU-UHW Member?
+    </td>
+    <td>
+      <select id="isMember">
+        <option value=""></option>
+        <option value="Yes">Yes        </option>        
+        <option value="No">No          </option>        
+      </select>
+    </td>
+    </tr>
+    </table>
+    <br>&nbsp;</br>
+    <div id="continueDiv">
+    <div id="memberDiv">
+      <table width="100%">  
+        <tr valign="middle">
+        <td width="25%">  
+          <b>Member<br/>Contact</b>
+        </td>
+        <td width="50%" align="center">
+          <div id="contactNameDiv">No Contact Selected</div>
+        </td>
+        <td  width="25%">
+        <a href="javascript:searchForInterviewee();">&nbsp;&nbsp;&nbsp;&nbsp;
+        <img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <br/>
+        </td>
+        </tr>
+      </table>
+    </div>
+    
+
+    
+    <div id="altPersonDiv">
+    <div align="left"><b>Contact Information</b></div>
+    <br>First Name:</br>
+    <input type="text" size="40" id="firstname"></input>
+    <br>Last Name:</br>
+    <input type="text" size="40" id="lastname"></input>
+    <br>Employer:</br>
+    <input type="text" size="40" id="employer"></input>    
+    <br>Street:</br>
+    <input type="text" size="40" id="street"></input>   
+    <br>City:</br>
+    <input type="text" size="40" id="city"></input>
+    <br>Zip Code:</br>
+    <input type="text" size="7" id="zipcode"></input>
+        
+    </div>
+    <div id="infoDiv">
+      <br>
+      Email:
+      </br>
+      <input type="text" size="40" id="email"></input>  
+      <br>
+      Home Phone:
+      </br>
+      <input type="text" size="20" id="homephone"></input>
+      <br>
+      Cell Phone:
+      </br>
+      <input type="text" size="20" id="mobilephone"></input>
+      <br>&nbsp;</br>
+      <br>
+      Select Languages:
+      </br>
+      <select style="min-width:45%;" multiple="true" size="6" id="languages">
+        <option value="English">English          </option>
+        <option value="Spanish">Spanish          </option>
+        <option value="Chinese">Chinese          </option>
+        <option value="Russian">Russian          </option>
+        <option value="Hmong">Hmong            </option>
+        <option value="Other">Other            </option>
+      </select>
+      <div id="otherLangDiv">
+        <br>&nbsp;</br>
+        Specify Other Language:<br><input type="text" size="40" id="other_lang"></input></br>
+      </div>
+      <br>&nbsp;</br>
+    </div>
+    <div id="coverageDiv">
+    
+      <!--
+    
+      <div align="left"><b>Healthcare Coverage:</b></div>
+      <select  style="min-width:45%;"  multiple="true" size="7" id="coverage">
+        <option value="regular">Regular Medi-Cal</option>
+        <option value="emergency">Emergency Medi-Cal</option>
+        <option value="medicare">Medicare</option>
+        <option value="private">Private Insurance</option>
+        <option value="outofpocket">Pay cash out-of-pocket</option>
+        <option value="dontknow">Dont Know</option>
+        <option value="other">Other</option>
+      </select>   
+      <div id="otherCoverageDiv">
+        <br>&nbsp;</br>
+        Specify Other Coverage:<br/><input type="text" size="40" id="otherCoverage"></input></br>
+      </div>      
+      
+      -->
+      <table width="100%">
+      <tr valign="top">
+    
+    <td align="center">
+    Have you or a family member had Medi-Cal in the last 5 years?
+    </td>
+    <td  align="right">
+      <select id="hasMediCal">
+        <option value=""></option>
+        <option value="Yes">Yes        </option>        
+        <option value="No">No          </option>        
+      </select>
+    </td>
+    </tr>
+    </table>
+      
+      
+    </div>
+    <br>&nbsp;</br>
+    <div id="dialysisDiv">  
+          <table width="100%">
+      <tr valign="top">
+    
+    <td align="center">
+    Are you or a family member on dialysis<br/> and/or have kidney disease?
+    </td>
+    <td align="right">
+      <select id="dialysis">
+        <option value=""></option>
+        <option value="Yes">Yes        </option>        
+        <option value="No">No          </option>        
+      </select>
+    </td>
+    </tr>
+    </table>
+    
+    </div>
+    <br>&nbsp;</br>
+            <div id="interviewerDiv">
+      <table width="100%">  
+        <tr valign="middle">
+        <td width="25%">  
+          <b>Interviewer</b>
+        </td>
+        <td width="50%" align="center">
+          <div id="interviewerNameDiv">No Contact Selected</div>
+        </td>
+        <td  width="25%">
+        <a href="javascript:searchForInterviewer();">&nbsp;&nbsp;&nbsp;&nbsp;
+        <img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/>
+        &nbsp;&nbsp;&nbsp;&nbsp;</a>
+        <br/>
+        </td>
+        </tr>
+      </table>
+    </div>
+    
+    
+    <div id="questionsDiv">
+      <br>&nbsp;</br>
+      <div align="left"><b>Interview Questions</b></div>
+      <br>&nbsp;</br>
+      <table>
+        
+        <tr valign="top">
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>
+          Have you or a family member with Medi-Cal ever been<br/>
+          <u>unable to get an appointment</u> to see a doctor or<br/>
+          specialist?<br/>
+          &nbsp;
+        </td>
+        <td align="left">
+          <input type="checkbox" id="question_unable"></input>
+        </td>
+        </tr>
+      
+      <tr valign="top">
+            <td bgcolor="#d8d8d0">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td bgcolor="#d8d8d0">
+          Have you or a family member ever been <u>turned away</u><br/>
+          by a hospital or clinic because you were a Medi-Cal<br/>
+          beneficiary?<br/>
+          &nbsp;
+        </td>
+        <td  bgcolor="#d8d8d0" align="center">
+          <input type="checkbox" id="question_turned_away"></input><br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;
+        </td>
+        </tr>
+        
+        <tr valign="top">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>
+          Have you or a family member with Medi-Cal ever <u>waited<br/>
+          more than a month</u> to get care for a medical need?<br/>
+          &nbsp;          
+        </td>
+        <td align="center">
+          <input type="checkbox" id="question_waited"></input>
+        </td>
+        </tr>
+        
+        <tr valign="top">
+                <td  bgcolor="#d8d8d0">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td  bgcolor="#d8d8d0">
+          Have you or your family member with Medi-Cal ever had to<br/>
+          <u>leave the U.S.</u> or <u>travel more than 30 minutes/10 miles</u><br/>
+          to get care?<br/>
+          &nbsp;
+        </td>
+        <td align="center"  bgcolor="#d8d8d0">
+          <input type="checkbox" id="question_distance"></input>
+        </td>
+        </tr>
+        
+        <tr valign="top">
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td>
+          Has your health or a family member&#40;s health suffered<br/>
+          because you were unable to get the care you needed through<br/>
+          Medi-Cal?<br/>
+          &nbsp;
+        </td>
+        <td align="center">
+          <input type="checkbox" id="question_suffered"></input>
+        </td>
+        </tr>
+
+      
+      </table>
+    </div>
+    <div id="storyDiv">
+      <br>&nbsp;</br>
+      <div align="left"><b>Medi-Cal Story</b></div>
+      <br>&nbsp;</br>   
+    A. What was the <u>original health problem</u> you were seeking<br/>
+    treatment for under Medi-Cal?
+    <div align="center"><textarea  id="story_original"  rows="4" cols="60"></textarea></div>
+    <br>&nbsp;</br>
+    B. What happened when you <u>tried to get care</u> through Medi-Cal?<br/>
+    <i>(How long did you wait for an appointment? Which clinics,<br/>
+    doctors or hospitals did you go to? How far did you travel?)</i>
+    <div align="center"><textarea  id="story_what_happened"  rows="4" cols="60"></textarea></div>
+    <br>&nbsp;</br>
+    C. What problems did you have as a result of not getting care<br/>
+    when you needed it?<i>(How did it affect your health, pain, <br/>
+    sleep, family, work, etc.?)</i>
+    <div align="center"><textarea id="story_consequences" rows="4" cols="60"></textarea></div>
+    <br>&nbsp;</br>
+    D. What do you <u>hope to achieve</u> by sharing your story?
+    <div align="center"><textarea id="story_hope_achieve" rows="4" cols="60"></textarea></div>
+    <br>&nbsp;</br>
+
+
+    E. Your story may help expose the Medi-Cal crisis and save<br/>
+    lives.  When are the <u>best days and times</u> to reach you<br/>
+    and learn more?
+    <div align="center"><textarea id="besttime" rows="4" cols="60"></textarea></div>
+    <br>&nbsp;</br>
+    </div>  
+
+   
+
+    <br>&nbsp;</br>
+    
+    <button class="btn btn-lg btn-primary" type="submit" onclick="submitStory()">  
+
+      &nbsp;&nbsp;
+      Submit Story
+      &nbsp;&nbsp;
+      
+    </button><br></br>  
+    </div>
+      <br>&nbsp;</br>
+        &copy; 2016 SEIU-UHW. All rights reserved.
+        
+</td>
+</tr>
+</table>
+</div>
+
+<script>
+
+var fid1 = null;
+var fid2 = null;
+var cid1 = null;
+var cid2 = null;
+var msname = null;
+var msid = null;
+
+$( "#isMember" ).change(function() {
+  if ($( "#isMember" ).val() == "Yes") {
+    $("#memberDiv").show();
+    $("#altPersonDiv").hide();  
+    $("#continueDiv").show();           
+  } else if ($( "#isMember" ).val() == "No") {
+    fid1 = null;
+    sessionStorage.setItem("medi-cal_survey_fid1", null);
+    $("#memberDiv").hide();
+    $("#altPersonDiv").show();    
+    $("#continueDiv").show();       
+  } else {
+    $("#memberDiv").hide();
+    $("#altPersonDiv").hide(); 
+    $("#continueDiv").hide();   
+  }
+});
+
+$("#languages").change(function() {
+  if ($("#languages").val().indexOf("Other") >= 0) {
+    $("#otherLangDiv").show();
+  } else {
+    $("#otherLangDiv").hide();
+  }
+});
+
+/*
+$("#coverage").change(function() {
+  if ($("#coverage").val().indexOf("other") >= 0) {
+    $("#otherCoverageDiv").show();
+  } else {
+    $("#otherCoverageDiv").hide();
+  }
+});
+*/
+
+  function searchForInterviewee() {
+    return searchFor("interviewee");  
+  }
+
+  function searchForInterviewer() {
+    return searchFor("interviewer");
+  }
+   
+
+  function searchFor(pMode) {
+
+      for (var ii = 0; ii < iArray.length; ii++) {
+        if ($("#" + iArray[ii]).attr('type') == "checkbox") {
+          sessionStorage.setItem("medi-cal_survey_" + iArray[ii], $("#" + iArray[ii]).prop("checked") );
+        } else {
+          sessionStorage.setItem("medi-cal_survey_" + iArray[ii], $("#" + iArray[ii]).val());
+        }
+      }
+      sessionStorage.setItem("medi-cal_survey_languages", JSON.stringify($("#langauges").val()));
+      sessionStorage.setItem("medi-cal_survey_fid1", fid1);
+      sessionStorage.setItem("medi-cal_survey_fid2", fid2);   
+      sessionStorage.setItem("medi-cal_survey_mode", pMode);
+      
+      navigateTo('{! $Page.Medi_Cal_Search}?mode=' + pMode);
+      
+  }   
+
+  
+  for (var ii = 0; ii < iArray.length; ii++) {
+    if (sessionStorage.getItem("medi-cal_survey_" + iArray[ii]) != null) {
+      //alert("medi-cal_survey_" + iArray[ii] + " = " + sessionStorage.getItem("medi-cal_survey_" + iArray[ii]))
+      
+      if ( $("#" + iArray[ii]).attr('type') == "checkbox") {
+        if (sessionStorage.getItem("medi-cal_survey_" + iArray[ii]).toLowerCase() == "true" || sessionStorage.getItem("medi-cal_survey_" + iArray[ii]).toLowerCase() == "on") {
+          $("#" + iArray[ii]).prop('checked', true);
+        } else {
+          $("#" + iArray[ii]).prop('checked', false);
+        }
+      } else {
+        $("#" + iArray[ii]).val(sessionStorage.getItem("medi-cal_survey_" + iArray[ii]));
+      }
+    }
+  }
+  if (sessionStorage.getItem("medi-cal_survey_languages") != null && sessionStorage.getItem("medi-cal_survey_languages") != "undefined") {
+
+      $("#langauges").val(JSON.parse(sessionStorage.getItem("medi-cal_survey_languages")));
+  }
+  
+  if ($( "#isMember" ).val() == "Yes") {
+    $("#memberDiv").show();
+    $("#altPersonDiv").hide();  
+    $("#continueDiv").show();           
+  } else if ($( "#isMember" ).val() == "No") {
+    $("#memberDiv").hide();
+    $("#altPersonDiv").show();    
+    $("#continueDiv").show();       
+  } else {
+    $("#memberDiv").hide();
+    $("#altPersonDiv").hide(); 
+    $("#continueDiv").hide();   
+  } 
+  //$("#otherCoverageDiv").hide();
+  $("#otherLangDiv").hide();  
+
+
+
+var debugRecord;
+var interviewee = null;
+var interviewer = null;
+try {
+   // query Salesforce using SOQL
+   sforce.connection.sessionId = "{!$Api.Session_ID}";
+   msname = (" {!$CurrentPage.parameters.msname } ").trim();
+   fid1 = (" {!$CurrentPage.parameters.fid1} ").trim(); 
+   fid2 = (" {!$CurrentPage.parameters.fid2} ").trim();    
+   if ((fid1 == null || fid1 == "" || fid1 == "null") &&  sessionStorage.getItem("medi-cal_survey_fid1") != null) {
+     fid1 = sessionStorage.getItem("medi-cal_survey_fid1");
+   }
+   if ((fid2 == null || fid2 == "" || fid2 == "null") &&  sessionStorage.getItem("medi-cal_survey_fid2") != null) {
+     fid2 = sessionStorage.getItem("medi-cal_survey_fid2");
+   }   
+   
+   var YesQuery = false;
+
+   var query = "SELECT Id, FID__c, LastName, FirstName, MiddleName, Account.Account_Group__c, Account.Name, Department, Title, Job_Group__c, Shift__c, HomePhone, MobilePhone, COPE_Pledge__c, Email from Contact where ";
+   if (fid1 != null && fid1.length == 14) {
+     YesQuery = true;
+     query += " FID__c = \'" + fid1 + "\' ";
+   }   
+   if (fid2 != null && fid2.length == 14) {
+     if (YesQuery) {
+       query += " OR ";
+     }
+     YesQuery = true;
+     query += " FID__c = \'" + fid2 + "\' ";
+   }      
+   //alert(YesQuery);
+   if (YesQuery) {
+    //alert(query);
+    var records = sforce.connection.query(query);
+    var records0 = records.getArray('records');   
+    for(var i=0;i < records0.length; i++){ 
+      var fullName = records0[i].LastName + ", " + records0[i].FirstName;
+      if (records0[i].MiddleName != null &&  records0[i].MiddleName != "") {
+          fullName += " " + records0[i].MiddleName;
+      }     
+      if (records0[i].FID__c == fid1) {
+        //alert("found interviewee = " + fullName);      
+        interviewee = records0[i];
+        cid1 = records0[i].Id;
+        $("#contactNameDiv").html(fullName);
+        if (sessionStorage.getItem("email") != null && sessionStorage.getItem("email").length > 4 && (records0[i].Email == null || records0[i].Email.length <= 4)) {
+          $("#email").val(sessionStorage.getItem("email"));
+        }
+        if (sessionStorage.getItem("homephone") != null && sessionStorage.getItem("homephone").length >= 10 && (records0[i].HomePhone == null || records0[i].HomePhone.length < 10)) {
+          $("#homephone").val(sessionStorage.getItem("homephone"));
+        }        
+        if (sessionStorage.getItem("mobilephone") != null && sessionStorage.getItem("mobilephone").length >= 10 && (records0[i].MobilePhone == null || records0[i].MobilePhone.length < 10)) {
+          $("#mobilephone").val(sessionStorage.getItem("mobilephone"));
+        }                
+      } 
+      if (records0[i].FID__c == fid2) {
+        //alert("found interviewer = " + fullName);
+        interviewer = records0[i];
+        cid2 = records0[i].Id;        
+        $("#interviewerNameDiv").html(fullName);        
+      }      
+    }
+   }    
+   
+   
+    if (msname != null && msname.trim() != "") {
+      var query = "Select Id, Name, Alt_Street__c, Alt_City__c, Alt_First_Name__c, Alt_Last_Name__c, Alt_Zip_Code__c, Story_Best_Time_To_Contact__c, Alt_Employer_Name__c, Languages__c, Kidney_Disease__c, Question_Unable_To_Get_Appt__c, Question_Turned_Away__c, Question_Wait_More_Than_Month__c, Question_Travel_Far__c, Question_Health_Suffered__c, Story_Original_Health_Problem__c, Story_Tried_To_Get_Care__c, Story_Problems_From_No_Care__c, Story_Hope_To_Achieve__c, Interviewer__c, Coordinator_Reviewed__c, Missed_Data_Entry__c, Any_Question_True__c, Number_Questions_True__c, Language_Other__c, Contact__c, Contact_Name__c, Coordinator__c, Organizer__c, Home_Phone__c, Mobile_Phone__c, Count_Me_In__c, Alt_Email__c, MediCal_Last_5_Years__c, Leader_Role__c, Division__c, IsMember__c, Have_Kidney_Disease__c, Interviewee_Type__c, Employer_Name__c, Interviewer__r.FID__c FROM MediCal_Story__c where Name=\'" + msname + "\' limit 1";
+      var records = sforce.connection.query(query);
+      var records0 = records.getArray('records');   
+      if (records0.length == 0) {
+        alert("Unknown Medi-Cal Story Name = " + msname);
+      } else {
+        var r = records0[0];
+        cid1 = r.Contact__c;
+        cid2 = r.Interviewer__c;
+        //alert(JSON.stringify(r));
+        msid = r.Id;
+        for (var ii = 0; ii < iArray.length; ii++) {
+          if (fArray[ii] == "MediCal_Last_5_Years__c") {
+            if (r[fArray[ii]] != null && (r[fArray[ii]] == true || r[fArray[ii]].toLowerCase().trim() == "true")) {
+              $("#" + iArray[ii]).val("Yes");
+              sessionStorage.setItem("medi-cal_survey_" + iArray[ii], "Yes");
+            } else {
+              $("#" + iArray[ii]).val("No");
+              sessionStorage.setItem("medi-cal_survey_" + iArray[ii], "No");            
+            }
+          } else if ($("#" + iArray[ii]).attr('type') == "checkbox") {
+            if (r[fArray[ii]] == true || r[fArray[ii]].toLowerCase() == "true") {
+              $("#" + iArray[ii]).prop("checked", true) ;
+            } else {
+              $("#" + iArray[ii]).prop("checked", false) ;
+            }
+            sessionStorage.setItem("medi-cal_survey_" + iArray[ii], $("#" + iArray[ii]).prop("checked") );
+          } else {
+            if (fArray[ii].toLowerCase().indexOf("last") >= 0) {
+              //alert(iArray[ii] + "; " + fArray[ii] + " = " + r[fArray[ii]]);
+            } 
+            $("#" + iArray[ii]).val(r[fArray[ii]]);
+            sessionStorage.setItem("medi-cal_survey_" + iArray[ii], $("#" + iArray[ii]).val());
+          }
+        }
+        if (r.Contact__c != null) {
+          $("#memberDiv").show();
+          $("#altPersonDiv").hide();  
+          $("#continueDiv").show();
+          $("#isMember").val("Yes");           
+        } else {
+          $("#memberDiv").hide();
+          $("#altPersonDiv").show();    
+          $("#continueDiv").show();  
+          $("#isMember").val("No");     
+        }    
+        if (r.Languages__c != null && r.Languages__c.trim() != "") {
+          var langArray = new Array();
+          langArray2 = r.Languages__c.split(";");
+          for (var langx = 0; langx < langArray2.length; langx++) {
+            if (langArray2[langx] != null && langArray2[langx].trim() != "") {
+              langArray.push(langArray2[langx].trim());
+            }
+          }
+          $("#languages").val(langArray);        
+          sessionStorage.setItem("medi-cal_survey_languages", JSON.stringify($("#langauges").val()));          
+        }
+
+      }
+    }
+
+   
+} catch(e) { 
+
+   alert('An Error has occurred. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(debugRecord)); 
+ 
+}
+
+
+function submitStory() {
+  try {
+    sforce.connection.sessionId = "{!$Api.Session_ID}";  
+    var stories = []; 
+    var story = new sforce.SObject("MediCal_Story__c"); 
+    if ($("#languages").val()) {
+      story.Languages__c = $("#languages").val().join("; ");        
+    }
+    for (var ii = 0; ii < iArray.length; ii++) {
+      //alert(fArray[ii] + ", " + iArray[ii]);
+      if (iArray[ii] == "isMember") {
+        //ignore this is a formula field
+      } else if (fArray[ii] == "MediCal_Last_5_Years__c") {
+            if ($("#" + iArray[ii]).val().toLowerCase() == "yes") {
+              story.MediCal_Last_5_Years__c = true;
+            } else {
+              story.MediCal_Last_5_Years__c = false;            
+            }
+      } else if ($("#" + iArray[ii]).attr('type') == "checkbox") {
+          if ($("#" + iArray[ii]).prop("checked") == true) {
+             story[fArray[ii]] = true;
+          } else {
+             story[fArray[ii]] = false;
+          }
+      } else {
+        story[fArray[ii]] = $("#" + iArray[ii]).val();
+      }    
+        
+     }    
+     if (cid1 != null) {
+       story.Contact__c = cid1;
+     }
+     story.Interviewer__c = cid2;
+     
+     //alert(JSON.stringify(story));
+       
+     stories.push(story);
+     var results = null;
+     if (msid == null) {
+       results = sforce.connection.create(stories ); 
+     } else {
+       results = sforce.connection.update(stories ); 
+     }
+     //alert(JSON.stringify(results));
+     if (results[0].getBoolean("success")) {
+       for (var ii = 0; ii < iArray.length; ii++) {
+         //sessionStorage.removeItem("medi-cal_survey_" + iArray[ii]);
+       }     
+       //sessionStorage.removeItem("medi-cal_survey_fid1");
+       //sessionStorage.removeItem("medi-cal_survey_fid2");   
+       //sessionStorage.removeItem("medi-cal_survey_mode");       
+       msid = null;
+       fid1 = null;
+       fid2 = null;
+       cid1 = null;
+       cid2 = null;
+       var query = "Select Id, Name FROM MediCal_Story__c where Id=\'" + results[0].id + "\' limit 1";
+       var records = sforce.connection.query(query);
+       var records0 = records.getArray('records'); 
+       msname = records0[0].Name;
+       alert("Your Medi-Cal Story audit ID is " + msname + ".  Please make sure to write this at the bottom of both pages of your Medi-Cal forms to make sure you get full credit.");
+       
+       navigateTo("{! $Page.Medi_Cal_Stories}");
+     } else {
+       alert('An Error has occurred. Error:' + JSON.stringify(results)); 
+     }
+  } catch(e) { 
+
+     alert('An Error has occurred. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(debugRecord)); 
+ 
+  }
+}
+
+</script>
+
+</body>
+</html>
+
+</apex:page>

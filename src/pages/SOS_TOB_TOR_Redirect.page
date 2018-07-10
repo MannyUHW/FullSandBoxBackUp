@@ -1,0 +1,11 @@
+<apex:page standardController="SOS_Time_Off_Balance__c" extensions="SOS_TOB_Controller">
+    <apex:form >
+        <center><apex:commandButton value="New Time Off Request" onclick="window.open('{!torPageDir}')"/></center><br/>
+        <apex:outputlabel style="font-weight:bold">“Time Off request is subject to management approval, SEIU-UHW policies and contingent upon accrual time available on the date requested and/or based on the needs of the organization”</apex:outputlabel>
+        <!--<apex:pageBlock>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="New Time Off Request"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>-->
+    </apex:form>
+</apex:page>

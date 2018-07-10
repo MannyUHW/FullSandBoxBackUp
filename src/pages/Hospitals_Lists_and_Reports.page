@@ -1,0 +1,48 @@
+<apex:page >
+<dl>
+<dt></dt>
+<dd> 
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  <h1>Hospitals List and Reports</h1>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  <ul>
+
+  <li><apex:outputLink target="_blank" value="{!$Page.Report_MMTM_Hospitals}">Hospital Medi-Cal Matters to Me Report</apex:outputLink></li>
+  &nbsp;<br></br>    
+
+  <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}">Hospital June 2nd Commits/Confirms</apex:outputLink></li>
+  &nbsp;<br></br>    
+  <ul>
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=jason%20capell">Jason Capell</apex:outputLink></li>  
+    &nbsp;<br></br>          
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=jean%20cronin">Jean Cronin</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=justine%20fout">Justine Fout</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=mindy%20sturge">Mindy Sturge</apex:outputLink></li>    
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=alejandra%20aguilera">Alejandra Aguilera</apex:outputLink></li>      
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=grisell%20rodriguez">Grisell Rodriguez</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=linda%20arnold">Linda Arnold</apex:outputLink></li>        
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=pedro%20malave">Pedro Malave</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Hospital_June2nd_Commits}?coordinator=ryn%20schneider">Ryn Schneider</apex:outputLink></li>  
+  </ul>            
+    &nbsp;<br></br>  
+    &nbsp;<br></br>  
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_All_June2nd}">All Divs June 2nd Commits/Confirms</apex:outputLink></li>
+    &nbsp;<br></br>
+    &nbsp;<br></br>    
+    &nbsp;<br></br>
+    &nbsp;<br></br>
+    &nbsp;<br></br>
+  </ul>
+</dd>
+</dl>
+</apex:page>

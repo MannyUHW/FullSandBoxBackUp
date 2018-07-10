@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>NEO Facility Audit</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>NEO Facility Audits</value>
+    </caseValues>
+    <fields>
+        <help><!-- Cards been turned in to union staff --></help>
+        <label><!-- All cards turned in --></label>
+        <name>All_cards_turned_in__c</name>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes</masterLabel>
+            <translation><!-- Yes --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Employer Name --></label>
+        <name>Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Facilty --></label>
+        <name>Facilty__c</name>
+        <relationshipLabel><!-- NEO Facility Audits --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Getfeedback API Id --></help>
+        <label><!-- Getfeedback API --></label>
+        <name>Getfeedback_API__c</name>
+    </fields>
+    <fields>
+        <help><!-- NEO Date --></help>
+        <label><!-- NEO Date --></label>
+        <name>NEO_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- Names, dept and reason for New Employee who did not signed card --></help>
+        <label><!-- New Employee Who Did Not Signed Card --></label>
+        <name>New_Employee_Not_Signed_Card__c</name>
+    </fields>
+    <fields>
+        <label><!-- Notes --></label>
+        <name>Notes__c</name>
+    </fields>
+    <fields>
+        <help><!-- Potential Leaders/Activists Names,Dept,Reason --></help>
+        <label><!-- Potential Leaders/Activists --></label>
+        <name>Potential_Leaders_Activists__c</name>
+    </fields>
+    <fields>
+        <help><!-- Presenter Name(s) at NEO. --></help>
+        <label><!-- Presenter Name(s) --></label>
+        <name>Presenter_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Total bargaining unit members attended --></help>
+        <label><!-- Total BU Members Attended --></label>
+        <name>Total_BU_Members_Attended__c</name>
+    </fields>
+    <fields>
+        <help><!-- Total signed membership cards --></help>
+        <label><!-- Total Signed Membership Cards --></label>
+        <name>Total_Signed_Membership_Cards__c</name>
+    </fields>
+    <fields>
+        <help><!-- Total Signed Up COPE --></help>
+        <label><!-- Total Signed up COPE --></label>
+        <name>Total_Signed_Up_COPE__c</name>
+    </fields>
+    <fields>
+        <help><!-- Total amount COPE raised --></help>
+        <label><!-- Total amount COPE --></label>
+        <name>Total_amount_COPE__c</name>
+    </fields>
+    <layouts>
+        <layout>NEO Audit Facilty Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

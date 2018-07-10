@@ -1,0 +1,43 @@
+<apex:page controller="BoothForce_TradeShowSetupController">
+
+  <link type="text/css" rel="stylesheet" href="{!$Page.BoothForce_css}"/>
+
+	<style>
+		a.btnPrimary{
+			text-decoration: none !important;
+			display: inline-block;
+		}
+	</style>
+	
+  <div id="tradeShowSetup">
+  
+      <div>
+        <span><a href="{!URLFOR($Action.Area_Zone__c.New)}" class="btn btnPrimary">Create Area/Zone</a></span>
+        <h1>Step 1</h1><h2>Areas/Zones</h2>This is a physical area or logical grouping of Booths that have common staffing times.
+      </div>
+
+      <div>
+        <span><a href="{!URLFOR($Action.Booth__c.New)}" class="btn btnPrimary">Create Booth</a></span>
+        <h1>Step 2</h1><h2>Booths</h2>A physical station that requires staffing.  Examples include Demo Stations, Concierge, Genius Bar, etc.
+      </div>
+      
+      <div>
+        <span><a href="{!URLFOR($Action.Shift_Time__c.New)}" class="btn btnPrimary">Create Shift Time</a></span>
+        <h1>Step 3</h1><h2>Shift Times</h2>Blocks of time which  staff are required to be at a particular Booth.  These are associated with a day, time, and Area/Zone
+      </div>
+      
+      <div>
+        <span><a href="/apex/BoothForce_SetupShifts" class="btn btnPrimary">Generate Staffing Demand</a></span>
+        <h1>Step 4</h1><h2>Staffing Demand</h2>This wizard allows you to establish the number of individuals that need to staff a Booth during a particular Shift Time.
+      </div>
+      
+	    <div>
+	      <apex:form >
+			    <span><apex:commandButton action="{!massEmailShifts}" value="Mass Email Shifts" id="theButton" styleClass="btnPrimary setupStep"/></span>
+			    <h1>Step 5</h1>Mass Email Shifts
+			  </apex:form>
+      </div>
+
+  </div>
+
+</apex:page>

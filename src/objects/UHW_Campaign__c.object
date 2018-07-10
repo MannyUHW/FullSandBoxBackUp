@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>true</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Campaign_Requirements__c</fullName>
+        <externalId>false</externalId>
+        <label>Campaign Requirements</label>
+        <length>32768</length>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Division_Links__c</fullName>
+        <externalId>false</externalId>
+        <label>Division Links</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Employer_Filter__c</fullName>
+        <description>Enter names or partial names of Employers to enable the filter in Mobile Organizer.  E.g. &quot;Kaiser&quot; will only show the UHW Campaign to staff with access to Kaiser account.  &quot;Pomona Valley&quot; will only show the UHW Campaign to staff with access to the Pomona Valley Hospital account.</description>
+        <externalId>false</externalId>
+        <label>Employer Filter</label>
+        <length>4096</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Not_a_MO_Campaign__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>If you want to suppress this UHW Campaign in Mobile Organizer, check this box.</description>
+        <externalId>false</externalId>
+        <label>Not a MO Campaign</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Petition_Campaign__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Denotes a campaign that collects petitions</description>
+        <externalId>false</externalId>
+        <label>Petition Campaign</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Report_Links__c</fullName>
+        <externalId>false</externalId>
+        <label>Report Links</label>
+        <length>32768</length>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>15</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>UHW Campaign</label>
+    <listViews>
+        <fullName>Active_Campaigns</fullName>
+        <booleanFilter>1 AND (2 or 3)</booleanFilter>
+        <columns>NAME</columns>
+        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Date__c</field>
+            <operation>lessOrEqual</operation>
+            <value>TODAY</value>
+        </filters>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>greaterThan</operation>
+            <value>TODAY</value>
+        </filters>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Active Campaigns</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Campaigns</fullName>
+        <columns>NAME</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Not_a_MO_Campaign__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Campaigns</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Campaigns_2015</fullName>
+        <columns>NAME</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Date__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>1/1/2015</value>
+        </filters>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>1/1/2015</value>
+        </filters>
+        <label>Campaigns 2015</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Data_Team</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Campaigns_2016</fullName>
+        <columns>NAME</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Date__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>1/1/2016</value>
+        </filters>
+        <filters>
+            <field>End_Date__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>1/1/2016</value>
+        </filters>
+        <label>Campaigns 2016</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Data_Team</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Phase_7_Hospital</fullName>
+        <columns>NAME</columns>
+        <columns>Report_Links__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Phase7</value>
+        </filters>
+        <label>Phase 7 Hospital</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>X2_years</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Start_Date__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>10/21/2014</value>
+        </filters>
+        <label>2 years</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>UHW Campaign Name</label>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>UHW Campaigns</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>New_Organizing</fullName>
+        <active>true</active>
+        <description>New Organizing Campaign Type</description>
+        <label>New Organizing</label>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Standard</fullName>
+        <active>true</active>
+        <description>Standard UHW Campaign</description>
+        <label>Standard</label>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>Private</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

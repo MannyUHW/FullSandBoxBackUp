@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Licensure</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Licensure</value>
+    </caseValues>
+    <fields>
+        <label><!-- Alt Employer --></label>
+        <name>Alt_Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assessment --></label>
+        <name>Assessment__c</name>
+        <picklistValues>
+            <masterLabel>1. SEIU-UHW Leader Producing</masterLabel>
+            <translation><!-- 1. SEIU-UHW Leader Producing --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>2. SEIU-UHW Supporter</masterLabel>
+            <translation><!-- 2. SEIU-UHW Supporter --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>3. Undecided</masterLabel>
+            <translation><!-- 3. Undecided --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>4. Anti-Union</masterLabel>
+            <translation><!-- 4. Anti-Union --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>5. NUHW Supporter</masterLabel>
+            <translation><!-- 5. NUHW Supporter --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>6. Management Leader or Activist</masterLabel>
+            <translation><!-- 6. Management Leader or Activist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>7. NUHW leader or Activist</masterLabel>
+            <translation><!-- 7. NUHW leader or Activist --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>9. Reported to be NLE</masterLabel>
+            <translation><!-- 9. Reported to be NLE --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Bad Phone # --></label>
+        <name>Bad_Phone__c</name>
+        <picklistValues>
+            <masterLabel>Phone 1</masterLabel>
+            <translation><!-- Phone 1 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Phone 2</masterLabel>
+            <translation><!-- Phone 2 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Phone 3</masterLabel>
+            <translation><!-- Phone 3 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Phone Contact Home</masterLabel>
+            <translation><!-- Phone Contact Home --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Phone Contact Mobile</masterLabel>
+            <translation><!-- Phone Contact Mobile --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Birth Date --></label>
+        <name>Birth_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Call Back --></label>
+        <name>Call_Back__c</name>
+    </fields>
+    <fields>
+        <label><!-- Comments --></label>
+        <name>Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- DWID --></label>
+        <name>DWID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Do Not Call --></label>
+        <name>Do_Not_Call__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer 2 --></label>
+        <name>Employer_2__c</name>
+        <relationshipLabel><!-- Licensure (Employer 2) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Employer Name --></label>
+        <name>Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+        <relationshipLabel><!-- Licensure --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Encoded Nearby Hosp 05 --></label>
+        <name>Encoded_Nearby_Hosp_05__c</name>
+    </fields>
+    <fields>
+        <label><!-- Encoded Nearby Hosp 10 --></label>
+        <name>Encoded_Nearby_Hosp_10__c</name>
+    </fields>
+    <fields>
+        <label><!-- Encoded Nearby Hosp 15 --></label>
+        <name>Encoded_Nearby_Hosp_15__c</name>
+    </fields>
+    <fields>
+        <label><!-- Encoded Nearby Hosp 20 --></label>
+        <name>Encoded_Nearby_Hosp_20__c</name>
+    </fields>
+    <fields>
+        <label><!-- First Name --></label>
+        <name>First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Full Name --></label>
+        <name>Full_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Gender --></label>
+        <name>Gender__c</name>
+        <picklistValues>
+            <masterLabel>Female</masterLabel>
+            <translation><!-- Female --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Male</masterLabel>
+            <translation><!-- Male --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unknown</masterLabel>
+            <translation><!-- Unknown --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Geolocation --></label>
+        <name>Geolocation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Interest in Co-Op --></label>
+        <name>Interest_in_Co_Op__c</name>
+        <picklistValues>
+            <masterLabel>Interested/Ready to apply</masterLabel>
+            <translation><!-- Interested/Ready to apply --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Eligible (no longer an LVN)</masterLabel>
+            <translation><!-- Not Eligible (no longer an LVN) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Interested</masterLabel>
+            <translation><!-- Not Interested --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unsure/wants more information</masterLabel>
+            <translation><!-- Unsure/wants more information --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Last Name --></label>
+        <name>Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Addr City --></label>
+        <name>License_Addr_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Addr County --></label>
+        <name>License_Addr_County__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Addr State --></label>
+        <name>License_Addr_State__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Addr Street --></label>
+        <name>License_Addr_Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Addr Zip --></label>
+        <name>License_Addr_Zip__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Agency --></label>
+        <name>License_Agency__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Expiration Date --></label>
+        <name>License_Expiration_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Id --></label>
+        <name>License_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Issue Date --></label>
+        <name>License_Issue_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Status --></label>
+        <name>License_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- License Type --></label>
+        <name>License_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Licensure Notes --></label>
+        <name>Licensure_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mailing Addr City --></label>
+        <name>Mailing_Addr_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mailing Addr State --></label>
+        <name>Mailing_Addr_State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mailing Addr Street --></label>
+        <name>Mailing_Addr_Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mailing Addr Zip --></label>
+        <name>Mailing_Addr_Zip__c</name>
+    </fields>
+    <fields>
+        <label><!-- Middle Name --></label>
+        <name>Middle_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nearby Hospitals --></label>
+        <name>Nearby_Hospitals__c</name>
+    </fields>
+    <fields>
+        <label><!-- Party Affiliation --></label>
+        <name>Party_Affiliation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone 1 --></label>
+        <name>Phone_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone 2 --></label>
+        <name>Phone_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone 3 --></label>
+        <name>Phone_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone Contact Home --></label>
+        <name>Phone_Contact_Home__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone Contact Mobile --></label>
+        <name>Phone_Contact_Mobile__c</name>
+    </fields>
+    <fields>
+        <label><!-- Race --></label>
+        <name>Race__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regr Addr City --></label>
+        <name>Regr_Addr_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regr Addr State --></label>
+        <name>Regr_Addr_State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regr Addr Street --></label>
+        <name>Regr_Addr_Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regr Addr Zip --></label>
+        <name>Regr_Addr_Zip__c</name>
+    </fields>
+    <fields>
+        <label><!-- Related Contact 1 --></label>
+        <name>Related_Contact_1__c</name>
+        <relationshipLabel><!-- Licensure --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Related Contact 2 --></label>
+        <name>Related_Contact_2__c</name>
+        <relationshipLabel><!-- Licensure (Contact) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Related Contact How 1 --></label>
+        <name>Related_Contact_How_1__c</name>
+        <picklistValues>
+            <masterLabel>Cohabitator</masterLabel>
+            <translation><!-- Cohabitator --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Family/Friend</masterLabel>
+            <translation><!-- Family/Friend --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Same Person</masterLabel>
+            <translation><!-- Same Person --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Related Contact How 2 --></label>
+        <name>Related_Contact_How_2__c</name>
+        <picklistValues>
+            <masterLabel>Cohabitator</masterLabel>
+            <translation><!-- Cohabitator --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Family/Friend</masterLabel>
+            <translation><!-- Family/Friend --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Same Person</masterLabel>
+            <translation><!-- Same Person --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Report Tags --></label>
+        <name>Report_Tags__c</name>
+    </fields>
+    <fields>
+        <label><!-- Spanish Level --></label>
+        <name>Spanish_Level__c</name>
+        <picklistValues>
+            <masterLabel>Conversational</masterLabel>
+            <translation><!-- Conversational --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fluent</masterLabel>
+            <translation><!-- Fluent --></translation>
+        </picklistValues>
+    </fields>
+    <layouts>
+        <layout>Licensure Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Proximities --></label>
+            <section>Proximities</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

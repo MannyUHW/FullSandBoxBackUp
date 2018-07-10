@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>EBoardSeats</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>EBoardSeats</value>
+    </caseValues>
+    <fields>
+        <label><!-- Cnt_eb --></label>
+        <name>Cnt_eb__c</name>
+    </fields>
+    <fields>
+        <label><!-- ConstituencyId --></label>
+        <name>ConstituencyId__c</name>
+    </fields>
+    <fields>
+        <label><!-- ConstituencyName --></label>
+        <name>ConstituencyName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Constituency --></label>
+        <name>Constituency__c</name>
+        <relationshipLabel><!-- EBoardSeats --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Constituency_forAPI_Sandbox --></label>
+        <name>Constituency_forAPI__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact Employer --></label>
+        <name>Contact_Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact Name --></label>
+        <name>Contact_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+        <relationshipLabel><!-- EBoardSeats (Coordinator) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- DistrictName --></label>
+        <name>DistrictName__c</name>
+    </fields>
+    <fields>
+        <label><!-- DivisionName --></label>
+        <name>DivisionName__c</name>
+    </fields>
+    <fields>
+        <help><!-- use for reporting --></help>
+        <label><!-- Division Type --></label>
+        <name>Division_Type__c</name>
+    </fields>
+    <fields>
+        <help><!-- use for reporting --></help>
+        <label><!-- Div Name --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- EB ID --></label>
+        <name>EB_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- E Board Year --></label>
+        <name>E_Board_Year__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard Count --></label>
+        <name>Eboard_Count__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the Executive Committee seat; --></help>
+        <label><!-- Ecom Eboard Seat --></label>
+        <name>Ecom_Eboard_Seat__c</name>
+        <relationshipLabel><!-- EBoardSeats --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Executive Committee Name --></help>
+        <label><!-- Ecom Member --></label>
+        <name>Ecom_Member__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ecomm --></label>
+        <name>Ecomm_c__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Executive Body Title --></label>
+        <name>Executive_Body_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- FID_forAPI_Sandbox --></label>
+        <name>FID_forAPI__c</name>
+    </fields>
+    <fields>
+        <help><!-- COPE 10X10 Goal --></help>
+        <label><!-- Goal --></label>
+        <name>Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- MemberID --></label>
+        <name>MemberID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Not Eligible For Election --></label>
+        <name>Not_Eligible_For_Election__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 2 --></label>
+        <name>Organizer2__c</name>
+        <relationshipLabel><!-- EBoardSeats (Organizer 2) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Organizer 1 --></label>
+        <name>Organizer__c</name>
+        <relationshipLabel><!-- EBoardSeats (Organizer 1) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Organizer(s) --></label>
+        <name>Organizer_s__c</name>
+    </fields>
+    <fields>
+        <label><!-- Previous Seat Holder --></label>
+        <name>Previous_Seat_Holder__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Director --></label>
+        <name>Regional_Director__c</name>
+        <relationshipLabel><!-- EBoardSeats (Regional Director) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Route List Account --></label>
+        <name>RouteListAccountId__c</name>
+        <relationshipLabel><!-- EBoardSeatsAccount --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>SeatHolder__c</name>
+        <relationshipLabel><!-- EBoardSeats --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- SeatName --></label>
+        <name>SeatName__c</name>
+    </fields>
+    <fields>
+        <label><!-- SubSeatID --></label>
+        <name>SubSeatID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Survey Encoded --></label>
+        <name>Survey_Encoded__c</name>
+    </fields>
+    <fields>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Vacant Seat --></label>
+        <name>Vacant_Seat__c</name>
+    </fields>
+    <layouts>
+        <layout>EBoardSeats Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

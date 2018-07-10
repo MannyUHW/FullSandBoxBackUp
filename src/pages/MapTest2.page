@@ -1,0 +1,38 @@
+<apex:page >
+  <html>
+    <head>
+      <style>
+        #map {
+          height: 700px;  
+          width: 1400px;  
+         }
+         #controls {
+          height: 700px;  
+          width: 200px;
+          background-color: aquamarine;
+         }
+      </style>
+    </head>
+    <body>
+      <h3>My Google Maps Demo</h3>
+      <!--The div element for the map -->
+      <div id="map"></div>
+      <div id="controls"></div>
+      <script>
+        // Initialize and add the map
+        function initMap() {
+          const uhwHome = {lat:  37.8098045, lng: -122.2708655};
+          const mapDiv  = document.getElementById('map');
+          let map    = new google.maps.Map(mapDiv, {zoom: 19, center: uhwHome});
+//        let marker = new google.maps.Marker({position: uhwHome, map: map});
+        }
+      </script>
+      <!--Load the API from the specified URL
+      * The async attribute allows the browser to render the page while the API loads
+      * The key parameter will contain your own API key (which is not needed for this tutorial)
+      * The callback parameter executes the initMap() function
+      -->
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR9ZnGGQwbNFLR9t1DXknBwIZfe2gFD-Q&callback=initMap"></script>
+    </body>
+  </html>
+</apex:page>

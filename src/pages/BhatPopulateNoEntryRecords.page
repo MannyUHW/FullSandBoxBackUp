@@ -1,0 +1,24 @@
+<apex:page controller="BhatPopulateNoEntryRecordsController">
+    <apex:form >
+    
+		<apex:pageBlock title="">
+			<apex:outputText style="text-align:center;" value="  Bhat Update       Start Date: {0} End Date: {1}.">
+		       <apex:param value="{!BHAT_Update_Start_Date}"/>
+		       <apex:param value="{!BHAT_Update_End_Date}"/>
+		    </apex:outputText>        	
+
+		</apex:pageBlock>		        	
+		
+        <apex:pageBlock title="" mode="edit">
+        
+        	<apex:outputtext id="errormessage" escape="false">
+            	<apex:pageMessages escape="false"/>
+            </apex:outputtext>
+            
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Populate Missing Records" action="{!Populate}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                <apex:commandButton value="Delete NoEntry  Records" action="{!DeleteNoEntryRecords}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    </apex:page>

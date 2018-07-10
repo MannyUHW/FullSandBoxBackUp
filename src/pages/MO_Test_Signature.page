@@ -1,0 +1,120 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Signature Test</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/signature_pad/1.5.3/signature_pad.min.js"></script>
+
+<script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/35.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+</head>
+
+<body>
+<div align="center">
+&nbsp;<br/>
+&nbsp;<br/>
+Sign Up for SEIU-UHW Membership
+<table border="1">
+<tr>
+<td>
+<div id="signature-pad" class="m-signature-pad">
+    <div class="m-signature-pad--body">
+      <canvas></canvas>
+    </div>
+    <div class="m-signature-pad--footer">
+      <div class="description">Sign above</div>
+      <button type="button" class="button clear" data-action="clear">Clear</button>
+      <button type="button" class="button save" data-action="save">Save</button>
+    </div>
+  </div>
+</td>
+</tr>
+</table>
+  
+</div>
+
+
+
+<script language="JavaScript">
+
+
+var wrapper = document.getElementById("signature-pad"),
+    clearButton = wrapper.querySelector("[data-action=clear]"),
+    saveButton = wrapper.querySelector("[data-action=save]"),
+    canvas = wrapper.querySelector("canvas"),
+    signaturePad;
+
+// Adjust canvas coordinate space taking into account pixel ratio,
+// to make it look crisp on mobile devices.
+// This also causes canvas to be cleared.
+function resizeCanvas() {
+    // When zoomed out to less than 100%, for some very strange reason,
+    // some browsers report devicePixelRatio as less than 1
+    // and only part of the canvas is cleared then.
+    var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.offsetHeight * ratio;
+    canvas.getContext("2d").scale(ratio, ratio);
+}
+
+window.onresize = resizeCanvas;
+resizeCanvas();
+
+signaturePad = new SignaturePad(canvas);
+
+clearButton.addEventListener("click", function (event) {
+    signaturePad.clear();
+});
+
+saveButton.addEventListener("click", function (event) {
+    if (signaturePad.isEmpty()) {
+        alert("Please provide signature first.");
+    } else {
+        window.open(signaturePad.toDataURL());
+    }
+});
+
+
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

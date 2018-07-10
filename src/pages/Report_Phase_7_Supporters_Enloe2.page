@@ -1,0 +1,811 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false" controller="ctrlr_mo">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<style type="text/css" media="screen,print">
+   .pageBreak {
+     display: block;
+     page-break-after: always;
+     border :1px solid black
+   }
+</style>
+<div ng-app="app" ng-controller="ctrlr">
+    <div align="left" class="leaderTemplate pageBreak" ng-repeat="ldr in ldrs">
+<table border="0" width="100%">
+        <tr valign="top">
+        <td>
+          &nbsp;<br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <u>Leader:</u> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="+1"><b>{{ldr.leaderName}}</b></font><br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <u>Department:</u>&nbsp;<font size="-1">{{ldr.department}}</font><br/>  
+          &nbsp;<br/>
+          &nbsp;<br/>
+        </td>
+      </tr>
+</table> 
+<table cellspacing="0" cellpadding="1" width="100%">
+    <thead>
+      <tr valign="bottom">
+         <td width="15%" align="center" bgcolor="#080808"><font color="white">Name</font></td>
+         <td width="20%" align="center" bgcolor="#080808"><font color="white">Department</font></td>
+         <td width="20%" align="center" bgcolor="#080808"><font color="white">Contact Info</font></td>
+         <td width="8%" align="center" bgcolor="#080808"><font color="white">Yes</font></td>
+         <td width="10%" align="center" bgcolor="#080808"><font color="white">1. Will Vote For Newsom</font></td>
+         <td width="10%" align="center" bgcolor="#080808"><font color="white">2. Will Not Vote For Newsom</font></td>
+         <td width="10%" align="center" bgcolor="#080808"><font color="white">3. Refused to Engage</font></td>
+         <td width="7%" align="center" bgcolor="#080808"><font color="white">4. Unable to Vote</font></td>
+      </tr>
+    </thead>
+</table>
+      <div class="teamTemplate" ng-repeat="supp in ldr.supps">
+          <table cellspacing="0" cellpadding="1" width="100%">
+          <tr style="page-break-inside: avoid;" valign="top">
+        <td width="15%"><font size="+1">{{supp.contactName}}</font></td>
+        <td width="20%"><font size="-1"><span ng-bind-html="supp.dept"></span><br/>Shift: {{supp.contactShift}} [{{supp.department}}]</font></td>
+        <td width="20%"><font size="-1">Personal Email: {{supp.contactEmail}}<br/>Cell: {{supp.MobilePhone}}</font></td>
+        <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; page-break-inside: avoid;" align="center" width="8%" rowspan="2" >
+            <font size="+2">
+              &#x25A2;
+            </font>
+        </td>
+        <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; page-break-inside: avoid;" align="center" width="10%" rowspan="2" ng-show="supp.rLetter != '1'">
+            <font size="+2">
+              &#x25A2;
+            </font>
+        </td>
+        <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; page-break-inside: avoid;" align="center" width="10%" rowspan="2" ng-show="supp.rLetter == '1'">
+            <font size="+2">&#x2611;</font>
+        </td>
+        <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; page-break-inside: avoid;" align="center" width="10%" rowspan="2" ng-show="supp.rLetter != '2'">
+            <font size="+2">
+              &#x25A2;
+            </font>
+        </td>
+        <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; page-break-inside: avoid;" align="center" width="10%" rowspan="2" ng-show="supp.rLetter == '2'">
+            <font size="+2">&#x2611;</font>
+        </td>
+        <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; page-break-inside: avoid;" align="center" width="10%" rowspan="2" ng-show="supp.rLetter != '3'">
+            <font size="+2">
+              &#x25A2;
+            </font>
+        </td>  
+        <td style="border-left: 1px solid #000; border-bottom: 1px solid #000; page-break-inside: avoid;" align="center" width="10%" rowspan="2" ng-show="supp.rLetter == '3'">
+            <font size="+2">&#x2611;</font>
+        </td>
+          <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;" align="center" width="7%" rowspan="2" ng-show="supp.rLetter != '4'">        
+          <font size="+2">
+          &#x25A2;
+          </font>
+          </td>
+          <td style="border-left: 1px solid #000; border-bottom: 1px solid #000;" align="center" width="7%" rowspan="2" ng-show="supp.rLetter == '4'">
+            <font size="+2">&#x2611;</font>
+          </td>
+          </tr>
+        <tr valign="bottom">
+          <td align="right"><font size="-1"><i>Sign Here:</i></font></td>
+          <td colspan="2" align="left">________________________________________</td>
+        </tr>
+          </table>
+      </div>
+    &nbsp;<br/>      
+    <i>Updated: {{ldr.dateString}}</i>
+    </div> 
+</div>
+<script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.js"/>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+<script language="JavaScript">
+
+
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              //pWorksite = pWorksite.replace(/\./g,'');
+              //pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return dept;
+}
+
+var lastRecord = {};
+
+function processTemplate(pTemplate) {
+ var templateVars = pTemplate.match(/{{([^{}]+)}}/g);
+ if (templateVars == null) {
+   return pTemplate;
+ }
+ var newWriter = pTemplate;
+ for (var q = 0; q < templateVars.length; q++) {   
+   lastRecord.debug = "evaluating var " + templateVars[q];
+   var evalCode = templateVars[q].substring(2, templateVars[q].length -2);
+   var evalValue = eval(evalCode);
+   newWriter = newWriter.replace(templateVars[q], evalValue);
+ }
+ lastRecord.debug = "";
+ return newWriter;
+}
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+
+
+var user = sforce.connection.getUserInfo();
+
+var LEADER = "LEADER";
+var LEADERS = "LEADERS";
+var SUPPORTERS = "SUPPORTERS";
+var TAG_REACH = "Reach2017";
+var TAG_STRETCH2 = "Stretch2Complete";
+var TAG_STRETCH3 = "Stretch3Target";
+var TAG_RS_LDR = "RSLdr";
+
+var ALL = "ALL";
+var DIVISION = "DIVISION";
+var EMPLOYER = "EMPLOYER";
+
+var BU = "BU";
+var NEED_CARD = "NEED_CARD";
+var COPE_BELOW_10 = "COPE_BELOW_10";
+var EITHER = "EITHER";
+var NEED_INFO = "NEED_INFO";
+
+//
+//  GOLD means Leaders who have not completed previous assignments
+//
+var goldSet = [];
+
+//
+//  Only show P1, P3, P5 Completed Covered Ldrs
+//
+var coveredLdrSet = [];
+
+
+//$(".eboardTemplate").hide();
+//$(".leaderTemplate").hide();
+//$(".teamTemplate").hide();
+
+var filter = "{!$CurrentPage.parameters.filter}";
+
+var mode = "{!$CurrentPage.parameters.mode}";
+
+//$(function() {
+
+if (mode == null || mode == "null" || mode == "") {
+  mode = "supporters";
+} else {
+  mode = mode.toLowerCase();
+}
+
+var pldrtype = "{!$CurrentPage.parameters.pldrtype}";
+if (pldrtype == null || pldrtype  == "null" || pldrtype == "") {
+  pldrtype = "all";
+} else {
+  pldrtype = pldrtype.toLowerCase();
+}
+
+
+if (filter == null || filter == "null" || filter == "") {
+  filter = null;
+} else {
+  filter = filter.toLowerCase();
+}
+
+//
+// REMOVE REMOVE REMOVE FOR PRODUCTION
+//
+//filter = "MARTA DOMINGUEZ";
+
+var adate = new Date();
+
+var CODE_LDRS = "";
+var CODE_NEWSOM = "EN5";  //Support Newsom ? SQ (1 = will vote; 2= will not vote; 3=refused; 4=unable to vate)
+var CODE_ACTION = "EN4";  //P7 Nomincated Leader SQ (allowed response = 'yes')
+var CODE_STICKER = "EN2"; //ar = 'yes'
+var CODE_LIST = [];
+CODE_LIST.push(CODE_ACTION);
+CODE_LIST.push(CODE_NEWSOM);
+CODE_LIST.push(CODE_STICKER);
+var app = angular.module('app', []);
+
+app.controller('ctrlr', function($scope,$sce){
+    $scope.safeApply = function(fn) {
+          var phase = this.$root.$$phase;
+          if(phase == '$apply' || phase == '$digest') {
+            if(fn && (typeof(fn) === 'function')) {
+              fn();
+            }
+          } else {
+            this.$apply(fn);
+          }
+        }
+    $scope.chunk_size = 2000;
+
+    $scope.emPicketQuery = "select Id, Name, Phase_6_Picket__c from Account where Account_Group__c = \'KAISER\' OR Account_Group__c = \'HOSPITAL\' ";
+
+    $scope.query_sr = "select Contact__c, Contact__r.Stretch_Leader__c, Contact__r.Stretch_Ldr_Promotion_Status__c, ";
+    $scope.query_sr += "FID__c, Survey_Code__c, Response_Value__c, Add_Info__c, Previous_Responses__c, Collected_Datetime__c  ";
+    $scope.query_sr += "from Survey_Response__c ";
+    $scope.query_sr += "where (Survey_Code__c in (\'" + CODE_LIST.join("\',\'") + "\') ) "
+      if (filter != null) {
+        $scope.query_sr += " AND (Division__c = \'" + filter + "\' OR ";
+        $scope.query_sr += " Regional_Director__c=\'" + filter + "\' OR ";
+        if (filter == "vacant") {
+          $scope.query_sr += " Coordinator__c = null OR ";
+          $scope.query_sr += " Organizer_1__c = null OR ";        
+        } else {
+          $scope.query_sr += " Coordinator__c =\'" + filter + "\' OR ";
+          $scope.query_sr += " Organizer_1__c =\'" + filter + "\' OR ";
+        }
+        $scope.query_sr += " Employer_Name__c =\'" + filter + "\'  ";
+        $scope.query_sr += ") ";        
+      }
+
+    $scope.query_cons = "select Account.Account_Group__c, Account.Regional_Director__r.Name, Account.Coordinator__r.Name, ";
+    $scope.query_cons += "Account.Organizer_1__r.Name, Account.Name, Stretch_Leader_Employer_Name__c, Stretch_Leader__r.Constituency_Name_2017__c, ";
+    $scope.query_cons += "Constituency_Name_2017__c, Account.District_2017__r.ConstituencyName__c, FID__c, Stretch_Leader__c, Stretch_Leader_FID__c, ";
+    $scope.query_cons += "Name, Worksite__c, Department, Department_Mod__c, COPE_Pledge__c, Stretch_Member_Card_Signed__c, Email, MobilePhone, ";
+    $scope.query_cons += "Executive_Body_Title__c, Stretch_Ldr_Promotion_Status__c, Tier_1_Leader__r.Name, Tier_1_Leader__r.FirstName, Tier_1_Leader__r.LastName, ";
+    $scope.query_cons += "Tier_1_Leader__r.FID__c, Stretch_Leader_Name__c, Stretch_Leader__r.FID__c, Stretch_Ldr_Run_By_EBoard__c, Stretch_EBoard_Team__c, ";
+    $scope.query_cons += "Stretch_Leader__r.Tier_1_Leader__r.FID__c, Shift_Standardized__c, Stretch_Team_Intake_Phase__c, Stretch_EBoard_Leader_Name__c, LastName, FirstName,X80_Leader__c ";
+    $scope.query_cons += "from Contact ";
+    $scope.con_fields = $scope.query_cons;
+    $scope.query_cons += "where (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6) ";
+    $scope.query_cons += "AND  (NOT Stretch_Leader_Employer_Name__c like \'pomona valley%\') ";
+    $scope.query_cons += "AND (NOT Stretch_Leader_Employer_Name__c like \'parkview%\') AND (NOT Account.Name like \'pomona valley%\') ";
+    $scope.query_cons += "AND (NOT Account.Name like \'parkview%\') AND (Account.Account_Group__c = \'KAISER\' OR Account.Account_Group__c = \'HOSPITAL\' ) ";
+    $scope.query_cons += "AND Account.Regional_Director__c != null AND Account.District_2017__c != null ";
+      if (filter != null) {
+        $scope.query_cons += " AND (Account.Account_Group__c=\'" + filter + "\' OR ";
+        $scope.query_cons += " Account.Regional_Director__r.Name=\'" + filter + "\' OR ";
+        if (filter == "vacant") {
+          $scope.query_cons += " Account.Coordinator__c = null OR ";
+          $scope.query_cons += " Account.Organizer_1__c = null OR ";        
+        } else {
+          $scope.query_cons += " Account.Coordinator__r.Name=\'" + filter + "\' OR ";
+          $scope.query_cons += " Account.Organizer_1__r.Name=\'" + filter + "\' OR ";
+        }
+        $scope.query_cons += " Account.Name=\'" + filter + "\'  ";
+        $scope.query_cons += ") ";        
+      }
+
+    
+
+    $scope.getData = function(){
+        try{
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.ctrlr_mo.getData}',
+                $scope.emPicketQuery,$scope.handleResult);
+        }
+        catch(e){
+            alert("error: " + e);
+        }
+    }
+    $scope.getData_sr = function(){
+        try{
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ctrlr_mo.getRecords}',
+                null,$scope.query_sr,$scope.handleResult_sr);
+        }
+        catch(e){
+            alert("error: " + e);
+        }
+    }
+    $scope.getData_cons = function(){
+        try{
+            console.log($scope.query_cons);
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.ctrlr_mo.getData}',
+                $scope.query_cons,$scope.handleResult_cons);
+        } catch(e){
+            alert("error: " + e);
+        }
+    }
+    $scope.getData_ldrs = function(){
+        missLdrFID = new Array();
+        for(var ldrFid in $scope.p6LdrSupportersSortMap){
+            var c = $scope.teamMap[ldrFid];
+            if (c == null){
+                missLdrFID.push(ldrFid);
+            }
+        }
+            var query_ldr = $scope.con_fields;
+            query_ldr += " Where FID__c in (\'" + missLdrFID.join("','") + "\') ";
+        try{
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.ctrlr_mo.getData}',
+                query_ldr,$scope.handleResult_ldrs);
+        } catch(e){
+            alert("error: " + e);
+        }
+    }
+    $scope.emPicketMap = [];
+    $scope.handleResult = function(result,event){
+        for (var i = 0; i < result.length; i++){
+            var r = result[i];
+            if(r.Phase_6_Picket__c != null && r.Phase_6_Picket__c != "" && r.Phase_6_Picket__c != "null"){
+                $scope.emPicketMap[r.Name.toLowerCase()] = r.Phase_6_Picket__c;
+            }
+        }
+        $scope.getData_sr();
+    }
+    $scope.handleResult_sr = function(result,event){
+        var rLength = result.length;
+        for( var i = 0; i < rLength; i++){
+            $scope.processSR_Rows(result[i]);
+        }
+        //do more
+        if(rLength == $scope.chunk_size){
+            var lastIndex = $scope.chunk_size - 1;        
+            {!$RemoteAction.ctrlr_mo.getRecords}(result[lastIndex].Id, $scope.query_sr, $scope.handleResult_sr);        
+        }
+        else{
+            $scope.getData_cons();
+            $scope.emSortSet.sort();
+            console.log("sr query complete.  # of records: " + rLength);
+        }
+    }
+    $scope.handleResult_cons = function(result,event){
+        var rLength = result.length;
+        console.log("query_cons rows: " + rLength);
+        for( var i = 0; i < rLength; i++){
+            $scope.processCONS_Rows(result[i]);
+        }
+        $scope.getData_last();
+    }
+    $scope.handleResult_last = function(result,event){
+        var rLength = result.length;
+        for( var i = 0; i < rLength; i++){
+            $scope.process_last(result[i]);
+        }
+        $scope.getData_ldrs();
+        console.log("last result finished");
+    }
+    $scope.handleResult_ldrs = function(result,event){
+        console.log("ldrs processing");
+        var rLength = result.length;
+        for(var ldrFid in $scope.p6LdrSupportersSortMap){
+            var c = $scope.teamMap[ldrFid];        
+            if(c == null){
+                for(var i = 0; i < rLength; i++){
+                    if(ldrFid == result[i].FID__c){
+                        c = result[i];
+                        $scope.teamMap[ldrFid] = c;
+                    }
+                }
+            }
+            var ssortSet = $scope.p6LdrSupportersSortMap[c.FID__c];
+            ssortSet.sort();
+            $scope.p6LdrSupportersSortMap[c.FID__c] = ssortSet;
+            if(c.Tier_1_Leader__r == null){
+                c.Tier_1_Leader__r = {};
+                c.Tier_1_Leader__r.LastName = "Turfed";
+                c.Tier_1_Leader__r.FirstName = "Not";
+            }
+            var ldrSortKey = JSON.stringify([c.Tier_1_Leader__r.LastName.toLowerCase(), c.Tier_1_Leader__r.FirstName.toLowerCase(), c.LastName.toLowerCase(), c.FirstName.toLowerCase(), c.FID__c]);
+            $scope.p6LdrSortSet.push(ldrSortKey); 
+        }
+        $scope.p6LdrSortSet.sort();        
+
+         var teamCount = 0;
+        console.log($scope.voteMap);
+         for(var j = 0; j < $scope.p6LdrSortSet.length; j++){
+            var ldrFid = JSON.parse($scope.p6LdrSortSet[j])[4];
+            var adate = new Date();
+            console.log(JSON.parse($scope.p6LdrSortSet[j]));
+            var ldrContact = $scope.teamMap[ldrFid];
+            console.log(ldrContact);
+            var employer = ldrContact.Account.Name;
+            var division = ldrContact.Account.Account_Group__c;
+            var regDirector = ldrContact.Account.Regional_Director__r.Name;
+            var coordinator = ldrContact.Account.Coordinator__r.Name;
+            var organizer = ldrContact.Account.Organizer_1__r.Name;
+            //var eboard
+
+            var gold = "";
+            if($scope.emPicketMap[employer.toLowerCase()] != null && $scope.coveredLdrSet.indexOf(ldrFid) >= 0 && (mode != "gold" || (mode == "gold" && gold == "GOLD" ))) {
+                //build leader data on top of supporters
+                var picketOptions = $scope.emPicketMap[employer.toLowerCase()].replace(/\r?\n/g, " ; ");
+
+                var turfString = division + " / " + regDirector + " / " + coordinator + " / " + organizer + " / " + employer;
+                var department = ldrContact.Department_Mod__c; 
+                if(department.indexOf("&") >= 0){
+                    var ampStart = department.indexOf("&");
+                    department = department.substring(0,ampStart) + " & " + department.substring(ampStart + 6);
+                } 
+                department = $sce.trustAsHtml(department);
+
+                var leaderName = toProperCase(ldrContact.Name);
+
+                var eboardName = toProperCase(ldrContact.Stretch_EBoard_Leader_Name__c);
+                if (eboardName == null) {
+                    eboardName = "Not Turfed";
+                }                 
+
+                var supporterSet = $scope.p6LdrSupportersSortMap[ldrFid];
+                //build out supporter data under leader
+                if (supporterSet.length > 2) {
+                var row = {};
+                row.picketOptions = picketOptions;
+                row.department = department;
+                row.leaderName = leaderName;
+                row.eboardName = eboardName;
+                row.dateString = adate.toLocaleString();
+                row.turfString = turfString;
+                row.supps = [];
+                    for(var k = 0; k < supporterSet.length; k++){
+                        var supp = {};
+                        var afid = JSON.parse(supporterSet[k])[2];
+                        var a = $scope.teamMap[afid];
+                        var contactName = a.Name
+                        supp.contactName = contactName;
+                        var contactDepartment = toProperCase(a.Department_Mod__c);
+                        if(contactDepartment.indexOf("&") >= 0){
+                            var ampStart = contactDepartment.indexOf("&");
+                            contactDepartment = contactDepartment.substring(0,ampStart) + " & " + contactDepartment.substring(ampStart + 6);
+                        } 
+                        supp.dept = $sce.trustAsHtml(contactDepartment);
+
+                        var contactShift = a.Shift_Standardized__c;
+                        supp.contactShift = contactShift;
+                        var contactCellPhone = a.MobilePhone;
+                        supp.MobilePhone = contactCellPhone;
+                        
+                        supp.rLetter = $scope.voteMap[afid];
+                        //
+                        // [TODO]: refactor into the html with angular for valid fields?
+                        //
+                        var contactCellCheck = "";
+                        if (contactCellPhone == null) {
+                          contactCellPhone = "";
+                        } else {
+                          contactCellCheck += "&#x25a1;"
+                        }
+                        //
+                        // [TODO]: refactor into the html with angular for valid fields?
+                        //
+                        var contactEmail = a.Email;
+                        var contactEmailCheck = "";        
+                        if (contactEmail == null) {
+                          contactEmail = "";
+                        } else {
+                          contactEmailCheck += "&#x25a1;"
+                        }    
+                        supp.contactEmail = contactEmail;
+                        var contactCardSigned = "";
+                        if (a.Stretch_Member_Card_Signed__c != null && (a.Stretch_Member_Card_Signed__c == "true" || a.Stretch_Member_Card_Signed__c == true)) {
+                          contactCardSigned = "&#x2714;";        
+                        } else {
+                          contactCardSigned = "<font size=\"+2\">&#x25a1;</font>";
+                        }
+                        var contactCope = a.COPE_Pledge__c;
+                        if (contactCope == null) {
+                          contactCope = 0.0;
+                        } else {
+                          contactCope = parseFloat(a.COPE_Pledge__c);
+                        }
+                        if (contactCope > 0) {
+                          contactCope = "$" + contactCope.toFixed(0);
+                        } else {
+                          contactCope = "";
+                        }
+                        var completedAssess = "";
+                        if ($scope.completedSet.indexOf(a.FID__c) >= 0) {
+                          completedAssess = "&#x2714;";        
+                        } else {
+                          completedAssess = "<font size=\"+2\">&#x25a1;</font>";
+                        }
+
+                        var contactPotential = "";
+
+                        var supporterName = contactName ;
+                        var supporterDepartment = contactDepartment;
+                        var supporterShift = contactShift ;
+                        var supporterCell = contactCellPhone;
+                        var supporterEmail = contactEmail;
+                        
+                        var shiftOptions = "AM / Lunch / PM";
+                        if (employer.toLowerCase().indexOf("kaiser") == 0) {
+                          shiftOptions = "11 am / Noon / 1 pm";
+                        }
+                        if ($scope.shiftMap[afid] != null) {
+                          shiftOptions = "&nbsp;&nbsp;<u>" + $scope.shiftMap[afid] + "</u>";
+                        }
+                        supp.shiftOptions = shiftOptions;
+                        
+                        var voteval = 0;
+                        if ($scope.voteMap[afid] != null) {
+                          voteval = $scope.voteMap[afid];
+                        }
+                        //
+                        //  DECLINE OR REFUSED
+                        //
+                        if ($scope.lastResponseMap[afid] != null && ($scope.lastResponseMap[afid].toLowerCase().substring(0,1) == "x" || $scope.lastResponseMap[afid].toLowerCase().substring(0,1) == "n")) {
+                          //committedDate = $scope.lastResponseMap[afid].substring($scope.lastResponseMap[afid].length-11).replace(")", "");
+                          shiftOptions = "<u><b>" + $scope.lastResponseMap[afid].substring(0, 9) + "</b></u>";                
+                        }
+                        //supp.committedDate = committedDate;
+                                                
+                        var confirmedDate = "";
+                        if ($scope.confirmMap[afid] != null) {
+                          confirmedDate = $scope.confirmMap[afid];
+                        }                
+                        supp.confirmedDate = confirmedDate;
+                        var remindedDate = "";   
+                        if ($scope.remindMap[afid] != null) {
+                          remindedDate = $scope.remindMap[afid];
+                        }                                     
+                        supp.remindedDate = remindedDate;
+                        row.supps.push(supp);
+                        //var rowWriter = "";
+                        //rowWriter += processTemplate(rowTemplate);          
+                        //emWriter += rowWriter;
+                    }
+                $scope.ldrs.push(row);                                
+                }
+                console.log($scope.ldrs);
+                $scope.$apply();
+            }
+         }
+    }
+    $scope.process_ldrs = function(){
+    }
+    $scope.xset = [];
+    $scope.newLeaderSet = [];
+    $scope.completedSet = [];
+    $scope.newLeaderMap = {};
+    $scope.statusMap = {};
+    $scope.attendMap = {};
+    $scope.shiftMap = {};
+    $scope.lastResponseMap = {};
+
+    $scope.voteMap = {};
+    $scope.confirmMap = {};
+    $scope.remindMap = {};
+    $scope.refuseMap = {};
+    $scope.declineMap = {};
+
+    $scope.processSR_Rows = function(row){
+        var sc = row.Survey_Code__c;
+        var rLetter = row.Response_Value__c.toLowerCase().substring(0,1);
+        var fid = row.FID__c;
+
+        if (sc == CODE_ACTION){
+            //P7 Nominated Leader 2018 - SC EN4
+            if(rLetter == "y"){
+                $scope.completedSet.push(fid);
+            }
+        } else if (sc == CODE_NEWSOM){
+                $scope.voteMap[fid] = rLetter;
+        } else if (sc == CODE_STICKER){
+            //Sticker up 2018
+        }
+    }
+    $scope.goldSet = [];
+    $scope.coveredLdrSet = [];
+    $scope.emSortSet = [];
+    $scope.conECommMap = {};
+    $scope.conEBoardMap = {};
+    $scope.teamMap = {};
+    $scope.p6LdrSupportersSortMap = {};
+    $scope.p6LdrSortSet = [];
+
+    $scope.processCONS_Rows = function(row){
+        if (row.X80_Leader__c) {
+            $scope.coveredLdrSet.push(row.FID__c);
+        }
+        var division = row.Account.Account_Group__c.toLowerCase();
+        var district = row.Account.District_2017__r.ConstituencyName__c;
+        if (row.Executive_Body_Title__c != null) {
+            if (row.Executive_Body_Title__c == "Executive Board") {      
+              var ewriter = "";
+              if ($scope.conEBoardMap[row.Constituency_Name_2017__c.toLowerCase()] != null) {
+                ewriter = $scope.conEBoardMap[row.Constituency_Name_2017__c.toLowerCase()] + "<br/>";
+              }
+              ewriter += "<u>EBoard</u>: " + row.Name + " - " + toProperCase(row.Account.Name) + " - " + toProperCase(row.Department);
+              $scope.conEBoardMap[row.Constituency_Name_2017__c.toLowerCase()] = ewriter;
+            } else if (row.Executive_Body_Title__c == "Executive Committee") {      
+              var ewriter = "";
+              if ($scope.conECommMap[district.toLowerCase()] != null) {
+                ewriter = $scope.conECommMap[district .toLowerCase()] + "<br/>";
+              }
+              ewriter += "<u>EComm</u>: " + row.Name + " - " + toProperCase(row.Account.Name) + " - " + toProperCase(row.Department);
+              $scope.conECommMap[district.toLowerCase()] = ewriter;        
+            }
+        }
+            if ($scope.leaderSet.indexOf(row.Stretch_Leader_FID__c) < 0) {
+              $scope.leaderSet.push(row.Stretch_Leader_FID__c);
+              incrementCounter([EMPLOYER, LEADERS, row.Stretch_Leader_Employer_Name__c], 1.0);
+              incrementCounter([EMPLOYER, SUPPORTERS, row.Stretch_Leader_Employer_Name__c], 1.0);
+            }
+            var regDirector = row.Account.Regional_Director__r.Name;
+            var coordinator = "Vacant";
+            if (row.Account.Coordinator__r != null) {
+              coordinator = row.Account.Coordinator__r.Name;      
+            }
+            var organizer = "Vacant";
+            if (row.Account.Organizer_1__r != null) {
+              organizer = row.Account.Organizer_1__r.Name;         
+            }   
+            var emName = row.Account.Name;
+
+            var sortKey = JSON.stringify([division, regDirector, coordinator, organizer, emName, row.Constituency_Name_2017__c, district]);
+            if ($scope.emSortSet.indexOf(sortKey) < 0) {
+              $scope.emSortSet.push(sortKey);
+            }
+       
+            incrementCounter([EMPLOYER, BU, row.Account.Name], 1.0);
+
+            if ( row.Stretch_Leader__c != null ) {
+              incrementCounter([EMPLOYER, SUPPORTERS, row.Stretch_Leader_Employer_Name__c], 1.0);
+            }
+        
+    }
+    
+    $scope.process_last = function(row){
+        if($scope.teamMap[row.FID__c] == null){
+            $scope.teamMap[row.FID__c] = row;
+        }
+        if(row.Stretch_Leader_FID__c != null && row.Stretch_Leader_FID__c != ""){
+            incrementCounter([LEADER, SUPPORTERS, row.Stretch_Leader_FID__c], 1.0);
+            var ssortSet = $scope.p6LdrSupportersSortMap[row.Stretch_Leader_FID__c];
+            if (ssortSet == null) {
+              ssortSet = [];
+            }
+            ssortSet.push(JSON.stringify([row.LastName.toLowerCase(), row.FirstName.toLowerCase(), row.FID__c]));
+            $scope.p6LdrSupportersSortMap[row.Stretch_Leader_FID__c] = ssortSet;
+        }        
+    }
+    $scope.ldrs = [];
+    $scope.getData_last = function(){
+        var lastEmployer = "";
+        console.log("last orchestration piece");
+        for(var i = 0; i < $scope.emSortSet.length; i++){
+            var a = JSON.parse($scope.emSortSet[i]);
+            var division = toProperCase(a[0]);
+            var regDirector = toProperCase(a[1]);
+            var coordinator = toProperCase(a[2]);
+            var organizer = toProperCase(a[3]);
+            var employer = toProperCase(a[4]);
+            if(employer != lastEmployer){
+            console.log(a);
+                var constituency = a[5];
+                var district = a[6];    
+                var bu = getCounter([EMPLOYER, BU, employer]);
+                console.log("bu > 10 ? :" + bu);
+                var supporters = getCounter([EMPLOYER, SUPPORTERS, employer ]);
+                console.log("supps > 0 ? :" + supporters);
+                console.log("employer: " + employer);
+                console.log(countMap);
+                if (bu > 10 && (supporters > 0 || employer.toLowerCase().indexOf("sequ") == 0)) {
+                    var reach = getCounter([EMPLOYER, TAG_REACH, employer ]);        
+                    
+                    var stretch = getCounter([EMPLOYER, TAG_STRETCH2, employer ]);
+
+                    var divConsolidated = getCounter([DIVISION, TAG_STRETCH3, division ]);
+                    var allConsolidated = getCounter([ALL, TAG_STRETCH3 ]);      
+      
+                    var leaders  = getCounter([EMPLOYER, LEADERS, employer ]);
+      
+                    var needCards = getCounter([EMPLOYER, NEED_CARD, employer ]);
+                    var divNeedCards = getCounter([DIVISION, NEED_CARD, division ]);
+                    var allNeedCards = getCounter([ALL, NEED_CARD]);
+      
+                    var needInfo = getCounter([EMPLOYER, NEED_INFO, employer ]);
+                    var divNeedInfo = getCounter([DIVISION, NEED_INFO, division ]);
+                    var allNeedInfo = getCounter([ALL, NEED_INFO]);
+                        
+                    var eitherCount = getCounter([EMPLOYER, EITHER, employer ]);
+                    var divEitherCount = getCounter([DIVISION, EITHER, division ]);
+                    var allEitherCount = getCounter([ALL, EITHER]);
+                        
+                    var underCope10 = getCounter([EMPLOYER, COPE_BELOW_10, employer ]);
+                    var divUnderCope10 = getCounter([DIVISION, COPE_BELOW_10, division ]);
+                    var allUnderCope10 = getCounter([ALL, COPE_BELOW_10]);
+      
+                    var eboard = "<u>EBoard:</u> Vacant";
+                    if ($scope.conEBoardMap[constituency.toLowerCase()] != null) {
+                      eboard = $scope.conEBoardMap[constituency.toLowerCase()];
+                    }    
+                    var ecomm = $scope.conECommMap[district.toLowerCase()]; 
+                    var moveLeaderSortList = [];
+                    var ldrSet = [];
+                    var promotedSet = [];
+                    var fidIdMap = {};
+                    var teamMap = {};
+                    var teamSet = [];
+                    var eboardSet = [];
+                    var supportersLdrMap = {};
+                    var ldrEboardMap = {};
+                    var eboardTeamLdrSet = [];
+
+                    var query = $scope.con_fields;
+                    query += " where ";
+                    query += "  (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6) ";
+                    if ($scope.emPicketMap[employer.toLowerCase()] != null) {
+                      query += " AND (Account.Name = \'" + employer +  "\' OR Stretch_Leader__r.Account.Name  = \'" + employer +  "\' ) "     
+                    } else {
+                      query += " AND (Account.Name = \'NOT PARTICIPATING\') ";
+                    }
+                    query += " order by Account.Name, Stretch_Leader_Name__c, LastName, FirstName ";
+                    console.log(query);
+                    console.log("last query start");
+                    try{
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.ctrlr_mo.getData}',
+                            query,$scope.handleResult_last);
+                    } catch(e){
+                        alert("error: " + e);
+                    }
+
+                    
+                   
+                }
+            }
+        }
+    }
+    $scope.init = function(){
+        $scope.leaderSet = new Array();
+        //start app here now
+        $scope.safeApply($scope.getData());       
+    }
+    $scope.init();
+});
+
+</script>
+
+</apex:page>

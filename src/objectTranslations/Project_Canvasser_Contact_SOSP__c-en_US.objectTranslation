@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Project Canvasser in Contact</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Project Canvasser Contacts</value>
+    </caseValues>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Project Canvasser Contacts --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Project Packet --></label>
+        <name>Project_Packet__c</name>
+        <relationshipLabel><!-- Project Canvasser Contacts --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

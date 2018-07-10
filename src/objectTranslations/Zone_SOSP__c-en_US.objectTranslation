@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Zone(p)</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Zones</value>
+    </caseValues>
+    <fields>
+        <label><!-- Zone Code --></label>
+        <name>Zone_Code__c</name>
+    </fields>
+    <fields>
+        <label><!-- Zone Group --></label>
+        <name>Zone_Group__c</name>
+        <relationshipLabel><!-- Zones --></relationshipLabel>
+    </fields>
+    <layouts>
+        <layout>Project Zone Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

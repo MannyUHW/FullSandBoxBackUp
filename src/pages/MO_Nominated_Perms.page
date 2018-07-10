@@ -1,0 +1,442 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>MO: Leader Permissions</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+
+<script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+</head>
+
+<body>
+<div align="center">
+<table><tr valign="top"><td align="center">  
+  
+<!--  
+    <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="MO_Main_Page"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    
+  </td>
+  </tr>
+  </table>
+-->
+  <div id="messageDiv">Loading, please wait...</div>
+  <br/>
+  
+  <br><font color="#481C60" size="+2"><b>Designate Leaders</b></font></br>
+  <br/>&nbsp;<br/>
+  <table>
+    <tr valign="bottom"><td align="center" bgcolor="#481C60"><font color="white">Tier 1<br/>Coverage</font></td></tr>
+    <tr><td align="center"><div id="tier1CoverageDiv"></div></td></tr>
+    
+    <tr><td align="center"><br>&nbsp;</br>
+        <button class="btn btn-lg btn-primary" type="submit" onclick="save()">  
+
+      &nbsp;&nbsp;
+      Save
+      &nbsp;&nbsp;
+      
+    </button><br>&nbsp;</br>  
+    </td></tr>
+    
+    <tr><td align="left">
+      <div id="departmentsDiv"></div>
+    </td></tr>
+  </table> 
+    
+  <br/>&nbsp;<br/>  
+  
+
+ 
+
+      <br>&nbsp;</br>
+        &copy; 2017 SEIU-UHW. All rights reserved.
+
+</td>
+</tr>
+</table>
+  
+</div>
+
+
+
+<script language="JavaScript">
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              //pWorksite = pWorksite.replace(/\./g,'');
+              //pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return dept;
+}
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+var emids = "{!$CurrentPage.parameters.emids }";
+if (emids == null || emids == "null" || emids == "") {
+  emids = "5140"; 
+} 
+
+emids = emids.split(",");
+emName = null;
+/*
+var emids = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnames = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+var emNameIdMap = new Array();
+for (var i = 0; i < emids.length; i++ ) { 
+  emNameIdMap[emnames[i].toLowerCase().trim()] = emids[i];
+} 
+*/
+
+var COPE = "COPE";
+var BU = "BU";
+var DEPT = "DEPT";
+var LEADER = "LEADER";
+
+var ebMap = {};
+var emDeptMap = {};
+var emDeptSortSet = [];
+var ldrMap = {};
+var ldrSortSet = [];
+
+var accountId = "";
+
+try {
+   
+  //alert("starting...");
+   
+
+  var query = "select Id, Name, Coordinator__c, Organizer_1__c from Account where Employer_ID__c = \'" + emids + "\' ";
+  var result = sforce.connection.query(query);
+  //alert(query);
+  var records = result.getArray("records");  
+  if (records.length == 0) {
+    alert("Invalid Employer Id = " + emids);
+  }
+  var coordinator = records[0].Coordinator__c;
+  var organizer = records[0].Organizer_1__c;
+  emName = records[0].Name;
+  accountId = records[0].Id;
+  
+  //alert(emName);
+  
+  for (var i = 0; i < 10; i++) {
+    var query = "SELECT Id, Account.Name, Account.Id, Name, LastName, FirstName, MiddleName, Worksite__c, Department, Executive_Body_Title__c, COPE_Pledge__c, Mbr_Ldr_App_Tier__c, Mbr_Ldr_App_Status__c, Mbr_Ldr_App_Status_Datetime__c FROM Contact where ";
+    query += " FID__c like \'%" + i + "\' ";
+    query += " AND Account.Coordinator__c = \'" + coordinator + "\' ";
+    query += " AND Account.Organizer_1__c = \'" + organizer + "\' ";    
+    query += " AND (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6 ) ";
+          
+    //alert(query);
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    //alert("partition " + i + " = " + records.length);
+    for (var j = 0; j < records.length; j++) {
+      if (records[j].Mbr_Ldr_App_Tier__c != null && records[j].Mbr_Ldr_App_Tier__c == 'Tier 1') {
+        ldrMap[records[j].Id] = records[j];
+        ldrSortSet.push(JSON.stringify([records[j].LastName.toLowerCase(), records[j].FirstName.toLowerCase(), records[j].Id]));      
+      }
+      if (records[j].Account.Name.toLowerCase().trim() == emName.toLowerCase().trim()) {
+        var dept = getModDepartment(emName, records[j].Worksite__c, records[j].Department);
+        incrementCounter([BU, DEPT, emName, dept], 1.0);
+        var emDeptKey = JSON.stringify([emName, dept]);
+        if (emDeptMap[emDeptKey] == null) {
+          emDeptMap[emDeptKey ] = [records[j].Account.Name, records[j].Worksite__c, records[j].Department];
+        }
+      }
+      /*
+      if (records[j].Executive_Body_Title__c != null && records[j].Executive_Body_Title__c != "null" && records[j].Executive_Body_Title__c != "") {
+        ldrMap[records[j].Id] = records[j];
+        ldrSortSet.push(JSON.stringify([records[j].LastName.toLowerCase(), records[j].FirstName.toLowerCase(), records[j].Id]));
+      } else 
+      */
+
+    }
+  }
+
+  var turfedMap = {};
+  var query = "select Id, Team_Account__c, Team_Account__r.Name, Mbr_Ldr__c, Department__c, Worksite__c  from Mbr_Ldr_App_Permissions__c where Team_Account__c = \'" + accountId + "\'  and     Mbr_Ldr_Tier__c = \'Tier 1\' ";
+  var result = sforce.connection.query(query);
+  var records = result.getArray("records");
+  for (var j = 0; j < records.length; j++) {
+    //var emName = records[j].Team_Account__r.Name;
+    var dept = getModDepartment(emName, records[j].Worksite__c, records[j].Department__c);
+    var key = JSON.stringify([emName, dept]);
+    turfedMap[key] = records[j].Mbr_Ldr__c;
+  }
+  
+   
+  for (var emDeptKey in emDeptMap) {
+    var aarray = JSON.parse(emDeptKey);
+    var barray = emDeptMap[emDeptKey];
+    var buCount = getCounter([BU, DEPT, aarray[0], aarray[1]]);
+    emDeptSortSet.push(JSON.stringify([(99999999 - buCount), aarray[0], aarray[1]]));
+  }  
+  emDeptSortSet.sort();
+  ldrSortSet.sort();
+  var deptWriter = "";
+  var lastEmName = "";
+  for (var i = 0; i < emDeptSortSet.length; i++) {
+    var aarray = JSON.parse(emDeptSortSet[i]);
+    //var emName = aarray[1];
+    var dept = aarray[2];
+    
+    var key2 = JSON.stringify([emName, dept]);
+    
+    if (lastEmName.toLowerCase() != emName.toLowerCase()) {
+      deptWriter += "&nbsp;<br/>\n";
+      deptWriter += "<font size=\"+1\"><b><u>" + toProperCase(emName) + "</u></b></font><br/>&nbsp;<br/>\n";
+    }
+    deptWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><u>" + toProperCase(dept) + "</u></b><br/>\n";
+    deptWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    deptWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    deptWriter += "Turfed To: <select onchange=\"updateCoverage()\" id=\"s" + i + "\">\n";
+    deptWriter += "<option  val=\"\"></option>\n";
+    for (var j = 0; j < ldrSortSet.length; j++) {
+      var barray = JSON.parse(ldrSortSet[j]);
+      var ldrId = barray[2];
+      var brecord = ldrMap[ldrId];
+      deptWriter += "<option ";
+      if (turfedMap[key2] != null && turfedMap[key2] != "null" && turfedMap[key2] != "") {
+        if (turfedMap[key2] == ldrId) {
+          deptWriter += " selected ";
+        }
+      }
+      deptWriter += " value=\"" + ldrId + "\">" + brecord.LastName + ", " + brecord.FirstName + "</option>\n";
+    } 
+    deptWriter += "</select><br/>\n";
+    deptWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    deptWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+    deptWriter += "BU Count = " + getCounter([BU, DEPT, emName, dept]) + "<br/>&nbsp;<br/>";
+    
+    lastEmName = emName;
+  }
+  $("#departmentsDiv").html(deptWriter);
+
+} catch(e) { 
+       alert('An Error has Occured. Error:' +e); 
+}  
+
+function updateCoverage() {
+  //alert("updateCoverage start.");
+  $("#messageDiv").html("<font color=\"orange\">Changes Not Saved.</font>");
+  if (ldrSortSet.length == 0) {
+    $("#tier1CoverageDiv").html("No Tier 1 Leaders");
+  }
+  
+  var coverageWriter1 = "<table width=\"100%\" cellpadding=\"5\">\n";
+  var countMap = {};
+  var turfTotal = 0;
+  var buTotal = 0;
+  for (var i = 0; i < emDeptSortSet.length; i++) {
+    var aarray = JSON.parse(emDeptSortSet[i]);
+    //var emName = aarray[1];
+    var dept = aarray[2];
+    var buCount = getCounter([BU, DEPT, emName, dept]);  
+    buTotal += buCount;
+    var id = $("#s" + i).val();
+    if (id != null && id != "null" && id != "") {
+      //alert("" + i + " = " + id);
+      if (countMap[id] == null) {
+        countMap[id] = 0;
+      }
+      countMap[id] = countMap[id] + buCount;
+      turfTotal += buCount;
+    }
+  }
+  for (var j = 0; j < ldrSortSet.length; j++) {
+      var barray = JSON.parse(ldrSortSet[j]);
+      var ldrId = barray[2];
+      var brecord = ldrMap[ldrId];
+      var bcount = 0;
+      if (countMap[ldrId] != null) {
+        bcount = countMap[ldrId];
+      }
+      coverageWriter1 += "<tr valign=\"top\">\n";
+      coverageWriter1 += "  <td width=\"50%\" align=\"left\">" + brecord.LastName + ", " + brecord.FirstName;
+      //coverageWriter1 += "<br/><dl><dt>&nbsp;</dt><dd><font size=\"-2\">" + toProperCase(brecord.Account.Name) + "<br/>" + getModDepartment(brecord.Account.Name, brecord.Worksite__c, brecord.Department) + "</font></dd></dl>";
+      coverageWriter1 += "</td>";
+      coverageWriter1 += "  <td width=\"25%\" align=\"center\">" + bcount + "</td><td width=\"25%\" align=\"center\">" + (100.0 * bcount / buTotal).toFixed(0) + "%</td>\n"; 
+      coverageWriter1 += "</tr>\n";    
+  } 
+  coverageWriter1 += "<tr>\n";
+  coverageWriter1 += "  <td align=\"center\"><b>Total</b></td><td align=\"center\">" + turfTotal + "</td><td align=\"center\">" + (100.0 * turfTotal / buTotal).toFixed(0) + "%</td>\n"; 
+  coverageWriter1 += "</tr>\n";    
+  coverageWriter1 += "</table>\n\n";
+  $("#tier1CoverageDiv").html(coverageWriter1);
+}
+ 
+
+function save() {
+  $("#messageDiv").html("Saving...");
+  try {
+
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var query = "select Id from Mbr_Ldr_App_Permissions__c where Team_Account__c = \'" + accountId + "\' ";
+    query += " and Department__c != null ";
+    if (isKaiserSouth(emName)) {
+      query += " and Worksite__c != null ";    
+    }
+    query += " and Shift__c = null ";
+    query += " and Team_Mbr__c = null ";  
+    query += " and  Mbr_Ldr_Tier__c = \'Tier 1\' ";   
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    var deleteArray = new Array();
+    for (var j = 0; j < records.length; j++) {    
+      deleteArray[j] = records[j].Id;
+    }
+    
+    var result = sforce.connection.deleteIds(deleteArray);
+    for (var i=0; i<result.length; i++) {
+      if (result[i].getBoolean("success") == false) {
+        alert("Error in clearing old Member App Permissions.  Please contact Data Group for assistance.");
+        $("#messageDiv").html("<font color=\"orange\">Changes Not Saved.</font>");
+        return;
+      }
+    }
+    var insertArray = new Array();
+    for (var i = 0; i < emDeptSortSet.length; i++) {
+      var aarray = JSON.parse(emDeptSortSet[i]);
+      //var emName = aarray[1];
+      var dept = aarray[2];
+      var id = $("#s" + i).val();
+      if (id != null && id != "null" && id != "") {
+        var perm = new sforce.SObject("Mbr_Ldr_App_Permissions__c"); 
+        perm.Mbr_Ldr__c = id;
+        var key2 = JSON.stringify([emName, dept]);
+        var barray = emDeptMap[ key2 ];
+        if (isKaiserSouth(emName)) {
+          perm.Worksite__c = barray[1];
+          if (perm.Worksite__c.length > 18) {
+            perm.Worksite__c = perm.Worksite__c.substring(0, 18).trim();
+          }          
+        }
+        perm.Department__c = barray[2];
+        perm.Team_Account__c = accountId;
+        var buCount = getCounter([BU, DEPT, emName, dept]);         
+        perm.BU_Count__c = buCount;
+        insertArray.push(perm);
+      }
+    }    
+
+    var notes = []; 
+    var note = new sforce.SObject("Note"); 
+    note.Title = "Tier 1 Permissions";
+    note.IsPrivate = false;
+    note.Body = JSON.stringify(insertArray);
+    if (note.Body != null && note.Body.length > 32000) {
+      note.Body = note.Body.substring(0, 32000);
+    }              
+    note.ParentId = accountId;
+    notes.push(note); 
+    var results = sforce.connection.create(notes);   
+    
+    if (insertArray.length > 0) {
+      results = sforce.connection.create(insertArray); 
+      for (var i=0; i < results.length; i++) {
+        if (results[i].getBoolean("success") == false) {
+          alert("Error in creating new Member App Permissions.  Please contact Data Group for assistance.");
+          $("#messageDiv").html("<font color=\"orange\">Changes Not Saved.<br/>" + JSON.stringify(results) + "<br/>&nbsp<br/>" + JSON.stringify(insertArray) + "</font>");
+          return;
+        }
+      }    
+    }  
+    
+  } catch(e) { 
+       alert('An Error has occured while saving. Error:' + e); 
+  }  
+  alert("Saved Successfully.");  
+  $("#messageDiv").html("<font color=\"green\">Saved Successfully.</font>");
+}
+
+
+updateCoverage();
+$("#messageDiv").html("&nbsp;");
+ 
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

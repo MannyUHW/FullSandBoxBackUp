@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Contract Specialists</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Contract Specialists</value>
+    </caseValues>
+    <fields>
+        <label><!-- AccountId --></label>
+        <name>AccountId__c</name>
+    </fields>
+    <fields>
+        <label><!-- CellPhone --></label>
+        <name>CellPhone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Contract Specialists --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Facilities --></label>
+        <name>Facilities__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name --></label>
+        <name>Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Flag --></label>
+        <name>Regional_Flag__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

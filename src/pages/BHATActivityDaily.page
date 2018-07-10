@@ -1,0 +1,355 @@
+<apex:page showHeader="false" sidebar="false"   standardStylesheets="false">
+<div ng-show="isWorking()">
+    <p>Working</p>
+</div>
+
+ <style>
+        .red1
+        {
+            color: red;
+        }
+        
+        input.ng-invalid {
+          border: 1px solid red;
+        }
+        input.ng-valid {
+          border: 1px solid green;
+        }
+        .error
+        {
+        color: red;
+        }
+ </style>
+
+
+<script>
+   
+    //$('#WorkHourStartTime').timepicker();
+    //$('#WorkHourEndTime').timepicker();
+    
+    $(document).ready(function () 
+    {
+     var foundValidationError = 0;
+     if (foundValidationError > 0) return;
+    
+         // $("#btnSaveActivity").click(function () {
+                  // alert( $("#WorkHourStartTime").val() );
+                   //$("#WorkHourStartTime").val($("#WorkHourStartTime").val());
+                    //alert($scope.sv_BhatActivityDailyList.WorkHourStartTime);
+          //});
+    
+    //$('#separateAmpm').timeEntry({ampmPrefix: ' '});
+    
+    /*
+     
+     //Validating End Time   
+        $('#WorkHourEndTime').change(function()
+        {
+            var start_time = $("#WorkHourStartTime").val();
+            //end time
+            var end_time = $("#WorkHourEndTime").val();
+            
+            //convert both time into timestamp
+            var stt = new Date("November 13, 2013 " + start_time);
+            stt = stt.getTime();
+
+            var endt = new Date("November 13, 2013 " + end_time);
+            endt = endt.getTime();
+
+            //by this you can see time stamp value in console via firebug
+            //alert("Time1: "+ stt + " Time2: " + endt);
+
+            if(stt > endt){
+               // alert("Wrong");
+                foundValidationError = 1;
+                $("#WorkHourStartTime").css('border', '1px solid red');
+                $("#WorkHourEndTime").css('border', '1px solid red');
+                 $('#error_WorkHourStartEndTime').removeClass('errorHide').addClass('error');
+                return false;
+            }
+            else{
+                //alert("Right");
+                foundValidationError = 0;
+                $("#WorkHourStartTime").css('border', '1px solid black');
+                $("#WorkHourEndTime").css('border', '1px solid black');
+                 $('#error_WorkHourStartEndTime').removeClass('error').addClass('errorHide');
+                return true;
+            }
+           
+        }); 
+  
+     //Validating Start  Time  
+        $('#WorkHourStartTime, #WorkHourEndTime').change(function()
+        {
+            var start_time = $("#WorkHourStartTime").val();
+            //end time
+            var end_time = $("#WorkHourEndTime").val();
+            
+            //convert both time into timestamp
+            var stt = new Date("November 13, 2013 " + start_time);
+            stt = stt.getTime();
+
+            var endt = new Date("November 13, 2013 " + end_time);
+            endt = endt.getTime();
+
+            //by this you can see time stamp value in console via firebug
+            //alert("Time1: "+ stt + " Time2: " + endt);
+
+            if(stt > endt){
+                //alert("Wrong");
+                foundValidationError = 1;
+                $("#WorkHourStartTime").css('border', '1px solid red');
+                $("#WorkHourEndTime").css('border', '1px solid red');
+                $('#error_WorkHourStartEndTime').removeClass('errorHide').addClass('error');
+                return false;
+            }
+            else{
+               // alert("Right");
+                foundValidationError = 0;
+                 $("#WorkHourStartTime").css('border', '1px solid black');
+                 $("#WorkHourEndTime").css('border', '1px solid black');
+                 $('#error_WorkHourStartEndTime').removeClass('error').addClass('errorHide');
+                return true;
+            }
+        });
+        
+      */    
+        
+              
+         
+    }); 
+    
+  
+    
+</script>
+<script>
+    $("#header").html("Activity Tracker");
+</script>
+
+<style>
+.error {color: red }
+.errorHide {display:none;}
+</style>
+
+
+<div ng-show="!isWorking()">
+    <!-- This div is only displayed in desktops (see below for mobile phones)-->
+    <div class="hidden-phone">
+        <form name="bhatactivitydaily" id="bhatactivitydaily" novalidate="novalidate">
+
+        <div class="navbar NavbarTop">
+            <div class="navbar-inner">
+
+                <ul class="nav">
+                    <li><a href="#/activitysummary">Activity Weekly</a></li>
+                    <li><a href="#/activitylist">Activity Daily </a></li>
+                    <li class="active"><a href="#/activitydaily">Daily Entry</a></li>
+                    <!-- <li><a href="#/searchconsole">Search Console</a></li> -->
+                    <!-- <li><a href="#/OTactivitylist">OT Activity List</a></li> -->
+                    
+                    <!-- <li><a href="#/approverlist">Approver Summary</a></li>
+                    <li><a href="#/approverweekly">Approver Weekly </a></li>
+                   <li><a href="#/approversingle">Approver Daily</a></li> -->
+                   <li><a href="/home/home.jsp">Home</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="container" style="">
+            <span class="pull-left">Name: <b>{{rsv_BhatGlobalData.UserFullName}}</b>
+            </span>
+
+
+            <span class="pull-right">Date: <b>{{SelectedweekStartDate | date:'EEEE, MMM d,y'}}</b>
+            </span>
+        </div>
+        
+
+        <div class="clr"></div>
+
+            <div class="span5" style="margin:10px 0 6px 0 !important; padding:0px !important">
+
+        <div class="pagination pull-left">
+            <button class="btn btn-primary" ng-show="donotshow" ng-click="save();">Use Default</button>
+            <button class="btn btn-primary" ng-click="copyPrevious();">Copy Previous</button>
+            <button class="btn btn-primary" id="btnSaveActivity" ng-disabled="bhatactivitydaily.$invalid" ng-click="saveDailyActivity(bhatactivitydaily);">Save</button> 
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="btn btn-danger" ng-click="DeleteActivities();"><i class="icon-trash icon-white"></i> </button>            
+        </div>
+                </div>
+
+      <div class="pull-right" ng-show="sv_BhatActivityDailyList.IsHourlyEmployee == true" style="margin-top: 31px;">
+           <ng-form name="StartDateEndDateForm">
+          <span>Start Time</span>
+            <div class="input-append bootstrap-timepicker-component">
+                <input name="WorkHourStartTime" id="WorkHourStartTime" type="text" ng-model="sv_BhatActivityDailyList.WorkHourStartTime" value="{{sv_BhatActivityDailyList.WorkHourStartTime}}" class="input-small"  ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus" />
+            </div>
+            <span>&nbsp;End Time</span>
+            <div class="input-append bootstrap-timepicker-component">
+                <input name="WorkHourEndTime" id="WorkHourEndTime" type="text" ng-model="sv_BhatActivityDailyList.WorkHourEndTime" value="{{sv_BhatActivityDailyList.WorkHourEndTime}}" class="input-small"  ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus" />
+            </div>
+            <span>&nbsp;OPEIU Graveyard/Swing</span>
+            <div class="input-append bootstrap-timepicker-component">
+                <input type="checkbox" name="OPEIUGraveYard" id="OPEIUGraveYard" ng-model="sv_BhatActivityDailyList.IsOPEIUGraveYard"  value="{{sv_BhatActivityDailyList.IsOPEIUGraveYard}}" ng-show="sv_BhatActivityDailyList.IsHourlyEmployee == true"   ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus"  />
+            </div>        
+                
+             <!-- <small class="error" ng-show="IsStartEndTimeValid(WorkHourStartTime,WorkHourEndTime);"> 
+                       <br/>
+                        Start Time is greater than the End Time 
+                </small>  -->
+            <!-- <div id="error_WorkHourStartEndTime" class="errorHide">Start Time must be lesser than End Time</div>-->
+                 
+            </ng-form>
+        </div> 
+
+    <!-- Start 1 -->
+
+        <div>
+            <div style="clear: both;"></div>
+            <div class="error" style="text-align: right;"  ng-show="sv_BhatActivityDailyList.WeeklyReviewStatus">This activity has been reviewed and can no longer be changed!.</div>
+            <table width="80%" class="table table-striped table-condensed table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Activity Code</th>
+                        <th>Sub Category</th>
+                        <th>Description</th>
+                        <th>Hours</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-hide="sv_ad.IsNonHourlyEmployeeAndDefaultACode"  ng-repeat="sv_ad in sv_BhatActivityDailyList.ActivityDtoList | orderBy:['SortSequence', 'ActivityCode']:false">
+                        <td> 
+                                <input type="checkbox" ng-model="sv_ad.IsDelete"  ng-show="sv_ad.ActivityID != null && !sv_BhatActivityDailyList.IsCopyPrevious"  ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus"  />
+                        </td>            
+                    
+                        <td>
+                        
+                            <label ng-show="$index < rsv_BhatActivityCount">{{sv_ad.ActivityCode}} &nbsp; {{sv_ad.ShortDescription}}</label>
+
+                            <!-- For Add Activity -->
+                            <select ng-model="rsv_DailyEntryCurrentACItem" ng-show="$index >= rsv_BhatActivityCount" class="span4"   ng-change="sv_ad.ActivityCode =  rsv_DailyEntryCurrentACItem.name;sv_ad.ActivityCodeID =  rsv_DailyEntryCurrentACItem.Id" 
+                                ng-options="o as o.name + ' - ' + o.Short_Description for o in rsv_BhatGlobalData.BHATActivityCodeList | orderBy:'name':false" ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus">
+                            </select>
+                            <!-- For End Add Activity -->
+
+                        </td>
+                        <td>
+                              <ng-form name="activitySubCategoryForm">
+                              
+
+                            <!-- For Add Activity -->
+
+                            <select id="ActivitySubCategoryDropdown_{{sv_ad.UniqueId}}"  
+                                    name="ActivitySubCategoryDropdown" class="span4" 
+                                    ng-model="sv_ad.SubCategoryID" 
+                                    ng-required="IsActivitySubCategoryDropdownRequired(sv_ad.UniqueId,sv_ad.Hours)" 
+                                    ng-options="o.Id as o.Activity_Note_Description for o in rsv_BhatGlobalData.BHATActivityNotesList | filter:{BHAT_Activity_Code: sv_ad.ActivityCodeID} " 
+                                    ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus" >
+                            </select>
+                            
+                                <small class="error" ng-show="activitySubCategoryForm.ActivitySubCategoryDropdown.$error.required">
+                                            Sub Category is required.
+                                </small>
+
+                            <!-- For End Add Activity -->
+                            </ng-form>
+
+
+
+                        </td>
+                        <td>
+                        
+                          <ng-form name="activitydescForm">
+                        
+                           <input class="span5"  name="Activity_Note_Description" ng-maxlength="100" type="text" ng-model="sv_ad.Description" value="{{sv_ad.Description}}"
+                            ng-required="IsNoteDescriptionRequired(sv_ad.UniqueId)" ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus"
+                            />
+                                <small class="error" ng-show="activitydescForm.Activity_Note_Description.$error.maxlength">
+                                            Activity Description cannot be longer than 100 characters.
+                                </small>
+                                                                     
+                             
+                            <small class="error" ng-show="activitydescForm.Activity_Note_Description.$error.required">
+                                    Activity Description is required.
+                            </small>
+                        </ng-form>
+                                                     
+                        </td>
+                        <td>
+                            <input name ="activityhour"  required = "required"
+                            type="number" step="0.01" min="0" max="20.00"
+                            class="span1"  ng-model="sv_ad.Hours"  
+                            value="{{sv_ad.Hours}}" ng-disabled="sv_BhatActivityDailyList.WeeklyReviewStatus"/> 
+                        </td>
+                    </tr>
+
+
+
+                </tbody>
+            </table>
+        </div>
+        
+        <!--  End 1 -->
+        
+
+
+
+        <div class="pagination pull-left">
+            <button class="btn btn-primary" ng-show="sv_BhatActivityDailyList.ActivityDtoList.length <= 20" ng-click="addNewActivity();">Add Activity</button>
+            <button class="btn btn-success" ng-show="sv_BhatActivityDailyList.ActivityDtoList.length > rsv_BhatActivityCount" ng-click="removeActivity(sv_BhatActivityDailyList.ActivityDtoList.length);">Delete Activity</button>
+            <p class="btn btn-primary" ng-show="donotshow" ng-click="doSearch(searchString)">Make Default</p>
+        </div>
+
+
+        <div class="pagination pull-right">
+            <ul>
+                <li ng-class="{disabled: currentPage == 0}"><button class="btn btn-success" ng-click="GoPreviousDay(bhatactivitydaily)">Prev</button>&nbsp;</li>
+                <li ng-class="{disabled: currentPage == pagedItems.length - 1}"> <button class="btn btn-success" ng-click="GoNextDay(bhatactivitydaily)">Next</button>&nbsp; </li>
+            </ul>
+
+        </div>
+
+    </form>                       
+        
+    </div>
+
+
+    <!-- This div is only displayed in mobile phones (see above for desktops) -->
+    <div class="visible-phone">
+        <form class="form-inline">
+            <small class="metadata">{{SelectedweekStartDate | date:'EEEE, MMM d,y'}} - &nbsp;&nbsp;&nbsp; {{sv_BhatActivityDailyList.DailyTotalHours}} hours</small>
+            <br />
+            <button class="btn btn-primary" ng-click="navigateto('/activitylist');">Week View</button>
+            <button class="btn btn-primary" ng-click="copyPreviousMobile();">Copy Prev</button><br />
+            <div style="padding-top:5px;" >
+            <button class="btn btn-success" ng-click="GoPreviousDayNoSave();"><i class="icon-backward icon-white"></i>&nbsp;</button>
+            <button class="btn btn-success" ng-click="GoNextDayNoSave()">&nbsp;<i class="icon-forward icon-white"></i> </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button class="btn btn-danger"  ng-click="DeleteActivities();"><i class="icon-trash icon-white"></i> </button>            
+
+            </div>
+        </form>
+
+        <table class="table">
+            <tr ng-hide="sv_ad.IsNonHourlyEmployeeAndDefaultACode" ng-model="sv_currentActivityItem" ng-repeat="sv_ad in sv_BhatActivityDailyList.ActivityDtoList | orderBy:'ActivityCode':false">
+                <td> 
+                    <input type="checkbox" ng-model="sv_ad.IsDelete"  ng-show="sv_ad.ActivityID != null"  />
+                </td>
+                            
+                <td ng-click="navigatetoSingle(sv_ad);"><b class="fullname">{{sv_ad.ActivityCode}} &nbsp; {{sv_ad.ShortDescription}}</b>
+                    <br />
+                    <small ng-show="sv_ad.Hours.length == 0" class="metadata">None</small>
+                    <small ng-show="sv_ad.Hours.length != 0" class="metadata">{{sv_ad.Hours}} Hours</small>
+                </td>
+                <td ng-click="navigatetoSingle(sv_ad);"><i class="icon-chevron-right"></i></td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <span ng-show="myForm.txtRefundFormType.$error.maxlength">Max length is 2.</span>
+    </div>
+</div>
+
+</apex:page>

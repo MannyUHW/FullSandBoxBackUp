@@ -1,0 +1,38 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false" controller="KaiserSiteController">
+    <html>
+    <head>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.agGridEnterpriseMin429}"/>
+
+        <style>
+            #KaiserGrid {
+                height: 800px;
+                clear: both;
+                margin-top: 4px;
+            }
+        </style>
+
+    </head>
+    <body>
+    <h1>Kaiser Route List</h1>
+
+    <div id="CodeInput">
+        <input id="AccessCode"    style="padding: 5px;width: 100px;" type="text" placeholder = "Access code"></input>
+        <input id="SubmitButton"  style="padding: 5px;"              type="Button" value="Submit"></input>
+    </div>
+
+    <div id="GrantNo" style="display: none;">
+        <p>Incorrect code</p>
+    </div>
+    <div id="GrantOK" style="display: none;">
+        <p>This is current data</p>
+        <div id="KaiserGrid" class="ag-fresh"></div>
+    </div>
+    </body>
+    <script type="text/javascript">
+        function submitClicked(){var e;e=accessCode.value,Visualforce.remoting.Manager.invokeAction("{!$RemoteAction.KaiserSiteController.grant}",e,grant,{buffer:!1,timeout:12e4})}function grant(e,a){a.status?e?Visualforce.remoting.Manager.invokeAction("{!$RemoteAction.KaiserSiteController.gc}",init,{buffer:!1,timeout:12e4}):setDisplay(!1):alert("Error connecting to server")}function setDisplay(e){e?(grantOk.style.display="block",grantNo.style.display="none",codeInput.style.display="none"):(grantOk.style.display="none",grantNo.style.display="block",codeInput.style.display="block")}function init(e,a){a.status?(console.log(e[0]),setDisplay(!0),agGrid.LicenseManager.setLicenseKey(e[0]),Visualforce.remoting.Manager.invokeAction("{!$RemoteAction.KaiserSiteController.getCsData}",csDataResults,{buffer:!1,timeout:12e4})):console.log("Something went wrong!")}function csDataResults(e,a){var r,t,i,o,n,s,l,d;if(a.status){for(i=0,r=e.length;r>i;i++)n=s=l=d="",t=e[i],id=t.Id,n=t.Contact__r.FirstName,s=t.Contact__r.LastName,o=t.Contact__r.Id,"CellPhone__c"in t&&(l=t.CellPhone__c),"Email__c"in t&&(d=t.Email__c),csMap[o]||(csMap[o]={FirstName:n,LastName:s,Email:d,CellPhone:l});Visualforce.remoting.Manager.invokeAction("{!$RemoteAction.KaiserSiteController.getData}",dataResults,{buffer:!1,timeout:12e4})}}function dataResults(e,a){var r,t,i,o,n,s,l,d,m,d,m,c,g,N,h,_,C,u,f,O,p,z,E,F,L,y,I,w;if(n=[],o={},a.status){for(i=0,r=e.length;r>i;i++)csId=d=m=d=m=c=g=N=h="",_=C=u=f=O=p="",z=E=F=L="",t=e[i],s=t.Id,l=t.Name,"Coordinator__c"in t&&(d=t.Coordinator__r.FirstName,m=t.Coordinator__r.LastName,_=t.Coordinator__r.MobilePhone,C=t.Coordinator__r.Email),"Organizer_1__c"in t&&(c=t.Organizer_1__r.FirstName,g=t.Organizer_1__r.LastName,u=t.Organizer_1__r.MobilePhone,f=t.Organizer_1__r.Email),"Organizer_2__c"in t&&(N=t.Organizer_2__r.FirstName,h=t.Organizer_2__r.LastName,O=t.Organizer_2__r.MobilePhone,p=t.Organizer_2__r.Email),"Contract_Specialist__c"in t&&(csId=t.Contract_Specialist__c,csMap[csId]&&(csRec=csMap[csId],z=csRec.FirstName,E=csRec.LastName,F=phoneFormat(csRec.CellPhone),L=csRec.Email)),n.push({EmpName:l,CoordinatorFirstName:d,CoordinatorLastName:m,CoordinatorCellPhone:_,CoordinatorEmail:C,Organizer1FirstName:c,Organizer1LastName:g,Organizer1CellPhone:u,Organizer1Email:f,Organizer2FirstName:N,Organizer2LastName:h,Organizer2CellPhone:O,Organizer2Email:p,CsFirstName:z,CsLastName:E,CsCellPhone:F,CsEmail:L});w=[{colId:"EmpName",sort:"asc"},{colId:"CoordinatorLastName",sort:"asc"},{colId:"CoordinatorFirstName",sort:"asc"},{colId:"Organizer1LastName",sort:"asc"},{colId:"Organizer1FirstName",sort:"asc"},{colId:"Organizer2LastName",sort:"asc"},{colId:"Organizer2FirstName",sort:"asc"}],I=[{headerName:"Employer",field:"EmpName",width:300},{headerName:"Coordinator",children:[{headerName:"First Name",field:"CoordinatorFirstName",width:140},{headerName:"Last Name",field:"CoordinatorLastName",width:140},{headerName:"Cell Phone",field:"CoordinatorCellPhone",width:140},{headerName:"Email",field:"CoordinatorEmail",width:140}]},{headerName:"Organizer1",children:[{headerName:"First Name",field:"Organizer1FirstName",width:140},{headerName:"Last Name",field:"Organizer1LastName",width:140},{headerName:"Cell Phone",field:"Organizer1CellPhone",width:140},{headerName:"Email",field:"Organizer1Email",width:140}]},{headerName:"Organizer2",children:[{headerName:"First Name",field:"Organizer2FirstName",width:140},{headerName:"Last Name",field:"Organizer2LastName",width:140},{headerName:"Cell Phone",field:"Organizer2CellPhone",width:140},{headerName:"Email",field:"Organizer2Email",width:140}]},{headerName:"Contract Specialist",children:[{headerName:"First Name",field:"CsFirstName",width:140},{headerName:"Last Name",field:"CsLastName",width:140},{headerName:"Cell Phone",field:"CsCellPhone",width:140},{headerName:"Email",field:"CsEmail",width:140}]}],y={columnDefs:I,rowData:n,enableSorting:!0,suppressCellSelection:!0},kaiserGridDiv=document.querySelector("#KaiserGrid"),new agGrid.Grid(kaiserGridDiv,y),y.api.setSortModel(w)}else console.log("error retrieving from SF")}function phoneFormat(e){var a;return null==e||e.trim().length<10?a="":(a=e.trim().replace(/[^0-9]/g,""),a="("+a.substr(0,3)+") "+a.substr(3,3)+"-"+a.substr(6)),a}var csMap={},accessCode=document.getElementById("AccessCode"),grantNo=document.getElementById("GrantNo"),grantOk=document.getElementById("GrantOK"),codeInput=document.getElementById("CodeInput"),submitButton=document.getElementById("SubmitButton");submitButton.addEventListener("click",submitClicked,!1);
+    </script>
+    </html>
+</apex:page>

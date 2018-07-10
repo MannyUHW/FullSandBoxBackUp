@@ -1,0 +1,346 @@
+<apex:page controller="BhatWeeklyReviewCtrl">
+<apex:form >
+
+<apex:includeScript value="{!URLFOR($Resource.BhatWeeklyReview, '/js/jquery-1.11.2.min.js')}"  />
+
+<apex:pageMessages id="errors" />
+
+
+<table width="100%" border="0">
+
+   <tr>
+   
+       <td width="150" valign="top">
+       
+       
+     <apex:pageBlock title="Bhat Weekly Filter" mode="edit" id="criteria">
+
+      <script type="text/javascript">
+      function doSearch()
+      {
+        searchServer(
+          document.getElementById("userid").options[document.getElementById("userid").selectedIndex].value,
+          document.getElementById("firstName").value,
+          document.getElementById("lastName").value,
+          document.getElementById("startWeek").value,
+          document.getElementById("endWeek").value,
+          document.getElementById("status").options[document.getElementById("status").selectedIndex].value,
+          document.getElementById("{!$Component.reviewstatus}").options[document.getElementById("{!$Component.reviewstatus}").selectedIndex].value
+       );
+          
+          
+      }
+      
+     
+      function DoApproveOrReject(weeklyID,approveOrReject) {
+
+        var notes = $('.reviewNotes-'+weeklyID).val();
+        
+        ApproveOrReject(
+          document.getElementById("userid").options[document.getElementById("userid").selectedIndex].value,
+          document.getElementById("firstName").value,
+          document.getElementById("lastName").value,
+          document.getElementById("startWeek").value,
+          document.getElementById("endWeek").value,
+          document.getElementById("status").options[document.getElementById("status").selectedIndex].value,
+          document.getElementById("{!$Component.reviewstatus}").options[document.getElementById("{!$Component.reviewstatus}").selectedIndex].value,
+          weeklyID,
+          notes,
+          approveOrReject
+          
+          );
+          
+          
+      }
+
+
+      </script> 
+
+
+      <apex:actionFunction name="searchServer" action="{!runSearch}" rerender="results,debug,errors">
+      
+          <apex:param name="userid" value="" />
+          <apex:param name="firstName" value="" />
+          <apex:param name="lastName" value="" />
+          <apex:param name="startWeek" value="" />
+          <apex:param name="endWeek" value="" />
+           <apex:param name="status" value="" />
+          <apex:param name="reviewstatus" value="" />
+      </apex:actionFunction>
+
+
+      <apex:actionFunction name="ApproveOrReject" action="{!runApproveOrReject}" rerender="results,debug,errors">
+      
+          <apex:param name="userid" value="" />
+          <apex:param name="firstName" value="" />
+          <apex:param name="lastName" value="" />
+          <apex:param name="startWeek" value="" />
+          <apex:param name="endWeek" value="" />
+           <apex:param name="status" value="" />
+          <apex:param name="reviewstatus" value="" />
+          <apex:param name="weeklyId" value="" />
+          <apex:param name="reviewNotes" value="" />
+          <apex:param name="approveOrReject" value="" />
+      </apex:actionFunction>
+
+
+      <table cellpadding="2" cellspacing="2">
+      
+      <tr>
+        <td style="font-weight:bold;">Employees<br/>
+          <select id="userid">
+            <option value=""></option>
+            <apex:repeat value="{!userList}" var="u">
+              <option value="{!u.id}">{!u.name}</option>
+            </apex:repeat>
+          </select>
+        </td>
+      </tr>
+            
+      
+      <tr style="display:none;">
+        <td style="font-weight:bold;">First Name<br/>
+        <input type="text" id="firstName"/>
+        </td>
+      </tr>
+      <tr style="display:none;">
+        <td style="font-weight:bold;">Last Name<br/>
+        <input type="text" id="lastName"/>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-weight:bold;">Start Week<br/>
+        <input type="date" id="startWeek" />
+        </td>
+      </tr>
+      
+     <tr>
+        <td style="font-weight:bold;">End Week<br/>
+        <input type="date" id="endWeek"/>
+        </td>
+      </tr>
+
+
+      <tr>
+        <td style="font-weight:bold;">Status<br/>
+          <select id="status">
+            <option value=""></option>
+            <apex:repeat value="{!statusList }" var="tech">
+              <option value="{!tech}">{!tech}</option>
+            </apex:repeat>
+          </select>
+        </td>
+      </tr>
+      
+            
+      <tr>
+        <td style="font-weight:bold;">Review Status<br/>
+        <!-- <select id="reviewstatus">
+            <option value=""></option>
+            <apex:repeat value="{!reviewStatusList}" var="tech">
+              <option value="{!tech}" >{!tech}</option>
+            </apex:repeat>
+          </select> -->
+          
+         <apex:selectlist id="reviewstatus" value="{!SeletedReviewStatus}" size="1">
+             <apex:selectOptions value="{!ReviewStatusItems}" />
+         </apex:selectlist>
+        </td>
+      </tr>
+
+        
+      <tr>
+        <td style="font-weight:bold;"><br/>
+        <apex:commandButton value="Search" id="theButton" onclick="doSearch();return false;"/>
+        </td>
+      </tr>
+    
+      
+      </table>
+
+      </apex:pageBlock>
+             
+       
+       </td>
+   
+    <td valign="top">
+
+        <apex:pageBlock mode="inlineEdit" id="results">
+        
+            <!-- 
+             <script type="text/javascript">
+              function approve() 
+              { 
+                alert('Approve script======>'+document.getElementById("weekid").value);
+                doApprove(
+                   document.getElementById("weekid").value,
+                   document.getElementById("weeknotes").value 
+                );          
+              }
+              function reject() 
+              { 
+                 alert('Reject script======>');
+                doReject(
+                   document.getElementById("weekid").value,
+                   document.getElementById("weeknotes").value 
+                );          
+              }
+              </script> 
+        
+                
+              <apex:actionFunction name="doApprove" action="{!approve}" >
+                 <apex:param name="weekid" value="" />
+                 <apex:param name="weeknotes" value="" />
+              </apex:actionFunction> 
+              
+               <apex:actionFunction name="doReject" action="{!reject}">
+                   <apex:param name="weekid" value="" />
+                    <apex:param name="weeknotes" value="" />
+              </apex:actionFunction>         
+                -->
+            <table width="100%" class="list">
+
+            <thead>
+                    <tr class='headerRow'>
+                        <th class='headerRow' scope="col">Name</th>
+                        <th class='headerRow' scope="col">Bhat Weekly Name</th>
+                        <th class='headerRow' scope="col">Total</th>
+                        <th class='headerRow' scope="col">Status</th>
+                        <th class="headerRow" scope="col" align="right">Review Status</th>
+                        <th class="headerRow" scope="col" align="right">Notes</th>
+                        <th class='headerRow' scope="col" ALIGN="RIGHT"></th>
+                    </tr>
+            </thead>
+        
+ 
+            <!-- calling getAccounts() methods in pageblock table -->
+            <apex:repeat value="{!bhatweeklyDtoList}" var="a">
+                    <tbody>
+                    
+                    <tr style="background-color:lightyellow;">
+            
+                    <td>
+                        <apex:outputText value="{!a.OwnerName}">
+                        <apex:actionSupport event="onComplete" rerender="all">                     
+                           <apex:param id="weekid"  name="weekid" value="{!a.Id}" assignTo="{!weekid}"/>
+                        </apex:actionSupport>
+                        </apex:outputText>
+                        <!--<apex:inputhidden id="weekid" value="{!a.Id}"/>-->
+                    </td>
+                    
+                    <td><apex:outputText value="{!a.WeekName}"/></td>
+                    
+                    <td><apex:outputText value="{!a.WeeklyHoursTotal}"/></td>
+                    
+                    <td><apex:outputText value="{!a.Status}"/></td>
+                    
+                    <td><apex:outputText value="{!a.ReviewStatus}"/></td>
+                    
+                    <td>
+                        <apex:inputText styleClass="reviewNotes-{!a.Id}" id="reviewNotes" value="{!a.ReviewNotes}" rendered="{!a.IsReviewed != true}">
+                        <!-- 
+                        <apex:actionSupport event="onComplete" rerender="all">
+                           <apex:param id="weeknotes" name="weeknotes" value="{!a.ReviewNotes}"  assignTo="{!weeknotes}"/>
+                        </apex:actionSupport>
+                        -->
+                        </apex:inputText>
+                         
+                        <apex:outputText value="{!a.ReviewNotes}" rendered="{!a.IsReviewed == true}" />
+                    </td>
+                    
+                    <td> 
+                        <apex:commandbutton value="Approve" rendered="{! (a.IsReviewed != true || a.ReviewStatus == 'Rejected') }"  onclick="DoApproveOrReject('{!a.Id}','approve');return false;">
+                          <!-- <apex:param name="approveweekid" value="{!a.Id}" assignTo="{!aweekid}"/> -->  
+                          <!--<apex:param name="approvereviewnotes" value="{!a.ReviewNotes}" assignTo="{!aweeknotes}"/> --> 
+                        </apex:commandButton>
+                        <apex:commandbutton value="Reject" rendered="{!a.IsReviewed != true}" onclick="DoApproveOrReject('{!a.Id}','reject');return false;">
+                          <!--<apex:param name="rejectweekid" value="{!a.Id}" assignTo="{!weekid}"/>   onclick="reject();return false;"
+                           <apex:param name="rejectreviewnotes" value="{!a.ReviewNotes}" assignTo="{!weeknotes}"/>-->
+                        </apex:commandButton>
+                    </td>
+                    
+                    </tr>
+                    
+                    <tr>
+                    <td align="left"  colspan="6">
+                    
+                    <table>
+                        <thead>
+                                <tr class='headerRow'>
+                                    <th class='headerRow' scope="col" >Activity Name</th>
+                                    <th class='headerRow' scope="col" >Activity Date</th>
+                                    <th class='headerRow' scope="col" >Daily Status</th>
+                                    <th class='headerRow' scope="col" >Code and Short Desc</th>
+                                    <th class='headerRow' scope="col" >Sub Category</th>
+                                    <th class='headerRow' scope="col" >Activity Note</th>
+                                    <th class='headerRow' scope="col">Hours Spent</th>
+                                    
+                                </tr>
+                        </thead>
+                                            
+                    
+                        <tbody>
+                        <tr>
+                        <apex:repeat value="{!a.BhatActivityList}" var="d">
+                            <tr>
+                                <td>{!d.Name}</td>
+                                <td>
+                                    <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!d.ActivityDate}" /> 
+                                    </apex:outputText>
+                                </td>
+                                <td>{!d.DailyActivityStatus}</td>
+                                <td>{!d.CodeAndShortDesc}</td>
+                                <td>{!d.ActivityNoteName}</td>
+                                <td>{!d.SubCategoryOther}</td>
+                                <td>{!d.DailyHoursSpent}</td>
+                            </tr>   
+                        </apex:repeat>
+                        </tr>
+                        </tbody>
+                        
+                    </table>
+                    
+                    </td>
+                    </tr>
+                    
+                    
+                    <!-- 
+                    <apex:column Headervalue="Name">
+                    <apex:outputfield value="{!a.owner.Name}"/>
+                    </apex:column>
+                    
+                    <apex:column Headervalue="Bhat Weekly Name">
+                    <apex:outputfield value="{!a.Review_Status__c}"/>
+                    </apex:column>
+
+                    
+                    <apex:column headervalue="Total">
+                    <apex:outputfield value="{!a.Weekly_Hours_Total__c }"/>
+                    </apex:column>
+                    
+                    
+                    <apex:column headervalue="Status">
+                    <apex:outputfield value="{!a.Status__c }"/>
+                    </apex:column>
+                    
+                    
+                    <apex:column headervalue="Review Status">
+                    <apex:outputfield value="{!a.Review_Status__c }"/>
+                    </apex:column>
+                    <apex:column headerValue="">
+                            <apex:inputCheckbox value="{!a.Review_Status__c }"/>
+                    </apex:column>
+                     -->
+                     </tbody>
+                    
+           </apex:repeat>
+        </table>
+        </apex:pageBlock>
+
+</td>
+  </tr>
+  </table>
+
+</apex:form>
+</apex:page>

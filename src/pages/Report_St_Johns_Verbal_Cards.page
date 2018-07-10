@@ -1,0 +1,280 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<div align="center">
+<font size="+2"><div id="titleDiv">St Johns Santa Monica Verbal and Card Assessment 1s and 2s Counts</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+<br></br>
+</div>
+ 
+
+<br>&nbsp;</br>
+
+<font color="green">
+<div align="center" id="filterDiv"></div>
+</font>
+
+
+<br>&nbsp;</br>
+
+<div align="center" id="leaderDiv"></div>
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<div align="center" id="countDiv"></div>
+
+<font size="+2"><div align="center" id="progressDiv">0%</div></font>
+
+
+
+<script language="JavaScript">
+var debugString = "";
+var lastRecord = null;
+var ALL = "ALL";
+var BU = "BU";
+var DEPT = "DEPT";
+var ORGANIZER = "ORGANIZER";
+
+var VERBAL = "VERBAL";
+var CARD = "CARD";
+var INOCULATED = "INOCULATED";
+
+var countMap = {};
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+var shiftsParameter = "{!$CurrentPage.parameters.shifts}";
+var shiftsShow = false;
+if (shiftsParameter != null && shiftsParameter.trim().length > 0 && (shiftsParameter.toLowerCase().trim().substring(0, 1) == "y" || shiftsParameter == "true")) {
+  shiftsShow = true;
+}
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+    var query = "select Id, Owner_Name__c, Department, Shift__c, Verbal_Assessment__c, Card_Assessment__c, Inoculated__c from Contact where Account.Name like '%st john%santa monica%' and In_Current_BU__c = true";
+      
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    debugString += query + " - " + records1.length + "<br/>";
+
+    var orgDeptSet = new Array();
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      if (records1[i].Department == null || records1[i].Department == "null" || records1[i].Department == "") {
+        records1[i].Department = "Unknown";
+      }
+      if (records1[i].Shift__c == null || records1[i].Shift__c== "null" || records1[i].Shift__c== "") {
+        records1[i].Shift__c= "Unknown";
+      }    
+    
+      if (shiftsShow == true) {
+        records1[i].Department = records1[i].Department + " ~ " + records1[i].Shift__c
+      }
+    
+      lastRecord = records1[i];
+      incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, BU], 1.0);
+      incrementCounter([ORGANIZER, records1[i].Owner_Name__c, BU], 1.0);        
+      incrementCounter([ALL, BU], 1.0);              
+              
+      if (records1[i].Card_Assessment__c != null && (records1[i].Card_Assessment__c.substring(0,1) == "1" || records1[i].Card_Assessment__c.substring(0,1) == "2")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, CARD], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, CARD], 1.0);        
+        incrementCounter([ALL, CARD], 1.0);                      
+      }
+      if (records1[i].Verbal_Assessment__c != null && (records1[i].Verbal_Assessment__c.substring(0,1) == "1" || records1[i].Verbal_Assessment__c.substring(0,1) == "2")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, VERBAL], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, VERBAL], 1.0);                
+        incrementCounter([ALL, VERBAL], 1.0);                              
+      }
+      if (records1[i].Inoculated__c != null && (records1[i].Inoculated__c == true || records1[i].Inoculated__c == "true")) {
+        incrementCounter([ORGANIZER, DEPT, records1[i].Owner_Name__c, records1[i].Department, INOCULATED], 1.0);
+        incrementCounter([ORGANIZER, records1[i].Owner_Name__c, INOCULATED], 1.0);                
+        incrementCounter([ALL, INOCULATED], 1.0);                              
+      }      
+      var akey = JSON.stringify([records1[i].Owner_Name__c, records1[i].Department]);
+      if (orgDeptSet.indexOf(akey.toLowerCase()) < 0) {
+        orgDeptSet.push(akey.toLowerCase());
+      }
+    }
+    orgDeptSet.sort();
+    
+    var countWriter = "<font size=\"+1\">1s and 2s By Organizer and Department</font><br/>&nbsp;<br/><table border=\"0\">\n";
+    if (shiftsShow == true) {
+      countWriter = "<font size=\"+1\">1s and 2s By Organizer and Department/Shift</font><br/>&nbsp;<br/><table border=\"0\">\n";    
+    }
+    var lastOrganizer = "";        
+    
+    for (var i = 0; i <= orgDeptSet.length; i++) {
+      
+      var organizer = "";
+      var department = "";
+      if (orgDeptSet[i] != null) {
+        organizer = toProperCase(JSON.parse(orgDeptSet[i])[0]);
+        department = toProperCase(JSON.parse(orgDeptSet[i])[1]);      
+      }
+      
+      if (organizer != lastOrganizer) {
+        if (i > 0) {
+          countWriter += "<tr valign=\"top\">\n";
+          countWriter += "<td>&nbsp;&nbsp;&nbsp;&nbsp;<br/>&nbsp;</td>\n";
+          countWriter += "<td align=\"center\"><b>Subtotal</b></td>\n";      
+          var buCount = getCounter([ORGANIZER, lastOrganizer, BU]);
+          var verbalCount = getCounter([ORGANIZER, lastOrganizer, VERBAL]);
+          var cardCount = getCounter([ORGANIZER, lastOrganizer, CARD]);
+          var inocCount = getCounter([ORGANIZER, lastOrganizer, INOCULATED]);
+
+          countWriter += "<td align=\"center\"><b>" + buCount + "</b></td>\n";      
+          countWriter += "<td align=\"center\"><b>" + verbalCount + "</b></td>\n";      
+          countWriter += "<td bgcolor=\"#F0FFF0\" align=\"center\"><b>" + (100.0 * verbalCount / buCount).toFixed(0) + "%</b></td>\n";      
+          countWriter += "<td align=\"center\"><b>" + cardCount + "</td>\n";      
+          countWriter += "<td bgcolor=\"#F0FFF0\" align=\"center\"><b>" + (100.0 * cardCount / buCount).toFixed(0) + "%</b></td>\n";      
+          countWriter += "<td align=\"center\"><b>" + (verbalCount - cardCount) + "</b></td>\n";      
+          countWriter += "<td align=\"center\"><b>" + inocCount + "</td>\n";      
+          countWriter += "<td bgcolor=\"#F0FFF0\" align=\"center\"><b>";
+          if (cardCount > 0) {
+            countWriter += (100.0 * inocCount / cardCount).toFixed(0) 
+          } else {
+            countWriter += "0";          
+          }
+          countWriter += "%</b></td>\n";                
+          countWriter += "<td align=\"center\"><b>" + (cardCount - inocCount ) + "</b></td>\n";                
+          countWriter += "</tr>\n";      
+        }
+        if (i >= orgDeptSet.length) {
+          break;
+        }
+      
+        countWriter += "<tr><td colspan=\"8\">&nbsp;<br/><b>" + organizer + "</b></td></tr>\n";
+        countWriter += "<tr valign=\"bottom\"><td width=\"2%\">&nbsp;&nbsp;&nbsp;&nbsp;</td>";
+        if (shiftsShow) {
+          countWriter += "<td width=\"24%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Dept/Shift</font></td>";
+        } else {
+          countWriter += "<td width=\"24%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Dept</font></td>";
+        }
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">BU</font></td>";
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Verbal<br/>1s,2s</font></td>";
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Verbal<br/>1s,2s</font></td>";                        
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Card<br/>1s,2s</font></td>";
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Card<br/>1s,2s</font></td>";                        
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Cards<br/>To Go</font></td>";              
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Inocs</font></td>";        
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Inocs</font></td>";                
+        countWriter += "<td width=\"8%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Inocs<br/>To Go</font></td>";                      
+        countWriter += "</tr>\n";        
+      }
+      
+
+      
+      countWriter += "<tr valign=\"top\">\n";
+      countWriter += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
+
+
+      if (shiftsShow == true) {
+        var dept2 = department.split("~")[0].trim();
+        var shift2 = department.split("~")[1].trim();        
+        if (shift2 == "Unknown") {
+          shift2 = "";
+        }
+        countWriter += "<td><a href=\"/00Oi0000006PCZI?pv2=" + organizer + "&pv3=" + encodeURIComponent(dept2) + "&pv4=" + encodeURIComponent(shift2) + "\">" + department.replace("~", "-") + "</a></td>\n";   
+      } else {
+        countWriter += "<td><a href=\"/00Oi0000006PA1O?pv2=" + organizer + "&pv3=" + encodeURIComponent(department) + "\">" + department + "</a></td>\n";            
+      }
+
+
+      var buCount = getCounter([ORGANIZER, DEPT, organizer, department, BU]);
+      var verbalCount = getCounter([ORGANIZER, DEPT, organizer, department, VERBAL]);
+      var cardCount = getCounter([ORGANIZER, DEPT, organizer, department, CARD]);
+      var inocCount = getCounter([ORGANIZER, DEPT, organizer, department, INOCULATED]);
+
+      countWriter += "<td align=\"center\">" + buCount + "</td>\n";      
+      countWriter += "<td align=\"center\">" + verbalCount + "</td>\n";      
+      countWriter += "<td bgcolor=\"#F0FFF0\" align=\"center\">" + (100.0 * verbalCount / buCount).toFixed(0) + "%</td>\n";      
+      countWriter += "<td align=\"center\">" + cardCount + "</td>\n";      
+      countWriter += "<td bgcolor=\"#F0FFF0\" align=\"center\">" + (100.0 * cardCount / buCount).toFixed(0) + "%</td>\n";  
+      countWriter += "<td align=\"center\">" + (verbalCount - cardCount) + "</td>\n";      
+      countWriter += "<td align=\"center\">" + inocCount + "</td>\n";    
+      
+      countWriter += "<td bgcolor=\"#F0FFF0\" align=\"center\">";
+      if (cardCount > 0) {
+            countWriter += (100.0 * inocCount / cardCount).toFixed(0) 
+      } else {
+            countWriter += "0";          
+      }
+      countWriter += "%</td>\n";  
+                  
+      countWriter += "<td align=\"center\">" + (cardCount - inocCount ) + "</td>\n";            
+      countWriter += "</tr>\n";
+      
+      
+      lastOrganizer = organizer;
+    }
+    
+    countWriter += "</table>";        
+  
+    document.getElementById("countDiv").innerHTML = countWriter;
+                
+    var leaderWriter = "<font size=\"+1\">Summary</font><br/>&nbsp;<br/><table>\n";
+
+    var buCount = getCounter([ALL, BU]);
+    var verbalCount = getCounter([ALL, VERBAL]);
+    var cardCount = getCounter([ALL, CARD]);    
+    var inocCount = getCounter([ALL, INOCULATED]);    
+    
+      leaderWriter += "<tr valign=\"middle\"><td width=\"10%\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td  width=\"45%\" >BU Count</td><td width=\"45%\" align=\"center\"><b>" + buCount + "</b></td>\n";      
+      leaderWriter += "<tr valign=\"middle\"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Verbal 1s, 2s Count</td><td align=\"center\"><b>" + verbalCount + "</b></td>\n";      
+      leaderWriter += "<tr valign=\"middle\"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Verbal 1s, 2s Percent</td><td bgcolor=\"#F0FFF0\" align=\"center\"><b>" + (100.0 * verbalCount / buCount).toFixed(0) + "%</b></td>\n";      
+      leaderWriter += "<tr valign=\"middle\"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Card Assess 1s, 2s Count</td><td align=\"center\"><b>" + cardCount + "</b></td>\n";      
+      leaderWriter += "<tr valign=\"middle\"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Card Assess 1s, 2s Percent</td><td bgcolor=\"#F0FFF0\" align=\"center\"><b>" + (100.0 * cardCount / buCount).toFixed(0) + "%</b></td>\n";      
+      leaderWriter += "<tr valign=\"middle\"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Card To Go</td><td align=\"center\"><b>" + (verbalCount - cardCount) + "</b></td></tr>\n";  
+      leaderWriter += "<tr valign=\"middle\"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Inoculated Count</td><td align=\"center\"><b>" + inocCount + "</b></td>\n";      
+      leaderWriter += "<tr valign=\"middle\"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Inoculated Percent</td><td bgcolor=\"#F0FFF0\" align=\"center\"><b>" + (100.0 * inocCount / cardCount ).toFixed(0) + "%</b></td>\n";      
+      leaderWriter += "<tr valign=\"middle\"><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>Inoculation To Go</td><td align=\"center\"><b>" + (cardCount - inocCount) + "</b></td></tr>\n";        
+    leaderWriter += "</table>";
+    document.getElementById("leaderDiv").innerHTML = leaderWriter; 
+  
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="confidentialDiv" align="center"><i>CONFIDENTIAL</i></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+
+<script language="JavaScript">
+   
+  document.getElementById("progressDiv").innerHTML = ""; 
+
+    
+</script> 
+  
+</apex:page>

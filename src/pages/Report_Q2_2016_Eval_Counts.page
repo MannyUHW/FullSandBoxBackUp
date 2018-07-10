@@ -1,0 +1,602 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<div align="center">
+<font size="+2"><div id="titleDiv">UHW Q2 2016 Leader and Organizer Evaluation Counts</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+<br></br>
+</div>
+
+<div align="center" id="countDiv"></div>
+
+<font size="+2"><div align="center" id="progressDiv">0%</div></font>
+
+<br>&nbsp;</br>
+
+<div align="center" id="leaderDiv"></div>
+
+<script language="JavaScript">
+var debugString = "";
+
+var lastRecord = null;
+
+var NOTE_TITLE = "Organizer Evaluation Q2 2016";
+
+var ORG_COUNT = "ORG_COUNT";
+var SELF_EVAL= "SELF_EVAL";
+
+var GOAL = "GOAL";
+
+var ALL = "ALL";
+
+var CODE_EXEC_COMP = "P6S";
+var CODE_MIN_WAGE = "P15";
+var CODE_LEADER_ASSESS = "L16";
+
+var TEAM_LEADER = "TEAM_LEADER";
+var MEMBER_LEADER = "MEMBER_LEADER";
+
+
+var DISTRICT = "DISTRICT";
+var SEAT = "SEAT";
+var EMPLOYER = "EMPLOYER";
+var EBOARD = "EBOARD";
+var LEADERS = "LEADERS";
+var SIGNATURES = "SIGNATURES";
+var TURF = "TURF";
+var COORDINATOR = "COORDINATOR";
+var ORGANIZER = "ORGANIZER";
+
+var TEAM = "TEAM";
+var KCOORDINATOR = "KCOORDINATOR";
+var KREGIONAL = "KREGIONAL";
+
+var REGIONAL_DIRECTOR = "REGIONAL_DIRECTOR";
+var DIVISION = "DIVISION";
+
+var OVERRIDE = "OVERRIDE";
+var GOAL = "GOAL";
+
+var BU = "BU";
+
+var LDRLDR = "LDRLDR";
+ 
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  ////alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == null || mode == "null" || mode == "") {
+  mode = "all";
+}
+mode = mode.toLowerCase();
+
+
+var tier = "{!$CurrentPage.parameters.tier}";
+if (tier == null || tier == "null" || tier == "") {
+  tier = "all";
+}
+tier = tier.toLowerCase();
+
+
+var Turf = {};
+var EBoard = new Array();
+
+var div = "{!$CurrentPage.parameters.div}";
+if (div == null || div == "null" || div == "") {
+  div = "Hospital";
+}
+
+
+var staff = "{!$CurrentPage.parameters.staff}";
+if (staff == null || staff == "null" || staff== "") {
+  staff = null;
+} else {
+  staff = staff.toLowerCase().trim();
+  document.getElementById("filterDiv").innerHTML = "Filter by " + staff + "<br/><a href=\"Report_Leader_List\">Clear Filters</a>";
+}
+////alert("staff = " + staff);
+  
+
+div = toProperCase(div);
+
+var organizerSet = new Array();;
+
+var turfAccountIdMap = {};
+var turfUserIdMap = {};
+var divisionSet = new Array();
+
+var districtSet = new Array();
+var emDistrictMap = {};
+var emSeatMap = {};
+var seatDistrictMap = {};
+var emCaseMap = {};
+var fidNameMap = {};
+
+var contactMap = {};
+
+
+var evalDataMap = {};
+
+var tierCount = 0;
+
+//manual entry for Kaiser OC
+//seatDistrictMap["KS7D"] = ("kaiser: south la");
+   
+//manual entry for Tri City Tech
+emDistrictMap[("Tri-City Medical Center-Tech Worker Unit").toLowerCase()] = ("District 1: Orange, San Diego, San Bernardino, Riverside");
+emDistrictMap[("KAISER-ORANGE COUNTY NORTH").toLowerCase()] = ("Kaiser: South LA");
+var District = new Array();
+var emIdSet = new Array();
+var emIdNameMap = {};
+
+var sortSet = new Array();
+
+var uid = null;
+var userFullName = null;
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var query = "select Id, Name, Region__c, Employer_ID__c, Account_Group__c, Coordinator__c, Organizer_1__c, Organizer_2__c from Account where (Account_Group__c like \'KAISER%\' or Account_Group__c like \'HOSPITAL%\') and MO_Active__c = true ";
+
+    var emSet = [];
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      
+      if (records1[i].Name.toLowerCase().indexOf("chapman") < 0) {
+
+      
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+        Turf[records1[i].Name].RegionalDirector = "Vacant";        
+        Turf[records1[i].Name].Organizer = "Vacant";
+        Turf[records1[i].Name].Coordinator = "Vacant";
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+      
+        if (divisionSet.indexOf(records1[i].Account_Group__c) < 0) {
+          divisionSet.push(records1[i].Account_Group__c);
+        }
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+        turfAccountIdMap[records1[i].Id] = records1[i].Name;
+        if (emSet.indexOf(records1[i].Name) < 0) {
+          emSet.push(records1[i].Name);
+        }
+      }
+    }
+
+    ////alert("retrieving users");
+    
+    var userCidMap = {};
+    var cidUserMap = {};
+    var nameCidMap = {};
+    var nameUidMap = {};    
+    var cidNameMap = {};
+            
+    var query = "select Id, Name, Staff_Contact_Id__c from User where IsActive = true";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+      lastRecord = records1[i];    
+      turfUserIdMap[records1[i].Id] = records1[i].Name;
+      var cid = records1[i].Staff_Contact_Id__c 
+      userCidMap[records1[i].Id] = cid;
+      cidUserMap[cid] = records1[i].Id;
+      nameCidMap[records1[i].Name.toLowerCase()] = cid;
+      nameUidMap[records1[i].Name.toLowerCase()] =  records1[i].Id;   
+      if (   records1[i].Name.toLowerCase() == "marta dominguez") {
+        //alert("Marta Dominguez Contact Id = " + cid);
+        nameCidMap["marta a castillo"] = cid;
+        nameUidMap["marta a castillo"] = records1[i].Id;         
+        nameCidMap["marta castillo"] = cid;
+        nameUidMap["marta castillo"] = records1[i].Id;             
+      }
+      cidNameMap[cid] = records1[i].Name;
+    }
+    
+    ////alert("got users");
+
+    
+    var roleArray = ["director", "coordinator", "organizer"];   
+    for (var r = 0; r < roleArray.length; r++) { 
+      var query = "select ACCOUNTID, USERID, TEAMMEMBERROLE from AccountTeamMember where teammemberrole like \'%" + roleArray[r] + "%\' order by USERID";
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+
+    
+      for(var i=0;i < records1.length; i++){  
+        lastRecord = records1[i];    
+
+        //debugString += JSON.stringify(lastRecord) + "<br/>";
+
+        var emName = turfAccountIdMap[records1[i].AccountId];
+        if (emName != null &&  turfUserIdMap[records1[i].UserId] != null) {
+          var userName = turfUserIdMap[records1[i].UserId];
+          var role = records1[i].TeamMemberRole;
+
+          //debugString += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userName + "<br/>";
+        
+          if (role.toLowerCase().indexOf("organizer") >= 0) {
+            var organizers = "";
+            if (Turf[emName].Organizer != null && Turf[emName].Organizer != "Vacant") {
+              organizers = Turf[emName].Organizer + ", ";
+            }
+            organizers += userName;
+            Turf[emName].Organizer = organizers;
+          } else if (role.toLowerCase().indexOf("coordinator") >= 0) {
+            Turf[emName].Coordinator = userName;      
+          } else if (role.toLowerCase().indexOf("regional director") >= 0 && Turf[emName].Division.toLowerCase() == "kaiser") {
+            Turf[emName].RegionalDirector = userName;      
+          } else if (role.toLowerCase().indexOf("assistant director") >= 0 && Turf[emName].Division.toLowerCase().indexOf("hospital") >= 0) {
+            Turf[emName].RegionalDirector = userName;    
+            if (userName.toLowerCase().indexOf("renee") == 0) {
+              ////alert("Renee is at " + emName);
+            }  
+          }  
+        }    
+      } 
+    } 
+    
+    var turfSortSet = new Array();
+    var coorSortSet = new Array();    
+    var regDirSortSet = new Array();  
+    var orgDivMap = {};
+    var orgRegDirMap = {};    
+    var orgCoorMap = {};        
+    
+    for (var emName in Turf) {
+        var turfa = Turf[emName];
+        ////alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer]);
+        var div = turfa.Division.toLowerCase().trim();
+        if (turfSortSet.indexOf(turfKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          turfSortSet.push(turfKey);
+        }
+        
+        var coorKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator]);
+        if (coorSortSet.indexOf(coorKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant" && turfa.Coordinator.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            coorSortSet.push(coorKey);
+          }
+        }    
+        
+        var regDirKey = JSON.stringify([turfa.Division, turfa.RegionalDirector]);
+        if (regDirSortSet.indexOf(regDirKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            regDirSortSet.push(regDirKey);
+          }
+        }   
+        if (organizerSet.indexOf(turfa.Organizer.trim().toLowerCase()) < 0) {
+          orgDivMap[turfa.Organizer.trim().toLowerCase()] =  turfa.Division;       
+          orgRegDirMap[turfa.Organizer.trim().toLowerCase()] =  turfa.RegionalDirector;
+          orgCoorMap[turfa.Organizer.trim().toLowerCase()] =  turfa.Coordinator;                        
+          var orgArray = turfa.Organizer.split(",");
+          for (var u = 0; u < orgArray.length; u++) {
+            incrementCounter([ORG_COUNT, DIVISION, turfa.Division], 1);        
+            incrementCounter([ORG_COUNT, REGIONAL_DIRECTOR, turfa.RegionalDirector], 1);
+            incrementCounter([ORG_COUNT, COORDINATOR, turfa.Coordinator], 1);    
+            incrementCounter([ORG_COUNT, ALL], 1);    
+            orgDivMap[orgArray[u].trim().toLowerCase()] =  turfa.Division;       
+            orgRegDirMap[orgArray[u].trim().toLowerCase()] =  turfa.RegionalDirector;
+            orgCoorMap[orgArray[u].trim().toLowerCase()] =  turfa.Coordinator;                   
+          }
+          organizerSet.push(turfa.Organizer.trim().toLowerCase())
+        }
+        
+        if (turfa.RegionalDirector.toLowerCase().indexOf("schneider") >= 0 &&   turfa.Coordinator.toLowerCase().indexOf("vacant") >= 0 &&   turfa.Organizer.toLowerCase().indexOf("vacant") >= 0) {
+          ////alert("vacant vacant = " + emName );
+        }
+    }
+
+
+
+    var tier1Count = 0;
+    var tier2Count = 0;    
+    var tierNCount = 0;        
+ 
+    var ccSet = [];
+
+    var leaderAssessMap = {};
+    
+    for (a = 0; a < 10; a++) { 
+ 
+      document.getElementById("progressDiv").innerHTML = "" + ((a+1) * 9) + "%";
+
+      var query = "select Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, Department__c, Question_Name__c, Survey_Code__c, Response_Value__c, Add_Info_Numeric__c, Collected_By__c, Collected_By_Employer_Name__c, Contact__r.Ethnicity__c, Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, Contact__r.COPE_Pledge__c, Add_Info__c from Survey_Response__c where (";
+      if (a == 0) {
+        query += " FID__c = null OR ";
+      }
+      query += " FID__c like \'%" + a + "\' ) ";
+      query += " AND ( Survey_Code__c = \'L16\') AND (Division__c like \'HOSP%\' OR Division__c like \'KAISER\' ) ";
+      
+      
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+
+      debugString += query + " - " + records1.length + "<br/>";
+
+      for(var i=0;i < records1.length; i++){ 
+        ////alert(JSON.stringify(records1[i]));
+        lastRecord = records1[i];
+        var organizer = "Vacant";
+        var coordinator = "Vacant";
+        var regionalDirector = "Vacant"; 
+        var division = "KAISER";           
+        if (Turf[records1[i].Employer_Name__c] != null) {
+            organizer = Turf[records1[i].Employer_Name__c].Organizer;
+            coordinator = Turf[records1[i].Employer_Name__c].Coordinator;
+            regionalDirector = Turf[records1[i].Employer_Name__c].RegionalDirector;     
+            division = Turf[records1[i].Employer_Name__c].Division; 
+        }
+        
+        var respChar = "0";
+        if (records1[i].Survey_Code__c == CODE_LEADER_ASSESS && records1[i].Contact__c != null) {
+          respChar = records1[i].Response_Value__c.substring(0, 1);        
+        }
+        incrementCounter([LEADERS, ORGANIZER, organizer], 1);
+        incrementCounter([LEADERS, COORDINATOR, coordinator], 1);
+        incrementCounter([LEADERS, REGIONAL_DIRECTOR, regionalDirector], 1);
+        incrementCounter([LEADERS, DIVISION, division], 1);
+        incrementCounter([LEADERS, ALL], 1);        
+        incrementCounter([LEADERS, respChar, ORGANIZER, organizer], 1);
+        incrementCounter([LEADERS, respChar, COORDINATOR, coordinator], 1);
+        incrementCounter([LEADERS, respChar, REGIONAL_DIRECTOR, regionalDirector], 1);
+        incrementCounter([LEADERS, respChar, DIVISION, division], 1);                                         
+        incrementCounter([LEADERS, respChar, ALL], 1);          
+      }
+    } 
+
+    var evalCidSet = [];
+    var cidLinkMap = {};
+    var nameLinkMap = {};
+    query = "select Id, ParentId from Note where Title = \'" + NOTE_TITLE + "\' ";     
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    ////alert("notes found = " + records1.length);
+    for (var i = 0; i < records1.length; i++) {
+      lastRecord = records1[i];
+      var cid = records1[i].ParentId;
+      ////alert(JSON.stringify(records1[i]));
+      evalCidSet.push(cid);
+      cidLinkMap[cid] = "/" + records1[i].Id;
+      cidLinkMap[cid.substring(0, 15)] = "/" + records1[i].Id;
+      var organizer = cidNameMap[cid];
+      if (organizer == null) {      
+        organizer = cidNameMap[cid.substring(0, 15)]; 
+      }
+      if (organizer != null )  {
+
+        nameLinkMap[organizer.trim().toLowerCase()] = "/" + records1[i].Id;
+        var division = orgDivMap[organizer.trim().toLowerCase()];
+        var regionalDirector = orgRegDirMap[organizer.trim().toLowerCase()];
+        var coordinator = orgCoorMap[organizer.trim().toLowerCase()];          
+        if (organizer.toLowerCase().trim().indexOf("marta") == 0) {
+          //alert("Marta has a Self-Evaluation! Division = " + division);
+        }
+                
+        if (division != null && (division.toLowerCase().indexOf("kaiser") == 0 || division.toLowerCase().indexOf("hospital") == 0)) {
+          incrementCounter([SELF_EVAL, ALL], 1);         
+          incrementCounter([SELF_EVAL, DIVISION, division], 1);
+          incrementCounter([SELF_EVAL, REGIONAL_DIRECTOR, regionalDirector ], 1);
+          incrementCounter([SELF_EVAL, COORDINATOR, coordinator ], 1);                
+          incrementCounter([SELF_EVAL, ORGANIZER, organizer ], 1);   
+          //if (organizer.toLowerCase() == "marta castillo" || organizer.toLowerCase() == "marta a castillo")  {
+          //  incrementCounter([SELF_EVAL, ORGANIZER, "marta dominguez"], 1);   
+          //  incrementCounter([SELF_EVAL, ORGANIZER, "marta dominguez" ], 1);             
+          //}                   
+        }
+      }
+    }
+         
+    var leaderWriter = "";
+    
+    leaderWriter += "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
+    leaderWriter += "<tr valign=\"bottom\">\n";    
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"white\">Division</font></td>";   
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Reg/Asst Director</font></td>";   
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Coordinator</font></td>";         
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Organizer</font></td>";             
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>";        
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Organizer<br/>Evals<br/>Completed</font></td>";    
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>";        
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leader Count</font></td>";             
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Ldr Evaled 1</font></td>";             
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Ldr Evaled 2</font></td>";             
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Evaled as Not Ldr</font></td>";             
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Not Yet Evaled</font></td>";             
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Evaled<br/>Percent</font></td>";             
+    leaderWriter += "</tr>\n";     
+    
+    leaderWriter += "<tr valign=\"top\">\n";          
+    leaderWriter += "<td><b>All</b></td><td></td><td></td><td></td>";  
+    leaderWriter += "<td style=\"height:65px\" bgcolor=\"#481C60\" align=\"center\"> </td>";                           
+    leaderWriter += "<td align=\"center\">" + getCounter([SELF_EVAL, ALL]) + " / " + getCounter([ORG_COUNT, ALL]) + "</td>";                                   
+    leaderWriter += "<td bgcolor=\"#481C60\" align=\"center\"> </td>";                                   
+    leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, ALL]) + "</td>";                                   
+        
+    var r1 = getCounter([LEADERS, "1", ALL]);
+    var r2 = getCounter([LEADERS, "2", ALL]);
+    var rN = getCounter([LEADERS, "N", ALL]);
+    var r0 = getCounter([LEADERS, "0", ALL]);
+                                
+    leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "1", ALL]) + "</td>";                                           
+    leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "2", ALL]) + "</td>";                                           
+    leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "N", ALL]) + "</td>";                                           
+    leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "0", ALL]) + "</td>";                                                   
+    leaderWriter += "<td align=\"center\">" + (100 * (r1 + r2 + rN) / getCounter([LEADERS, ALL])).toFixed(0) + "%</td>";                   
+    leaderWriter += "</tr>\n";         
+    
+    turfSortSet.sort();
+    
+    var lastDivision = "";
+    var lastRegDirector = "";
+    var lastCoordinator = "";
+    var lastOrganizer = "";            
+    for (var a = 0; a < turfSortSet.length; a++) {
+      var turfArray = JSON.parse(turfSortSet[a]);
+      var division = turfArray[0];
+      var regDirector = turfArray[1];
+      var coordinator = turfArray[2];
+      var organizer = turfArray[3];
+      if (division.toLowerCase().indexOf("hosp") == 0 || division.toLowerCase().indexOf("kaiser") == 0) {
+      if (lastDivision != division) {
+        leaderWriter += "<tr valign=\"top\">\n";          
+        leaderWriter += "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + division + "</td><td></td><td></td><td></td>";  
+        leaderWriter += "<td style=\"height:65px\" bgcolor=\"#481C60\" align=\"center\"> </td>";                           
+        leaderWriter += "<td align=\"center\">" + getCounter([SELF_EVAL, DIVISION, division]) + " / " + getCounter([ORG_COUNT, DIVISION, division]) + "</td>";                                   
+        leaderWriter += "<td bgcolor=\"#481C60\" align=\"center\"> </td>";                                   
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, DIVISION, division]) + "</td>";                                   
+        
+        var r1 = getCounter([LEADERS, "1", DIVISION, division]);
+        var r2 = getCounter([LEADERS, "2", DIVISION, division]);
+        var rN = getCounter([LEADERS, "N", DIVISION, division]);
+        var r0 = getCounter([LEADERS, "0", DIVISION, division]);
+                                
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "1", DIVISION, division]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "2", DIVISION, division]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "N", DIVISION, division]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "0", DIVISION, division]) + "</td>";                                                   
+        leaderWriter += "<td align=\"center\">" + (100 * (r1 + r2 + rN) / getCounter([LEADERS, DIVISION, division])).toFixed(0) + "%</td>";                   
+        leaderWriter += "</tr>\n";             
+      }
+      if (lastRegDirector != regDirector) {
+        leaderWriter += "<tr valign=\"top\">\n";          
+        leaderWriter += "<td></td><td>" + regDirector + "</td><td></td><td></td>";  
+        leaderWriter += "<td style=\"height:65px\" bgcolor=\"#481C60\" align=\"center\"> </td>";                           
+        leaderWriter += "<td align=\"center\">" + getCounter([SELF_EVAL, REGIONAL_DIRECTOR, regDirector]) + " / " + getCounter([ORG_COUNT, REGIONAL_DIRECTOR, regDirector]) + "</td>";                                   
+        leaderWriter += "<td bgcolor=\"#481C60\" align=\"center\"> </td>";                                   
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, REGIONAL_DIRECTOR, regDirector]) + "</td>";                                   
+        
+        var r1 = getCounter([LEADERS, "1", REGIONAL_DIRECTOR, regDirector]);
+        var r2 = getCounter([LEADERS, "2", REGIONAL_DIRECTOR, regDirector]);
+        var rN = getCounter([LEADERS, "N", REGIONAL_DIRECTOR, regDirector]);
+        var r0 = getCounter([LEADERS, "0", REGIONAL_DIRECTOR, regDirector]);
+                                
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "1", REGIONAL_DIRECTOR, regDirector]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "2", REGIONAL_DIRECTOR, regDirector]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "N", REGIONAL_DIRECTOR, regDirector]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "0", REGIONAL_DIRECTOR, regDirector]) + "</td>";                                                   
+        leaderWriter += "<td align=\"center\">" + (100 * (r1 + r2 + rN) / getCounter([LEADERS, REGIONAL_DIRECTOR, regDirector])).toFixed(0) + "%</td>";                   
+        leaderWriter += "</tr>\n";             
+      } 
+      if (lastCoordinator != coordinator) {
+        leaderWriter += "<tr valign=\"top\">\n";          
+        leaderWriter += "<td></td><td></td><td>" + coordinator + "</td><td></td>";  
+        leaderWriter += "<td style=\"height:65px\" bgcolor=\"#481C60\" align=\"center\"> </td>";                           
+        leaderWriter += "<td align=\"center\">" + getCounter([SELF_EVAL, COORDINATOR, coordinator]) + " / " + getCounter([ORG_COUNT, COORDINATOR, coordinator]) + "</td>";                                   
+        leaderWriter += "<td bgcolor=\"#481C60\" align=\"center\"> </td>";                                   
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, COORDINATOR, coordinator]) + "</td>";                                   
+        
+        var r1 = getCounter([LEADERS, "1", COORDINATOR, coordinator]);
+        var r2 = getCounter([LEADERS, "2", COORDINATOR, coordinator]);
+        var rN = getCounter([LEADERS, "N", COORDINATOR, coordinator]);
+        var r0 = getCounter([LEADERS, "0", COORDINATOR, coordinator]);
+                                
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "1", COORDINATOR, coordinator]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "2", COORDINATOR, coordinator]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "N", COORDINATOR, coordinator]) + "</td>";                                           
+        leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "0", COORDINATOR, coordinator]) + "</td>";                                                   
+        leaderWriter += "<td align=\"center\">" + (100 * (r1 + r2 + rN) / getCounter([LEADERS, COORDINATOR, coordinator])).toFixed(0) + "%</td>";                   
+        leaderWriter += "</tr>\n";            
+      }             
+      //
+      //  Organizer Counts
+      //
+      leaderWriter += "<tr valign=\"top\">\n";          
+      leaderWriter += "<td></td><td></td><td></td><td>" + organizer + "</td>";  
+      leaderWriter += "<td style=\"height:65px\" bgcolor=\"#481C60\" align=\"center\"> </td>";                           
+      leaderWriter += "<td align=\"center\">";
+      var oArray = organizer.split(",");
+      for (var ox = 0; ox < oArray.length; ox++) {
+        if (oArray[ox].trim().toLowerCase().indexOf("marta") == 0) {
+          //alert("found Marta = " + oArray[ox] + ". self eval count = " + getCounter([SELF_EVAL, ORGANIZER, oArray[ox]]));
+        }
+        var uid = nameUidMap[oArray[ox].trim().toLowerCase()];      
+        var noteLink = nameLinkMap[oArray[ox].trim().toLowerCase()];  
+        //if (getCounter([SELF_EVAL, ORGANIZER, oArray[ox]]) > 0) { 
+        if (noteLink != null) {        
+          //var uid = nameUidMap[oArray[ox].trim().toLowerCase()];
+          //var noteLink = nameLinkMap[oArray[ox].trim().toLowerCase()];
+          var noteLink = "/apex/Enter_Organizer_Assess?uid=" + uid;
+          leaderWriter += "<a target=\"_BLANK\" href=\"" +  noteLink + "\">yes</a>&nbsp;&nbsp;&nbsp;&nbsp; ";
+        }   
+      }
+      leaderWriter += "</td>";                                   
+      leaderWriter += "<td bgcolor=\"#481C60\" align=\"center\"> </td>";                                   
+      leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, ORGANIZER, organizer]) + "</td>";                                   
+        
+      var r1 = getCounter([LEADERS, "1", ORGANIZER, organizer]);
+      var r2 = getCounter([LEADERS, "2", ORGANIZER, organizer]);
+      var rN = getCounter([LEADERS, "N", ORGANIZER, organizer]);
+      var r0 = getCounter([LEADERS, "0", ORGANIZER, organizer]);
+                                
+      leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "1", ORGANIZER, organizer]) + "</td>";                                           
+      leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "2", ORGANIZER, organizer]) + "</td>";                                           
+      leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "N", ORGANIZER, organizer]) + "</td>";                                           
+      leaderWriter += "<td align=\"center\">" + getCounter([LEADERS, "0", ORGANIZER, organizer]) + "</td>";                                                   
+      leaderWriter += "<td align=\"center\">" + (100 * (r1 + r2 + rN) / getCounter([LEADERS, ORGANIZER, organizer])).toFixed(0) + "%</td>";                   
+      leaderWriter += "</tr>\n"; 
+      }
+      var lastDivision = division;
+      var lastRegDirector = regDirector;
+      var lastCoordinator = coordinator;
+      var lastOrganizer = organizer;                  
+    }
+    leaderWriter += "</table>";
+    document.getElementById("leaderDiv").innerHTML = leaderWriter; 
+  
+} catch(e) { 
+ //alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="confidentialDiv" align="center"><i>CONFIDENTIAL</i></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+
+<script language="JavaScript">
+   
+  document.getElementById("progressDiv").innerHTML = ""; 
+  //document.getElementById("debugDiv").innerHTML = "<br/><br/><br/><br/><br/><br/><br/>" +  JSON.stringify(nameLinkMap) + "<br/><br/><br/><br/><br/><br/><br/>"  + JSON.stringify(countMap); 
+   
+</script> 
+   
+</apex:page>

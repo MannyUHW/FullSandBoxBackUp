@@ -1,0 +1,34 @@
+<apex:page controller="BoothForce_ManagerViewController" showHeader="false" standardStylesheets="false">
+   
+  <div id="managerView">
+  <apex:repeat value="{!boothsByDate}" var="bbd" >
+        <div class="dayCluster">
+        <div class="dayHeader">
+          
+          <div class="day">{!DAY(bbd.occurDate)}</div>
+          <div class="day-text"><apex:outputText value="{0,date,EEEE}"><apex:param value="{!bbd.occurDate}" /></apex:outputText></div>
+          <div class="month"><apex:outputText value="{0,date,MMMM}"><apex:param value="{!bbd.occurDate}" /></apex:outputText></div>
+          <div class="year">{!YEAR(bbd.occurDate)}</div>
+          
+        </div>
+  <apex:repeat value="{!bbd.userStaffingAssignments}" var="staffing">
+  <div class="dataCell" data-user="{!staffing.userName}" data-userid="{!staffing.userId}">
+  	<div class="shiftTime">{!staffing.shiftTime}</div>
+  	<h2>{!staffing.userName}</h2>
+  	<h3>&#64; {!staffing.boothName}</h3>
+  	<span class="btn btnPrimary" onclick="swapShiftManager('{!staffing.staffingId}')" rel="#swapContainerManager">Trade/Drop Shift</span>
+	
+  </div>
+  </apex:repeat>
+  </div>
+  </apex:repeat>
+  
+    <div id="swapContainerManager" class="overlay ajaxWho">
+      <a class="close btn btnPrimary">Cancel</a>
+      <div></div>
+    </div>
+  
+  </div>
+  
+  
+</apex:page>

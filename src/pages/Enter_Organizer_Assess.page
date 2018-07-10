@@ -1,0 +1,423 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Enter Organizer Evaluation</title>
+ 
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/35.0/apex.js" type="text/javascript"></script>
+
+
+</head>
+
+  <body>
+
+<div align="center">
+
+
+<br>&nbsp;</br>
+
+
+<script language="JavaScript">
+
+var NOTE_TITLE = "Organizer Evaluation Q2 2016";
+
+var BU = "BU";
+var TIER1 = "TIER1";
+var TIER2 = "TIER2";
+var COPE = "COPE";
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    //window.history.back();
+    navigateTo("/");
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location = pUrl;
+  }
+  return true;
+}
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+
+
+var uid = null;
+var cid = null;
+var userFullName = null;
+
+var previousId = null;
+var previousBody = null;
+var previousResponse = null;
+
+var countsWriter = "";
+var deptSet = [];
+var tier2Set = [];
+var tier1Set = [];
+var emSet = [];
+
+    var minWageMbrSigs = 0;
+    var minWageTeamSigs = 0;
+    var minWageTeamLdrs = 0;
+    var execCompMbrSigs = 0;
+    var execCompTeamSigs = 0;
+    var execCompTeamLdrs = 0;
+
+try{ 
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var user = sforce.connection.getUserInfo();
+    var userName = user.userName;
+    var query = "SELECT ID, Name, Staff_Contact_Id__c, Title from User WHERE User.username=\'" + userName + "\'";
+    
+    var paramUid = "{!$CurrentPage.parameters.uid}";
+    if (paramUid != null && paramUid.trim() != "" && paramUid.trim() != "null") {
+      query = "SELECT ID, Name, Staff_Contact_Id__c, Title from User WHERE Id = \'" + paramUid + "\'";
+    }
+        
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length != 1) throw "unable to find user";
+    uid = records[0].Id;
+
+    
+    
+    userFullName = records[0].Name;
+    cid = records[0].Staff_Contact_Id__c;
+    title = records[0].Title;
+    
+    if (title.toLowerCase().indexOf("organizer") < 0 && title.toLowerCase().indexOf("rep/org") < 0) {
+      alert("Organizer Evaluation is only available to Organizers.");
+      navigateTo("/");
+    }
+    
+    //alert("uid=" + uid + "\nfullname=" + userFullName + "\ncid=" + cid);
+
+    var result = sforce.connection.query("SELECT ID, Title, Body, IsPrivate, ParentId from Note WHERE ParentId=\'" + cid + "\'");
+    var records = result.getArray("records");
+    if (records.length > 0) {
+      previousId = records[0].Id;
+      previousBody = records[0].Body;
+      previousResponse = records[0];
+    }
+    
+    for (var k = 0; k < 10; k++) {
+      var query = "SELECT ID, Account.Name, Department, COPE_Pledge__c from Contact WHERE (Account.Organizer_1__c = \'" + uid + "\' OR Account.Organizer_2__c = \'" + uid + "\') AND In_Current_BU__c = true and FID__c like \'%" + k + "\' ";
+      var result = sforce.connection.query(query);
+      var records1 = result.getArray("records");
+      for(var i=0;i < records1.length; i++) { 
+        var dept = records1[i].Department;
+        if (dept == null || dept.trim() == "" || dept.toLowerCase().trim() == "null") {
+          dept = "Unknown";
+        }
+        incrementCounter([BU, records1[i].Account.Name, records1[i].Department], 1);
+        var deptKey = JSON.stringify([records1[i].Account.Name, dept]);
+        if (deptSet.indexOf(deptKey) < 0) {
+          deptSet.push(deptKey);
+        }   
+        if (records1[i].COPE_Pledge__c != null && parseFloat(records1[i].COPE_Pledge__c) > 0) {
+          incrementCounter([COPE, records1[i].Account.Name, records1[i].Department], parseFloat(records1[i].COPE_Pledge__c));
+        }
+        if (emSet.indexOf( records1[i].Account.Name) < 0) {
+          emSet.push(records1[i].Account.Name);
+        }
+      }
+    }
+    deptSet.sort();
+    //alert("getting leaders....");
+    
+    var query = "select Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, Department__c, Question_Name__c, Survey_Code__c, Response_Value__c, Add_Info_Numeric__c, Collected_By__c, Contact__r.Ethnicity__c, Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, Contact__r.COPE_Pledge__c, Add_Info__c from Survey_Response__c where ";
+    query += " ( Survey_Code__c = \'P15\' OR Survey_Code__c = \'P6S\') AND Add_Info_Numeric__c > 0 AND";
+    query += " ( ";
+    for (var j = 0; j < emSet.length; j++) {
+      if (j > 0) {
+        query += " OR ";
+      }
+      query += " Employer_Name__c = \'" + emSet[j] + "\' ";
+    }
+    query += " ) ";
+    
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++) { 
+      var deptKey = JSON.stringify([records1[i].Employer_Name__c, dept]);    
+      if (tier2Set.indexOf(records1[i].Contact_Name__c.toLowerCase()) < 0) {
+        tier2Set.push(records1[i].Contact_Name__c.toLowerCase());
+        incrementCounter([TIER2, records1[i].Employer_Name__c, records1[i].Department__c], 1);
+      }
+      if (records1[i].Collected_By__c != null && tier1Set.indexOf(records1[i].Collected_By__c) < 0) {
+        tier1Set.push(records1[i].Collected_By__c);
+        incrementCounter([TIER1, records1[i].Employer_Name__c, records1[i].Department__c], 1);        
+      }      
+    }    
+    countsWriter += "Raw Tier 1 = " + tier1Set.length + "<br/>";
+    countsWriter += "Raw Tier 2 = " +    tier2Set.length + "<br/>";    
+    countsWriter += "<table><tr valign=\"bottom\">";
+    countsWriter += "<td bgcolor=\"#481C60\" width=\"40%\" align=\"center\">";
+    countsWriter += "<font color=\"white\">Department</font>";
+    countsWriter += "</td>";    
+    countsWriter += "<td bgcolor=\"#481C60\" width=\"15%\" align=\"center\">";    
+    countsWriter += "<font color=\"white\">BU<br/>Count</font>";
+    countsWriter += "</td>";       
+    countsWriter += "<td bgcolor=\"#481C60\" width=\"15%\" align=\"center\">";    
+    countsWriter += "<font color=\"white\">Raw<br/>Tier 1 /<br/> Team Ldrs</font>";
+    countsWriter += "</td>";    
+    countsWriter += "<td bgcolor=\"#481C60\" width=\"15%\" align=\"center\">";    
+    countsWriter += "<font color=\"white\">Raw<br/>Tier 2 /<br/> Mbr Ldrs</font>";
+    countsWriter += "</td>";    
+    countsWriter += "<td bgcolor=\"#481C60\" width=\"15%\" align=\"center\">";    
+    countsWriter += "<font color=\"white\">Average<br/>COPE</font>";
+    countsWriter += "</td>";           
+    countsWriter += "</tr>\n";
+    for (var i = 0; i < deptSet.length; i++) { 
+      var deptArray = JSON.parse(deptSet[i]); 
+      if (getCounter([BU, deptArray[0], deptArray[1]]) > 0) {
+      countsWriter += "<tr valign=\"bottom\">";    
+      countsWriter += "<td>&nbsp;<br/>" + toProperCase("<font size=\"-2\">" + deptArray[0] + "</font><br/>" + deptArray[1]) + "</td>";       
+        countsWriter += "<td align=\"center\">" + getCounter([BU, deptArray[0], deptArray[1]]) + "</td>";             
+        countsWriter += "<td align=\"center\">" + getCounter([TIER1, deptArray[0], deptArray[1]]) + "</td>";             
+        countsWriter += "<td align=\"center\">" + getCounter([TIER2, deptArray[0], deptArray[1]]) + "</td>";                         
+        countsWriter += "<td align=\"center\">$" + (getCounter([COPE, deptArray[0], deptArray[1]]) /  getCounter([BU, deptArray[0], deptArray[1]])).toFixed(2) + "</td>";                               
+        countsWriter += "</tr>\n";
+      }
+    }
+    countsWriter += "</table>\n\n";  
+    
+} 
+catch(e){ 
+  alert('An Error has Occured. Error:' +e); 
+}
+
+</script> 
+
+<table cellpadding="7" border="0">
+<tr valign="top"><td align="center" colspan="2"><div align="center" id="div_oname"></div></td></tr>
+
+<tr valign="top"><td align="center" colspan="2"><a href="#evalstart">Go to Evaluation questions</a></td></tr>
+
+<tr valign="top"><td align="center" colspan="2"><div id="div_counts"></div></td></tr>
+</table>
+
+<a name="evalstart"></a>
+
+<table cellpadding="7" border="0">
+<tr valign="top"><td colspan="2" align="left"><font size="+1">Facility Coverage</font></td></tr>
+
+<tr valign="top"><td align="right"><b>What percent of facility got covered by a leader collecting signatures?</b></td>
+  <td>
+  <input style="align: center;text-align: center;" size="6" id="coverage" type="number" min="0" max="100" value="0"></input>
+  </td>
+</tr>
+
+<tr valign="top"><td colspan="2" align="center"><b>Which departments or areas were the biggest producing and why? </b></td>
+</tr>
+<tr valign="top">
+<td colspan="2" align="center">
+    <textarea  rows="5" cols="60" id="strongest_depts">
+    </textarea>
+  </td>
+</tr>
+<tr valign="top"><td colspan="2" align="center"><b>Which three department or areas are your largest where you do not have enough/the right leaders?</b></td>
+</tr>
+<tr valign="top">
+<td colspan="2" align="center">
+    <textarea  rows="5" cols="60" id="weakest_depts">
+    </textarea>
+  </td>
+</tr>
+
+<tr valign="top"><td colspan="2" align="left"><font size="+1">Personal Reflection</font></td></tr>
+
+<tr valign="top"><td colspan="2" align="center"><b>What I did to support my team leaders that helped them build a team:</b></td>
+</tr>
+<tr valign="top">
+<td colspan="2" align="center">
+    <textarea  rows="5" cols="60" id="support_team"></textarea>
+  </td>
+</tr>
+
+<tr valign="top"><td colspan="2" align="center"><b>What I need to do more of to get my team leaders to truly build a following and a team that works together:</b></td>
+</tr>
+<tr valign="top">
+<td colspan="2" align="center">
+    <textarea  rows="5" cols="60" id="build_team"></textarea>
+  </td>
+</tr>
+
+<tr valign="top"><td colspan="2" align="center"><b>Skills I think I need to develop:</b></td>
+</tr>
+<tr valign="top">
+<td colspan="2" align="center">
+      <select id="skills"  size="10" multiple="true">
+<option value="IDing a leader">IDing a leader</option>
+<option value="Develop a leader">Develop a leader</option>
+<option value="Building a team">Building a team</option>
+<option value="Partnering with my eboard member">Partnering with my eboard member</option>
+<option value="Analyzing Turf">Analyzing Turf</option>
+<option value="Breaking into new departments">Breaking into new departments</option>
+<option value="Technology">Technology </option>
+<option value="Recruitment">Recruitment</option>
+<option value="Using a list">Using a list</option>
+<option value="Other">Other</option>
+  </select>
+  </td>
+</tr>
+
+<tr valign="top"><td colspan="2" align="center"><b>Comments on Skill Development:</b></td>
+</tr>
+<tr valign="top">
+<td colspan="2" align="center">
+    <textarea  rows="9" cols="85" id="devcomments"></textarea>
+  </td>
+</tr>
+
+<tr valign="top"><td colspan="2" align="center"><b>Experiences I would like to have to better do my job</b></td>
+</tr>
+<tr valign="top">
+<td colspan="2" align="center">
+      <select id="experiences"  size="8" multiple="true">
+<option value="Participate in a New Organizing campaign">Participate in a New Organizing campaign</option>
+<option value="Participate in a political campaign">Participate in a political campaign</option>
+<option value="A blitz of any kind">A blitz of any kind</option>
+<option value="Planning an agenda">Planning an agenda</option>
+<option value="Lobby visit">Lobby visit</option>
+<option value="Facilitating a meeting">Facilitating a meeting</option>
+<option value="GOTV">GOTV</option>
+<option value="Ratification">Ratification</option>
+  </select>
+  </td>
+</tr>
+
+</table>
+<br>&nbsp;</br>
+
+<button class="btn btn-lg btn-primary" type="submit" onclick="submitSurvey()">  
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Submit Survey
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br> 
+  
+<br>&nbsp;</br>
+
+<button class="btn btn-lg btn-primary" type="submit" onclick="navigateBack()">Back</button>
+
+
+<br>&nbsp;</br>
+<script language="JavaScript">
+  document.getElementById("div_oname").innerHTML = "Organizer Evaluation Q2 2016<br/><u><font size=\"+2\">" + userFullName + "</font></u>";
+  document.getElementById("div_counts").innerHTML = countsWriter;    
+
+  
+  if (previousBody != null) {
+    evalData = JSON.parse(previousBody);
+    document.getElementById("coverage").value = evalData["coverage"]
+    document.getElementById("strongest_depts").value = evalData["strongest_depts"];
+    document.getElementById("weakest_depts").value = evalData["weakest_depts"];    
+    document.getElementById("support_team").value = evalData["support_team"];    
+    document.getElementById("build_team").value = evalData["build_team"];
+    document.getElementById("devcomments").value = evalData["devcomments"] ;  
+    $("#experiences").val(evalData["experiences"]);  
+    $("#skills").val(evalData["skills"]);      
+  }
+
+    
+    
+  function submitSurvey() {
+    //add insert/push
+    var responses = []; 
+    var response = new sforce.SObject("Note"); 
+
+    response.Title = NOTE_TITLE;
+    response.IsPrivate = false;
+    
+    var evalData = {};
+
+    evalData["coverage"] = document.getElementById("coverage").value;
+    evalData["strongest_depts"] = document.getElementById("strongest_depts").value;
+    evalData["weakest_depts"] = document.getElementById("weakest_depts").value;
+    evalData["support_team"] = document.getElementById("support_team").value;
+    evalData["build_team"] = document.getElementById("build_team").value;    
+    evalData["devcomments"] = document.getElementById("devcomments").value;    
+    evalData["experiences"] = $("#experiences").val();  
+    evalData["skills"] = $("#skills").val();  
+    
+    response.Body = JSON.stringify(evalData);          
+    //alert(JSON.stringify(response));
+    if (previousId != null) {
+      response.Id = previousId;
+    } else {
+      response.ParentId = cid;
+    }
+    responses.push(response); 
+  
+    
+    var results = null;
+    if (previousId == null) {
+      //alert("inserting...");
+      results = sforce.connection.create(responses); 
+    } else {
+      //alert("updating...");    
+      results = sforce.connection.update(responses); 
+    }
+    if (results[0].getBoolean("success")) { 
+      alert("Evaluation submitted successfully."); 
+      navigateBack();
+      //navigateTo("Enter_Leader_Assess");
+      //window.open('','_parent',''); 
+      //window.close();
+    } else { 
+      alert("failed to create Organizer Evaluation " + results[0]); 
+    } 
+
+  }
+
+
+</script>
+</div>
+
+
+ 
+    </body>
+</html>
+
+
+</apex:page>

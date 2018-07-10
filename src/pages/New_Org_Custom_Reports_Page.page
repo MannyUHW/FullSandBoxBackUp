@@ -1,0 +1,33 @@
+<apex:page >
+
+    <style>
+    
+        #Container {
+            padding-left: 50px;
+            padding-top: 20px;
+        }
+   
+        .spaced {
+            margin-top: 20px;
+        }
+
+        #NewOrgRpts {
+            font-size: 2.0em;
+            color: blue;
+            font-weight: bold;
+            padding-top: 16px;
+            padding-bottom: 4px;
+        }
+        
+    </style>
+    
+    <div id="Container">
+        <div id="NewOrgRpts">New Organizing Custom Reports</div>    
+        <ul>
+            <li class="spaced"><apex:outputLink value="{!$Page.Report_New_Organizing_Activity}">New Organizing Raw Activities Report - Last 7 Days</apex:outputLink></li>
+            <li class="spaced"><apex:outputLink target="_blank" value="{!$Page.Report_Licensure_All_CA_Hosps}">Licensure Proximity Reports for All CA Hospitals</apex:outputLink></li>
+            <li class="spaced"><apex:outputLink target="_blank" value="{!$Page.NewOrgAssessments2}">New Organizing Assessments Reports</apex:outputLink></li>
+        </ul>
+    </div>
+    
+</apex:page>

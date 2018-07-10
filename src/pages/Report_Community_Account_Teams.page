@@ -1,0 +1,211 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<div align="center">
+<font size="+2"><div id="titleDiv">Community Division Account Teams</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+<br></br>
+</div>
+ 
+
+<br>&nbsp;</br>
+
+<div align="center" id="turfDiv"></div>
+
+
+<script language="JavaScript">
+
+
+var countMap = new Array();
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+ 
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+
+var ACCOUNT = "ACCOUNT";
+
+
+
+var turfAccountIdMap = new Array();
+var turfUserIdMap = new Array();
+
+var lastRecord = null;
+var roleSet = new Array();
+var userSet = new Array();
+
+var Turf = new Array();
+
+try{ 
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+ 
+    var query = "select Id, Name, Region__c, Employer_ID__c, Account_Group__c from Account where Account_Group__c like 'COMMUNITY%'";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      
+      if (records1[i].Name.toLowerCase() != "community" && records1[i].Name.toLowerCase().indexOf("community la") < 0  && records1[i].Name.toLowerCase().indexOf("community home") < 0 && records1[i].Name.toLowerCase().indexOf("good health") < 0) {
+      
+        if (records1[i].Name.toLowerCase().indexOf("community") >= 0 && records1[i].Account_Group__c.toLowerCase() == "community") {
+          //alert(records1[i].Name);
+        }
+      
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+        Turf[records1[i].Name].Coordinator = "Vacant";
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+        turfAccountIdMap[records1[i].Id] = records1[i].Name;
+      }
+    }
+    
+    
+    var query = "select Id, Name from User";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+      turfUserIdMap[records1[i].Id] = records1[i].Name;
+    }
+    
+    //alert("got users");
+    
+    var query = "select ACCOUNTID, USERID, TEAMMEMBERROLE from AccountTeamMember order by USERID";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+      lastRecord = records1[i];    
+      var emName = turfAccountIdMap[records1[i].AccountId];
+      if (emName != null) {
+        var userName = turfUserIdMap[records1[i].UserId];
+        var role = records1[i].TeamMemberRole;
+        var users = "";
+        if (Turf[emName][role] != null && Turf[emName][role] != "Vacant") {
+          users = Turf[emName][role] + ", ";
+        }
+        users += userName;
+        Turf[emName][role] = users ;  
+        
+        if (roleSet.indexOf(role) < 0) {
+          roleSet.push(role);
+        }
+        if (userSet.indexOf(userName ) < 0) {
+          userSet.push(userName );
+        }
+
+      }
+    } 
+    
+    userSet.sort();
+    var turfSortSet = new Array();
+    
+    for (var emName in Turf) {
+    
+        var turfa = Turf[emName];
+        //alert(JSON.stringify(turfa));        
+        //alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Coordinator, emName]);
+        if (turfSortSet.indexOf(turfKey) < 0) {
+          turfSortSet.push(turfKey);
+        }
+    
+    }
+    
+    //alert("got Account Team");
+   
+   
+   
+
+    
+    for (var x = 0; x < 10; x++) {
+      var query = "SELECT FID__c,  Account.Name from Contact where Account.Account_Group__c like 'COMMUNITY%'  and FID__c like '%" + x + "' ";      
+    
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      for(var i=0;i<records1.length;i++){     
+      
+        lastRecord = records1[i];      
+         
+        incrementCounter([ACCOUNT, records1[i].Account.Name], 1);
+
+      }
+    }
+    
+    turfSortSet.sort();
+    
+    var turfWriter = "";
+    turfWriter += "<table cellpadding=\"7\">\n";
+    turfWriter += "<tr valign=\"bottom\">\n";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Account</td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Coordinator</td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Team</td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"18%\" align=\"center\"><font color=\"white\">Contact Count</td>";     
+    turfWriter += "</tr>\n";    
+    for (var t = 0; t < turfSortSet.length; t++) {
+      var turfKey = turfSortSet[t];
+      var keyArray = JSON.parse(turfKey);
+      var account= keyArray[1]; 
+      //alert(account);
+      var coordinator = "Vacant";
+      if (Turf[account] != null && Turf[account].Coordinator != null) {
+        coordinator = Turf[account].Coordinator;
+      }
+      turfWriter += "<tr valign=\"top\">\n";    
+      turfWriter += "<td align=\"left\">" + toProperCase(account) + "</td>";      
+      turfWriter += "<td align=\"left\">" + coordinator + "</td>";         
+      turfWriter += "<td align=\"left\"><font size=\"-1\">";
+      var userCount = 0;
+      for (var u = 0; u < userSet.length; u++) {
+        for (var prop in Turf[account]) {
+          if (Turf[account][prop].toString().indexOf(userSet[u]) >= 0 && prop != "Coordinator") {
+            if (userCount > 0) {
+              turfWriter += "; ";
+            }
+            turfWriter += userSet[u] + " (" + prop + ")";
+            userCount++;
+          }
+        }
+      } 
+      //alert(JSON.stringify(Turf[account]));
+      turfWriter += "</font></td>"
+      turfWriter += "<td align=\"center\">" + getCounter([ACCOUNT, account]) + "</td>";   
+      turfWriter += "</tr>\n";       
+    }
+  document.getElementById("turfDiv").innerHTML = "<font size=\"+1\">Turf</font><br/>" +  turfWriter;
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="confidentialDiv" align="center"><i>CONFIDENTIAL</i></div>
+
+
+
+</apex:page>

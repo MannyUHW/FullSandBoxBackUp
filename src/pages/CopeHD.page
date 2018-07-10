@@ -1,0 +1,1613 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+
+    <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+    <apex:includeScript value="{!$Resource.agGridEnterprise16}" />
+    <apex:includeScript value="{!$Resource.MomentJs}" />
+    <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono" />
+    <style>
+      body {
+        font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+        font-size: 14px;
+        background-color: #9D37FF;
+      }
+
+      #SaveAsCsvButtonK,#SaveAsCsvButtonH,#SaveAsCsvButtonS {
+        margin-left: 5px;
+      }
+
+      #Title {
+        text-align: center;
+        clear: both;
+        color: white;
+        font-size: 20px;
+      }
+
+      #Content {
+        border: 1px solid blue;
+      }
+
+      #CopeDataContainer {}
+
+      #KaiserDataGrid,#HospitalDataGrid {
+        clear: both;
+        height: 630px;
+        padding: 5px;
+        margin-right: 3px;
+      }
+
+      #SeiuDataGrid {
+        clear: both;
+        height: 80px;
+        padding: 5px;
+      }
+
+      #Container1 {
+        float: left;
+        margin-left: 5px;
+      }
+
+      #Container2 {
+        background-color: white;
+        margin-top: 15px;
+        padding: 10px;
+      }
+
+/*       #SaveAsCsvButton {
+        color: blue;
+        margin-left: 4px;
+        padding-top: 3px;
+        padding-bottom: 3px;
+        font-size: 1.1em;
+        float: left;
+        background-color: indianred;
+        margin-top: 4px;
+      } */
+
+      .CurrentMonth {
+        display: inline-block;
+        border: 1px solid lightblue;
+        margin-left: 31px;
+        width: 1319px;
+        background-color: white;
+        text-align: center;
+        color: blue;
+        padding-top: 3px;
+        padding-bottom: 3px;
+      }
+
+      .optionSelect {
+        width: 200px;
+        color: blue;
+        background-color: white;
+        font-size: 1em;
+        text-align: center;
+        font-size: 1.1em;
+        padding-top: 3px;
+        padding-bottom: 3px;
+      }
+
+      #OptionSelectList {
+        width: 230px;
+      }
+
+      .right-align {
+        text-align: right  !important;;
+        padding-right: 5px !important;
+      }
+
+      .left-justify {
+        justify-content: left !important;
+        padding-right: 5px !important;
+      }
+
+/*       .ag-header-row:nth-child(4) {
+        color:red;
+        justify-content: left !important;
+      } */
+
+      .rect {
+        stroke: cyan;
+        stroke-width: 1;
+        fill: orange;
+      }
+
+      .cellClass0 {
+        text-align: right;
+      }
+
+      .EmpCountClass {
+        text-align: right;
+        padding-right: 5px !important;
+        font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+        font-size: 16px;
+        font-style: normal;
+        font-variant: normal;
+      }
+
+      .CopeCountClass {
+        text-align: right;
+        padding-right: 5px !important;
+        font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+        font-size: 16px;
+        font-style: normal;
+        font-variant: normal;
+      }
+
+      .CopeTotalClass {
+        text-align: right;
+        padding-right: 5px !important;
+        font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+        font-size: 16px;
+        font-style: normal;
+        font-variant: normal;
+      }
+
+      .CopeCountTenClass {
+        text-align: right;
+        padding-right: 5px !important;
+        font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+        font-size: 16px;
+        font-style: normal;
+        font-variant: normal;
+      }
+
+      .CopePercentClass {
+        text-align: right;
+          padding-right: 5px !important;
+          font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+          font-size: 16px;
+          font-style: normal;
+          font-variant: normal;
+        }
+
+      .CopePercentTenClass {
+        text-align: right;
+        padding-right: 5px !important;
+        font-family: Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;
+        font-size: 16px;
+        font-style: normal;
+        font-variant: normal;
+      }
+
+      .UwgClass {
+        text-align: right;
+        padding-right: 5px !important;
+      }
+
+      .cellClass5 {
+        padding-left: 5px !important;
+      }
+
+      .ag-fresh {
+        font-size: 16px;
+        font-family: 'Roboto Condensed', sans-serif;
+        color: rgba(0, 0, 0, 0.76);
+        border-right: 1px solid gray !important;
+        border-right-style: groove  !important;
+      }
+
+      .ag-floating-top {
+        color:blue;
+        border-bottom: 1px solid #8686e1;
+      }
+
+      .ag-cell-no-focus {
+        border-right: 1px solid gray !important;
+      }
+
+      .fontTest1 {
+        font-family: 'Roboto Condensed', sans-serif;
+        color: red;
+      }
+
+      .fontTest2 {
+        font-family: 'Roboto Mono', monospace;
+      }
+
+      /* removes outline dots from button when it gets focus */
+      :focus {
+        outline: none;
+      }
+
+      ::-moz-focus-inner {
+        border: 0;
+      }
+
+      .GroupHeader {
+        background-color: #799BA6 !important;
+      }
+
+      .ok {
+        color: blue;
+        background-color: white;
+      }
+
+      .skip {
+        color: white;
+        background-color: red;
+      }
+
+      .no-show {
+        display: none;
+      }
+
+      .show {
+        display: block;
+      }
+
+      .row {
+        display: flex; /* equal height of the children */
+        padding-top: 1px;
+        padding-bottom: 3px;
+      }
+
+      .col {
+        flex: 1; /* additionally, equal width */
+        padding-right: 10px;
+        padding-left: 10px;
+      }
+
+      .shadow {
+        padding: 10px 10px 10px 10px;
+        background-color: #9B4FE1;
+        box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+        -moz-box-shadow: 0 1px 2px rgba(34,25,25,0.4);
+        -webkit-box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+      }
+
+      .CopePercentagesBackground {
+        background-color: rgba(88, 104, 199, 0.4);
+      }
+
+      .CopeCountsTenBackground {
+        background-color: rgba(74, 143, 207, 0.4);
+      }
+
+      .CopePercentTenBackground {
+        background-color: rgba(41, 95, 146, 0.4);
+      }
+
+      .CopePercentTenBackgroundB {
+        background-color: rgba(209, 224, 138, 0.4);
+      }
+
+      .EmpCountsBackground {
+        background-color: rgba(58, 224, 216, 0.4);
+      }
+
+      .CopeCountsBackground {
+        background-color: rgba(30, 106, 177, 0.4);
+      }
+
+      .CopeAmountsBackground {
+        background-color: rgba(16, 57, 95, 0.4);
+      }
+
+      .DiffBackground {
+        background-color: rgba(113, 232, 105, 0.4);
+      }
+
+      .stats-div {
+        padding-bottom: 1px;
+        font-size: 15px;
+      }
+
+      .stats {
+        text-align: right;
+        width: 90px;
+        background-color: white;
+        padding-left: 10px;
+        padding-right: 7px;
+        
+      }
+
+      .totals {color: blue}
+      .totals::before {
+        content:"$";
+      }
+
+      .counts {color: blue}
+      .percent {color: blue}
+      .percent::after {
+        content:"%";
+      }
+
+      .HeaderLeft {
+        color: blue;
+        margin-left: 2px;
+        padding-left: 5px !important;
+      }
+
+      .HeaderRight {  
+        display: flex;  
+        justify-content: right;
+        color: blue;
+        margin-left: 2px;
+        padding-right: 7px !important;
+      }
+
+    </style>
+  </head>
+  <body>
+
+  <div id="Content">
+    <div id="Title">
+        <p><span id="ReportBy">Cope by Employer</span></p>      
+        <div class="stats-div">
+          <label>Cope Unionwide Total</label>
+          <label class="stats totals" id="CopeGrandTotal" type="text" value="1"></label>
+          <label>Cope Unionwide Count</label>
+          <label class="stats counts" id="CopeGrandCount" type="text" value="2"></label>
+          <label>Cope Unionwide Percent</label>
+          <label class="stats percent" id="CopeGrandPercent" type="text" value="3"></label>
+          <label>Cope Unionwide Avg</label>
+          <label class="stats totals" id="CopeGrandAvg" type="text" value="4"></label>
+          <label>Dues Unionwide Count</label>
+          <label class="stats counts" id="DuesGrandCount" type="text" value="5"></label>
+        </div>
+    </div>
+    <hr />
+
+    <div id="Container1">
+      <select id="TypeSelectList" class="optionSelect"></select>
+      <div class="CurrentMonth"><label id="CurrentMonth"></label></div>
+      <select id="OptionSelectList" class="optionSelect"></select>
+    </div>
+
+    <div id="CopeDataContainerH">
+      <div id="KaiserDataGrid"   class="ag-fresh"></div>
+      <input id="SaveAsCsvButtonK" type="Button" value="Kaiser Save"></input>
+      <div id="HospitalDataGrid" class="ag-fresh"></div>
+      <input id="SaveAsCsvButtonH" type="Button" value="Hospital Save"></input>
+    </div>
+
+    <div id="CopeDataContainerS">
+      <div id="SeiuDataGrid" class="ag-fresh"></div>
+      <input id="SaveAsCsvButtonS" type="Button" value="SEIU Save"></input>      
+    </div>
+
+    <div id="Container2">
+    <p>
+      Key:
+      <ul>
+        <li>UWG (Union Wide Goal) formula: (Cope Amt / (Dues Cnt * .33 * 10)) * 100 </li>
+        <li>COPE %        - what percentage of members are paying something to COPE. (Cope Count/Emp Count)</li>
+        <li>$10+ % (BU)   - what percentage of members are paying $10+ to COPE.      (Cope $10+ Count/Emp Count)</li>
+        <li>$10+ % (COPE) - what percentage of COPE members are paying $10+ to COPE. (Cope $10+ Count/Cope Count)</li>
+      </ul>
+    </p>
+    </div>
+
+    <hr/>
+  </div>
+
+  <script type="text/javascript">
+
+      function phoneFormat(s) {
+          let s1;
+          if(s == null || s.trim().length < 10)
+              s1 = '';
+          else {
+              s1 = s.trim().replace(/[^0-9]/g,'');
+              s1 = '(' + s1.substr(0,3) + ') ' + s1.substr(3,3) + '-' + s1.substr(6);
+          }
+          return s1;
+      }
+
+      function toProperCase(s) {
+          // My version - handles hyphenated names correctly :)
+          let s1 = '';
+          if(s)
+              s1 = s.trim().toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+          return s1;
+      }
+
+      function number_format(number, decimals, dec_point, thousands_sep) {
+          number = (number + '')
+                  .replace(/[^0-9+\-Ee.]/g, '');
+          var n = !isFinite(+number) ? 0 : +number,
+                  prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                  sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                  dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                  s = '',
+                  toFixedFix = function(n, prec) {
+                      var k = Math.pow(10, prec);
+                      return '' + (Math.round(n * k) / k).toFixed(prec);
+                  };
+          // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+          s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                  .split('.');
+          if (s[0].length > 3) {
+              s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+          }
+          if ((s[1] || '').length < prec) {
+              s[1] = s[1] || '';
+              s[1] += new Array(prec - s[1].length + 1)
+                      .join('0');
+          }
+          return s.join(dec);
+      }
+
+      function loadCopeData() {
+        let query;
+        query = `SELECT EmployerId__c, Employer__c, SeatID__c, UWG__c, FieldRepLastName__c, FieldRepFirstName__c,
+                  COPECountPerSeat__c, COPECountPerSeat_1__c, COPECountPerSeat_2__c, COPECountPerSeat_3__c, COPECountPerSeat_4__c, COPECountPerSeat_5__c, COPECountPerSeat_6__c, COPECountPerSeat_9__c, COPECountPerSeat_12__c,
+                  COPETotalPerSeat__c, COPETotalPerSeat_1__c, COPETotalPerSeat_2__c, COPETotalPerSeat_3__c, COPETotalPerSeat_4__c, COPETotalPerSeat_5__c, COPETotalPerSeat_6__c, COPETotalPerSeat_9__c, COPETotalPerSeat_12__c,
+                  COPEPercent__c,      COPEPercent_1__c,      COPEPercent_2__c,      COPEPercent_3__c,      COPEPercent_4__c,      COPEPercent_5__c,      COPEPercent_6__c,      COPEPercent_9__c,      COPEPercent_12__c,
+                  EmpCountPerSeat__c,  EmpCountPerSeat_1__c,  EmpCountPerSeat_2__c,  EmpCountPerSeat_3__c,  EmpCountPerSeat_4__c,  EmpCountPerSeat_5__c,  EmpCountPerSeat_6__c,  EmpCountPerSeat_9__c,  EmpCountPerSeat_12__c,
+                  COPECountTenPlusPerSeat_1__c,COPECountTenPlusPerSeat_2__c,COPECountTenPlusPerSeat_3__c,COPECountTenPlusPerSeat_4__c,COPECountTenPlusPerSeat_5__c,COPECountTenPlusPerSeat_6__c,COPECountTenPlusPerSeat_9__c,COPECountTenPlusPerSeat_12__c,COPECountTenPlusPerSeat__c,COPEPercentTen_1__c,COPEPercentTen_2__c,COPEPercentTen_3__c,COPEPercentTen_4__c,COPEPercentTen_5__c,COPEPercentTen_6__c,COPEPercentTen_9__c,COPEPercentTen_12__c,COPEPercentTen__c,
+                  Current_Month__c, District__c, Division__c, CommitteeMbrName__c, EboardNames__c, CoordName__c, OrgName__c
+                 FROM COPE_Data__c 
+                 ORDER By Division__c, CoordinatorLastName__c, CoordinatorFirstName__c,FieldRepLastName__c ,FieldRepFirstName__c `;                    
+        let queryResults = sforce.connection.query(query);
+// console.log('<>',query,'<>')        
+        processDetail(queryResults);
+      }
+
+      function processDetail(results){
+        let committeeMbrName = coordinatorName = organizerName = '';
+        let copeCount1 = copeCount2 = copeCount3 = copeCount4 = copeCount5 = copeCount6 = copeCount9 = copeCount12 = copeCount = copeIncreaseCountPerSeat = copeIncreaseTotalPerSeat = copePercent1 = copePercent2 = copePercent3 = copePercent4 = copePercent5 = copePercent6 = copePercent9 = copePercent12 = copePercent = copeTotalPerSeat1 = copeTotalPerSeat2 = copeTotalPerSeat3 = copeTotalPerSeat4 = copeTotalPerSeat5 = copeTotalPerSeat6 = copeTotalPerSeat9 = copeTotalPerSeat12 = copeTotalPerSeat = currentMonth = district = division = eboardNames = empCountPerSeat1 = empCountPerSeat2 = empCountPerSeat3 = empCountPerSeat4 = empCountPerSeat5 = empCountPerSeat6 = empCountPerSeat9 = empCountPerSeat12 = empCountPerSeat = employerId = employer = newCOPECount = newCOPETotal = outputColumn1 = rowId = seatID = tableRowId = uwg = '';
+        let kaiserTotalUwg, kaiserTotalDuesCnt, kaiserTotalCopeCnt, kaiserTotalCopeAmt, kaiserTotalAvgCope, kaiserTotalCopePercent, kaiserTotalGoal, kaiserTotalDiff;
+        let kaiserTotalCardNum10, kaiserTotalCardNum25, kaiserTotalEmpCount1, kaiserTotalEmpCount2, kaiserTotalEmpCount3, kaiserTotalEmpCount4, kaiserTotalEmpCount5, kaiserTotalEmpCount6, kaiserTotalEmpCount9, kaiserTotalEmpCount12;
+        let kaiserTotalCopeCount1, kaiserTotalCopeCount2, kaiserTotalCopeCount3, kaiserTotalCopeCount4, kaiserTotalCopeCount5, kaiserTotalCopeCount6, kaiserTotalCopeCount9, kaiserTotalCopeCount12;
+        let kaiserTotalCopeAmt1, kaiserTotalCopeAmt2, kaiserTotalCopeAmt3, kaiserTotalCopeAmt4, kaiserTotalCopeAmt5, kaiserTotalCopeAmt6, kaiserTotalCopeAmt9, kaiserTotalCopeAmt12;
+        let kaiserTotalcopePercent1, kaiserTotalcopePercent2, kaiserTotalcopePercent3, kaiserTotalcopePercent4, kaiserTotalcopePercent5, kaiserTotalcopePercent6, kaiserTotalcopePercent9, kaiserTotalCopePercent12;
+
+        let hospitalTotalUwg, hospitalTotalDuesCnt, hospitalTotalCopeCnt, hospitalTotalCopeAmt, hospitalTotalAvgCope, hospitalTotalCopePercent, hospitalTotalGoal, hospitalTotalDiff;
+        let hospitalTotalCardNum10, hospitalTotalCardNum25, hospitalTotalEmpCount1, hospitalTotalEmpCount2, hospitalTotalEmpCount3, hospitalTotalEmpCount4, hospitalTotalEmpCount5, hospitalTotalEmpCount6, hospitalTotalEmpCount9, hospitalTotalEmpCount12;
+        let hospitalTotalCopeCount1, hospitalTotalCopeCount2, hospitalTotalCopeCount3, hospitalTotalCopeCount4, hospitalTotalCopeCount5, hospitalTotalCopeCount6, hospitalTotalCopeCount9, hospitalTotalCopeCount12;
+        let hospitalTotalCopeAmt1, hospitalTotalCopeAmt2, hospitalTotalCopeAmt3, hospitalTotalCopeAmt4, hospitalTotalCopeAmt5, hospitalTotalCopeAmt6, hospitalTotalCopeAmt9, hospitalTotalCopeAmt12;
+        let hospitalTotalcopePercent1, hospitalTotalcopePercent2, hospitalTotalcopePercent3, hospitalTotalcopePercent4, hospitalTotalcopePercent5, hospitalTotalcopePercent6, hospitalTotalcopePercent9, hospitalTotalCopePercent12;
+
+        let seiuTotalUwg, seiuTotalDuesCnt, seiuTotalCopeCnt, seiuTotalCopeAmt, seiuTotalAvgCope, seiuTotalCopePercent, seiuTotalGoal, seiuTotalDiff;
+        let seiuTotalCardNum10, seiuTotalCardNum25, seiuTotalEmpCount1, seiuTotalEmpCount2, seiuTotalEmpCount3, seiuTotalEmpCount4, seiuTotalEmpCount5, seiuTotalEmpCount6, seiuTotalEmpCount9, seiuTotalEmpCount12;
+        let seiuTotalCopeCount1, seiuTotalCopeCount2, seiuTotalCopeCount3, seiuTotalCopeCount4, seiuTotalCopeCount5, seiuTotalCopeCount6, seiuTotalCopeCount9, seiuTotalCopeCount12;
+        let seiuTotalCopeAmt1, seiuTotalCopeAmt2, seiuTotalCopeAmt3, seiuTotalCopeAmt4, seiuTotalCopeAmt5, seiuTotalCopeAmt6, seiuTotalCopeAmt9, seiuTotalCopeAmt12;
+        let seiuTotalcopePercent1, seiuTotalcopePercent2, seiuTotalcopePercent3, seiuTotalcopePercent4, seiuTotalcopePercent5, seiuTotalcopePercent6, seiuTotalcopePercent9, seiuTotalCopePercent12;
+        
+        let copePercentTen,copePercentTen1,copePercentTen2,copePercentTen3,copePercentTen4,copePercentTen5,copePercentTen6,copePercentTen9,copePercentTen12;
+        let copePercentTenB,copePercentTen1B,copePercentTen2B,copePercentTen3B,copePercentTen4B,copePercentTen5B,copePercentTen6B,copePercentTen9B,copePercentTen12B;
+
+        let copeCountTen1,copeCountTen2,copeCountTen3,copeCountTen4,copeCountTen5,copeCountTen6,copeCountTen9,copeCountTen12;
+
+        let key;
+        let mapKey;
+        let processedAll;
+        let records;
+        let rec;
+        let i;
+        let cnt = 0;
+        let goal, diff, cardNum10,cardNum25, avgCope;
+
+        kaiserTotalUwg = kaiserTotalDuesCnt = kaiserTotalCopeCnt = kaiserTotalCopeTenCnt = kaiserTotalCopeAmt = kaiserTotalAvgCope = kaiserTotalCopePercent = kaiserTotalGoal = kaiserTotalDiff = 0;
+        kaiserTotalCardNum10 = kaiserTotalCardNum25 = kaiserTotalEmpCount1 = kaiserTotalEmpCount2 = kaiserTotalEmpCount3 = kaiserTotalEmpCount4 = kaiserTotalEmpCount5 = kaiserTotalEmpCount6 = kaiserTotalEmpCount9 = kaiserTotalEmpCount12 = 0;
+        kaiserTotalCopeCount1 = kaiserTotalCopeCount2 = kaiserTotalCopeCount3 = kaiserTotalCopeCount4 = kaiserTotalCopeCount5 = kaiserTotalCopeCount6 = kaiserTotalCopeCount9 = kaiserTotalCopeCount12 = 0;
+        kaiserTotalCopeAmt1 = kaiserTotalCopeAmt2 = kaiserTotalCopeAmt3 = kaiserTotalCopeAmt4 = kaiserTotalCopeAmt5 = kaiserTotalCopeAmt6 = kaiserTotalCopeAmt9 = kaiserTotalCopeAmt12 = 0;
+        kaiserTotalcopePercent1 = kaiserTotalcopePercent2 = kaiserTotalcopePercent3 = kaiserTotalcopePercent4 = kaiserTotalcopePercent5 = kaiserTotalcopePercent6 = kaiserTotalcopePercent9 = kaiserTotalCopePercent12 = 0;
+
+        hospitalTotalUwg = hospitalTotalDuesCnt = hospitalTotalCopeCnt = hospitalTotalCopeTenCnt = hospitalTotalCopeAmt = hospitalTotalAvgCope = hospitalTotalCopePercent = hospitalTotalGoal = hospitalTotalDiff = 0;
+        hospitalTotalCardNum10 = hospitalTotalCardNum25 = hospitalTotalEmpCount1 = hospitalTotalEmpCount2 = hospitalTotalEmpCount3 = hospitalTotalEmpCount4 = hospitalTotalEmpCount5 = hospitalTotalEmpCount6 = hospitalTotalEmpCount9 = hospitalTotalEmpCount12 = 0;
+        hospitalTotalCopeCount1 = hospitalTotalCopeCount2 = hospitalTotalCopeCount3 = hospitalTotalCopeCount4 = hospitalTotalCopeCount5 = hospitalTotalCopeCount6 = hospitalTotalCopeCount9 = hospitalTotalCopeCount12 = 0;
+        hospitalTotalCopeAmt1 = hospitalTotalCopeAmt2 = hospitalTotalCopeAmt3 = hospitalTotalCopeAmt4 = hospitalTotalCopeAmt5 = hospitalTotalCopeAmt6 = hospitalTotalCopeAmt9 = hospitalTotalCopeAmt12 = 0;
+        hospitalTotalcopePercent1 = hospitalTotalcopePercent2 = hospitalTotalcopePercent3 = hospitalTotalcopePercent4 = hospitalTotalcopePercent5 = hospitalTotalcopePercent6 = hospitalTotalcopePercent9 = hospitalTotalCopePercent12 = 0;
+
+        seiuTotalUwg = seiuTotalDuesCnt = seiuTotalCopeCnt = seiuTotalCopeAmt = seiuTotalAvgCope = seiuTotalCopePercent = seiuTotalGoal = seiuTotalDiff = 0;
+        seiuTotalCardNum10 = seiuTotalCardNum25 = seiuTotalEmpCount1 = seiuTotalEmpCount2 = seiuTotalEmpCount3 = seiuTotalEmpCount4 = seiuTotalEmpCount5 = seiuTotalEmpCount6 = seiuTotalEmpCount9 = seiuTotalEmpCount12 = 0;
+        seiuTotalCopeCount1 = seiuTotalCopeCount2 = seiuTotalCopeCount3 = seiuTotalCopeCount4 = seiuTotalCopeCount5 = seiuTotalCopeCount6 = seiuTotalCopeCount9 = seiuTotalCopeCount12 = 0;
+        seiuTotalCopeAmt1 = seiuTotalCopeAmt2 = seiuTotalCopeAmt3 = seiuTotalCopeAmt4 = seiuTotalCopeAmt5 = seiuTotalCopeAmt6 = seiuTotalCopeAmt9 = seiuTotalCopeAmt12 = 0;
+        seiuTotalcopePercent1 = seiuTotalcopePercent2 = seiuTotalcopePercent3 = seiuTotalcopePercent4 = seiuTotalcopePercent5 = seiuTotalcopePercent6 = seiuTotalcopePercent9 = seiuTotalCopePercent12 = 0;
+
+        copePercentTen = copePercentTen1 = copePercentTen2 = copePercentTen3 = copePercentTen4 = copePercentTen5 = copePercentTen6 = copePercentTen9 = copePercentTen12 = 0;
+        copePercentTenB = copePercentTen1B = copePercentTen2B = copePercentTen3B = copePercentTen4B = copePercentTen5B = copePercentTen6B = copePercentTen9B = copePercentTen12B = 0;
+        copeCountTen = copeCountTen1 = copeCountTen2 = copeCountTen3 = copeCountTen4 = copeCountTen5 = copeCountTen6 = copeCountTen9 = copeCountTen12 = 0;
+
+        let divCopeMap = {};
+        divCopeMap['Kaiser']   = {CopeTotal: 0, CopeCount: 0, DuesCount: 0, Goal: 0, Diff: 0};
+        divCopeMap['Hospital'] = {CopeTotal: 0, CopeCount: 0, DuesCount: 0, Goal: 0, Diff: 0};
+        divCopeMap['Staff']    = {CopeTotal: 0, CopeCount: 0, DuesCount: 0, Goal: 0, Diff: 0};
+
+        while (!processedAll) {
+          records = results.getArray('records');
+          for (i = 0; i < records.length; i++) {
+            let rec = records[i];
+            cnt++;
+            avgCope = 0;
+            committeeMbrName      = toProperCase(rec.CommitteeMbrName__c);
+            coordinatorName       = toProperCase(rec.CoordName__c);
+            copeCount1            = parseInt(rec.COPECountPerSeat_1__c);
+            copeCount2            = parseInt(rec.COPECountPerSeat_2__c);
+            copeCount3            = parseInt(rec.COPECountPerSeat_3__c);
+            copeCount4            = parseInt(rec.COPECountPerSeat_4__c);
+            copeCount5            = parseInt(rec.COPECountPerSeat_5__c);
+            copeCount6            = parseInt(rec.COPECountPerSeat_6__c);
+            copeCount9            = parseInt(rec.COPECountPerSeat_9__c);
+            copeCount12           = parseInt(rec.COPECountPerSeat_12__c);
+            copeCount             = parseInt(rec.COPECountPerSeat__c);
+            copePercent1          = parseFloat(rec.COPEPercent_1__c);
+            copePercent2          = parseFloat(rec.COPEPercent_2__c);
+            copePercent3          = parseFloat(rec.COPEPercent_3__c);
+            copePercent4          = parseFloat(rec.COPEPercent_4__c);
+            copePercent5          = parseFloat(rec.COPEPercent_5__c);
+            copePercent6          = parseFloat(rec.COPEPercent_6__c);
+            copePercent9          = parseFloat(rec.COPEPercent_9__c);
+            copePercent12         = parseFloat(rec.COPEPercent_12__c);
+            copePercent           = parseFloat(rec.COPEPercent__c);
+            copeTotal1            = parseFloat(rec.COPETotalPerSeat_1__c);
+            copeTotal2            = parseFloat(rec.COPETotalPerSeat_2__c);
+            copeTotal3            = parseFloat(rec.COPETotalPerSeat_3__c);
+            copeTotal4            = parseFloat(rec.COPETotalPerSeat_4__c);
+            copeTotal5            = parseFloat(rec.COPETotalPerSeat_5__c);
+            copeTotal6            = parseFloat(rec.COPETotalPerSeat_6__c);
+            copeTotal9            = parseFloat(rec.COPETotalPerSeat_9__c);
+            copeTotal12           = parseFloat(rec.COPETotalPerSeat_12__c);
+            copeTotal             = parseFloat(rec.COPETotalPerSeat__c);
+
+            copeCountTen          = parseFloat(rec.COPECountTenPlusPerSeat__c);;
+            copeCountTen1         = parseFloat(rec.COPECountTenPlusPerSeat_1__c);
+            copeCountTen2         = parseFloat(rec.COPECountTenPlusPerSeat_2__c);
+            copeCountTen3         = parseFloat(rec.COPECountTenPlusPerSeat_3__c);
+            copeCountTen4         = parseFloat(rec.COPECountTenPlusPerSeat_4__c);
+            copeCountTen5         = parseFloat(rec.COPECountTenPlusPerSeat_5__c);
+            copeCountTen6         = parseFloat(rec.COPECountTenPlusPerSeat_6__c);
+            copeCountTen9         = parseFloat(rec.COPECountTenPlusPerSeat_9__c);
+            copeCountTen12        = parseFloat(rec.COPECountTenPlusPerSeat_12__c);
+
+            copePercentTen        = parseFloat(rec.COPEPercentTen__c);
+            copePercentTen1       = parseFloat(rec.COPEPercentTen_1__c);
+            copePercentTen2       = parseFloat(rec.COPEPercentTen_2__c);
+            copePercentTen3       = parseFloat(rec.COPEPercentTen_3__c);
+            copePercentTen4       = parseFloat(rec.COPEPercentTen_4__c);
+            copePercentTen5       = parseFloat(rec.COPEPercentTen_5__c);
+            copePercentTen6       = parseFloat(rec.COPEPercentTen_6__c);
+            copePercentTen9       = parseFloat(rec.COPEPercentTen_9__c);
+            copePercentTen12      = parseFloat(rec.COPEPercentTen_12__c);
+            
+            currentMonth          = rec.Current_Month__c;
+            district              = rec.District__c;
+            division              = toProperCase(rec.Division__c);
+            eboardNames           = toProperCase(rec.EboardNames__c);
+            empCount1             = parseInt(rec.EmpCountPerSeat_1__c);
+            empCount2             = parseInt(rec.EmpCountPerSeat_2__c);
+            empCount3             = parseInt(rec.EmpCountPerSeat_3__c);
+            empCount4             = parseInt(rec.EmpCountPerSeat_4__c);
+            empCount5             = parseInt(rec.EmpCountPerSeat_5__c);
+            empCount6             = parseInt(rec.EmpCountPerSeat_6__c);
+            empCount9             = parseInt(rec.EmpCountPerSeat_9__c);
+            empCount12            = parseInt(rec.EmpCountPerSeat_12__c);
+            empCount              = parseInt(rec.EmpCountPerSeat__c);
+            employerId            = rec.EmployerId__c;
+            employer              = toProperCase(rec.Employer__c);
+            organizerName         = toProperCase(rec.OrgName__c);
+            seatID                = rec.SeatID__c;
+            uwg                   = parseFloat(rec.UWG__c);
+            
+            goal      = Math.round(empCount * .33 * 10);
+            diff      = Math.round(copeTotal - goal);
+            cardNum10 = Math.round(diff / 10) * -1;
+            cardNum25 = Math.round(diff / 25) * -1;
+            avgCope   = copeTotal / copeCount;
+
+            divCopeMap[division].CopeTotal += copeTotal;
+            divCopeMap[division].CopeCount += copeCount;
+            divCopeMap[division].DuesCount += empCount;
+
+            if(division == 'Kaiser') {
+              kaiserTotalDuesCnt     += empCount;
+              kaiserTotalCopeCnt     += copeCount;
+              kaiserTotalCopeAmt     += copeTotal;
+              kaiserTotalCopeTenCnt  += copeCountTen;
+              kaiserTotalEmpCount1   += empCount1;
+              kaiserTotalEmpCount2   += empCount2;
+              kaiserTotalEmpCount3   += empCount3;
+              kaiserTotalEmpCount4   += empCount4;
+              kaiserTotalEmpCount5   += empCount5;
+              kaiserTotalEmpCount6   += empCount6;
+              kaiserTotalEmpCount9   += empCount9;
+              kaiserTotalEmpCount12  += empCount12;
+              kaiserTotalCopeCount1  += copeCount1;
+              kaiserTotalCopeCount2  += copeCount2;
+              kaiserTotalCopeCount3  += copeCount3;
+              kaiserTotalCopeCount4  += copeCount4;
+              kaiserTotalCopeCount5  += copeCount5;
+              kaiserTotalCopeCount6  += copeCount6;
+              kaiserTotalCopeCount9  += copeCount9;
+              kaiserTotalCopeCount12 += copeCount12;
+              kaiserTotalCopeAmt1    += copeTotal1;
+              kaiserTotalCopeAmt2    += copeTotal2;
+              kaiserTotalCopeAmt3    += copeTotal3;
+              kaiserTotalCopeAmt4    += copeTotal4;
+              kaiserTotalCopeAmt5    += copeTotal5;
+              kaiserTotalCopeAmt6    += copeTotal6;
+              kaiserTotalCopeAmt9    += copeTotal9;
+              kaiserTotalCopeAmt12   += copeTotal12;
+
+              kaiserDataArray.push({ Cnt: cnt, Ecomm: committeeMbrName, EboardNames: eboardNames, CoordinatorName: coordinatorName, OrganizerName: organizerName, Division: division, EmployerId: employerId, Employer: employer, Uwg: uwg, SeatID: seatID, Goal: goal, Diff: diff, CardNum10: cardNum10, CardNum25: cardNum25, AvgCope: avgCope,
+                  EmpCount: empCount, EmpCount1: empCount1, EmpCount2: empCount2, EmpCount3: empCount3, EmpCount4: empCount4, EmpCount5: empCount5, EmpCount6: empCount6, EmpCount9: empCount9, EmpCount12: empCount12,
+                  CopeCount: copeCount, CopeCount1: copeCount1, CopeCount2: copeCount2, CopeCount3: copeCount3, CopeCount4: copeCount4, CopeCount5: copeCount5, CopeCount6: copeCount6, CopeCount9: copeCount9, CopeCount12: copeCount12,
+                  CopeTotal: copeTotal, CopeTotal1: copeTotal1, CopeTotal2: copeTotal2, CopeTotal3: copeTotal3, CopeTotal4: copeTotal4, CopeTotal5: copeTotal5, CopeTotal6: copeTotal6, CopeTotal9: copeTotal9, CopeTotal12: copeTotal12,
+                  CopePercent1: copePercent1, CopePercent2: copePercent2, CopePercent3: copePercent3, CopePercent4: copePercent4, CopePercent5: copePercent5, CopePercent6: copePercent6, CopePercent9: copePercent9, CopePercent12: copePercent12, CopePercent: copePercent,
+                  CopeCountTen:copeCountTen,CopeCountTen1:copeCountTen1,CopeCountTen2:copeCountTen2, CopeCountTen3:copeCountTen3, CopeCountTen4:copeCountTen4, CopeCountTen5:copeCountTen5, CopeCountTen6:copeCountTen6, CopeCountTen9:copeCountTen9, CopeCountTen12:copeCountTen12,
+                  CopePercentTen:copePercentTen, CopePercentTen1:copePercentTen1, CopePercentTen2:copePercentTen2, CopePercentTen3:copePercentTen3, CopePercentTen4:copePercentTen4, CopePercentTen5:copePercentTen5, CopePercentTen6:copePercentTen6, CopePercentTen9:copePercentTen9, CopePercentTen12:copePercentTen12
+              });
+            }
+
+            if(division == 'Hospital') {
+              hospitalTotalDuesCnt     += empCount;
+              hospitalTotalCopeCnt     += copeCount;
+              hospitalTotalCopeAmt     += copeTotal;
+              hospitalTotalCopeTenCnt  += copeCountTen;
+              hospitalTotalEmpCount1   += empCount1;
+              hospitalTotalEmpCount2   += empCount2;
+              hospitalTotalEmpCount3   += empCount3;
+              hospitalTotalEmpCount4   += empCount4;
+              hospitalTotalEmpCount5   += empCount5;
+              hospitalTotalEmpCount6   += empCount6;
+              hospitalTotalEmpCount9   += empCount9;
+              hospitalTotalEmpCount12  += empCount12;
+              hospitalTotalCopeCount1  += copeCount1;
+              hospitalTotalCopeCount2  += copeCount2;
+              hospitalTotalCopeCount3  += copeCount3;
+              hospitalTotalCopeCount4  += copeCount4;
+              hospitalTotalCopeCount5  += copeCount5;
+              hospitalTotalCopeCount6  += copeCount6;
+              hospitalTotalCopeCount9  += copeCount9;
+              hospitalTotalCopeCount12 += copeCount12;
+              hospitalTotalCopeAmt1    += copeTotal1;
+              hospitalTotalCopeAmt2    += copeTotal2;
+              hospitalTotalCopeAmt3    += copeTotal3;
+              hospitalTotalCopeAmt4    += copeTotal4;
+              hospitalTotalCopeAmt5    += copeTotal5;
+              hospitalTotalCopeAmt6    += copeTotal6;
+              hospitalTotalCopeAmt9    += copeTotal9;
+              hospitalTotalCopeAmt12   += copeTotal12;
+
+              hospitalDataArray.push({  Cnt: cnt, Ecomm: committeeMbrName, EboardNames: eboardNames, CoordinatorName: coordinatorName, OrganizerName: organizerName, Division: division, EmployerId: employerId, Employer: employer, Uwg: uwg, SeatID: seatID, Goal: goal, Diff: diff, CardNum10: cardNum10, CardNum25: cardNum25, AvgCope: avgCope,
+                EmpCount: empCount, EmpCount1: empCount1, EmpCount2: empCount2, EmpCount3: empCount3, EmpCount4: empCount4, EmpCount5: empCount5, EmpCount6: empCount6, EmpCount9: empCount9, EmpCount12: empCount12,
+                CopeCount: copeCount, CopeCount1: copeCount1, CopeCount2: copeCount2, CopeCount3: copeCount3, CopeCount4: copeCount4, CopeCount5: copeCount5, CopeCount6: copeCount6, CopeCount9: copeCount9, CopeCount12: copeCount12,
+                CopeTotal: copeTotal, CopeTotal1: copeTotal1, CopeTotal2: copeTotal2, CopeTotal3: copeTotal3, CopeTotal4: copeTotal4, CopeTotal5: copeTotal5, CopeTotal6: copeTotal6, CopeTotal9: copeTotal9, CopeTotal12: copeTotal12,
+                CopePercent1: copePercent1, CopePercent2: copePercent2, CopePercent3: copePercent3, CopePercent4: copePercent4, CopePercent5: copePercent5, CopePercent6: copePercent6, CopePercent9: copePercent9, CopePercent12: copePercent12, CopePercent: copePercent,
+                CopeCountTen:copeCountTen,CopeCountTen1:copeCountTen1,CopeCountTen2:copeCountTen2, CopeCountTen3:copeCountTen3, CopeCountTen4:copeCountTen4, CopeCountTen5:copeCountTen5, CopeCountTen6:copeCountTen6, CopeCountTen9:copeCountTen9, CopeCountTen12:copeCountTen12,
+                CopePercentTen:copePercentTen, CopePercentTen1:copePercentTen1, CopePercentTen2:copePercentTen2, CopePercentTen3:copePercentTen3, CopePercentTen4:copePercentTen4, CopePercentTen5:copePercentTen5, CopePercentTen6:copePercentTen6, CopePercentTen9:copePercentTen9, CopePercentTen12:copePercentTen12
+              });
+            }
+          
+            if(division == 'Staff') {
+              seiuTotalDuesCnt     += empCount;
+              seiuTotalCopeCnt     += copeCount;
+              seiuTotalCopeAmt     += copeTotal;
+              seiuTotalEmpCount1   += empCount1;
+              seiuTotalEmpCount2   += empCount2;
+              seiuTotalEmpCount3   += empCount3;
+              seiuTotalEmpCount4   += empCount4;
+              seiuTotalEmpCount5   += empCount5;
+              seiuTotalEmpCount6   += empCount6;
+              seiuTotalEmpCount9   += empCount9;
+              seiuTotalEmpCount12  += empCount12;
+              seiuTotalCopeCount1  += copeCount1;
+              seiuTotalCopeCount2  += copeCount2;
+              seiuTotalCopeCount3  += copeCount3;
+              seiuTotalCopeCount4  += copeCount4;
+              seiuTotalCopeCount5  += copeCount5;
+              seiuTotalCopeCount6  += copeCount6;
+              seiuTotalCopeCount9  += copeCount9;
+              seiuTotalCopeCount12 += copeCount12;
+              seiuTotalCopeAmt1    += copeTotal1;
+              seiuTotalCopeAmt2    += copeTotal2;
+              seiuTotalCopeAmt3    += copeTotal3;
+              seiuTotalCopeAmt4    += copeTotal4;
+              seiuTotalCopeAmt5    += copeTotal5;
+              seiuTotalCopeAmt6    += copeTotal6;
+              seiuTotalCopeAmt9    += copeTotal9;
+              seiuTotalCopeAmt12   += copeTotal12;
+
+              seiuDataArray.push({Cnt: cnt, Ecomm: '', EboardNames: '', CoordinatorName: '', OrganizerName: '', Division: division, EmployerId: employerId, Employer: employer, Uwg: uwg, SeatID: seatID, Goal: goal, Diff: diff, CardNum10: cardNum10, CardNum25: cardNum25, AvgCope: avgCope,
+                EmpCount: empCount, EmpCount1: empCount1, EmpCount2: empCount2, EmpCount3: empCount3, EmpCount4: empCount4, EmpCount5: empCount5, EmpCount6: empCount6, EmpCount9: empCount9, EmpCount12: empCount12,
+                CopeCount: copeCount, CopeCount1: copeCount1, CopeCount2: copeCount2, CopeCount3: copeCount3, CopeCount4: copeCount4, CopeCount5: copeCount5, CopeCount6: copeCount6, CopeCount9: copeCount9, CopeCount12: copeCount12,
+                CopeTotal: copeTotal, CopeTotal1: copeTotal1, CopeTotal2: copeTotal2, CopeTotal3: copeTotal3, CopeTotal4: copeTotal4, CopeTotal5: copeTotal5, CopeTotal6: copeTotal6, CopeTotal9: copeTotal9, CopeTotal12: copeTotal12,
+                CopePercent1: copePercent1, CopePercent2: copePercent2, CopePercent3: copePercent3, CopePercent4: copePercent4, CopePercent5: copePercent5, CopePercent6: copePercent6, CopePercent9: copePercent9, CopePercent12: copePercent12, CopePercent: copePercent,
+                CopeCountTen:copeCountTen,CopeCountTen1:copeCountTen1,CopeCountTen2:copeCountTen2, CopeCountTen3:copeCountTen3, CopeCountTen4:copeCountTen4, CopeCountTen5:copeCountTen5, CopeCountTen6:copeCountTen6, CopeCountTen9:copeCountTen9, CopeCountTen12:copeCountTen12,
+                CopePercentTen:copePercentTen, CopePercentTen1:copePercentTen1, CopePercentTen2:copePercentTen2, CopePercentTen3:copePercentTen3, CopePercentTen4:copePercentTen4, CopePercentTen5:copePercentTen5, CopePercentTen6:copePercentTen6, CopePercentTen9:copePercentTen9, CopePercentTen12:copePercentTen12,
+                CopePercentTenB:copePercentTenB, CopePercentTen1B:copePercentTen1B, CopePercentTen2B:copePercentTen2B, CopePercentTen3B:copePercentTen3B, CopePercentTen4B:copePercentTen4B, CopePercentTen5B:copePercentTen5B, CopePercentTen6B:copePercentTen6B, CopePercentTen9B:copePercentTen9B, CopePercentTen12B:copePercentTen12B
+              });
+            }
+
+            console.log(`${cnt} Employer:${employer} BU:${empCount} COPE $10+ %${copePercentTen} `);
+          }
+
+          if (results.done == 'true')
+            processedAll = true;
+          else {
+            batCnt++;
+            results = sforce.connection.queryMore(results.queryLocator);
+          }
+        }
+
+        console.log('** ** ** ** ** ** ** ** ** ** ** ** ** **');
+        let _copeGrandTotal = 0, _copeGrandCount = 0, _duesGrandCount = 0, _copeGrandPercent = 0, _copeGrandAvg = 0;
+        for(let mapKey in divCopeMap) {
+            _copeGrandTotal += divCopeMap[mapKey].CopeTotal;
+            _copeGrandCount += divCopeMap[mapKey].CopeCount;
+            _duesGrandCount += divCopeMap[mapKey].DuesCount;
+           console.log(mapKey + ':' , divCopeMap[mapKey].CopeTotal);
+        }
+        _copeGrandPercent = (_copeGrandCount / _duesGrandCount) * 100;
+        _copeGrandAvg     = (_copeGrandTotal / _copeGrandCount);
+
+        copeGrandTotal.innerHTML   = number_format(_copeGrandTotal);  
+        copeGrandCount.innerHTML   = number_format(_copeGrandCount);  
+        copeGrandPercent.innerHTML = number_format(_copeGrandPercent,2);
+        copeGrandAvg.innerHTML     = number_format(_copeGrandAvg,2);    
+        duesGrandCount.innerHTML   = number_format(_duesGrandCount);  
+        console.log('** ** ** ** ** ** ** ** ** ** ** ** ** **');
+
+        kaiserTotalAvgCope        =  kaiserTotalCopeAmt / kaiserTotalCopeCnt;        
+        kaiserTotalCopePercent    = (kaiserTotalCopeCnt / kaiserTotalDuesCnt) * 100;
+        kaiserTotalCopePercentTen = (kaiserTotalCopeTenCnt / kaiserTotalDuesCnt) * 100;        
+        kaiserTotalGoal           = Math.round(kaiserTotalDuesCnt * .33 * 10);
+        kaiserTotalDiff           = Math.round(kaiserTotalCopeAmt - kaiserTotalGoal);
+        kaiserTotalCardNum10      = Math.round(kaiserTotalDiff / 10) * -1;
+        kaiserTotalCardNum25      = Math.round(kaiserTotalDiff / 25) * -1;
+        kaiserTotalUwg            = (kaiserTotalCopeAmt / (kaiserTotalDuesCnt * .33 * 10)) * 100;
+
+        kaiserTotalsArray.push({Ecomm: '', EboardNames: '', CoordinatorName: '', OrganizerName: '', Division: 'Kaiser', Uwg:kaiserTotalUwg, Employer:'Kaiser Totals', EmpCount:kaiserTotalDuesCnt, CopeCount:kaiserTotalCopeCnt, 
+          CopeTotal:kaiserTotalCopeAmt, AvgCope:kaiserTotalAvgCope, CopePercent:kaiserTotalCopePercent, Goal:kaiserTotalGoal, Diff:kaiserTotalDiff,
+          CardNum10:kaiserTotalCardNum10, CardNum25:kaiserTotalCardNum25, EmpCount1:kaiserTotalEmpCount1, EmpCount2:kaiserTotalEmpCount2, EmpCount3:kaiserTotalEmpCount3, EmpCount4:kaiserTotalEmpCount4, EmpCount5:kaiserTotalEmpCount5,
+          EmpCount6:kaiserTotalEmpCount6, EmpCount9:kaiserTotalEmpCount9, EmpCount12:kaiserTotalEmpCount12, CopeCount1:kaiserTotalCopeCount1, CopeCount2:kaiserTotalCopeCount2, CopeCount3:kaiserTotalCopeCount3, CopeCount4:kaiserTotalCopeCount4,
+          CopeCount5:kaiserTotalCopeCount5, CopeCount6:kaiserTotalCopeCount6, CopeCount9:kaiserTotalCopeCount9, CopeCount12:kaiserTotalCopeCount12, CopeTotal1:kaiserTotalCopeAmt1, CopeTotal2:kaiserTotalCopeAmt2, CopeTotal3:kaiserTotalCopeAmt3,
+          CopeTotal4:kaiserTotalCopeAmt4, CopeTotal5:kaiserTotalCopeAmt5, CopeTotal6:kaiserTotalCopeAmt6, CopeTotal9:kaiserTotalCopeAmt9, CopeTotal12:kaiserTotalCopeAmt12, CopePercent1:kaiserTotalcopePercent1, CopePercent2:kaiserTotalcopePercent2,
+          CopePercent3:kaiserTotalcopePercent3, CopePercent4:kaiserTotalcopePercent4, CopePercent5:kaiserTotalcopePercent5, CopePercent6:kaiserTotalcopePercent6, CopePercent9:kaiserTotalcopePercent9, CopePercent12:kaiserTotalCopePercent12,
+          CopeCountTen:kaiserTotalCopeTenCnt,
+          CopePercentTen:kaiserTotalCopePercentTen
+          }
+        );
+
+        hospitalTotalAvgCope        =  hospitalTotalCopeAmt / hospitalTotalCopeCnt;  
+        hospitalTotalCopePercent    = (hospitalTotalCopeCnt / hospitalTotalDuesCnt) * 100;
+        hospitalTotalCopePercentTen = (hospitalTotalCopeTenCnt / hospitalTotalDuesCnt) * 100;
+        hospitalTotalGoal           = Math.round(hospitalTotalDuesCnt * .33 * 10);
+        hospitalTotalDiff           = Math.round(hospitalTotalCopeAmt - hospitalTotalGoal);
+        hospitalTotalCardNum10      = Math.round(hospitalTotalDiff / 10) * -1;
+        hospitalTotalCardNum25      = Math.round(hospitalTotalDiff / 25) * -1;
+        hospitalTotalUwg            = (hospitalTotalCopeAmt / (hospitalTotalDuesCnt * .33 * 10)) * 100;
+
+        hospitalTotalsArray.push({Ecomm: '', EboardNames: '', CoordinatorName: '', OrganizerName: '', Division: 'Hospital', Uwg:hospitalTotalUwg, Employer:'Hospital Totals', EmpCount:hospitalTotalDuesCnt, CopeCount:hospitalTotalCopeCnt, CopeTotal:hospitalTotalCopeAmt, AvgCope:hospitalTotalAvgCope, CopePercent:hospitalTotalCopePercent, Goal:hospitalTotalGoal, Diff:hospitalTotalDiff,
+          CardNum10:hospitalTotalCardNum10, CardNum25:hospitalTotalCardNum25, EmpCount1:hospitalTotalEmpCount1, EmpCount2:hospitalTotalEmpCount2, EmpCount3:hospitalTotalEmpCount3, EmpCount4:hospitalTotalEmpCount4, EmpCount5:hospitalTotalEmpCount5,
+          EmpCount6:hospitalTotalEmpCount6, EmpCount9:hospitalTotalEmpCount9, EmpCount12:hospitalTotalEmpCount12, CopeCount1:hospitalTotalCopeCount1, CopeCount2:hospitalTotalCopeCount2, CopeCount3:hospitalTotalCopeCount3, CopeCount4:hospitalTotalCopeCount4,
+          CopeCount5:hospitalTotalCopeCount5, CopeCount6:hospitalTotalCopeCount6, CopeCount9:hospitalTotalCopeCount9, CopeCount12:hospitalTotalCopeCount12, CopeTotal1:hospitalTotalCopeAmt1, CopeTotal2:hospitalTotalCopeAmt2, CopeTotal3:hospitalTotalCopeAmt3,
+          CopeTotal4:hospitalTotalCopeAmt4, CopeTotal5:hospitalTotalCopeAmt5, CopeTotal6:hospitalTotalCopeAmt6, CopeTotal9:hospitalTotalCopeAmt9, CopeTotal12:hospitalTotalCopeAmt12, CopePercent1:hospitalTotalcopePercent1, CopePercent2:hospitalTotalcopePercent2,
+          CopePercent3:hospitalTotalcopePercent3, CopePercent4:hospitalTotalcopePercent4, CopePercent5:hospitalTotalcopePercent5, CopePercent6:hospitalTotalcopePercent6, CopePercent9:hospitalTotalcopePercent9, CopePercent12:hospitalTotalCopePercent12,
+          CopeCountTen:hospitalTotalCopeTenCnt,
+          CopePercentTen:hospitalTotalCopePercentTen
+        }
+      );
+
+        buildHeaders(currentMonth);
+        initAgGrid();
+
+        kaiserDataGridOptions = {
+          columnDefs: copeColumnDefs,
+          rowData: kaiserDataArray,
+          enableSorting: true,
+          enableColResize: true,
+          pinnedTopRowData: kaiserTotalsArray,
+          rowSelection: 'single'
+        };
+        new agGrid.Grid(kaiserGridDiv,  kaiserDataGridOptions);
+        kaiserDataGridOptions.api.setSortModel(EmpSort);
+
+        hospitalDataGridOptions = {
+          columnDefs: copeColumnDefs,
+          rowData: hospitalDataArray,
+          enableSorting: true,
+          enableColResize: true,
+          rowSelection: 'single',
+          pinnedTopRowData: hospitalTotalsArray
+        };
+        new agGrid.Grid(hospitalGridDiv,  hospitalDataGridOptions);
+        hospitalDataGridOptions.api.setSortModel(EmpSort);
+
+        seiuDataGridOptions = {
+          columnDefs: copeColumnDefs,
+          rowData: seiuDataArray,
+          enableSorting: true,
+          rowSelection: 'single'
+        };
+        new agGrid.Grid(seiuGridDiv,  seiuDataGridOptions);
+
+      }
+
+      function buildHeaders(cm) {
+          let i;
+          let currDate;
+          let monthStart = moment('1 ' + cm, 'D MMMM YYYY').add(12, 'hours');
+
+          currentMonthLabel.innerHTML = monthStart.format('MMMM YYYY');
+
+          headerDefs = [];
+          for(i=0;i<6;i++) {
+              currDate = monthStart.subtract(1,'months').format('MMM YYYY');
+              headerDefs.push(currDate);
+          }
+          currDate = monthStart.subtract(3,'months').format('MMM YYYY');
+          headerDefs.push(currDate);
+          currDate = monthStart.subtract(3,'months').format('MMM YYYY');
+          headerDefs.push(currDate);
+      }
+
+      function dateFmt(dateStr) {
+          let localDate;
+          yyyy      = dateStr.substr(0,4);
+          mm        = dateStr.substr(5,2);
+          dd        = dateStr.substr(8,2);
+          localDate = mm + '/' + dd + '/' + yyyy;
+          return localDate;
+      }
+
+      function copeAmountRenderer(params) {
+          let strVal = '';
+
+          if(params.data.CopeAmount)
+              strVal = '$' + params.data.CopeAmount.toFixed(2);
+
+          return strVal;
+      }
+
+      function copeDateRenderer(params) {
+          if(params.data.CopeDate) {
+              return params.data.CopeDate;
+          }
+          else return '';
+      }
+
+
+      function dateRenderer(params) {
+          keyDate   = params.data.Date;
+          return dateFmt(keyDate);
+      }
+
+      // ===================== uwg % ===================== //
+      function uwgCountCellRenderer(params) {
+          return number_format(params.data.Uwg,2) + '%';
+      }
+
+      // ===================== Goal ===================== //
+      function goalCellRenderer(params) {
+          return '$' + number_format(params.data.Goal,2);
+      }
+
+      // ===================== Diff ===================== //
+      function diffCellRenderer(params) {
+          return '$' + number_format(params.data.Diff,2);
+      }
+
+      // ===================== Card10 ===================== //
+      function card10CellRenderer(params) {
+          return number_format(params.data.CardNum10,0);
+      }
+
+      // ===================== Card25 ===================== //
+      function card25CellRenderer(params) {
+          return number_format(params.data.CardNum25,0);
+      }
+
+      // ===================== Avg Cope ===================== //
+      function avgCopeCellRenderer(params) {
+          return '$' + number_format(params.data.AvgCope,2);
+      }
+
+      // ===================== Cope counts ===================== //
+      function copeCountCellRenderer(params) {
+        return number_format(params.data.CopeCount,0);
+      }
+      function copeCount1CellRenderer(params) {
+        return number_format(params.data.CopeCount1,0);
+      }
+      function copeCount2CellRenderer(params) {
+        return number_format(params.data.CopeCount2,0);
+      }
+      function copeCount3CellRenderer(params) {
+        return number_format(params.data.CopeCount3,0);
+      }
+      function copeCount4CellRenderer(params) {
+        return number_format(params.data.CopeCount4,0);
+      }
+      function copeCount5CellRenderer(params) {
+        return number_format(params.data.CopeCount5,0);
+      }
+      function copeCount6CellRenderer(params) {
+        return number_format(params.data.CopeCount6,0);
+      }                              
+      function copeCount9CellRenderer(params) {
+        return number_format(params.data.CopeCount9,0);
+      }
+      function copeCount12CellRenderer(params) {
+        return number_format(params.data.CopeCount12,0);
+      }
+
+      // ===================== Cope Totals ===================== //
+      function copeTotalCellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal,2);
+      }
+      function copeTotal1CellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal1,2);
+      }
+      function copeTotal2CellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal2,2);
+      }
+      function copeTotal3CellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal3,2);
+      }
+      function copeTotal4CellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal4,2);
+      }
+      function copeTotal5CellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal5,2);
+      }
+      function copeTotal6CellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal6,2);
+      }
+      function copeTotal9CellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal9,2);
+      }
+      function copeTotal12CellRenderer(params) {
+        return '$' + number_format(params.data.CopeTotal12,2);
+      }
+
+      // ===================== Cope % ===================== //
+      function copePercentCellRenderer(params) {
+        return number_format(params.data.CopePercent,2) + '%';
+      }
+      function copePercent1CellRenderer(params) {
+        return number_format(params.data.CopePercent1,2) + '%';
+      }
+      function copePercent2CellRenderer(params) {
+        return number_format(params.data.CopePercent2,2) + '%';
+      }
+      function copePercent3CellRenderer(params) {
+        return number_format(params.data.CopePercent3,2) + '%';
+      }                  
+      function copePercent4CellRenderer(params) {
+        return number_format(params.data.CopePercent4,2) + '%';
+      }
+      function copePercent5CellRenderer(params) {
+        return number_format(params.data.CopePercent5,2) + '%';
+      }
+      function copePercent6CellRenderer(params) {
+        return number_format(params.data.CopePercent6,2) + '%';
+      }
+      function copePercent9CellRenderer(params) {
+        return number_format(params.data.CopePercent9,2) + '%';
+      }  
+      function copePercent12CellRenderer(params) {
+        return number_format(params.data.CopePercent12,2) + '%';
+      }            
+      // ===================== Cope $10+% (1) ===================== //
+      function copePercentTenCellRenderer(params) {
+          return number_format(params.data.CopePercentTen,2) + '%';
+      }
+      function copePercentTen1CellRenderer(params) {
+          return number_format(params.data.CopePercentTen1,2) + '%';
+      }
+      function copePercentTen2CellRenderer(params) {
+          return number_format(params.data.CopePercentTen2,2) + '%';
+      }
+      function copePercentTen3CellRenderer(params) {
+          return number_format(params.data.CopePercentTen3,2) + '%';
+      }
+      function copePercentTen4CellRenderer(params) {
+          return number_format(params.data.CopePercentTen4,2) + '%';
+      }
+      function copePercentTen5CellRenderer(params) {
+          return number_format(params.data.CopePercentTen5,2) + '%';
+      }
+      function copePercentTen6CellRenderer(params) {
+          return number_format(params.data.CopePercentTen6,2) + '%';
+      }
+      function copePercentTen9CellRenderer(params) {
+          return number_format(params.data.CopePercentTen9,2) + '%';
+      }      
+      function copePercentTen12CellRenderer(params) {
+          return number_format(params.data.CopePercentTen12,2) + '%';
+      }      
+
+      // ===================== Cope $10+% (2) ===================== //
+      function copePercentTenBCellRenderer(params) {
+          return number_format((params.data.CopeCountTen / params.data.CopeCount) * 100 ,2) + '%';
+      }
+      function copePercentTen1BCellRenderer(params) {
+        console.log('[1]',params.data.CopeCount1);
+        console.log('[2]',params.data.CopeCountTen1);        
+          return number_format((params.data.CopeCountTen1 / params.data.CopeCount1) * 100 ,2) + '%';
+      }
+      function copePercentTen2BCellRenderer(params) {
+          return number_format((params.data.CopeCountTen2 / params.data.CopeCount2) * 100 ,2) + '%';
+      }
+      function copePercentTen3BCellRenderer(params) {
+          return number_format((params.data.CopeCountTen3 / params.data.CopeCount3) * 100 ,2) + '%';
+      }
+      function copePercentTen4BCellRenderer(params) {
+          return number_format((params.data.CopeCountTen4 / params.data.CopeCount4) * 100 ,2) + '%';
+      }
+      function copePercentTen5BCellRenderer(params) {
+          return number_format((params.data.CopeCountTen5 / params.data.CopeCount5) * 100 ,2) + '%';
+      }
+      function copePercentTen6BCellRenderer(params) {
+          return number_format((params.data.CopeCountTen6 / params.data.CopeCount6) * 100 ,2) + '%';
+      }
+      function copePercentTen9BCellRenderer(params) {
+          return number_format((params.data.CopeCountTen9 / params.data.CopeCount9) * 100 ,2) + '%';
+      }      
+      function copePercentTen12BCellRenderer(params) {
+          return number_format((params.data.CopeCountTen12 / params.data.CopeCount12) * 100 ,2) + '%';
+      }      
+
+      // ===================== Cope $10+ Count ===================== //
+      function copeCountTenCellRenderer(params) {
+        return number_format(params.data.CopeCountTen,0);
+      }
+      function copeCountTen1CellRenderer(params) {
+        return number_format(params.data.CopeCountTen1,0);
+      }
+      function copeCountTen2CellRenderer(params) {
+        return number_format(params.data.CopeCountTen2,0);
+      }
+      function copeCountTen3CellRenderer(params) {
+        return number_format(params.data.CopeCountTen3,0);
+      }
+      function copeCountTen4CellRenderer(params) {
+        return number_format(params.data.CopeCountTen4,0);
+      }
+      function copeCountTen5CellRenderer(params) {
+        return number_format(params.data.CopeCountTen5,0);
+      }
+      function copeCountTen6CellRenderer(params) {
+        return number_format(params.data.CopeCountTen6,0);
+      }
+      function copeCountTen9CellRenderer(params) {
+        return number_format(params.data.CopeCountTen9,0);
+      }      
+      function copeCountTen12CellRenderer(params) {
+        return number_format(params.data.CopeCountTen12,0);
+      }                  
+      // ===================== emp Count ===================== //
+      function empCountCellRenderer(params) {
+          return number_format(params.data.EmpCount,0);
+      }
+      function empCount1CellRenderer(params) {
+          return number_format(params.data.EmpCount1,0);
+      }
+      function empCount2CellRenderer(params) {
+          return number_format(params.data.EmpCount2,0);
+      }
+      function empCount3CellRenderer(params) {
+          return number_format(params.data.EmpCount3,0);
+      }
+      function empCount4CellRenderer(params) {
+          return number_format(params.data.EmpCount4,0);
+      }
+      function empCount5CellRenderer(params) {
+          return number_format(params.data.EmpCount5,0);
+      }
+      function empCount6CellRenderer(params) {
+          return number_format(params.data.EmpCount6,0);
+      }
+      function empCount9CellRenderer(params) {
+          return number_format(params.data.EmpCount9,0);
+      }
+      function empCount12CellRenderer(params) {
+          return number_format(params.data.EmpCount12,0);
+      }
+
+      function initAgGrid() {
+          agGrid.LicenseManager.setLicenseKey("UWH_Site_1Devs7_February_2018__MTUxNzk2MTYwMDAwMA-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+
+          copePercentBackgroundClassRules = {
+              'CopePercentagesBackground' : function(params) {
+                return currentView == 'Cope Percentages';
+              }
+          };
+
+          copeCountTenBackgroundClassRules = {
+              'CopeCountsTenBackground' : function(params) {
+                return currentView == 'Cope $10+ Counts';
+              }
+          };
+
+          copePercentTenBackgroundClassRules = {
+              'CopePercentTenBackground' : function(params) {
+                return currentView == 'Cope $10+ Percentages (BU)';
+              }
+          };
+
+          copePercentTenBackgroundClassRulesB = {
+              'CopePercentTenBackgroundB' : function(params) {
+                return currentView == 'Cope $10+ Percentages (COPE)';
+              }
+          };
+
+          empCountBackgroundClassRules = {
+              'EmpCountsBackground' : function(params) {
+                return currentView == 'Dues Counts';
+              }
+          };
+
+          copeCountBackgroundClassRules = {
+              'CopeCountsBackground' : function(params) {
+                return currentView == 'Cope Counts';
+              }
+          };
+
+          copeTotalBackgroundClassRules = {
+              'CopeAmountsBackground' : function(params) {
+                return currentView == 'Cope Amounts';
+              }
+          };
+
+/*          diffBackgroundClassRules = {
+            'F-background' : function(params) {
+                return (params.data.CopeTotal >= params.data.Goal && params.data.Goal > 0);
+            }
+          };
+*/
+          diffBackgroundClassRules = {
+              'DiffBackground' : function(params) {
+                  return (params.data.CopeTotal >= params.data.Goal && params.data.Goal > 0);
+              }
+          };
+
+          copeColumnDefs = [
+              {headerName: 'Division',     field: 'Division',        width:  90, cellClass: 'cellClass5', headerClass: 'HeaderLeft',suppressMenu: true, pinned: 'left'},
+              {headerName: 'UWG %',        field: 'Uwg',             width:  80, sortingOrder: ['asc','desc'],              cellClass: 'UwgClass',   headerClass: 'HeaderRight', cellRenderer: uwgCountCellRenderer, suppressMenu: true,pinned: 'left'},
+              {headerName: 'Ecomm',        field: 'Ecomm',           width: 200, sortingOrder: ['asc','desc'], cellClass: 'cellClass5', headerClass: 'HeaderLeft', suppressMenu: true, pinned: 'left',hide: true},
+              {headerName: 'Eboard',       field: 'EboardNames',     width: 450, sortingOrder: ['asc','desc'], cellClass: 'cellClass5', headerClass: 'HeaderLeft', suppressMenu: true, pinned: 'left',hide: true},
+              {headerName: 'Coordinator',  field: 'CoordinatorName', width: 200, sortingOrder: ['asc','desc'], cellClass: 'cellClass5', headerClass: 'HeaderLeft', suppressMenu: true, pinned: 'left',hide: true},
+              {headerName: 'Org/Rep',      field: 'OrganizerName',   width: 200, sortingOrder: ['asc','desc'], cellClass: 'cellClass5', headerClass: 'HeaderLeft', suppressMenu: true, pinned: 'left',hide: true},
+              {headerName: 'Employer',     field: 'Employer',        width: 250, sortingOrder: ['asc','desc'], cellClass: 'cellClass5', headerClass: 'HeaderLeft', suppressMenu: true, pinned: 'left'},
+              {headerName: 'COPE %',       field: 'CopePercent',     width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentCellRenderer,    cellClass: 'CopePercentClass',    headerClass: 'HeaderRight', cellClassRules: copePercentBackgroundClassRules, suppressMenu: true},
+              {headerName: '$10+ #',       field: 'CopeCountTen',    width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTenCellRenderer,   cellClass: 'CopeCountTenClass',   headerClass: 'HeaderRight', cellClassRules: copeCountTenBackgroundClassRules, suppressMenu: true},
+              {headerName: '$10+ % (BU)',  field: 'CopePercentTen',  width: 110, sortingOrder: ['asc','desc'], cellRenderer: copePercentTenCellRenderer, cellClass: 'CopePercentTenClass', headerClass: 'HeaderRight', cellClassRules: copePercentTenBackgroundClassRules, suppressMenu: true}, 
+              {headerName: '$10+ % (COPE)',field: 'CopePercentTen',  width: 110, sortingOrder: ['asc','desc'], cellRenderer: copePercentTenBCellRenderer,cellClass: 'CopePercentTenClass', headerClass: 'HeaderRight', cellClassRules: copePercentTenBackgroundClassRulesB,suppressMenu: true},               
+              {headerName: 'Dues #',       field: 'EmpCount',        width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCountCellRenderer,       cellClass: 'EmpCountClass',       headerClass: 'HeaderRight', cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+              {headerName: 'COPE #',       field: 'CopeCount',       width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountCellRenderer,      cellClass: 'CopeCountClass',      headerClass: 'HeaderRight', cellClassRules: copeCountBackgroundClassRules, suppressMenu: true},
+              {headerName: 'COPE $',       field: 'CopeTotal',       width: 130, sortingOrder: ['asc','desc'], cellRenderer: copeTotalCellRenderer,      cellClass: 'CopeTotalClass',      headerClass: 'HeaderRight', cellClassRules: copeTotalBackgroundClassRules, suppressMenu: true},
+              {headerName: 'Avg $',        field: 'AvgCope',         width: 100, sortingOrder: ['asc','desc'], cellRenderer: avgCopeCellRenderer,        cellClass: 'right-align', headerClass: 'HeaderRight', suppressMenu: true},
+            
+              {headerName: 'Goal $',       field: 'Goal',            width: 100, sortingOrder: ['asc','desc'], cellRenderer: goalCellRenderer,           cellClass: 'right-align',headerClass: 'HeaderRight', suppressMenu: true},
+              {headerName: 'Diff $',       field: 'Diff',            width: 100, sortingOrder: ['asc','desc'], cellRenderer: diffCellRenderer,           cellClass: 'right-align',headerClass: 'HeaderRight',         cellClassRules: diffBackgroundClassRules, suppressMenu: true},
+              {headerName: 'CardNum10 #',  field: 'CardNum10',       width: 110, sortingOrder: ['asc','desc'], cellRenderer: card10CellRenderer,         cellClass: 'right-align',headerClass: 'HeaderRight', suppressMenu: true},
+              {headerName: 'CardNum25 #',  field: 'CardNum25',       width: 110, sortingOrder: ['asc','desc'], cellRenderer: card25CellRenderer,         cellClass: 'right-align',headerClass: 'HeaderRight', suppressMenu: true},
+   
+              {headerName: headerDefs[0],  field: 'EmpCount1',       width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCount1CellRenderer, headerClass: 'HeaderRight', cellClass: 'EmpCountClass',  cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+              {headerName: headerDefs[1],  field: 'EmpCount2',       width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCount2CellRenderer, headerClass: 'HeaderRight', cellClass: 'EmpCountClass',  cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+              {headerName: headerDefs[2],  field: 'EmpCount3',       width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCount3CellRenderer, headerClass: 'HeaderRight', cellClass: 'EmpCountClass',  cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+              {headerName: headerDefs[3],  field: 'EmpCount4',       width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCount4CellRenderer, headerClass: 'HeaderRight', cellClass: 'EmpCountClass',  cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+              {headerName: headerDefs[4],  field: 'EmpCount5',       width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCount5CellRenderer, headerClass: 'HeaderRight', cellClass: 'EmpCountClass',  cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+              {headerName: headerDefs[5],  field: 'EmpCount6',       width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCount6CellRenderer, headerClass: 'HeaderRight', cellClass: 'EmpCountClass',  cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+              {headerName: headerDefs[6],  field: 'EmpCount9',       width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCount9CellRenderer, headerClass: 'HeaderRight', cellClass: 'EmpCountClass',  cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+              {headerName: headerDefs[7],  field: 'EmpCount12',      width: 100, sortingOrder: ['asc','desc'], cellRenderer: empCount12CellRenderer,headerClass: 'HeaderRight', cellClass: 'EmpCountClass',  cellClassRules: empCountBackgroundClassRules, suppressMenu: true},
+   
+              {headerName: headerDefs[0],  field: 'CopeCount1',      width: 100, sortingOrder: ['asc','desc'], cellRenderer:copeCount1CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountClass', cellClassRules: copeCountBackgroundClassRules,hide: true, suppressMenu: true},
+              {headerName: headerDefs[1],  field: 'CopeCount2',      width: 100, sortingOrder: ['asc','desc'], cellRenderer:copeCount2CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountClass', cellClassRules: copeCountBackgroundClassRules,hide: true, suppressMenu: true},
+              {headerName: headerDefs[2],  field: 'CopeCount3',      width: 100, sortingOrder: ['asc','desc'], cellRenderer:copeCount3CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountClass', cellClassRules: copeCountBackgroundClassRules,hide: true, suppressMenu: true},
+              {headerName: headerDefs[3],  field: 'CopeCount4',      width: 100, sortingOrder: ['asc','desc'], cellRenderer:copeCount4CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountClass', cellClassRules: copeCountBackgroundClassRules,hide: true, suppressMenu: true},
+              {headerName: headerDefs[4],  field: 'CopeCount5',      width: 100, sortingOrder: ['asc','desc'], cellRenderer:copeCount5CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountClass', cellClassRules: copeCountBackgroundClassRules,hide: true, suppressMenu: true},
+              {headerName: headerDefs[5],  field: 'CopeCount6',      width: 100, sortingOrder: ['asc','desc'], cellRenderer:copeCount6CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountClass', cellClassRules: copeCountBackgroundClassRules,hide: true, suppressMenu: true},
+              {headerName: headerDefs[6],  field: 'CopeCount9',      width: 100, sortingOrder: ['asc','desc'], cellRenderer:copeCount9CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountClass', cellClassRules: copeCountBackgroundClassRules,hide: true, suppressMenu: true},
+              {headerName: headerDefs[7],  field: 'CopeCount12',     width: 100, sortingOrder: ['asc','desc'], cellRenderer:copeCount12CellRenderer,headerClass: 'HeaderRight', cellClass: 'CopeCountClass', cellClassRules: copeCountBackgroundClassRules,hide: true, suppressMenu: true},
+
+              {headerName: headerDefs[0],  field: 'CopeTotal1',      width: 130, sortingOrder: ['asc','desc'], cellRenderer:copeTotal1CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeTotalClass', cellClassRules: copeTotalBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[1],  field: 'CopeTotal2',      width: 130, sortingOrder: ['asc','desc'], cellRenderer:copeTotal2CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeTotalClass', cellClassRules: copeTotalBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[2],  field: 'CopeTotal3',      width: 130, sortingOrder: ['asc','desc'], cellRenderer:copeTotal3CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeTotalClass', cellClassRules: copeTotalBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[3],  field: 'CopeTotal4',      width: 130, sortingOrder: ['asc','desc'], cellRenderer:copeTotal4CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeTotalClass', cellClassRules: copeTotalBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[4],  field: 'CopeTotal5',      width: 130, sortingOrder: ['asc','desc'], cellRenderer:copeTotal5CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeTotalClass', cellClassRules: copeTotalBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[5],  field: 'CopeTotal6',      width: 130, sortingOrder: ['asc','desc'], cellRenderer:copeTotal6CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeTotalClass', cellClassRules: copeTotalBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[6],  field: 'CopeTotal9',      width: 130, sortingOrder: ['asc','desc'], cellRenderer:copeTotal9CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeTotalClass', cellClassRules: copeTotalBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[7],  field: 'CopeTotal12',     width: 130, sortingOrder: ['asc','desc'], cellRenderer:copeTotal12CellRenderer,headerClass: 'HeaderRight', cellClass: 'CopeTotalClass', cellClassRules: copeTotalBackgroundClassRules, hide: true, suppressMenu: true},
+   
+              {headerName: headerDefs[0],  field: 'CopePercent1',    width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercent1CellRenderer,  headerClass: 'HeaderRight', cellClass: 'CopePercentClass',    cellClassRules: copePercentBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[1],  field: 'CopePercent2',    width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercent2CellRenderer,  headerClass: 'HeaderRight', cellClass: 'CopePercentClass',    cellClassRules: copePercentBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[2],  field: 'CopePercent3',    width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercent3CellRenderer,  headerClass: 'HeaderRight', cellClass: 'CopePercentClass',    cellClassRules: copePercentBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[3],  field: 'CopePercent4',    width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercent4CellRenderer,  headerClass: 'HeaderRight', cellClass: 'CopePercentClass',    cellClassRules: copePercentBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[4],  field: 'CopePercent5',    width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercent5CellRenderer,  headerClass: 'HeaderRight', cellClass: 'CopePercentClass',    cellClassRules: copePercentBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[5],  field: 'CopePercent6',    width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercent6CellRenderer,  headerClass: 'HeaderRight', cellClass: 'CopePercentClass',    cellClassRules: copePercentBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[6],  field: 'CopePercent9',    width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercent9CellRenderer,  headerClass: 'HeaderRight', cellClass: 'CopePercentClass',    cellClassRules: copePercentBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[7],  field: 'CopePercent12',   width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercent12CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopePercentClass',    cellClassRules: copePercentBackgroundClassRules, hide: true, suppressMenu: true},
+
+              {headerName: headerDefs[0],   field: 'CopeCountTen1',  width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTen1CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountTenClass',   cellClassRules: copeCountTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[1],   field: 'CopeCountTen2',  width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTen2CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountTenClass',   cellClassRules: copeCountTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[2],   field: 'CopeCountTen3',  width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTen3CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountTenClass',   cellClassRules: copeCountTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[3],   field: 'CopeCountTen4',  width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTen4CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountTenClass',   cellClassRules: copeCountTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[4],   field: 'CopeCountTen5',  width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTen5CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountTenClass',   cellClassRules: copeCountTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[5],   field: 'CopeCountTen6',  width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTen6CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountTenClass',   cellClassRules: copeCountTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[6],   field: 'CopeCountTen9',  width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTen9CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopeCountTenClass',   cellClassRules: copeCountTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[7],   field: 'CopeCountTen12', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copeCountTen12CellRenderer,headerClass: 'HeaderRight', cellClass: 'CopeCountTenClass',   cellClassRules: copeCountTenBackgroundClassRules, hide: true, suppressMenu: true},
+
+              {headerName: headerDefs[0],  field: 'CopePercentTen1', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen1CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[1],  field: 'CopePercentTen2', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen2CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[2],  field: 'CopePercentTen3', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen3CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[3],  field: 'CopePercentTen4', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen4CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[4],  field: 'CopePercentTen5', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen5CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[5],  field: 'CopePercentTen6', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen6CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[6],  field: 'CopePercentTen9', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen9CellRenderer, headerClass: 'HeaderRight', cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRules, hide: true, suppressMenu: true},
+              {headerName: headerDefs[7],  field: 'CopePercentTen12',width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen12CellRenderer,headerClass: 'HeaderRight', cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRules, hide: true, suppressMenu: true},
+
+              {headerName: headerDefs[0],  field: 'CopePercentTen1B', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen1BCellRenderer, headerClass: 'HeaderRight',cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRulesB, hide: true, suppressMenu: true},
+              {headerName: headerDefs[1],  field: 'CopePercentTen2B', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen2BCellRenderer, headerClass: 'HeaderRight',cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRulesB, hide: true, suppressMenu: true},
+              {headerName: headerDefs[2],  field: 'CopePercentTen3B', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen3BCellRenderer, headerClass: 'HeaderRight',cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRulesB, hide: true, suppressMenu: true},
+              {headerName: headerDefs[3],  field: 'CopePercentTen4B', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen4BCellRenderer, headerClass: 'HeaderRight',cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRulesB, hide: true, suppressMenu: true},
+              {headerName: headerDefs[4],  field: 'CopePercentTen5B', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen5BCellRenderer, headerClass: 'HeaderRight',cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRulesB, hide: true, suppressMenu: true},
+              {headerName: headerDefs[5],  field: 'CopePercentTen6B', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen6BCellRenderer, headerClass: 'HeaderRight',cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRulesB, hide: true, suppressMenu: true},
+              {headerName: headerDefs[6],  field: 'CopePercentTen9B', width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen9BCellRenderer, headerClass: 'HeaderRight',cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRulesB, hide: true, suppressMenu: true},
+              {headerName: headerDefs[7],  field: 'CopePercentTen12B',width: 100, sortingOrder: ['asc','desc'], cellRenderer: copePercentTen12BCellRenderer,headerClass: 'HeaderRight',cellClass: 'CopePercentTenClass', cellClassRules: copePercentTenBackgroundClassRulesB, hide: true, suppressMenu: true}
+              
+          ];
+
+      }
+
+      function addOption(dropDown,name,id) {
+          let opt = document.createElement("option");
+          opt.text  = name;
+          opt.value = id;
+          dropDown.add(opt, null);
+      }
+
+      function init() {
+
+          sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+          kaiserTotalsArray   = [];
+          hospitalTotalsArray = [];
+          kaiserDataArray     = [];
+          hospitalDataArray   = [];
+          seiuDataArray       = [];
+          shownBefore         = false;
+          currentMonthLabel   = document.getElementById('CurrentMonth');
+          kaiserGridDiv       = document.getElementById('KaiserDataGrid');
+          hospitalGridDiv     = document.getElementById('HospitalDataGrid');
+          seiuGridDiv         = document.getElementById('SeiuDataGrid');
+          messageDiv          = document.getElementById('MessageDiv');
+          optionDropdown      = document.getElementById('OptionSelectList');
+          typeDropdown        = document.getElementById('TypeSelectList');
+          saveAsCsvButtonH    = document.getElementById('SaveAsCsvButtonH');
+          saveAsCsvButtonK    = document.getElementById('SaveAsCsvButtonK');
+          saveAsCsvButtonS    = document.getElementById('SaveAsCsvButtonS');
+
+          addOption(optionDropdown, 'Dues Counts',      1);
+          addOption(optionDropdown, 'Cope Counts',      2);
+          addOption(optionDropdown, 'Cope Amounts',     3);
+          addOption(optionDropdown, 'Cope Percentages', 4);
+          addOption(optionDropdown, 'Cope $10+ Counts', 5);          
+          addOption(optionDropdown, 'Cope $10+ Percentages (1)', 6);
+          addOption(optionDropdown, 'Cope $10+ Percentages (2)', 7);
+
+          addOption(typeDropdown, 'Employer',1);
+          addOption(typeDropdown, 'Pod',2);
+          addOption(typeDropdown, 'Coord/Org',3);
+          addOption(typeDropdown, 'Show All',4);
+
+          saveAsCsvButtonK.addEventListener('click', saveAsCsvK, false);
+          saveAsCsvButtonH.addEventListener('click', saveAsCsvH, false);
+          saveAsCsvButtonS.addEventListener('click', saveAsCsvS, false);
+          optionDropdown.addEventListener('change',optionHandler);
+          typeDropdown.addEventListener('change',typeHandler);
+
+      }
+
+      function showCoordOrgCols(grid,show) {
+        grid.columnApi.setColumnVisible('CoordinatorName',  show);
+        grid.columnApi.setColumnVisible('OrganizerName',  show);
+      }
+
+      function showCoordOrg(show) {
+        showCoordOrgCols(kaiserDataGridOptions,show);
+        showCoordOrgCols(hospitalDataGridOptions,show);
+        showCoordOrgCols(seiuDataGridOptions,show);
+      }
+
+      function showPodCols(grid,show) {
+        grid.columnApi.setColumnVisible('Ecomm',  show);
+        grid.columnApi.setColumnVisible('EboardNames',  show);
+      }
+
+      function showPod(show) {
+        showPodCols(kaiserDataGridOptions,show);
+        showPodCols(hospitalDataGridOptions,show);
+        showPodCols(seiuDataGridOptions,show);
+      }
+
+      function showEmpCountsCols(grid,show) {
+        grid.columnApi.setColumnVisible('EmpCount1',  show);
+        grid.columnApi.setColumnVisible('EmpCount2',  show);
+        grid.columnApi.setColumnVisible('EmpCount3',  show);
+        grid.columnApi.setColumnVisible('EmpCount4',  show);
+        grid.columnApi.setColumnVisible('EmpCount5',  show);
+        grid.columnApi.setColumnVisible('EmpCount6',  show);
+        grid.columnApi.setColumnVisible('EmpCount9',  show);
+        grid.columnApi.setColumnVisible('EmpCount12', show);
+      }
+
+      function showEmpCounts(show) {
+        showEmpCountsCols(kaiserDataGridOptions,show);
+        showEmpCountsCols(hospitalDataGridOptions,show);
+        showEmpCountsCols(seiuDataGridOptions,show);
+      }
+
+
+      function showCopeCountsCols(grid,show) {
+        grid.columnApi.setColumnVisible('CopeCount1',  show);
+        grid.columnApi.setColumnVisible('CopeCount2',  show);
+        grid.columnApi.setColumnVisible('CopeCount3',  show);
+        grid.columnApi.setColumnVisible('CopeCount4',  show);
+        grid.columnApi.setColumnVisible('CopeCount5',  show);
+        grid.columnApi.setColumnVisible('CopeCount6',  show);
+        grid.columnApi.setColumnVisible('CopeCount9',  show);
+        grid.columnApi.setColumnVisible('CopeCount12', show);
+      }
+
+      function showCopeCounts(show) {
+        showCopeCountsCols(kaiserDataGridOptions,show);
+        showCopeCountsCols(hospitalDataGridOptions,show);
+        showCopeCountsCols(seiuDataGridOptions,show);                
+      }
+
+      function showCopeTotalsCols(grid,show) {
+        grid.columnApi.setColumnVisible('CopeTotal1',  show);
+        grid.columnApi.setColumnVisible('CopeTotal2',  show);
+        grid.columnApi.setColumnVisible('CopeTotal3',  show);
+        grid.columnApi.setColumnVisible('CopeTotal4',  show);
+        grid.columnApi.setColumnVisible('CopeTotal5',  show);
+        grid.columnApi.setColumnVisible('CopeTotal6',  show);
+        grid.columnApi.setColumnVisible('CopeTotal9',  show);
+        grid.columnApi.setColumnVisible('CopeTotal12', show);
+      }
+
+      function showCopeTotals(show) {
+        showCopeTotalsCols(kaiserDataGridOptions,show);
+        showCopeTotalsCols(hospitalDataGridOptions,show);
+        showCopeTotalsCols(seiuDataGridOptions,show);                
+      }
+
+      function showCopePercentsCols(grid,show) {
+          grid.columnApi.setColumnVisible('CopePercent1', show);
+          grid.columnApi.setColumnVisible('CopePercent2', show);
+          grid.columnApi.setColumnVisible('CopePercent3', show);
+          grid.columnApi.setColumnVisible('CopePercent4', show);
+          grid.columnApi.setColumnVisible('CopePercent5', show);
+          grid.columnApi.setColumnVisible('CopePercent6', show);
+          grid.columnApi.setColumnVisible('CopePercent9', show);
+          grid.columnApi.setColumnVisible('CopePercent12',show);
+      }
+
+      function showCopePercents(show) {
+        showCopePercentsCols(kaiserDataGridOptions,show);
+        showCopePercentsCols(hospitalDataGridOptions,show);
+        showCopePercentsCols(seiuDataGridOptions,show);                
+      }
+
+      function showCope10PlusCountsCols(grid,show) {
+          grid.columnApi.setColumnVisible('CopeCountTen1', show);
+          grid.columnApi.setColumnVisible('CopeCountTen2', show);
+          grid.columnApi.setColumnVisible('CopeCountTen3', show);
+          grid.columnApi.setColumnVisible('CopeCountTen4', show);
+          grid.columnApi.setColumnVisible('CopeCountTen5', show);
+          grid.columnApi.setColumnVisible('CopeCountTen6', show);
+          grid.columnApi.setColumnVisible('CopeCountTen9', show);
+          grid.columnApi.setColumnVisible('CopeCountTen12',show);
+      }
+
+      function showCope10PlusCounts(show) {
+        showCope10PlusCountsCols(kaiserDataGridOptions,show);
+        showCope10PlusCountsCols(hospitalDataGridOptions,show);
+        showCope10PlusCountsCols(seiuDataGridOptions,show);                
+      }
+
+      function showCope10PlusPercentsCols(grid,show) {
+        grid.columnApi.setColumnVisible('CopePercentTen1', show);
+        grid.columnApi.setColumnVisible('CopePercentTen2', show);
+        grid.columnApi.setColumnVisible('CopePercentTen3', show);
+        grid.columnApi.setColumnVisible('CopePercentTen4', show);
+        grid.columnApi.setColumnVisible('CopePercentTen5', show);
+        grid.columnApi.setColumnVisible('CopePercentTen6', show);
+        grid.columnApi.setColumnVisible('CopePercentTen9', show);
+        grid.columnApi.setColumnVisible('CopePercentTen12',show);
+      }
+
+      function showCope10PlusPercents(show) {
+        showCope10PlusPercentsCols(kaiserDataGridOptions,show);
+        showCope10PlusPercentsCols(hospitalDataGridOptions,show);
+        showCope10PlusPercentsCols(seiuDataGridOptions,show);  
+      }      
+
+      function showCope10PlusPercentsColsB(grid,show) {
+        grid.columnApi.setColumnVisible('CopePercentTen1B', show);
+        grid.columnApi.setColumnVisible('CopePercentTen2B', show);
+        grid.columnApi.setColumnVisible('CopePercentTen3B', show);
+        grid.columnApi.setColumnVisible('CopePercentTen4B', show);
+        grid.columnApi.setColumnVisible('CopePercentTen5B', show);
+        grid.columnApi.setColumnVisible('CopePercentTen6B', show);
+        grid.columnApi.setColumnVisible('CopePercentTen9B', show);
+        grid.columnApi.setColumnVisible('CopePercentTen12B',show);
+      }
+
+      function showCope10PlusPercentsB(show) {
+        showCope10PlusPercentsColsB(kaiserDataGridOptions,show);
+        showCope10PlusPercentsColsB(hospitalDataGridOptions,show);
+        showCope10PlusPercentsColsB(seiuDataGridOptions,show);  
+      } 
+
+      function typeHandler() {
+        console.log('typeHandler()');
+        console.log(typeDropdown.value);
+        if(currentFilter == 'Pod') {
+          showPod(false);
+        }
+        if(currentFilter == 'Coord/OrgPod') {
+          showCoordOrg(false);
+        }        
+        if(currentFilter == 'Show All') {
+          showPod(false);
+          showCoordOrg(false);
+        }
+        switch (typeDropdown.value) {
+          case '1':
+            reportBy.innerHTML = 'COPE By Employer';
+            currentFilter = 'Employer';
+            kaiserDataGridOptions.api.setSortModel(EmpSort);
+            hospitalDataGridOptions.api.setSortModel(EmpSort);
+            break;
+          case '2':
+            reportBy.innerHTML = 'COPE By Ecomm/Eboard';
+            currentFilter = 'Pod';
+            showPod(true);
+            kaiserDataGridOptions.api.setSortModel(PodSort);
+            hospitalDataGridOptions.api.setSortModel(PodSort);            
+            break;
+          case '3':
+            reportBy.innerHTML = 'COPE By Coord/Org';
+            currentFilter = 'Coord/OrgPod';
+            showCoordOrg(true);
+            kaiserDataGridOptions.api.setSortModel(CoordSort);
+            hospitalDataGridOptions.api.setSortModel(CoordSort);
+            break;
+          case '4':
+            reportBy.innerHTML = 'COPE By Everything';
+            currentFilter = 'Show All';
+            showPod(true);
+            showCoordOrg(true);
+            kaiserDataGridOptions.api.setSortModel(AllSort);
+            hospitalDataGridOptions.api.setSortModel(AllSort);
+            break;
+        }
+
+      }
+
+      function optionHandler() {
+        if(currentView == 'Dues Counts') {
+          showEmpCounts(false);
+        }
+        if(currentView == 'Cope Counts') {
+          showCopeCounts(false);
+        }
+        if(currentView == 'Cope Amounts') {
+          showCopeTotals(false);
+        }
+        if(currentView == 'Cope Percentages') {
+          showCopePercents(false);
+        }
+        if(currentView == 'Cope $10+ Counts') {
+          showCope10PlusCounts(false);
+        }
+        if(currentView == 'Cope $10+ Percentages (BU)') {
+          showCope10PlusPercents(false);
+        }
+        if(currentView == 'Cope $10+ Percentages (COPE)') {
+          showCope10PlusPercentsB(false);
+        }
+
+        switch (optionDropdown.value) {
+          case '1':
+              currentView = 'Dues Counts';
+              showEmpCounts(true);
+              break;
+          case '2':
+              currentView = 'Cope Counts';
+              showCopeCounts(true);
+              break;
+          case '3':
+              currentView = 'Cope Amounts';
+              showCopeTotals(true);
+              break;
+          case '4':
+              currentView = 'Cope Percentages';
+              showCopePercents(true);
+              break;
+          case '5':
+              currentView = 'Cope $10+ Counts';
+              showCope10PlusCounts(true);
+              break;                   
+          case '6':
+              currentView = 'Cope $10+ Percentages (BU)';
+              showCope10PlusPercents(true);
+              break;                  
+          case '7':
+              currentView = 'Cope $10+ Percentages (COPE)';
+              showCope10PlusPercentsB(true);
+              break;                
+        }
+        kaiserDataGridOptions.api.redrawRows();
+        hospitalDataGridOptions.api.redrawRows();
+        seiuDataGridOptions.api.redrawRows();
+      }
+
+      function saveAsCsvK() {
+          let fileName = 'Kaiser COPE Data for ' + currentMonthLabel.innerHTML + '.csv';
+          kaiserDataGridOptions.api.exportDataAsCsv({fileName: fileName});
+      }
+
+      function saveAsCsvH() {
+          let fileName = 'Hospital COPE Data for '   + currentMonthLabel.innerHTML + '.csv';
+          hospitalDataGridOptions.api.exportDataAsCsv({fileName: fileName});
+      }
+
+      function saveAsCsvS() {
+          let fileName = 'Seiu COPE Data for '   + currentMonthLabel.innerHTML + '.csv';
+          seiuDataGridOptions.api.exportDataAsCsv({fileName: fileName});
+      }
+
+      const reportBy         = document.getElementById('ReportBy');
+      const copeGrandTotal   = document.getElementById('CopeGrandTotal');
+      const copeGrandCount   = document.getElementById('CopeGrandCount');
+      const copeGrandPercent = document.getElementById('CopeGrandPercent');
+      const copeGrandAvg     = document.getElementById('CopeGrandAvg');
+      const duesGrandCount   = document.getElementById('DuesGrandCount');
+      
+      const EmpSort = [
+        { colId: 'Employer', sort: 'asc' }
+      ];
+
+      const CoordSort = [
+        { colId: 'CoordinatorName', sort: 'asc' },
+        { colId: 'OrganizerName',   sort: 'asc' },
+        { colId: 'Employer',        sort: 'asc' }
+      ];
+
+      const PodSort = [
+        { colId: 'Ecomm',           sort: 'asc' },
+        { colId: 'EboardNames',     sort: 'asc' },
+        { colId: 'Employer',        sort: 'asc' }
+      ];
+
+      const AllSort = [
+        { colId: 'Ecomm',           sort: 'asc' },
+        { colId: 'EboardNames',     sort: 'asc' },
+        { colId: 'Employer',        sort: 'asc' },
+        { colId: 'CoordinatorName', sort: 'asc' },
+        { colId: 'OrganizerName',   sort: 'asc' }
+      ];
+
+      var kaiserDataArray,hospitalDataArray,seiuDataArray, gtDataAr;
+      var kaiserDataGridOptions, hospitalDataGridOptions, seiuDataGridOptions, gtDataGridOptions;
+      var shownBefore;
+      var messageDiv;
+      var currentMonthLabel;
+      var showModal = false;
+      var optionDropdown,typeDropdown;
+      var saveAsCsvButtonK,saveAsCsvButtonH,saveAsCsvButtonS;
+
+      var currentView = 'Dues Counts', currentFilter = 'Employer';
+      var copeCountTenBackgroundClassRules,copePercentBackgroundClassRules,copeCountTenBackgroundClassRules,copePercentTenBackgroundClassRules,copePercentTenBackgroundClassRulesB,empCountBackgroundClassRules,copeCountBackgroundClassRules,copeTotalBackgroundClassRules;
+      var diffBackgroundClassRules;
+      var kaiserTotalsArray,hospitalTotalsArray, divCopeMap;
+
+      // ***************** Main Program Entry *****************
+      init();
+      loadCopeData();
+
+  </script>
+  </body>
+</apex:page>

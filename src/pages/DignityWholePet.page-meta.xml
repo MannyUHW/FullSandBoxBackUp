@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>37.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Clone of Response Summary with hard-coded param so page can be used as part of a dashboard.
+code: D05, desc: Whole Dig. Pet., dignity flag: true, goal:&apos;&apos;</description>
+    <label>Dignity Whole Petition</label>
+</ApexPage>

@@ -1,0 +1,1180 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+    <head>
+
+        <apex:includeScript value="{!$Resource.FileSaver}"/>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">google.load('visualization', '1', {packages:['table']}); </script>
+
+        <style>
+
+            #tabs li:nth-last-child(1) {
+                background-color:green;
+            }
+
+            #svg1 {
+                width: 500px;
+                height: 370px;
+                float: left;
+                margin-right: 10px;
+                font: 1em source-sans-pro, Source Sans Pro, Helvetica, sans-serif;
+            }
+
+            #tabContainer {
+                background-color:#92f1f6;
+                background-color:linen;
+                -moz-border-radius: 4px;
+                border-radius: 4px;
+                border-color: red;
+                border-width: 2px;
+                overflow: visible;
+            }
+
+            #tabContainer h3 {
+                width:50%;
+                font-style: italic;
+                clear: left;
+            }
+
+            #tabs {
+                padding-top: 0px;
+                padding-bottom: 1px;
+                width: 90%;
+                margin-left: 20px;
+            }
+
+            #tabs > ul{
+                font: 1em;
+                list-style:none;
+            }
+
+            #tabs > ul > li  {
+                margin-top: 0px;
+                margin-right: 4px;
+                margin-bottom: 1px;
+                margin-left: 2px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                padding-left: 10px;
+                padding-right: 10px;
+                display:block;
+                float:left;
+                color:#FFF;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+                -moz-border-radius-topleft: 4px;
+                -moz-border-radius-topright: 4px;
+                -moz-border-radius-bottomright: 0px;
+                -moz-border-radius-bottomleft: 0px;
+                border-top-left-radius:4px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
+                background: -moz-linear-gradient(top, #0C91EC 0%, #257AB6 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0C91EC), color-stop(100%,#257AB6)); /* webkit */
+            }
+
+            #tabs > ul > li:hover{
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #F3F3F3 10%, #F3F3F3 50%, #FFFFFF 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(10%,#F3F3F3), color-stop(50%,#F3F3F3), color-stop(100%,#FFFFFF)); /* webkit */
+                cursor:pointer;
+                color: #333;
+            }
+
+            #tabs > ul > li.tabActiveHeader {
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #F3F3F3 10%, #F3F3F3 50%, #FFFFFF 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(10%,#F3F3F3), color-stop(50%,#F3F3F3), color-stop(100%,#FFFFFF)); /* webkit */
+                cursor:pointer;
+                color: #333;
+            }
+
+            #tabscontent {
+                -moz-border-radius-topleft: 0px;
+                -moz-border-radius-topright: 4px;
+                -moz-border-radius-bottomright: 4px;
+                -moz-border-radius-bottomleft: 4px;
+                border-top-left-radius: 0px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+                border-bottom-left-radius: 4px;
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #FFFFFF 90%, #e4e9ed 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(90%,#FFFFFF), color-stop(100%,#e4e9ed)); /* webkit */
+                color:#333;
+                padding: 0px;
+                margin: 20px;
+            }
+
+            body {
+                background-color : white;
+                border-color: darkgreen;
+                border-width: 2px;
+            }
+
+            #content {
+                width:700px;
+                margin:30px auto;
+            }
+
+            #statusDiv1 {
+                font-size: 14px;
+                font-style: italic;
+                background-color: #92f1f6;
+            }
+
+            #statusDiv2 {
+                font-size: 14px;
+                font-style: italic;
+                color: red;
+            }
+
+            /* I couldn't work out syntax to make a css class with all these nth-childs.
+               If anyone does figure it out, please tell me! :) */
+
+            <!-- Employer-->
+                 #Div1 table th:nth-child(1) {
+                     text-align:left;
+                     color: grey;
+                     width: 250px;
+                 }
+            <!-- BU -->
+            #Div1 table th:nth-child(2) {
+                text-align:left;
+                color: grey;
+                width: 250px;
+            }
+            <!-- Job Class -->
+            #Div1 table th:nth-child(3) {
+                text-align:left;
+                color: grey;
+                width: 250px;
+            }
+            <!-- Job Class -->
+            #Div1 table th:nth-child(4) {
+                color: grey;
+                width: 300px;
+            }
+            <!-- BU -->
+            #Div1 table th:nth-child(5) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #Div1 table th:nth-child(6) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+
+            #Div1 table td:nth-child(5) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #Div1 table td:nth-child(6) {
+                text-align:right;
+                padding-right: 22px;
+            }
+
+            <!-- Zip -->
+            #Div2 table th:nth-child(1) {
+                text-align:left;
+                width: 100px;
+            }
+            <!-- City -->
+            #Div2  table th:nth-child(2) {
+                text-align:left;
+                color: grey;
+                width: 200px;
+            }
+            <!-- Distance -->
+            #Div2 table th:nth-child(3) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+
+            #Div2 table td:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+            }
+
+            <!-- Zip -->
+            #ZipListDiv table th:nth-child(1) {
+                text-align:left;
+                width: 80px;
+            }
+            #ZipListDiv table th:nth-child(2) {
+                text-align:left;
+                width: 200px;
+            }
+            #ZipListDiv table th:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+                width: 100px;
+            }
+            #ZipListDiv table th:nth-child(4) {
+                text-align:right;
+                padding-right: 22px;
+                width: 100px;
+            }
+
+            #ZipListDiv table td:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+                width: 100px;
+            }
+
+            #ZipListDiv table td:nth-child(4) {
+                text-align:right;
+                padding-right: 22px;
+                width: 100px;
+            }
+
+            <!-- DetailDiv -->
+            #DetailDiv table th:nth-child(1) {
+                text-align:left;
+                /*      background: transparent -moz-linear-gradient(center top , #0C91EC 0%, #257AB6 100%) repeat scroll 0% 0%; */
+                width: 100px;
+            }
+            #DetailDiv table th:nth-child(2) {
+                text-align:left;
+            }
+            #DetailDiv table th:nth-child(3) {
+                text-align:left;
+                /*    background-color: red; */
+                width:230px;
+            }
+            #DetailDiv table th:nth-child(4) {
+                text-align:left;
+                width:190px;
+            }
+            #DetailDiv table th:nth-child(5) {
+                text-align:left;
+                width:200px;
+            }
+            #DetailDiv table th:nth-child(6) {
+                text-align:left;
+                width:160px;
+            }
+            #DetailDiv table th:nth-child(6) {
+                text-align:left;
+                width:150px;
+            }
+            #DetailDiv table th:nth-child(7) {
+                text-align:left;
+                width:180px;
+            }
+            #DetailDiv table th:nth-child(8) {
+                text-align:left;
+                width:150px;
+            }
+            #DetailDiv table th:nth-child(9) {
+                text-align:left;
+                width:73px;
+            }
+            #DetailDiv table th:nth-child(10) {
+                text-align:left;
+                width:90px;
+            }
+            #DetailDiv table th:nth-child(11) {
+                text-align:left;
+                width:90px;
+            }
+            #DetailDiv table th:nth-child(12) {
+                text-align:left;
+                width:90px;
+            }
+
+            <!-- Export Log -->
+            #ExportLogDiv table th:nth-child(1) {
+                text-align:left;
+                width: 150px;
+            }
+            #ExportLogDiv table th:nth-child(2) {
+                text-align:left;
+                width: 200px;
+            }
+
+
+        </style>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+
+        function refreshClicked() {
+
+            //   resetTable();
+            findZipCodes();
+
+        }
+
+        function resetTable() {
+            var remCount;
+            var colCount;
+            if(retrieved) {
+                colCount = employerDeptTitleTableData.getNumberOfColumns();
+                if (colCount > 4) {
+                    remCount = colCount - 4;
+                    employerDeptTitleTableData.removeColumns(4, remCount);
+                    employerDeptTitleTable.draw(employerDeptTitleTableData, {height: '600px', showRowNumber: false, alternatingRowStyle: true});
+                }
+            }
+        }
+
+        function findZipCodes() {
+            var testChar;
+            var zipUrlJson;
+            var charBad = false;
+            var j;
+            // Uses https://www.zipcodeapi.com/rest/<api_key>/radius.<format>/<zip_code>/<distance>/<units> api to get a list of zip codes n miles from origin xxxxx.
+
+            zipInput      = zipStart.value;
+            distanceInput = zipDistance.value;
+            if (zipInput > 0) {
+                if (zipInput.length != 5) {
+                    alert('Your starting Zip must be 5 digits');
+                    return;
+                }
+                if(distanceInput > 30) {
+                    alert('Your distance must be 30 miles or less');
+                    return;
+                }
+
+                origin = zipInput;
+                for (j = 0; j < 5; j++) {
+                    testChar = origin.charCodeAt(j);
+                    if (testChar < 48 || testChar > 57) {
+                        charBad = true;
+                        break;
+                    }
+                }
+                if(!charBad) {
+                    resetVisualizations();
+                    miles  = zipDistance.value || 1;
+                    zipUrlJson = 'https://www.zipcodeapi.com/rest/' + zipApiKey + '/radius.json/' + origin + '/' + miles + '/mile';
+                    sforce.connection.remoteFunction({
+                        url : zipUrlJson,
+                        onSuccess : function(response) {processZipCodes(response) ; },
+                        onFailure : function(response) {alert("Failed" + response); }
+                    });
+                }
+            }
+            else
+                alert('Please enter a 5 digit start zip code');
+
+        }
+
+        function processZipCodes(response) {
+            var zipData;
+            var i;
+            var test;
+            var zipCode;
+            var city;
+            var dist;
+
+            var responseObj = JSON.parse(response);
+            var resultArray = responseObj.zip_codes;
+            var zipCodeArray = [];
+            var zipsArray = [];
+            var where;
+            var buWhere;
+            var divisionWhere;
+            var select;
+            var query;
+            var divisionlist;
+            var excludeArray;
+            var includeArray;
+
+            excludeArray = [];
+            includeArray = [];
+
+            zipCodeMap = {};
+
+            for (i = 0; i < resultArray.length; i++) {
+                zipCode = resultArray[i].zip_code;
+                city = resultArray[i].city;
+                dist = resultArray[i].distance;
+                zipCodeArray.push("'" + zipCode + "'");
+                zipsArray.push(zipCode);
+                if (!zipCodeMap[zipCode])
+                    zipCodeMap[zipCode] = {City: city, Dist: dist, Count: 0};
+            }
+
+            inBuCheck = inBuCheckBox.checked;
+            notInBuCheck = notInBuCheckBox.checked;
+            kaiserCheck = kaiserCheckBox.checked;
+            hospitalCheck = hospitalCheckBox.checked;
+            homeCareCheck = homeCareCheckBox.checked;
+            nursingHomeCheck = nursingHomeCheckBox.checked;
+            newOrganizingCheck = newOrganizingCheckBox.checked;
+            otherCheck = otherCheckBox.checked;
+
+            divisionWhere = '';
+            buWhere       = '';
+            if (otherCheck) {
+                if (!kaiserCheck)
+                    excludeArray.push("'Kaiser'");
+
+                if (!hospitalCheck)
+                    excludeArray.push("'Hospital'");
+
+                if (!homeCareCheck)
+                    excludeArray.push("'Home Care'");
+
+                if (!nursingHomeCheck)
+                    excludeArray.push("'Nursing Home'");
+
+                if (!newOrganizingCheck)
+                    excludeArray.push("'New Organizing'");
+
+                excludelist = '';
+                excludelist = excludeArray.join();
+                if (excludelist) {
+                    divisionWhere = " Account.Account_Group__c NOT IN (" + excludelist + ") ";
+                    divisionDesc  = " (Divisions excluded: " + excludelist + ")";
+                }
+            }
+            else {
+                if (kaiserCheck)
+                    includeArray.push("'Kaiser'");
+
+                if (hospitalCheck)
+                    includeArray.push("'Hospital'");
+
+                if (homeCareCheck)
+                    includeArray.push("'Home Care'");
+
+                if (nursingHomeCheck)
+                    includeArray.push("'Nursing Home'");
+
+                if (newOrganizingCheck)
+                    includeArray.push("'New Organizing'");
+
+                includelist = '';
+                includelist = includeArray.join();
+                if (includelist) {
+                    divisionWhere = " Account.Account_Group__c IN (" + includelist + ") ";
+                    divisionDesc  = " (Divisions included: " + includelist + ")";
+                }
+            }
+
+            if (inBuCheck && notInBuCheck) {
+                bUDesc = "Members and Non-Members ";
+            }
+            else {
+                if (inBuCheck) {
+                    buWhere = ' (In_Current_BU__c = true) ';
+                    bUDesc  = "Members only ";
+                }
+                else {
+                    buWhere = ' (In_Current_BU__c != true) ';
+                    bUDesc  = "Non-Members only ";
+                }
+            }
+
+            if (zipsArray.length == 1) {
+                zipWhere = " MailingPostalCode LIKE '" + zipsArray[0] + "%' ";
+                zipDescList = zipsArray[0];
+            }
+            else {
+                zipWhere = " (";
+                for (i = 1; i <= zipsArray.length - 1; i++)
+                    zipWhere += "MailingPostalCode LIKE '" + zipsArray[i - 1] + "%' OR ";
+
+                i = zipsArray.length - 1;
+                zipWhere += " MailingPostalCode LIKE '" + zipsArray[i] + "%')";
+                zipDescList = zipsArray.join();
+            }
+
+            select = "SELECT Id,Name, Department, Title,Account.Id,Account.Name, Account.Account_Group__c, MailingStreet, MailingCity, MailingPostalCode, HomePhone, MobilePhone, Phone,In_Current_BU__c  " +
+                    "FROM Contact WHERE ";
+
+            if(divisionWhere > '' )
+                select += divisionWhere;
+
+            if(buWhere > '' )
+                if(divisionWhere > '' )
+                    select += ' AND ' + buWhere;
+                else
+                    select += buWhere;
+
+            if(divisionWhere > '' || buWhere > '')
+                var query = select + ' AND ' + zipWhere;
+            else
+                var query = select + zipWhere;
+
+            statusDiv1.innerHTML = 'Retrieving....';
+            debugDiv.innerHTML = query;
+            var zipContactResults = sforce.connection.query(query);
+            processZipContacts(zipContactResults);
+
+        }
+
+        function processZipContacts(zipContactResults) {
+
+            var processedAll;
+            var zipContactRecords;
+            var contact;
+            var employer;
+            var zipCode;
+            var department;
+            var homePhone;
+            var mobilePhone;
+            var phone;
+            var zipContactCnt;
+            var zipContactRec;
+            var exceptionArray;
+            var contactId;
+
+            var contactEmpDeptTitleMapKey;
+            var empDeptTitleMapKey;
+            var deptTitleMapKey;
+            var titleMapKey;
+            var empDeptTitleRec;
+            var deptTitleRec;
+            var titleRec;
+            var contactName;
+            var title;
+            var contactInfoRec;
+            var division;
+            var street;
+            var city;
+            var currentMember;
+            var zipBatchCount;
+
+            contactMapEmployerMapDeptMapJobTitleMap  = {};
+            contactMap     = {};
+            exceptionArray = [];
+            processedAll   = false;
+            zipContactCnt  = 0;
+            zipBatchCount  = 0;
+
+            while (!processedAll) {
+                zipContactRecords = zipContactResults.getArray('records');
+                for (i = 0; i < zipContactRecords.length; i++) {
+                    zipContactCnt++;
+                    zipContactRec     = zipContactRecords[i];
+                    zipCode           = zipContactRec.MailingPostalCode;
+                    contact           = zipContactRec.Name;
+                    contactId         = zipContactRec.Id;
+                    title             = zipContactRec.Title;
+                    department        = zipContactRec.Department;
+                    street            = zipContactRec.MailingStreet;
+                    city              = zipContactRec.MailingCity;
+                    currentMember     = zipContactRec.In_Current_BU__c;
+                    homePhone         = phoneFormat(zipContactRec.HomePhone);
+                    mobilePhone       = phoneFormat(zipContactRec.MobilePhone);
+                    phone             = phoneFormat(zipContactRec.Phone);
+                    if(zipContactRec.Account) {
+                        employer = zipContactRec.Account.Name;
+                        division = zipContactRec.Account.Account_Group__c
+                    }
+                    else {
+                        employer = 'none';
+                        division = 'none';
+                    }
+
+                    if(zipCodeMap[zipCode])
+                        zipCodeMap[zipCode].Count++;
+                    else
+                        exceptionArray.push(zipCode);
+
+                    if(!contactMap[contactId])
+                        contactMap[contactId] = {ContactId:contactId,Name:contact,Street:street,City:city,ZipCode:zipCode,HomePhone:homePhone,MobilePhone:mobilePhone,Phone:phone, Division:division,CurrentMember:currentMember};
+
+                    if(!contactMapEmployerMapDeptMapJobTitleMap[contactId])
+                        contactMapEmployerMapDeptMapJobTitleMap[contactId] = {};
+
+                    if(!contactMapEmployerMapDeptMapJobTitleMap[contactId][employer])
+                        contactMapEmployerMapDeptMapJobTitleMap[contactId][employer] = {};
+
+                    if(!contactMapEmployerMapDeptMapJobTitleMap[contactId][employer][department])
+                        contactMapEmployerMapDeptMapJobTitleMap[contactId][employer][department] = {};
+
+                    if(!contactMapEmployerMapDeptMapJobTitleMap[contactId][employer][department][title])
+                        contactMapEmployerMapDeptMapJobTitleMap[contactId][employer][department][title] = {Count: 1};
+                    else
+                        contactMapEmployerMapDeptMapJobTitleMap[contactId][employer][department][title].Count ++;
+
+                    if (!employerMapDeptMapJobTitleMap[employer])
+                        employerMapDeptMapJobTitleMap[employer] = {};
+
+                    if (!employerMapDeptMapJobTitleMap[employer][department])
+                        employerMapDeptMapJobTitleMap[employer][department] = {};
+
+                    if (!employerMapDeptMapJobTitleMap[employer][department][title])
+                        employerMapDeptMapJobTitleMap[employer][department][title] = {Count: 1};
+                    else
+                        employerMapDeptMapJobTitleMap[employer][department][title].Count ++;
+
+                }
+
+                if (zipContactResults.done == 'true') {
+                    processedAll = true;
+                }
+                else {
+                    zipBatchCount++;
+                    zipContactResults = sforce.connection.queryMore(zipContactResults.queryLocator);
+                }
+                statusDiv1.innerHTML = 'Finished';
+                //      if(zipContactCnt>0)
+                //          zipContactCnt--;
+                statusDiv2.innerHTML = 'Total Contacts: ' + zipContactCnt.toString() + ' (batch count: ' + zipBatchCount.toString() + ')';
+            }
+
+            for (empDeptTitleMapKey in employerMapDeptMapJobTitleMap) {
+                deptTitleRec = employerMapDeptMapJobTitleMap[empDeptTitleMapKey];
+                for(deptTitleMapKey in deptTitleRec) {
+                    titleRec = deptTitleRec[deptTitleMapKey];
+                    for (titleMapKey in titleRec) {
+                        title = titleRec[titleMapKey];
+                        currentRow = employerDeptTitleTableData.addRow();
+                        employerDeptTitleTableData.setValue(currentRow,0,toProperCase(empDeptTitleMapKey));
+                        employerDeptTitleTableData.setValue(currentRow,1,toProperCase(deptTitleMapKey));
+                        employerDeptTitleTableData.setValue(currentRow,2,toProperCase(titleMapKey));
+                        employerDeptTitleTableData.setValue(currentRow,3,title.Count);
+                    }
+                }
+            }
+            employerDeptTitleTableData.sort([{column: 1}, {column: 2},{column: 3}]);
+            employerDeptTitleTable.draw(employerDeptTitleTableData, {height: '600px', showRowNumber: false, alternatingRowStyle: true});
+
+            for (contactEmpDeptTitleMapKey in contactMapEmployerMapDeptMapJobTitleMap) {
+                contactInfoRec = contactMap[contactEmpDeptTitleMapKey];
+
+                empDeptTitleRec = contactMapEmployerMapDeptMapJobTitleMap[contactEmpDeptTitleMapKey];
+                for (empDeptTitleMapKey in empDeptTitleRec) {
+                    deptTitleRec = empDeptTitleRec[empDeptTitleMapKey];
+                    for (deptTitleMapKey in deptTitleRec) {
+                        titleRec = deptTitleRec[deptTitleMapKey];
+                        for (titleMapKey in titleRec) {
+                            contactName   = contactInfoRec.Name;
+                            street        = contactInfoRec.Street;
+                            city          = contactInfoRec.City;
+                            zipCode       = contactInfoRec.ZipCode;
+                            homePhone     = contactInfoRec.HomePhone;
+                            mobilePhone   = contactInfoRec.MobilePhone;
+                            phone         = contactInfoRec.Phone;
+                            division      = contactInfoRec.Division;
+                            currentMember = contactInfoRec.CurrentMember;
+                            currentRow = contactEmployerDeptTitleTableData.addRow();
+                            contactEmployerDeptTitleTableData.setValue(currentRow,0,toProperCase(division));
+                            contactEmployerDeptTitleTableData.setValue(currentRow,1,toProperCase(currentMember));
+                            contactEmployerDeptTitleTableData.setValue(currentRow,2,toProperCase(empDeptTitleMapKey));
+                            contactEmployerDeptTitleTableData.setValue(currentRow,3,toProperCase(deptTitleMapKey));
+                            contactEmployerDeptTitleTableData.setValue(currentRow,4,toProperCase(titleMapKey));
+                            contactEmployerDeptTitleTableData.setValue(currentRow,5,toProperCase(contactName));
+                            contactEmployerDeptTitleTableData.setValue(currentRow,6,toProperCase(street));
+                            contactEmployerDeptTitleTableData.setValue(currentRow,7,toProperCase(city));
+                            contactEmployerDeptTitleTableData.setValue(currentRow,8,zipCode);
+                            contactEmployerDeptTitleTableData.setValue(currentRow,9,homePhone);
+                            contactEmployerDeptTitleTableData.setValue(currentRow,10,mobilePhone);
+                            contactEmployerDeptTitleTableData.setValue(currentRow,11,phone);
+                        }
+                    }
+                }
+            }
+            retrieved = true;
+            contactEmployerDeptTitleTableData.sort([{column: 1}, {column: 2},{column: 3},{column: 4},{column: 5},{column: 6}]);
+            contactEmployerDeptTitleTable.draw(contactEmployerDeptTitleTableData, {height: '600px', showRowNumber: false, alternatingRowStyle: true});
+            contactTableDrawn = true;
+            createZipTable();
+        }
+
+        function createZipTable() {
+            var mapKey;
+
+            for(mapKey in zipCodeMap) {
+                tmpRec = zipCodeMap[mapKey];
+                zipLocationsTableData.addRow([mapKey,tmpRec.City,tmpRec.Dist,tmpRec.Count]);
+            }
+            zipLocationsTableData.sort([{column: 0}, {column: 1},{column: 2}]);
+            zipLocationsTable.draw(zipLocationsTableData, {height: '600px', showRowNumber: false, alternatingRowStyle: true});
+
+        }
+
+        function resetVisualizations() {
+            if (employerDeptTitleTableData.getNumberOfRows() > 0) {
+                employerDeptTitleTableData.removeRows(0, employerDeptTitleTableData.getNumberOfRows());
+                employerDeptTitleTable.clearChart();
+            }
+
+            if (contactEmployerDeptTitleTableData.getNumberOfRows() > 0) {
+                contactEmployerDeptTitleTableData.removeRows(0, contactEmployerDeptTitleTableData.getNumberOfRows());
+                contactEmployerDeptTitleTable.clearChart();
+            }
+
+            if (zipLocationsTableData.getNumberOfRows() > 0) {
+                zipLocationsTableData.removeRows(0, zipLocationsTableData.getNumberOfRows());
+                zipLocationsTable.clearChart();
+            }
+        }
+
+        function initTables() {
+            var i;
+
+            employerDeptTitleTable     = new google.visualization.Table(summaryDiv);
+            employerDeptTitleTableData = new google.visualization.DataTable();
+            employerDeptTitleTableData.addColumn('string', 'Employer');
+            employerDeptTitleTableData.addColumn('string', 'Department');
+            employerDeptTitleTableData.addColumn('string', 'Job Title');
+            employerDeptTitleTableData.addColumn('number', 'Count');
+
+            contactEmployerDeptTitleTable     = new google.visualization.Table(detailDiv);
+            contactEmployerDeptTitleTableData = new google.visualization.DataTable();
+            contactEmployerDeptTitleTableData.addColumn('string', 'Division');
+            contactEmployerDeptTitleTableData.addColumn('string', 'Current Mbr');
+            contactEmployerDeptTitleTableData.addColumn('string', 'Employer');
+            contactEmployerDeptTitleTableData.addColumn('string', 'Department');
+            contactEmployerDeptTitleTableData.addColumn('string', 'Job Title');
+            contactEmployerDeptTitleTableData.addColumn('string', 'Member Name');
+            contactEmployerDeptTitleTableData.addColumn('string' ,'Street');
+            contactEmployerDeptTitleTableData.addColumn('string', 'City');
+            contactEmployerDeptTitleTableData.addColumn('string', 'ZipCode');
+            contactEmployerDeptTitleTableData.addColumn('string', 'HomePhone');
+            contactEmployerDeptTitleTableData.addColumn('string', 'MobilePhone');
+            contactEmployerDeptTitleTableData.addColumn('string', 'Phone');
+
+            zipLocationsTable     = new google.visualization.Table(zipListDiv);
+            zipLocationsTableData = new google.visualization.DataTable();
+            zipLocationsTableData.addColumn('string', 'Zip');
+            zipLocationsTableData.addColumn('string', 'City');
+            zipLocationsTableData.addColumn('number', 'Dist');
+            zipLocationsTableData.addColumn('number', 'Count');
+
+            if(sysAdmin) {
+                exportLogTable     = new google.visualization.Table(ExportLogDiv);
+                exportLogTableData = new google.visualization.DataTable();
+
+                exportLogTableData.addColumn('string',  'Datetime');
+                exportLogTableData.addColumn('string',  'Name');
+                exportLogTableData.addColumn('string',  'Origin');
+                exportLogTableData.addColumn('number',  'Distance');
+                exportLogTableData.addColumn('number',  'Record #');
+            }
+
+        }
+
+        function phoneFormat(s) {
+            var s1;
+            if(s == null || s == '')
+                s1 = '';
+            else
+                s1 = s.replace('-','');
+            s1 = s1.replace(' ','');
+            s1 = s1.replace('(','');
+            s1 = s1.replace(')','');
+            s1 = s1.substr(0,3) + ' ' + s1.substr(3,3) + ' ' + s1.substr(6);
+            return s1;
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = 'Empty';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        function initTabs() {
+
+            // get tab container
+            var container = document.getElementById("tabContainer");
+            var tabcon = document.getElementById("tabscontent");
+
+            // set current tab
+            var navitem = document.getElementById("tabHeader_1");
+
+            //store which tab we are on
+            var ident = navitem.id.split("_")[1];
+
+            navitem.parentNode.setAttribute("data-current",ident);
+            //set current tab with class of activetabheader
+            navitem.setAttribute("class","tabActiveHeader");
+
+            //hide two tab contents we don't need
+            var pages = tabcon.getElementsByTagName("div");
+            var page;
+
+            for (var i = 1; i < pages.length; i++) {
+                page = pages.item(i);
+                if(page.className.indexOf('tabpage')!= -1) {
+                    pages.item(i).style.display="none";
+                }
+            };
+
+            //this adds click event to tabs
+            var tabs = container.getElementsByTagName("li");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].onclick=displayPage;
+            }
+        }
+
+        // on click of one of tabs
+        function displayPage() {
+            var current = this.parentNode.getAttribute("data-current");
+            //remove class of activetabheader and hide old contents
+            document.getElementById("tabHeader_" + current).removeAttribute("class");
+            document.getElementById("tabpage_" + current).style.display="none";
+
+            var ident = this.id.split("_")[1];
+            //add class of activetabheader to new active tab and show contents
+            this.setAttribute("class","tabActiveHeader");
+            document.getElementById("tabpage_" + ident).style.display="block";
+            this.parentNode.setAttribute("data-current",ident);
+        }
+
+        function exportData() {
+            var successful;
+            var colCount;
+            var rowCount;
+            var colPtr;
+            var rowPtr;
+            var output;
+            var cell;
+            var fileSaveAs;
+            var currentUserId;
+            var currentUser;
+            var zipListLog;
+            var result;
+            var distance;
+
+            currentUserId = sforce.connection.getUserInfo().userId;
+            currentUser   = sforce.connection.getUserInfo().userFullName;
+            now           = new Date();
+            localDateTime = (now.toLocaleString());
+            nowDate       = (now.toDateString());
+            fileSaveAs    = 'MemberZips_' + origin + '_' + miles + '.txt';
+
+            output = bUDesc + 'living in within ' + miles + ' miles of starting zip ' + origin + divisionDesc + '\n';
+            output +='data current as of ' + nowDate + '\n\n';
+            if(contactTableDrawn) {
+                colCount = contactEmployerDeptTitleTableData.getNumberOfColumns();
+                rowCount = contactEmployerDeptTitleTableData.getNumberOfRows()-1;
+                for(colPtr=0;colPtr<colCount;colPtr++) {
+                    output += contactEmployerDeptTitleTableData.getColumnLabel(colPtr) + '\t';
+                }
+                output += '\n';
+
+                for(rowPtr=0;rowPtr<rowCount;rowPtr++) {
+                    for(colPtr=0;colPtr<colCount;colPtr++) {
+                        cell = contactEmployerDeptTitleTableData.getValue(rowPtr,colPtr);
+                        if(cell)
+                            output += cell + '\t';
+                        else
+                            output += '\t';
+                    }
+                    output += '\n';
+                }
+                output += '\n\n';
+                output += 'Date: ' + nowDate;
+
+                var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+                var saveTest = saveAs(blob, fileSaveAs);
+
+                distance                     = parseFloat(miles);
+                zipListLog                   = new sforce.SObject("ZipListLog__c");
+                zipListLog.User__c           = currentUserId;
+                zipListLog.Origin__c         = origin;
+                zipListLog.Distance__c       = distance;
+                zipListLog.RecordCount__c    = rowCount;
+                zipListLog.ExportDatetime__c = now;
+
+                result = sforce.connection.create([zipListLog]);
+                if (!result[0].getBoolean("success")) {
+                    alert('Error saving log - please call Graham (2244)');
+                }
+                else {
+                    if(sysAdmin) {
+                        exportLogTableData.addRow([localDateTime,currentUser,origin,distance,rowCount]);
+                        numFormatter.format(exportLogTableData, 4);
+                        exportLogTable.draw(exportLogTableData, {showRowNumber: false, alternatingRowStyle:true});
+                    }
+                }
+            }
+        }
+
+        function loadExportLog() {
+            var exportLogQuery = "SELECT User__r.Name,Origin__c,Distance__c,RecordCount__c,ExportDatetime__c FROM ZipListLog__c Order By ExportDatetime__c Desc";
+            try {
+                var exportLogResults = sforce.connection.query(exportLogQuery);
+                processExportLogResults(exportLogResults);
+            }
+            catch (e) {alert('An error occurred retrieving Export Log : ' + e.faultstring);}
+        }
+
+        function processExportLogResults(logQueryResult) {
+            var exporterName;
+            var origin;
+            var distanceStr;
+            var recordCountStr;
+            var exportDatetimeStr;
+
+            var distance;
+            var recordCount;
+            var exportDatetime;
+            var dTest;
+            var localDateTime;
+            var localDate;
+            var localTime;
+
+            var logRecords = logQueryResult.getArray('records');
+            for (i = 0; i < logRecords.length; i++) {
+
+                exporterName      = logRecords[i].User__r.Name;
+                origin            = logRecords[i].Origin__c;
+                distanceStr       = logRecords[i].Distance__c;
+                recordCountStr    = logRecords[i].RecordCount__c;
+                exportDatetimeStr = logRecords[i].ExportDatetime__c;
+                exportDatetime    = new Date(exportDatetimeStr);
+                localDateTime     = exportDatetime.toLocaleString();
+                localDate         = (exportDatetime.toDateString());
+                localTime         = (exportDatetime.toLocaleString());
+                distance          = parseFloat(distanceStr, 10);
+                recordCount       = parseInt(recordCountStr, 10);
+
+                exportLogTableData.addRow([localDateTime,exporterName,origin,distance,recordCount]);
+            }
+
+            numFormatter.format(exportLogTableData, 4);
+            exportLogTable.draw(exportLogTableData, {showRowNumber: false, alternatingRowStyle:true});
+        }
+
+
+        // ***************** Globals *****************
+        var zipApiKey = 'yP2ocnILhNu91W5Yg708qLQisyMuGqYef1DsoleG9IQaFW9V494uUVMntzSaZQpf'; // www.zipcodeapi.com
+
+        var campaignDropdown1;
+        var campaignDropdown2;
+        var campaignDropdown3;
+        var campaignDropdown4;
+
+        var now;
+        var localDateTime;
+        var nowDate;
+
+        var _baseUrl;
+        var employerDeptTitleTableData        = [];
+        var contactEmployerDeptTitleTableData = [];
+        var zipLocationsTableData             = [];
+        var exportLogTableData                = [];
+        var zipLocationsTable                 = {};
+        var employerDeptTitleTable            = {};
+        var contactEmployerDeptTitleTable     = {};
+        var exportLogTable                    = {};
+
+        var zipCodeMap;
+        var zipStart;
+        var zipDistance;
+        var employerMapDeptMapJobTitleMap     = {};
+        var employerMapDeptMapTitleMap;
+
+        var percentTotal;
+        var statusDiv1;
+        var statusDiv2;
+        var testButton1;
+        var testButton2;
+        var debugDiv;
+        var summaryDiv;
+        var detailDiv;
+        var zipListDiv;
+        var contactMap;
+        var retrieved;
+        var zipInput;
+        var distanceInput;
+        var origin;
+        var miles;
+        var inBuCheckBox;
+        var notInBuCheckBox;
+        var kaiserCheckBox;
+        var hospitalCheckBox;
+        var homeCareCheckBox;
+        var nursingHomeCheckBox;
+        var newOrganizingCheckBox;
+        var otherCheckBox;
+        var contactTableDrawn;
+        var exportLogDiv;
+        var numFormatter;
+        var sysAdmin;
+        var logLabel;
+        var divisionDesc;
+        var BuDesc;
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function() {
+            var currentProfile;
+            var currentUserInfo;
+            var idArray = [];
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            var _url = "{!$CurrentPage.URL}";
+            _baseUrl = _url.substr(0, _url.indexOf("/", 20)+1);
+            statusDiv1        = document.getElementById('statusDiv1');
+            statusDiv2        = document.getElementById('statusDiv2');
+            debugDiv          = document.getElementById('DebugDiv');
+            summaryDiv        = document.getElementById('SummaryDiv');
+            detailDiv         = document.getElementById('DetailDiv');
+            zipListDiv        = document.getElementById('ZipListDiv');
+            zipStart          = document.getElementById('ZipStart');
+            zipDistance       = document.getElementById('ZipDistance');
+            exportLogDiv      = document.getElementById('ExportLogDiv');
+            exportLogTab      = document.getElementById('tabpage_5');
+            logLabel          = document.querySelector('#tabs li:nth-last-child(1)');
+
+            inBuCheckBox          = document.getElementById('InBuCheckBox');
+            notInBuCheckBox       = document.getElementById('NotInBuCheckBox');
+            kaiserCheckBox        = document.getElementById('KaiserCheckBox');
+            hospitalCheckBox      = document.getElementById('HospitalCheckBox');
+            homeCareCheckBox      = document.getElementById('HomeCareCheckBox');
+            nursingHomeCheckBox   = document.getElementById('NursingHomeCheckBox');
+            newOrganizingCheckBox = document.getElementById('NewOrganizingCheckBox');
+            otherCheckBox         = document.getElementById('OtherCheckBox');
+
+            numFormatter  = new google.visualization.NumberFormat({pattern: '#,##0'});
+            refreshButton = document.getElementById("RefreshButton");
+            refreshButton.addEventListener("click", refreshClicked, false);
+
+            exportButton = document.getElementById("ExportButton");
+            exportButton.addEventListener("click", exportData, false);
+
+            currentUserInfo = sforce.connection.getUserInfo();
+
+            // SF will not let a non sys-admin user run a query on Profile object, so I can't simply retrieve Name from Profile for currentUserInfo.profileId and see if it is Sys Admin.            
+            // So, I'm fudging it by checking against a static value.  Tsk tsk.
+
+            // Show tab and content if user profile is System Administrator:
+            if(currentUserInfo.profileId == '00ei00000013Su8AAE') {
+                sysAdmin                   = true;
+                logLabel.style.display     = "block";
+                exportLogTab.style.display = "block";
+            }
+            else {
+                sysAdmin                   = false;
+                logLabel.style.display     = "none";
+                exportLogTab.style.display = "none";
+            }
+
+            initTabs();
+            initTables();
+            if(sysAdmin)
+                loadExportLog();
+
+            statusDiv1.innerHTML = 'Ready';
+            retrieved = false;
+
+        });
+
+    </script>
+
+    <div id="MainDiv" style="padding: 5px;clear: both;background-color:#92f1f6;">
+        <h2>Employees Counts by Zip Proximity</h2>
+        <h3>Version 0.4</h3>
+
+        <span id="refresh">
+            <div id="inputDiv1">
+                <input id="ZipStart"        style="padding: 5px;width: 100px;" type="text" placeholder = "Zip code"></input>
+                <input id="ZipDistance"     style="padding: 5px;width: 100px;margin-right: 10px;" type="text" placeholder = "Distance"></input>
+
+                <input id="InBuCheckBox"    style="padding: 5px;" type="checkbox" checked="true"></input>
+                <label id="InBuCheckBoxLbl"  for="InBuCheckBox">Current Member</label>
+                <input id="NotInBuCheckBox" style="padding: 5px;" type="checkbox"></input>
+                <label id="NotInBuCheckBoxLbl" for="NotInBuCheckBox">Not Current Member</label>
+
+                <input id="KaiserCheckBox"    style="padding: 5px;" type="checkbox" checked="true"></input>
+                <label id="KaiserCheckBoxLbl"  for="KaiserCheckBox">Kaiser</label>
+
+                <input id="HospitalCheckBox"    style="padding: 5px;" type="checkbox" checked="true"></input>
+                <label id="HospitalCheckBoxLbl"  for="HospitalCheckBox">Hospital</label>
+
+                <input id="HomeCareCheckBox"    style="padding: 5px;" type="checkbox"></input>
+                <label id="HomeCareCheckBoxLbl"  for="HomeCareCheckBox">Home Care</label>
+
+                <input id="NursingHomeCheckBox"    style="padding: 5px;" type="checkbox"></input>
+                <label id="NursingHomeCheckBoxLbl"  for="NursingHomeCheckBox">Nursing Home</label>
+
+                <input id="NewOrganizingCheckBox"    style="padding: 5px;" type="checkbox"></input>
+                <label id="NewOrganizingCheckBoxLbl"  for="NewOrganizingCheckBox">New Organizing</label>
+
+                <input id="OtherCheckBox"    style="padding: 5px;" type="checkbox"></input>
+                <label id="OtherCheckBoxLbl"  for="OtherCheckBox">Other</label>
+            </div>
+            <input  id="RefreshButton"  style="padding: 5px;" type="Button" value="Retrieve"></input>
+        </span>
+
+        <span id="statusDiv1" style="padding: 5px;clear: both;"> </span>
+        <span id="statusDiv2" style="padding: 5px;clear: both;"> </span>
+
+        <input id="ExportButton" style="padding: 5px;margin-top:10px;" type="Button" value="Export"></input>
+
+        <div id="tabContainer">
+            <div id="tabs">
+                <ul>
+                    <li id="tabHeader_1">Summary by Employer/Dept/Title</li>
+                    <li id="tabHeader_2">Detail  by Employer/Dept/Title</li>
+                    <li id="tabHeader_3">Zip code counts</li>
+                    <li id="tabHeader_4">Debug</li>
+                    <li id="tabHeader_5">Export Log</li>
+                </ul>
+            </div>
+
+            <div id="tabscontent">
+                <div class="tabpage" id="tabpage_1" style="background-color: white;">
+                    <h3>Summary by Employer/Dept/Title</h3>
+                    <div id="SummaryDiv" > </div>
+                </div>
+                <div class="tabpage" id="tabpage_2">
+                    <h3>Detail  by Employer/Dept/Title</h3>
+                    <div id="DetailDiv" style="padding: 5px;clear: both;background-color:white;"> </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_3">
+                    <h3>Zip Code List</h3>
+                    <div id="ZipListDiv" > </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_4">
+                    <h3>Debug Tab</h3>
+                    <div id="DebugDiv" > </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_5">
+                    <h3>Log Tab</h3>
+                    <div id="ExportLogDiv"> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+</apex:page>

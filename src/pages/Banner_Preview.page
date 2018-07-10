@@ -1,0 +1,87 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Stretch Dash</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+
+<script src="/soap/ajax/38.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/38.0/apex.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body>
+<div align="center">
+
+<div align="center" id="mainDiv">
+  <font size="+2"><div id="titleDiv">Banner Preview</div></font>
+<br>&nbsp;</br>
+  <font color="green">
+  <div align="center" id="filterDiv"></div>
+  </font>
+
+  <table width="640" border="1">
+  <tr valign="top">
+  <td align="center">
+  <div id="contentDiv"></div>
+  </td>
+  </tr>
+  </table>
+</div>
+
+<br>&nbsp;</br>
+
+<br>&nbsp;</br>
+
+<div id="debugDiv" align="center"></div>
+
+</div>
+
+<script language="JavaScript">
+var lastRecord = "";
+    
+try{  
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var bid = "{!$CurrentPage.parameters.bid}";
+    if (bid == "" || bid == "null") {
+      bid = null;
+    }
+    var user = sforce.connection.getUserInfo();
+    var query = "SELECT ID, HTML__c from Banner__c ";
+    if (bid == null) {
+      query += " LIMIT 1";
+    } else {
+      query += " where Id = \'" + bid + "\' ";
+    }
+
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length != 1) throw "Unable to find Banner.";
+    lastRecord = records[0];
+    //alert(records[0].HTML__c);
+    
+    document.getElementById("contentDiv").innerHTML = records[0].HTML__c;
+
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+
+
+</script> 
+
+</body>
+</html>  
+</apex:page>

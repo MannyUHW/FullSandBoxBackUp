@@ -1,0 +1,360 @@
+<apex:page sidebar="false" showHeader="false">
+<div align="center">
+  <font size="+2">June 2nd Report</font>
+
+<script language="JavaScript">
+document.write("<div align=\"center\"><i>Generated " + (new Date()) + "</i></div>");
+</script>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<br>&nbsp;</br>
+<div id="warningDiv"></div>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+var i = 0;
+
+try{ 
+
+    var records1 = new Array();
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    for (var i = 0; i < 10; i++) {
+      var query = "select Id, Name, FID__c, Contact__r.Id, Contact_Name__c, Employer_Name__c, Alt_Person_Type__c, Contact__c, Contact__r.Department, Contact__r.Title, Contact__r.Shift__c, Collected_By__c, Collected_By_Name__c, Collected_By__r.Account.Name, Contact__r.COPE_Pledge__c, Region__c, Response_Value__c, Division__c    from Survey_Response__c where ";
+      query += " (Division__c = \'Hospital\' OR Division__c = \'Kaiser\' OR Division__c = \'Nursing Home\' OR Division__c = \'Home Care\') and ";
+      query += " Survey_Code__c=\'J2A\' and (Response_Value__c like \'M%\' OR Response_Value__c like \'B%\' OR Response_Value__c like \'R%\'  OR Response_Value__c like \'D%\'  OR Response_Value__c like \'W%\'  OR Response_Value__c like \'S%\') and";
+      query += " (Name like \'%" + i + "\' ";
+      query += " )";
+      query += " limit 2000";
+      
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records'); 
+    
+      //alert("query(" + i + ")=" + query + "\nlength=" +records0.length);
+    
+      if (records0.length >= 2000) {
+        alert("Over 2000 records were found in partition " + i + " and these results have been cutoff.  Please contact the Data Group to get resolved.");
+      }
+      records1 = records1.concat(records0);
+    } 
+    document.getElementById("warningDiv").innerHTML = "Total Will Attends = " + records1.length;
+
+    var leaderList = new Array();   
+
+    var countMap = new Array();
+    var divs = ["nursing home", "home care", "hospital", "kaiser"];
+    var rarray = ["member~m", "member~b", "member~r", "member~d", "member~w", "member~s", "non-member~m", "non-member~b",  "non-member~r", "non-member~d", "non-member~w",  "non-member~s", "cope10", "leader"];
+    for (var x = 0; x < divs.length; x++) {
+      for (var y = 0; y < rarray .length; y++) {
+        var tkey = divs[x] + "~all~" + rarray[y];
+        countMap[tkey] = 0;
+      }    
+    }
+    
+    for(var i=0;i < records1.length; i++){ 
+
+      
+      for (var q = 0; q < 2; q++) {
+
+
+        var region = records1[i].Region__c;
+        if (region == null || region == "" || region == "null") {
+          records1[i].Region__c = "NORTH";
+        }      
+      
+        if (q == 0) {
+          region = "ALL";
+        }
+        
+        var ptype = "Member";
+        if ( records1[i].Alt_Person_Type__c != null && records1[i].Alt_Person_Type__c != "" && records1[i].Alt_Person_Type__c != "null") {
+          ptype = records1[i].Alt_Person_Type__c;
+          if (ptype != "Member") {
+            ptype = "Non-Member";
+          }
+        }
+      
+        var respKey = (records1[i].Division__c + "~" + region + "~" +  ptype + "~" + records1[i].Response_Value__c.substring(0, 1)).trim().toLowerCase();
+        var count = 0;
+        if (countMap[respKey] != null) {
+          count = countMap[respKey];
+        }
+        count++;
+        countMap[respKey] = count;
+      
+        var copeKey = (records1[i].Division__c + "~" + region + "~cope10").trim().toLowerCase();
+        var cope10Count = 0;
+        if (countMap[copeKey ] != null) {
+          cope10Count = countMap[copeKey ];
+        }
+        if (records1[i].Contact__c != null && records1[i].Contact__c != "" && records1[i].Contact__c != "null" && records1[i].Contact__r.COPE_Pledge__c != null && records1[i].Contact__r.COPE_Pledge__c >= 9.2) {
+          cope10Count++;
+        }
+        countMap[copeKey] = cope10Count;
+
+        var leaderKey = (records1[i].Division__c + "~" + region + "~leader").trim().toLowerCase();
+        var leaderCount = 0;
+            
+        if (records1[i].Collected_By__c != null && records1[i].Collected_By__c != "" && records1[i].Collected_By__c != "null" && leaderList.indexOf(records1[i].Collected_By__c + "~" + region) < 0 && records1[i].Collected_By__r.Account.Name.toLowerCase().indexOf("seiu") < 0) {
+          leaderList.push(records1[i].Collected_By__c + "~" + region);  
+          if (countMap[leaderKey] != null) {
+            leaderCount = countMap[leaderKey];
+          }
+          leaderCount++;
+          countMap[leaderKey] = leaderCount;    
+        }
+      } 
+    }  
+    document.write("<table border=\"0\" cellpadding=\"10\">\n");
+    document.write("<tr valign=\"bottom\">\n");  
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"12%\"><font color=\"white\">Division</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Region</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Mbr<br/>Committeds</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Mbr<br/>Confirmeds</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Mbr<br/>Re-Confirmeds</font></td>\n");            
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Mbr<br/>Reminds</font></td>\n");                        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Mbr<br/>Wait List</font></td>\n");            
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Mbr<br/>Slotteds<br/>from<br/> Wait List</font></td>\n");                    
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Mbr<br/>Totals</font></td>\n");                        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Non-Mbrs</font></td>\n");                
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">COPE $10+</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"8%\"><font color=\"white\">Leaders</font></td>\n");        
+    document.write("</tr>\n"); 
+    
+    var affCount = 0;
+    
+    var prefixes = ["nursing home~all", "home care~all", "hospital~all", "hospital~north", "hospital~south", "kaiser~all", "kaiser~north", "kaiser~south"];
+    for (var w = 0; w< prefixes.length; w++) {
+      var prefix = prefixes[w];
+      
+      var division = prefix.split("~")[0];
+      var region = prefix.split("~")[1];
+      
+      var s = "";
+      
+      s+= "<tr valign=\"top\">\n";
+      
+      s+= "<td align=\"left\"><b>";
+      if (region == "all") {
+        s += toProperCase(division);
+      }
+      s+= "</b></td>";
+      s+="\n\n"; 
+      
+      s+= "<td align=\"left\">";
+      if (region != "all") {
+        s += toProperCase(region);
+      }
+      s+= "</td>";
+      s+="\n\n";      
+       
+      s+= "<td align=\"center\">";
+      var commitKey = prefix + "~member~m";
+      var commitCount = 0;
+      if (countMap[commitKey] != null) {
+        commitCount = countMap[commitKey];
+      }
+      s += commitCount;
+      s+= "</td>";
+      s+="\n\n";      
+
+
+
+
+      
+      s+= "<td align=\"center\">";
+      var mbrConfirmKey = prefix + "~member~b";
+      var mbrConfirmCount = 0;
+      if (countMap[mbrConfirmKey ] != null) {
+        mbrConfirmCount = countMap[mbrConfirmKey ];
+      }
+      s += mbrConfirmCount ;
+      s+= "</td>";
+      s+="\n\n";  
+      
+      s+= "<td align=\"center\">";
+      var mbrReConfirmKey = prefix + "~member~r";
+      var mbrReConfirmCount = 0;
+      if (countMap[mbrReConfirmKey ] != null) {
+        mbrReConfirmCount = countMap[mbrReConfirmKey ];
+      }
+      s += mbrReConfirmCount ;
+      s+= "</td>";
+      s+="\n\n";  
+      
+            s+= "<td align=\"center\">";
+      var mbrRemindKey = prefix + "~member~d";
+      var mbrRemindCount = 0;
+      if (countMap[mbrRemindKey ] != null) {
+        mbrRemindCount = countMap[mbrRemindKey ];
+      }
+      s += mbrRemindCount ;
+      s+= "</td>";
+      s+="\n\n"; 
+      
+            s+= "<td align=\"center\">";
+      var mbrWaitKey = prefix + "~member~w";
+      var mbrWaitCount = 0;
+      if (countMap[mbrWaitKey ] != null) {
+        mbrWaitCount = countMap[mbrWaitKey ];
+      }
+      s += mbrWaitCount ;
+      s+= "</td>";
+      s+="\n\n";  
+      
+            s+= "<td align=\"center\">";
+      var mbrSlotKey = prefix + "~member~s";
+      var mbrSlotCount = 0;
+      if (countMap[mbrSlotKey ] != null) {
+        mbrSlotCount = countMap[mbrSlotKey ];
+      }
+      s += mbrSlotCount ;
+      s+= "</td>";
+      s+="\n\n";  
+      
+            
+            s+= "<td align=\"center\">";
+            var rowTotal = (commitCount + mbrReConfirmCount + mbrConfirmCount + mbrWaitCount + mbrRemindCount + mbrSlotCount);
+      s += "<b>" + rowTotal + "</b>";
+      if (prefix.indexOf("~all") >= 0) {
+        affCount += rowTotal;
+      }
+      s+= "</td>";
+      s+="\n\n";  
+      
+      
+            s+= "<td align=\"center\">";
+      var nonMbrCommitKey = prefix + "~non-member~m";
+      var nonMbrCommitCount = 0;
+      if (countMap[nonMbrCommitKey] != null) {
+        nonMbrCommitCount = nonMbrCommitCount  + countMap[nonMbrCommitKey];
+      }
+      var nonMbrConfirmKey = prefix + "~non-member~b";
+      if (countMap[nonMbrConfirmKey] != null) {
+        nonMbrCommitCount = nonMbrCommitCount  + countMap[nonMbrConfirmKey];
+      }
+      var nonMbrReconfirmKey = prefix + "~non-member~r";
+      if (countMap[nonMbrReconfirmKey] != null) {
+        nonMbrCommitCount = nonMbrCommitCount  + countMap[nonMbrReconfirmKey];
+      }
+      var nonMbrReconfirmKey = prefix + "~non-member~w";
+      if (countMap[nonMbrReconfirmKey] != null) {
+        nonMbrCommitCount = nonMbrCommitCount  + countMap[nonMbrReconfirmKey];
+      }
+      var nonMbrReconfirmKey = prefix + "~non-member~s";
+      if (countMap[nonMbrReconfirmKey] != null) {
+        nonMbrCommitCount = nonMbrCommitCount  + countMap[nonMbrReconfirmKey];
+      }      
+      var nonMbrReconfirmKey = prefix + "~non-member~d";
+      if (countMap[nonMbrReconfirmKey] != null) {
+        nonMbrCommitCount = nonMbrCommitCount  + countMap[nonMbrReconfirmKey];
+      }      
+      s += nonMbrCommitCount;
+      s+= "</td>";
+      s+="\n\n";   
+      
+            
+      s+= "<td align=\"center\">";
+      var copeKey = prefix + "~cope10";
+      var copeCount = 0;
+      if (countMap[copeKey] != null) {
+        copeCount = countMap[copeKey];
+      }
+      s += copeCount;
+      s+= "</td>";
+      s+="\n\n"; 
+      
+      s+= "<td align=\"center\">";
+      var leaderKey = prefix + "~leader";
+      var leaderCount = 0;
+      if (countMap[leaderKey] != null) {
+        leaderCount = countMap[leaderKey];
+      }
+      s += leaderCount;
+      s+= "</td>";
+      s+="\n\n";             
+      
+      s+= "</tr>\n";    
+      
+      document.write(s);
+    }
+    var s ="";
+    s+= "<tr valign=\"middle\">\n";
+    s+= "<td colspan=\"2\" bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>Totals</b>";
+    s+= "</td>\n\n";
+    
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~member~m"] + countMap["home care~all~member~m"] + countMap["hospital~all~member~m"] + countMap["kaiser~all~member~m"]) + "</b>";
+    s+= "</td>\n\n";
+
+
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~member~b"] + countMap["home care~all~member~b"] + countMap["hospital~all~member~b"] + countMap["kaiser~all~member~b"]) + "</b>";
+    s+= "</td>\n\n";
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~member~r"] + countMap["home care~all~member~r"] + countMap["hospital~all~member~r"] + countMap["kaiser~all~member~r"]) + "</b>";
+    s+= "</td>\n\n";
+
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~member~d"] + countMap["home care~all~member~d"] + countMap["hospital~all~member~d"] + countMap["kaiser~all~member~d"]) + "</b>";
+    s+= "</td>\n\n";
+ 
+     s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~member~w"] + countMap["home care~all~member~w"] + countMap["hospital~all~member~w"] + countMap["kaiser~all~member~w"]) + "</b>";
+    s+= "</td>\n\n";
+    
+        s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~member~s"] + countMap["home care~all~member~s"] + countMap["hospital~all~member~s"] + countMap["kaiser~all~member~s"]) + "</b>";
+    s+= "</td>\n\n";
+
+
+        s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + affCount + "</b>";
+    s+= "</td>\n\n";
+
+    
+        s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~non-member~m"] + countMap["home care~all~non-member~m"] + countMap["hospital~all~non-member~m"] + countMap["kaiser~all~non-member~m"] + countMap["nursing home~all~non-member~b"] + countMap["home care~all~non-member~b"] + countMap["hospital~all~non-member~b"] + countMap["kaiser~all~non-member~b"] + countMap["nursing home~all~non-member~r"] + countMap["home care~all~non-member~r"] + countMap["hospital~all~non-member~r"] + countMap["kaiser~all~non-member~r"] + countMap["nursing home~all~non-member~d"] + countMap["home care~all~non-member~d"] + countMap["hospital~all~non-member~d"] + countMap["kaiser~all~non-member~d"] + countMap["nursing home~all~non-member~w"] + countMap["home care~all~non-member~w"] + countMap["hospital~all~non-member~w"] + countMap["kaiser~all~non-member~w"] + countMap["nursing home~all~non-member~s"] + countMap["home care~all~non-member~s"] + countMap["hospital~all~non-member~s"] + countMap["kaiser~all~non-member~s"]) +  "</b>";
+    s+= "</td>\n\n";    
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~cope10"] + countMap["home care~all~cope10"] + countMap["hospital~all~cope10"] + countMap["kaiser~all~cope10"]) + "</b>";
+    s+= "</td>\n\n";
+
+    s+= "<td bgcolor=\"#dcf8dd\" align=\"center\">";
+    s+= "<b>" + (countMap["nursing home~all~leader"] + countMap["home care~all~leader"] + countMap["hospital~all~leader"] + countMap["kaiser~all~leader"]) + "</b>";
+    s+= "</td>\n\n";
+
+        
+    s+= "</tr>\n";
+    
+    document.write(s);
+    
+    document.write("</table>\n\n");
+    document.write("<br>&nbsp;</br>");    
+
+/*
+    for (var key in countMap) {
+      document.write(key + " = ");
+      document.write(countMap[key]);      
+      document.write("</br>");        
+    }
+*/
+
+
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i); 
+}
+
+</script>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+</apex:page>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <description>tracks which users can transfer from which office bucket contacts</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>LocationNumber__c</fullName>
+        <description>unique location descriptor</description>
+        <externalId>false</externalId>
+        <label>LocationNumber</label>
+        <length>4</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Username__c</fullName>
+        <description>user name that has access to related office location on row</description>
+        <externalId>false</externalId>
+        <label>Username</label>
+        <length>50</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Office Petition User Permission List</label>
+    <visibility>Public</visibility>
+</CustomObject>

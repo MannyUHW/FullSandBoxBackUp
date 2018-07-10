@@ -1,0 +1,14 @@
+<apex:page controller="Report_NearbyMbrContactsCtrlr" readonly="true">
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<h1>Nearby Member Contacts</h1>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+
+<div align="center">
+<apex:outputText value="{!NearbyContacts}" escape="false"/>
+</div>
+
+</apex:page>

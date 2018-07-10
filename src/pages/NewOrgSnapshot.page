@@ -1,0 +1,529 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.jquery_2_1_3_min}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jQueryUiMinZip2,'jquery-ui.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.agGridMinZip400,'ag-grid.min.js')}"/>
+
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.theme.min.css')}"/>
+
+        <style>
+
+            #NewOrgGridDiv {
+                float: left;
+                margin-left: 0px;
+                margin-right: 0px;
+                width: 100%;
+                background-color: lightskyblue;
+                height: 900px;
+                overflow-y: auto;
+            }
+
+            #StatusDiv {
+                float: left;
+                min-height: 224px;
+                width: 20%;
+                background-color: #DDE9DD;
+                overflow-y: auto;
+            }
+
+            .right-align {
+                text-align: right;
+            }
+
+            .center-align {
+                text-align: center;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+    <div id="title">
+        <h1>New Organizing Snapshot</h1>
+        <hr/>
+    </div>
+    <hr/>
+    <input id="GetCountsButton" type="Button" value="Get Counts"></input>
+    <div id="StatusDiv1"></div>
+    <div id="StatusDiv2"></div>
+    <hr/>
+
+    <div id="NewOrgGridDiv" class="ag-fresh"></div>
+
+    <script type="text/javascript">
+
+        function phoneFormat(s) {
+            var s1;
+            if(s == null || s == '')
+                s1 = 'n/a';
+            else
+                s1 = s.replace('-','');
+            s1 = s1.replace(' ','');
+            s1 = s1.replace('(','');
+            s1 = s1.replace(')','');
+            s1 = s1.substr(0,3) + '-' + s1.substr(3,3) + '-' + s1.substr(6);
+            return s1;
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = '';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function loadAssessments(accountId) {
+            // Note:  Chris/Christina use the In_BU flag as a quick way to filter out people who they know they don't want to include in their final pool of eligible voters.
+
+            // Christina 4/13/16:
+            //   A lot of times when organizers are building a list for a new facility that we’re organizing they may gather schedules for as many departments as they can get their hands on and include all the
+            //   people they can find. This leads to a very extensive list and often includes people that as the campaign progresses, they decide we are not going to organize. Instead of having to create every
+            //   report and list based on individual bargaining units, we have taken to just marking everyone they plan to include in the election bargaining units we file for, as “In Current BU”. This simplifies
+            //   creating lists and reports.
+
+            var assessmentQuery = "SELECT Account.Name,AccountId,Department,Employer__c,FID__c,FirstName,Id,BU__c,LastName,MobilePhone,Shift__c,Worksite__c, Card_Assessment__c,GOTV_Assessment__c,Verbal_Assessment__c " +
+                    "FROM Contact Where In_Current_BU__c = true And AccountId = '" + accountId + "'";
+            //    try {
+            // ;  // And Card_Assessment__c = '6. Management Leader or activist'
+
+            var assessmentResults = sforce.connection.query(assessmentQuery);
+            processAssessments(assessmentResults);
+            //    }
+            //    catch (e) {alert('An error occurred retrieving Assessments ' + e.faultstring);}
+        }
+
+        function processAssessments(results) {
+            var accountName;
+            var accountId;
+            var department;
+            var employer;
+            var fid;
+            var firstName;
+            var id;
+            var inCurrentBU;
+            var lastName;
+            var mobilePhone;
+            var shift;
+            var worksite;
+            var cardAssessment;
+            var gotvAssessment;
+            var verbalAssessment;
+
+            var key;
+            var processedAll;
+            var contactCnt;
+            var va0 = va1 = va2 = va3 = va4 = va5 = va6 = va7 = va8 = va9 = 0;
+            var ca0 = ca1 = ca2 = ca3 = ca4 = ca5 = ca6 = ca7 = ca8 = ca9 = 0;
+            var ga0 = ga1 = ga2 = ga3 = ga4 = ga5 = ga6 = ga7 = ga8 = ga9 = 0;
+            var gotRecords;
+
+            while (!processedAll) {
+                contactCnt = 0;
+                cardAssessmentMap   = {};
+                gotvAssessmentMap   = {};
+                verbalAssessmentMap = {};
+
+                records = results.getArray('records');
+                if(records.length) {
+                    gotRecords  = true;
+                    accountName = toProperCase(records[0].Account.Name);
+                    for (i = 0; i < records.length; i++) {
+                        accountId = cardAssessment = gotvAssessment = verbalAssessment = department = employer = fid = firstName = lastName = id = inCurrentBU = mobilePhone = shift = worksite = '';
+                        contactCnt++;
+                        accountId        = records[i].AccountId;
+                        cardAssessment   = records[i].Card_Assessment__c   || '0. No Entry';
+                        gotvAssessment   = records[i].GOTV_Assessment__c   || '0. No Entry';
+                        verbalAssessment = records[i].Verbal_Assessment__c || '0. No Entry';
+                        department       = records[i].Department;
+                        fid              = records[i].FID__c;
+                        firstName        = records[i].FirstName;
+                        lastName         = records[i].LastName;
+                        id               = records[i].Id;
+                        inCurrentBU      = records[i].In_Current_BU__c;
+                        mobilePhone      = records[i].MobilePhone;
+                        shift            = records[i].Shift__c;
+                        worksite         = records[i].Worksite__c;
+
+                        if (!verbalAssessmentMap[accountId])
+                            verbalAssessmentMap[accountId] = {};
+
+                        if (!verbalAssessmentMap[accountId]['0. No Entry'])
+                            verbalAssessmentMap[accountId]['0. No Entry'] = {Count: 0};
+
+                        if (!verbalAssessmentMap[accountId][verbalAssessment])
+                            verbalAssessmentMap[accountId][verbalAssessment] = {Count: 1};
+                        else
+                            verbalAssessmentMap[accountId][verbalAssessment].Count++;
+
+                        if (!cardAssessmentMap[accountId])
+                            cardAssessmentMap[accountId] = {};
+
+                        if (!cardAssessmentMap[accountId]['0. No Entry'])
+                            cardAssessmentMap[accountId]['0. No Entry'] = {Count: 0};
+
+                        if (!cardAssessmentMap[accountId][cardAssessment])
+                            cardAssessmentMap[accountId][cardAssessment] = {Count: 1};
+                        else
+                            cardAssessmentMap[accountId][cardAssessment].Count++;
+
+                        if (!gotvAssessmentMap[accountId])
+                            gotvAssessmentMap[accountId] = {};
+
+                        if (!gotvAssessmentMap[accountId]['0. No Entry'])
+                            gotvAssessmentMap[accountId]['0. No Entry'] = {Count: 0};
+
+                        if (!gotvAssessmentMap[accountId][gotvAssessment])
+                            gotvAssessmentMap[accountId][gotvAssessment] = {Count: 1};
+                        else
+                            gotvAssessmentMap[accountId][gotvAssessment].Count++;
+                    }
+
+                    if (results.done == 'true') {
+                        processedAll = true;
+                    }
+                    else {
+                        contactBatchCount++;
+                        results = sforce.connection.queryMore(results.queryLocator);
+                    }
+                    statusDiv2.innerHTML = 'Retrieving: ' + accountName + ' Contact count: ' + contactCnt.toString();
+                }
+                else
+                {
+                    processedAll = true;
+                    gotRecords   = false;
+                }
+            }
+
+            if(gotRecords) {
+                for (mapKey in verbalAssessmentMap) {
+                    accountId = mapKey;
+                    verbalAssessment = verbalAssessmentMap[accountId];
+                    for (key in verbalAssessment) {
+                        switch (key) {
+                            case '0. No Entry' :
+                                va0 = verbalAssessment[key].Count;
+                                break;
+                            case '1. SEIU-UHW Leader Producing' :
+                                va1 = verbalAssessment[key].Count;
+                                break;
+                            case '2. SEIU-UHW Supporter' :
+                                va2 = verbalAssessment[key].Count;
+                                break;
+                            case '3. Undecided' :
+                                va3 = verbalAssessment[key].Count;
+                                break;
+                            case '4. Anti-Union' :
+                                va4 = verbalAssessment[key].Count;
+                                break;
+                            case '6. Management Leader or activist' :
+                                va6 = verbalAssessment[key].Count;
+                                break;
+                            case '9. Reported to be NLE' :
+                                va9 = verbalAssessment[key].Count;
+                                break;
+                            default :
+                                // bad data check - shouldn't happen.
+                                console.log('Unexpected Verbal Assessment value : ' + key);
+                        }
+                    }
+                }
+
+                for (mapKey in cardAssessmentMap) {
+                    accountId = mapKey;
+                    cardAssessment = cardAssessmentMap[accountId];
+                    for (key in cardAssessment) {
+                        switch (key) {
+                            case '0. No Entry' :
+                                ca0 = cardAssessment[key].Count;
+                                break;
+                            case '1. SEIU-UHW Leader Producing' :
+                                ca1 = cardAssessment[key].Count;
+                                break;
+                            case '2. SEIU-UHW Supporter' :
+                                ca2 = cardAssessment[key].Count;
+                                break;
+                            case '3. Undecided' :
+                                ca3 = cardAssessment[key].Count;
+                                break;
+                            case '4. Anti-Union' :
+                                ca4 = cardAssessment[key].Count;
+                                break;
+                            case '6. Management Leader or activist' :
+                                ca6 = cardAssessment[key].Count;
+                                break;
+                            case '9. Reported to be NLE' :
+                                ca9 = cardAssessment[key].Count;
+                                break;
+                            default :
+                                // bad data check - shouldn't happen.
+                                console.log('Unexpected Card Assessment value : ' + key);
+                        }
+                    }
+                }
+
+                for (mapKey in gotvAssessmentMap) {
+                    accountId = mapKey;
+                    gotvAssessment = gotvAssessmentMap[accountId];
+                    for (key in gotvAssessment) {
+                        switch (key) {
+                            case '0. No Entry' :
+                                ga0 = gotvAssessment[key].Count;
+                                break;
+                            case '1. SEIU-UHW Leader Producing' :
+                                ga1 = gotvAssessment[key].Count;
+                                break;
+                            case '2. SEIU-UHW Supporter' :
+                                ga2 = gotvAssessment[key].Count;
+                                break;
+                            case '3. Undecided' :
+                                ga3 = gotvAssessment[key].Count;
+                                break;
+                            case '4. Anti-Union' :
+                                ga4 = gotvAssessment[key].Count;
+                                break;
+                            case '6. Management Leader or activist' :
+                                ga6 = gotvAssessment[key].Count;
+                                break;
+                            case '9. Reported to be NLE' :
+                                ga9 = gotvAssessment[key].Count;
+                                break;
+                            default :
+                                // bad data check - shouldn't happen.
+                                console.log('Unexpected Card Assessment value : ' + key);
+                        }
+                    }
+                }
+
+                ptr = 0;
+                for (i = 0, l = newOrgDataArray.length; i < l; i++) {
+                    if (newOrgDataArray[i].Id == accountId) {
+                        ptr = i;
+                        break;
+                    }
+                }
+
+                newOrgDataArray[ptr].CA0 = ca0;
+                newOrgDataArray[ptr].CA1 = ca1;
+                newOrgDataArray[ptr].CA2 = ca2;
+                newOrgDataArray[ptr].CA3 = ca3;
+                newOrgDataArray[ptr].CA4 = ca4;
+                newOrgDataArray[ptr].CA5 = ca5;
+                newOrgDataArray[ptr].CA6 = ca6;
+                newOrgDataArray[ptr].CA7 = ca7;
+                newOrgDataArray[ptr].CA8 = ca8;
+                newOrgDataArray[ptr].CA9 = ca9;
+                newOrgDataArray[ptr].CATotal = ca1 + ca2 + ca3 + ca4 + ca5 + ca6 + ca7 + ca8 + ca9;
+
+                newOrgDataArray[ptr].VA0 = va0;
+                newOrgDataArray[ptr].VA1 = va1;
+                newOrgDataArray[ptr].VA2 = va2;
+                newOrgDataArray[ptr].VA3 = va3;
+                newOrgDataArray[ptr].VA4 = va4;
+                newOrgDataArray[ptr].VA5 = va5;
+                newOrgDataArray[ptr].VA6 = va6;
+                newOrgDataArray[ptr].VA7 = va7;
+                newOrgDataArray[ptr].VA8 = va8;
+                newOrgDataArray[ptr].VA9 = va9;
+                newOrgDataArray[ptr].VATotal = va1 + va2 + va3 + va4 + va5 + va6 + va7 + va8 + va9;
+
+                newOrgDataArray[ptr].GA0 = ga0;
+                newOrgDataArray[ptr].GA1 = ga1;
+                newOrgDataArray[ptr].GA2 = ga2;
+                newOrgDataArray[ptr].GA3 = ga3;
+                newOrgDataArray[ptr].GA4 = ga4;
+                newOrgDataArray[ptr].GA5 = ga5;
+                newOrgDataArray[ptr].GA6 = ga6;
+                newOrgDataArray[ptr].GA7 = ga7;
+                newOrgDataArray[ptr].GA8 = ga8;
+                newOrgDataArray[ptr].GA9 = ga9;
+                newOrgDataArray[ptr].GATotal = ga1 + ga2 + ga3 + ga4 + ga5 + ga6 + ga7 + ga8 + ga9;
+                debugger;
+                newOrgGridOptions.api.refreshView();
+            }
+        }
+
+        function setStatus(pSuffix,pLabel,pText) {
+            var statTField           = 'statusText'  + pSuffix;
+            var statLField           = 'statusLabel' + pSuffix;
+            var statTFieldId         = document.getElementById(statTField);
+            var statLFieldId         = document.getElementById(statLField);
+            statTFieldId.value       = pText;
+            statLFieldId.textContent = pLabel;
+        }
+
+        function initAgGrid() {
+
+            newOrgColumnDefs = [
+                {
+                    headerName: "",
+                    children: [
+                        {headerName: 'Employer',  field: 'AccountName',      width: 390, sortingOrder: ['asc','desc']},
+                        {headerName: 'Stage',     field: 'AssessmentStage',  width: 100, sortingOrder: ['asc','desc']},
+                        {headerName: 'Active',    field: 'Active',           width: 100, sortingOrder: ['asc','desc']}
+                    ]
+                },
+                {
+                    headerName: "Verbal Assessment",
+                    groupId: "Verbal",
+                    children: [
+                        {headerName: "Total",                field: "VATotal", width: 200, columnGroupShow: 'open', cellClass: 'right-align'},
+                        {headerName: "0. No Entry",          field: "VA0", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "1. Leader",            field: "VA1", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "2. Supporter",         field: "VA2", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "3. Undecided",         field: "VA3", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "4. Anti-Union",        field: "VA4", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "5. NUHW Supporter",    field: "VA5", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "6. Management friend", field: "VA6", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "7. NUHW leader",       field: "VA7", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "9. NLE",               field: "VA9", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'}
+                    ]
+                },
+                {
+                    headerName: "Card Assessment",
+                    groupId: "Card",
+                    children: [
+                        {headerName: "Total",                field: "CATotal", width: 200, columnGroupShow: 'open', cellClass: 'right-align'},
+                        {headerName: "0. No Entry",          field: "CA0", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "1. Leader",            field: "CA1", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "2. Supporter",         field: "CA2", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "3. Undecided",         field: "CA3", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "4. Anti-Union",        field: "CA4", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "5. NUHW Supporter",    field: "CA5", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "6. Management friend", field: "CA6", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "7. NUHW leader",       field: "CA7", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "9. NLE",               field: "CA9", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'}
+                    ]
+                },
+                {
+                    headerName: "GOTV Assessment",
+                    groupId: "Gotv",
+                    children: [
+                        {headerName: "Total",                                           field: "GATotal", width: 200, columnGroupShow: 'open', cellClass: 'right-align'},
+                        {headerName: "0. No Entry",                                     field: "GA0", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "1. Voting SEIU-UHW with Exact Vote Time & Plan",  field: "GA1", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "2. Voting SEIU-UHW, no exact vote time",          field: "GA2", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "3. Undecided",                                    field: "GA3", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "4. Voting 'No' or 'Not Voting for SEIU-UHW'",     field: "GA4", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "5. NUHW Voter",                                   field: "GA5", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'},
+                        {headerName: "6. Will not be Voting",                           field: "GA6", width: 110, columnGroupShow: 'closed', cellClass: 'right-align'}
+                    ]
+                }
+            ]
+        }
+
+        function loadNewOrgAccounts(){
+
+            var query = "SELECT Id,Name,Assessment_Stage__c,Active__c " +
+                    "From Account Where Account_Group__c = 'New Organizing' And " +
+                    "Assessment_Stage__c In ('GOTV','Probing','Verbal','Card','Vote Yes Petition')  " +
+                    "Order By Active__c Desc, Assessment_Stage__c Desc,Name";
+            // And Id = '001i000001PTUkeAAH'
+
+            // try {
+            var queryResults = sforce.connection.query(query);
+            processNewOrgAccounts(queryResults);
+            //}
+            //catch(e) {alert('An error occurred retrieving Accounts: ' + e.faultstring);}
+        }
+
+        function processNewOrgAccounts(accountResults) {
+            var accountRec;
+            var empName;
+            var empAccountId;
+            var accountRecords;
+            var assessmentStage;
+            var active;
+
+            accountIdsArray     = [];
+            accountMap          = {};
+
+            accountRecords = accountResults.getArray('records');
+            len = accountRecords.length-1;
+
+            for (i = 0; i <= len; i++) {
+                accountRec      = accountRecords[i];
+                empAccountId    = accountRec.Id;
+                empName         = toProperCase(accountRec.Name);
+                assessmentStage = accountRec.Assessment_Stage__c;
+                active          = accountRec.Active__c;
+                newOrgDataArray.push({Id: empAccountId, AccountName: empName, AssessmentStage: assessmentStage, Active: active,
+                    CATotal:0, CA0:0, CA1:0, CA2:0, CA3:0, CA4:0, CA5:0, CA6:0, CA7:0, CA8:0, CA9:0,
+                    VATotal:0, VA0:0, VA1:0, VA2:0, VA3:0, VA4:0, VA5:0, VA6:0, VA7:0, VA8:0, VA9:0,
+                    GATotal:0, GA0:0, GA1:0, GA2:0, GA3:0, GA4:0, GA5:0, GA6:0, GA7:0, GA8:0, GA9:0});
+            }
+
+            newOrgGridOptions = {
+                debug:true,
+                columnDefs: newOrgColumnDefs,
+                groupHeaders: true,
+                rowData: newOrgDataArray,
+                enableSorting: true,
+                enableFilter: true
+            };
+            new agGrid.Grid(newOrgGridDiv, newOrgGridOptions);
+        }
+
+        function getCounts() {
+            var id;
+
+            newOrgGridOptions.api.forEachNodeAfterFilterAndSort(getNodeCounts)
+            statusDiv2.innerHTML = '';
+            newOrgGridOptions.api.deselectAll();
+        }
+
+        function getNodeCounts(node) {
+            node.setSelected(true, true);
+            id = node.data.Id;
+            loadAssessments(id);
+        }
+
+        // ***************** Globals *****************
+        var newOrgDataArray     = [];
+        var newOrgGridOptions   = {};
+        var responseGridOptions = {};
+
+        var newOrgGridDiv;
+        var newOrgColumnDefs;
+
+        var contactOwnerIdMap   = {};
+        var contactOwnerMap     = {};
+        var contactBatchCount   = 0;
+
+        var cardAssessmentMap   = {};
+        var gotvAssessmentMap   = {};
+        var verbalAssessmentMap = {};
+
+        var countsButton;
+        var output;
+        var statusDiv1;
+        var statusDiv2;
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            newOrgGridDiv = document.getElementById('NewOrgGridDiv');
+            statusDiv1    = document.getElementById('StatusDiv1');
+            statusDiv2    = document.getElementById('StatusDiv2');
+            countsButton  = document.getElementById('GetCountsButton');
+            countsButton.addEventListener("click", getCounts, false);
+            initAgGrid();
+            loadNewOrgAccounts();
+        });
+
+    </script>
+    </body>
+</apex:page>

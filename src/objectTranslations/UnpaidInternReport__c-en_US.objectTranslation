@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>UnpaidInternReport</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>UnpaidInternReports</value>
+    </caseValues>
+    <fields>
+        <label><!-- AccountId --></label>
+        <name>AccountId__c</name>
+        <relationshipLabel><!-- UnpaidInternReports --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- ContactId --></label>
+        <name>ContactId__c</name>
+        <relationshipLabel><!-- UnpaidInternReports --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- ContactName --></label>
+        <name>ContactName__c</name>
+    </fields>
+    <fields>
+        <label><!-- CoordinatorId --></label>
+        <name>CoordinatorId__c</name>
+        <relationshipLabel><!-- UnpaidInternReports (CoordinatorId) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- CoordinatorName --></label>
+        <name>CoordinatorName__c</name>
+    </fields>
+    <fields>
+        <label><!-- D_EthnicGroup --></label>
+        <name>D_EthnicGroup__c</name>
+    </fields>
+    <fields>
+        <label><!-- D_Gender --></label>
+        <name>D_Gender__c</name>
+    </fields>
+    <fields>
+        <label><!-- D_PrimaryLanguage --></label>
+        <name>D_PrimaryLanguage__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmployerName --></label>
+        <name>EmployerName__c</name>
+    </fields>
+    <fields>
+        <label><!-- InterviewDate --></label>
+        <name>InterviewDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- InterviewId --></label>
+        <name>InterviewId__c</name>
+        <relationshipLabel><!-- UnpaidInternReports (InterviewId) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- InterviewerName --></label>
+        <name>InterviewerName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_10_LessStaff --></label>
+        <name>Q_10_LessStaff__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_11_ExpectJob --></label>
+        <name>Q_11_ExpectJob__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_12_ClearlyStatedUnpaid --></label>
+        <name>Q_12_ClearlyStatedUnpaid__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_13_Schedule --></label>
+        <name>Q_13_Schedule__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_14_Shift --></label>
+        <name>Q_14_Shift__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_15_WantInvolvement --></label>
+        <name>Q_15_WantInvolvement__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_1_License --></label>
+        <name>Q_1_License__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_2_InCaLessThan4 --></label>
+        <name>Q_2_InCaLessThan4__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_3_Student --></label>
+        <name>Q_3_Student__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_4_WorkOutside --></label>
+        <name>Q_4_WorkOutside__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_5_InternshipAt --></label>
+        <name>Q_5_InternshipAt__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_5_Other --></label>
+        <name>Q_5_Other__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_6_GetTraining --></label>
+        <name>Q_6_GetTraining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_7_GetSupervision --></label>
+        <name>Q_7_GetSupervision__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_8_UnrelatedTasks --></label>
+        <name>Q_8_UnrelatedTasks__c</name>
+    </fields>
+    <fields>
+        <label><!-- Q_9_YourWorkBilled --></label>
+        <name>Q_9_YourWorkBilled__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

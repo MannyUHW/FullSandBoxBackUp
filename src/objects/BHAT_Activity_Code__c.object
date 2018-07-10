@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>List of Activities</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Activity_Code_Category__c</fullName>
+        <description>Activity Code Category</description>
+        <externalId>false</externalId>
+        <label>Activity Code Category</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Regular</fullName>
+                    <default>false</default>
+                    <label>Regular</label>
+                </value>
+                <value>
+                    <fullName>Kaiser</fullName>
+                    <default>false</default>
+                    <label>Kaiser</label>
+                </value>
+                <value>
+                    <fullName>Time Off</fullName>
+                    <default>false</default>
+                    <label>Time Off</label>
+                </value>
+                <value>
+                    <fullName>Overtime</fullName>
+                    <default>false</default>
+                    <label>Overtime</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Chargeable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Chargeable</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Full_Activity_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Name + &apos;-&apos;+  Short_Description__c</formula>
+        <label>Full Activity Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Long_Description__c</fullName>
+        <description>Long Description</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Long Description</inlineHelpText>
+        <label>Long Description</label>
+        <length>200</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Short_Description__c</fullName>
+        <description>Short Description</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Short Description</inlineHelpText>
+        <label>Short Description</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>BHAT Activity Code</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Short_Description__c</columns>
+        <columns>Activity_Code_Category__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>BHAT Activity Code</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>BHAT Activity Codes</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Short_Description__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Long_Description__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Activity_Code_Category__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Short_Description__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Short_Description__c</lookupPhoneDialogsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

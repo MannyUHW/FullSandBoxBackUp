@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>When people open up the BHAT Site, instead of going to this week&apos;s activity, they would like to go to a a page or pop up that would display a custom message set up by the BHAT administrator.</description>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>AdminMessage__c</fullName>
+        <externalId>false</externalId>
+        <label>AdminMessage</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>BHATSiteLoadPopup</label>
+    <visibility>Public</visibility>
+</CustomObject>

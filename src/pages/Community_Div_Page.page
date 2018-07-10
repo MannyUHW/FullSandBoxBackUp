@@ -1,0 +1,20 @@
+<apex:page >
+<dl>
+<dt></dt>
+<dd>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  <font size="+2">Community Division Page</font>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  <ul>
+  <li><apex:outputLink target="_blank" value="{!$Page.Report_Community_Account_Teams}">Community Division Account Teams</apex:outputLink></li>
+  <br>&nbsp;</br>
+  <li><apex:outputLink target="_blank" value="{!$Page.Report_Min_Wage_Divisional}?mode=Community">Community Min Wage Campaign Report</apex:outputLink></li>
+  <br>&nbsp;</br>
+  </ul>
+  
+</dd>
+</dl>
+</apex:page>

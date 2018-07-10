@@ -1,0 +1,9 @@
+<apex:page standardController="SOS_Time_Off_Request__c" sidebar="false" extensions="SOS_TOR_New_buttonController">
+    <script>
+        window.onload = window.setTimeout(redirect(),5000); 
+        function redirect(){
+            alert('Your request has been submitted successfully.');
+            window.location.href='{!homeredirecturl}'; 
+        }
+    </script>
+</apex:page>

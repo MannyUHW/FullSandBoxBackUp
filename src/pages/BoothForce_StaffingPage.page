@@ -1,0 +1,201 @@
+<apex:page controller="BoothForce_StaffingPageController" tabStyle="BoothForce__tab">
+<script src="/soap/ajax/18.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/18.0/apex.js" type="text/javascript"></script>
+<script>sforce.connection.sessionId = '{!$Api.Session_ID}'; </script>
+<link type="text/css" rel="stylesheet" href="{!$Page.BoothForce_css}"/>
+<link type="text/css" rel="stylesheet" href="{!URLFOR($Resource.boothForce, 'jquery-ui-1.8.4.custom.css')}"/>
+<script type="text/javascript" src="{!URLFOR($Resource.boothForce, 'jquery.js')}" ></script>
+<script type="text/javascript" src="{!URLFOR($Resource.boothForce, 'jquery-ui.min.js')}" ></script>
+<script type="text/javascript" src="{!URLFOR($Resource.boothForce, 'jqueryTools.js')}" ></script>
+<script type="text/javascript" src="{!URLFOR($Resource.boothForce,'bf_overlay.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.boothForce,'underscoreJS.js')}"></script>
+<script type="text/javascript" src="{!$Page.BoothForce_js}" ></script>
+<script>
+  function signUp(staffId, button){
+    var val=  sforce.apex.execute(
+              "BoothForce_BoothListingController",//controller
+              "signUp",//method
+              {staffingAssignmentId: staffId}//params
+              );
+    if(val == "overlap"){
+      alert("SIGN UP FAILURE: SHIFT OVERLAP");
+      }
+    if(val == "error"){
+      alert("SIGN UP FAILURE: UPDATE ERROR OCCURRED");
+    }
+    getBoothSignup( button.closest('.boothStaffing').attr('data-boothid'), 'false' );
+  }
+  
+  
+  
+  
+  $('#assignSave').live( 'click', function(){
+  
+    var staffId = $(this).attr('data-said');
+    
+    user = $('#assignToUser input[id*="lkid"]').attr("value");
+    
+    if (user === ''){
+      user = 'none';
+    }
+    
+    var gArray = [staffId, user];
+
+	  var val=  sforce.apex.execute(
+              "BoothForce_BoothListingController",//controller
+              "assign",//method
+              {stringList: gArray}//params
+              );
+    if(val == "overlap"){
+      alert("SIGN UP FAILURE: SHIFT OVERLAP");
+      }
+    else if(val == "error"){
+      alert("SIGN UP FAILURE: UPDATE ERROR OCCURRED");
+    }
+    else if(val == "invalid"){
+      alert("SIGN UP FAILURE: USER INELIGIBLE TO STAFF");
+    } else{
+      $('#assignContainer .close').click();
+      getBoothSignup( $(this).attr('data-boothid'), 'false' );
+      
+    }
+	});
+  
+  
+  
+  
+  
+  
+  
+  function dropShift(input){
+    sforce.apex.execute(
+	    "BoothForce_TradeWithPersonController", //controller
+			"dropRegistration", //method
+			{staffingId: input} //params
+		);
+		var managerZIndex = $('#swapContainerManager div').zIndex();
+		
+		$('.close').click();
+		if(managerZIndex<1000){
+		  $('span#myBooths').click(); //want to pass just loadMyBooths();
+    }
+    else{
+      $('span#managerView').click();
+    }
+  }
+  
+      function filterData(currentBooth){
+      // alert(currentBooth)
+      $('.dataCell', currentBooth).each( function(){
+          if ( (parseFloat($(this).attr('data-startmintime'))+parseFloat($(this).attr('data-starthrtime'))*60) >= $('.rangeSlider', currentBooth).slider("values", 0) &&
+              (parseFloat($(this).attr('data-endmintime'))+parseFloat($(this).attr('data-endhrtime'))*60) <= $('.rangeSlider', currentBooth).slider("values", 1) ){
+                $(this).slideDown(100);
+              }
+          else
+            $(this).slideUp(100);
+        });
+    }
+    
+    function getTime(time) {
+      varMins = time%60 + "";
+      varHrs = parseInt(time/60%24);
+      
+      var time = null;
+
+      if (varHrs < 12) {
+          time = "AM";
+      }
+      else {
+          time = "PM";
+      }
+      if (varHrs == 0) {
+          varHrs = 12;
+      }
+      if (varHrs > 12) {
+          varHrs = varHrs - 12;
+      }
+      if (varMins.length == 1) {
+          varMins = "0" + varMins;
+      }
+      return varHrs + ":" + varMins + " " + time;
+    }
+
+</script>
+
+<div id="nav">
+  <span id="pickBooths" class="active">Pick Booths to Staff</span>
+	<span id="myBooths">My Booth Schedule</span>
+	<apex:outputPanel layout="none" rendered="{!isAManager}">
+    <span id="managerView">Manager View</span>
+  </apex:outputPanel>
+	<apex:outputPanel layout="none" rendered="true">
+    <span id="shiftManagerView">Shift Manager View</span>
+  </apex:outputPanel>
+</div>
+
+
+
+<div id="myBoothsContainer" >
+
+</div>
+
+<div id="managerViewContainer">
+</div>
+
+<div id="boothStaffingContainer">
+
+  <div id="filterMenu">
+    <input type="text" class="filterRange" style="border:0; color:#f6931f; font-weight:bold;" />
+    <div class="rangeSlider"></div>
+  </div>
+  
+  <apex:repeat var="areaWithZones" value="{!areaWithZonesList}">
+    <h2>{!areaWithZones.areaName}</h2>
+    <div class="area" data-areaid="{!areaWithZones.areaId}">
+	    <apex:repeat var="zoneAndBooths" value="{!areaWithZones.zonesAndBoothList}">
+	      <span class="zone" data-visible="true">{!zoneAndBooths.zone}</span>
+	    </apex:repeat>
+		  <apex:repeat var="zoneAndBooths" value="{!areaWithZones.zonesAndBoothList}">
+				<apex:repeat var="boothInfo" value="{!zoneAndBooths.boothInfoList}" >
+					<div class="boothStaffing" data-zoneid="{!boothInfo.zoneId}" data-zonename="{!boothInfo.zoneName}" data-boothid="{!boothInfo.boothId}" data-zone="{!boothInfo.subZone}">
+						<span class="boothName">{!boothInfo.boothName} <span class="boothSubZone">{!boothInfo.subZone}</span></span>
+						<div class="boothSignUp">
+							<span class="boothSlots">
+								{!boothInfo.remainingSlots}
+								<span style="font-size: 12px;"> remaining</span>
+							</span>
+							<span class="boothSignUpLink">
+								<a href="javascript:void(0);" onclick="getBoothSignup('{!boothInfo.boothId}', 'true')" class="btn btnPrimary">View Shifts</a>
+								<!-- <apex:outputLink value="/apex/BoothForce_BoothListingPage?id={!boothInfo.boothId}" styleClass="btn btnPrimary">Sign Up</apex:outputLink> -->
+							</span>
+						</div>
+						<span class="boothDescription">
+							<apex:outputText value="{!boothInfo.description}" escape="false"/>
+						</span>
+						<div id="signUpAjax{!boothInfo.boothId}">
+							
+						</div>
+					</div>
+				</apex:repeat>
+			</apex:repeat>
+		</div>
+	</apex:repeat> 
+</div>  
+
+<div id="shiftManagerContainer" style="display: none;">
+  <iframe src="{!$Page.BoothForce_ShiftManagerPage}" frameborder="0"></iframe>
+</div>
+
+<div id="assignContainer" class="overlay">
+  <!-- For managers to assign users -->
+  <span class="assignHelp">Select the user:</span>
+  <apex:form >
+  <span id="assignToUser">
+    <apex:inputField value="{!blankStaffingAssignment.Assigned__c}"/>
+  </span>
+  </apex:form>
+  <span class="btn btnPrimary" id="assignSave" data-said="none" data-boothid="none">Save</span>
+  <span class="close btn btnPrimary">Cancel</span>
+</div>
+    
+</apex:page>

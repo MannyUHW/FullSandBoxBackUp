@@ -1,0 +1,5 @@
+<apex:page >
+
+<analytics:reportChart reportId="00Oi0000005nxUh" cacheResults="false" showRefreshButton="false" size="tiny"></analytics:reportChart>
+
+</apex:page>

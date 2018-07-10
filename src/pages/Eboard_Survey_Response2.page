@@ -1,0 +1,417 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">google.load('visualization', '1', {packages:['table']}); </script>
+        <apex:includeScript value="{!$Resource.FileSaver}" />
+
+        <style>
+
+            #DetailDiv table th:nth-child(1) {
+                background-color: #95BFCC;
+                text-align:left;
+                width: 150px;
+            }
+            #DetailDiv table th:nth-child(2) {
+                background-color: #95BFCC;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(3) {
+                background-color: #9598e6;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(4) {
+                background-color: #9598e6;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(5) {
+                background-color: #22bfa8;
+                text-align:left;
+                width: 150px;
+            }
+            
+            #DetailDiv table th:nth-child(6) {
+                background-color: #22bfa8;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(7) {
+                background-color: linen;
+                text-align:left;
+                width: 150px;
+            }
+
+            #DetailDiv table th:nth-child(8) {
+                background-color: lightcoral;
+                text-align:left;
+                width: 150px;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+    <script type="text/javascript">
+
+        function phoneFormat(s) {
+            var s1;
+            if(s == null || s == '')
+                s1 = 'n/a';
+            else
+                s1 = s.replace('-','');
+            s1 = s1.replace(' ','');
+            s1 = s1.replace('(','');
+            s1 = s1.replace(')','');
+            s1 = s1.substr(0,3) + '-' + s1.substr(3,3) + '-' + s1.substr(6);
+            return s1;
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = '';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function loadAttendance() {
+            var attendanceQuery = "SELECT Contact__r.FirstName,Contact__r.LastName FROM Survey_Response__c WHERE Survey_Code__c = 'L15'  And Response_Value__c = 'YES' ORDER BY Contact__r.LastName,Contact__r.FirstName ASC NULLS FIRST";
+//          var attendanceQuery = "SELECT Contact__r.FirstName,Contact__r.LastName FROM Survey_Response__c WHERE Survey_Code__c = 'L15'  And Contact__r.FirstName = 'ADRIANA' ORDER BY Contact__r.LastName,Contact__r.FirstName ASC NULLS FIRST";
+
+            //    try {
+            var attendanceResults = sforce.connection.query(attendanceQuery);
+            processAttendees(attendanceResults);
+            //    }
+            //    catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processAttendees(results) {
+            var contactID;
+            var processedAll = false;
+            var first;
+            var firstLc;
+            var last;
+            var lastLc;
+            var full;
+
+            attendanceMap      = {};
+            attendanceCnt      = 0;
+            attendanceBatchCnt = 0;
+
+            while (!processedAll) {
+
+                records = results.getArray('records');
+                for (i = 0; i < records.length; i++) {
+                    attendanceCnt++;
+                    first   = toProperCase(records[i].Contact__r.FirstName);
+                    last    = toProperCase(records[i].Contact__r.LastName);
+
+//                    firstLc = first.replace(/ /g,'_').toLowerCase();
+//                    lastLc  = last.replace( / /g ,'_').toLowerCase();
+
+                    firstLc = first.replace(/ /g,'_');
+                    lastLc  = last.replace( / /g ,'_');
+                    full    = firstLc + '_' + lastLc;
+
+                    attendanceMap[full] = 'y';
+                }
+
+                if (results.done == 'true') {
+                    processedAll = true;
+                    statusDiv1.innerHTML = 'Total Attendance Cnt: ' + attendanceCnt.toString() + ' (batch count: ' + attendanceBatchCnt.toString() + ')';
+                }
+                else {
+                    attendanceBatchCnt++;
+                    statusDiv1.innerHTML = 'Total Attendance Cnt: ' + attendanceCnt.toString() + ' (batch count: ' + attendanceBatchCnt.toString() + ')';
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+            }
+//            alert('attendanceMap check');
+        }
+
+        function loadResponses() {
+
+//          var responseQuery = "SELECT Collected_By_Name__c, Coordinator__c, Organizer_1__c, Employer_Name__c, Add_Info_Numeric__c FROM Survey_Response__c WHERE Survey_Code__c = 'P15' ORDER BY Collected_By_Name__c ASC NULLS FIRST";
+            var responseQuery = "SELECT Collected_By_Name__c, Coordinator__c, Organizer_1__c, Contact_Name__c, Employer_Name__c, Add_Info_Numeric__c FROM Survey_Response__c WHERE Survey_Code__c = 'P15' ORDER BY contact__C ASC NULLS FIRST";
+            //    try {
+            var responseResults = sforce.connection.query(responseQuery);
+            processResponses(responseResults);
+            //    }
+            //    catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processResponses(results) {
+            var records;
+            var collectedByName;
+            var collectedByAttended;
+            var contactName;
+            var coordinator;
+            var coordinatorAttended;
+            var employerName;
+            var organizer;
+            var organizerAttended;
+            var sigCount;
+            var sigNum;
+            var processedAll = false;
+
+            responseMap      = {};
+            responseCnt      = 0;
+            responseBatchCnt = 0;
+debugger;
+            while (!processedAll) {
+                records = results.getArray('records');
+                for (i = 0; i < records.length; i++) {
+                    responseCnt++;
+                    coordinatorAttended = organizerAttended = collectedByAttended = 0;
+
+                    coordinator     = toProperCase(records[i].Coordinator__c);
+                    organizer       = toProperCase(records[i].Organizer_1__c);
+                    collectedByName = toProperCase(records[i].Collected_By_Name__c);
+                    contactName     = toProperCase(records[i].Contact_Name__c);
+                    employerName    = toProperCase(records[i].Employer_Name__c);
+                    sigCount        = records[i].Add_Info_Numeric__c;
+                    sigNum          = parseInt(sigCount);
+
+                    coordinatorNs     = coordinator.replace(' ','_');
+                    organizerNs       = organizer.replace(' ','_');
+                    collectedByNameNs = collectedByName.replace(' ','_');
+
+                    if (!responseMap[coordinatorNs])
+                        responseMap[coordinatorNs] = {};
+
+                    if (!responseMap[coordinatorNs][organizerNs])
+                        responseMap[coordinatorNs][organizerNs] = {};
+
+                    if (!responseMap[coordinatorNs][organizerNs][collectedByNameNs])
+                        responseMap[coordinatorNs][organizerNs][collectedByNameNs] = {Count: 1};
+                    else
+                        responseMap[coordinatorNs][organizerNs][collectedByNameNs].Count++;
+
+                    if(attendanceMap[coordinatorNs])
+                        coordinatorAttended = 1;
+
+                    if(attendanceMap[organizerNs])
+                        organizerAttended = 1;
+
+                    if(attendanceMap[collectedByNameNs])
+                        collectedByAttended = 1;
+
+                    responseTableData.addRow([coordinator, coordinatorAttended, organizer, organizerAttended, collectedByName, collectedByAttended, contactName, sigNum, employerName]);
+                }
+                if (results.done == 'true') {
+                    processedAll = true;
+                   statusDiv2.innerHTML = 'Total ResponseCnt: ' + responseCnt.toString() + ' (batch count: ' + responseBatchCnt.toString() + ')';
+                }
+                else {
+                    responseBatchCount++;
+                    statusDiv2.innerHTML = 'Total ResponseCnt: ' + responseCnt.toString() + ' (batch count: ' + responseBatchCnt.toString() + ')';
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+
+            }
+            responseTableData.sort([{column: 0}, {column: 1},{column: 2}]);
+            responseTable.draw(responseTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+
+/*            responseArray = Object.keys(responseMap);
+
+            var ptr;
+            var coordinatorKey;
+            var organizerKey;
+            var collectorKey;
+            var coordinatorLvlResp;
+            var organizerLvlResp;
+            var collectorCnt;
+
+            for (ptr = 0; ptr < responseArray.length; ptr++) {
+                coordinatorKey     = responseArray[ptr];
+                coordinatorLvlResp = responseMap[coordinatorKey];
+                orgCnt = 0;
+                for (organizerKey in coordinatorLvlResp) {
+                    organizerLvlResp =  responseMap[coordinatorKey][organizerKey];
+                    for (collectorKey in organizerLvlResp) {
+                        collectorCnt =  responseMap[coordinatorKey][organizerKey][collectorKey].Count;
+                        orgCnt += collectorCnt;
+                        summaryTableData.addRow([coordinatorKey, organizerKey, collectorKey, collectorCnt]);
+                    }
+                    organizerTableData.addRow([organizerKey, orgCnt]);
+                }
+            }
+            organizerTableData.sort([{column: 0}]);
+            organizerTable.draw(organizerTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});
+
+            summaryTableData.sort([{column: 0}, {column: 1},{column: 2}]);
+            summaryTable.draw(summaryTableData, {height: '600px', showRowNumber: false, alternatingRowStyle:true});*/
+        }
+
+        function setStatus(pSuffix,pLabel,pText) {
+            var statTField           = 'statusText'  + pSuffix;
+            var statLField           = 'statusLabel' + pSuffix;
+            var statTFieldId         = document.getElementById(statTField);
+            var statLFieldId         = document.getElementById(statLField);
+            statTFieldId.value       = pText;
+            statLFieldId.textContent = pLabel;
+        }
+
+        function initTables() {
+
+/*            organizerTable = new google.visualization.Table(orgDiv);
+            organizerTableData = new google.visualization.DataTable();
+            organizerTableData.addColumn('string', 'Organizer');
+            organizerTableData.addColumn('number', 'Leader Count');
+
+            summaryTable = new google.visualization.Table(summaryDiv);
+            summaryTableData = new google.visualization.DataTable();
+            summaryTableData.addColumn('string', 'Coordinator');
+            summaryTableData.addColumn('string', 'Organizer');
+            summaryTableData.addColumn('string', 'Collected By');
+            summaryTableData.addColumn('number', 'Leader Count');*/
+
+            responseTable = new google.visualization.Table(detailDiv);
+            responseTableData = new google.visualization.DataTable();
+            responseTableData.addColumn('string', 'Coordinator');
+            responseTableData.addColumn('number', 'Coord at L15');
+            responseTableData.addColumn('string', 'Organizer');
+            responseTableData.addColumn('number', 'Org at L15');
+            responseTableData.addColumn('string', 'Collected By');
+            responseTableData.addColumn('number', 'Collected By at L15');
+            responseTableData.addColumn('string', 'Contact');
+            responseTableData.addColumn('number', 'Signature Count');
+            responseTableData.addColumn('string', 'Employer');
+
+        }
+
+        function exportData() {
+            var successful;
+            var colCount;
+            var rowCount;
+            var colPtr;
+            var rowPtr;
+
+            var cell;
+            var fileSaveAs;
+            var result;
+
+            now           = new Date();
+            localDateTime = (now.toLocaleString());
+            nowDate       = (now.toDateString());
+
+            fileSaveAs    = 'EboardResponsesTo_P15.txt';
+
+            output   = 'Counts by Eboard for Responses to P15 Survey\n';
+            output  += 'with Leadership Assembly 2015 Attendance Flags\n';
+            output  += 'data current as of ' + localDateTime + '\n\n';
+/*
+            output  += 'Summary by Organizer:\n';
+            exportTable(organizerTableData);
+
+            output  += 'Summary by Coordinator/Organizer/Eboard Member or Leader:\n';
+            exportTable(summaryTableData);
+*/
+
+            output  += 'Detail by Coordinator/Organizer/Eboard Member or Leader:\n';
+            exportTable(responseTableData);            var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+
+            var saveTest = saveAs(blob, fileSaveAs);
+        }
+
+        function saveBlob(blob,file) {
+            saveAs(blob, file);
+        }
+
+        function exportTable(tableName) {
+            colCount = tableName.getNumberOfColumns();
+            rowCount = tableName.getNumberOfRows();
+            for (colPtr = 0; colPtr < colCount; colPtr++) {
+                output += tableName.getColumnLabel(colPtr) + '\t';
+            }
+            output += '\n';
+
+            for (rowPtr = 0; rowPtr < rowCount; rowPtr++) {
+                for (colPtr = 0; colPtr < colCount; colPtr++) {
+                    cell = tableName.getValue(rowPtr, colPtr);
+                    if (cell)
+                        output += cell + '\t';
+                    else
+                        output += '\t';
+                }
+                output += '\n';
+            }
+            output += '\n\n';
+
+        }
+        // ***************** Globals *****************
+
+        var organizerTable     = {};
+        var organizerTableData = [];
+        var responseTableData  = [];
+        var responseTable      = {};
+        var summaryTableData   = [];
+        var summaryTable       = {};
+        var responseMap        = {};
+        var responseArray      = [];
+        var attendanceMap      = {};
+        var orgDiv;
+        var summaryDiv;
+        var detailDiv;
+        var exportButton;
+        var output;
+        var attendanceCnt;
+        var attendanceBatchCnt
+        var responseCnt;
+        var responseBatchCnt;
+        var statusDiv1;
+        var statusDiv2;
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            orgDiv     = document.getElementById('OrgDiv');
+            summaryDiv = document.getElementById('SummaryDiv');
+            detailDiv  = document.getElementById('DetailDiv');
+            statusDiv1 = document.getElementById('StatusDiv1');
+            statusDiv2 = document.getElementById('StatusDiv2');
+
+            initTables();
+            loadAttendance();
+            loadResponses();
+
+            exportButton = document.getElementById("ExportButton");
+            exportButton.addEventListener("click", exportData, false);
+
+        });
+
+    </script>
+    <div id="title">
+        <h1>Counts by Eboard for Responses to P15 Survey</h1>
+        <h2>with Leadership Assembly 2015 Attendance Flags</h2>
+    </div>
+
+    <h4 style="clear:both;">Version 0.1</h4>
+    <div id="StatusDiv1"></div>
+    <div id="StatusDiv2"></div>
+    <hr/>
+
+    <div>
+        <input id="ExportButton" style="padding: 5px;margin-top:10px;" type="Button" value="Export"></input>
+    </div>
+    <h2> Detail by Coordinator/Organizer/Eboard Member or Leader</h2>
+    <div  id = "DetailDiv"></div>
+    </body>
+</apex:page>

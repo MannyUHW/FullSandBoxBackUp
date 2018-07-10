@@ -1,0 +1,3286 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false" controller="KHRL_RemoteController18">
+    <html>
+    <head>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.snap}"/>
+        <apex:includeScript value="{!$Resource.jquery_2_1_3_min}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jQueryUiMinZip2,'jquery-ui.min.js')}"/>
+        <apex:includeScript value="{!$Resource.agGridEnterpriseMin429}"/>
+
+        <apex:includeScript value="{!URLFOR($Resource.OpenTipZip,'opentip-jquery.min.js')}"/>
+        <apex:includeScript value="{!$Resource.FileSaver}"/>
+
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.theme.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.OpenTipZip, 'opentip.css')}"/>
+
+        <apex:includeScript value="{!$Resource.jsPdfFull}"/>
+
+        <style>
+            #CsAdd {color:blue}
+            #CsDel {color:red}
+            #CsUpdate {color:Green}
+
+            #CsAddFs {
+                width: 260px;
+                display: inline-block;
+            }
+            #CsDelFs {
+                width: 44px;
+                display: inline-block;
+                margin-left: -9px;
+            }
+            #CsUpdateFs {
+                width: 44px;
+                display: inline-block;
+                margin-left: -9px;
+            }
+
+            #CsEditDiv {
+                height: 900px;
+            }
+
+            .NoShow {
+                /*     display: none; */
+                background-color: lightgoldenrodyellow;
+            }
+
+            #NoSeats {
+                margin-top: 10px;
+                line-height: 20px;
+            }
+
+            /* removes outline dots from button when it gets focus */
+            :focus {outline:none;}
+            ::-moz-focus-inner {border:0;}
+
+            #MainGrid {
+                height: 600px;
+                width: 100%;
+                clear: both;
+                margin-bottom: 10px;
+            }
+
+            #RouteListDiv {
+                width:1338px;
+            }
+
+            h3 {
+                clear: both;
+                padding-top: 13px;
+                padding-left: 5px;
+                width: 9%
+            }
+
+            #RouteListTitle {
+                clear: both;
+                padding-top:5px;
+                padding-left:5px;
+                padding-bottom:5px;
+                font-weight: bold;
+                font-size: 2.3em;
+                color: white;
+            }
+
+            #CoordinatorsDiv {
+                height: 375px;
+            }
+
+            #OrganizersDiv {
+                height: 375px;
+            }
+
+            #CSsDiv {
+                height: 375px;
+            }
+
+            #CoordinatorsTitle {
+                clear: both;
+                padding-top: 5px;
+                padding-left:5px;
+                width: 9%;
+                font-weight: bold;
+                font-size: 1.2em;
+                float: left;
+            }
+
+            #OrganizersTitle {
+                clear: both;
+                font-weight: bold;
+                font-size: 1.2em;
+                padding-left: 5px;
+                width: 120px;
+            }
+
+            #CsTitle {
+                clear: both;
+                font-weight: bold;
+                font-size: 1.2em;
+                padding-top: 13px;
+                padding-left: 5px;
+                width: 55%;
+            }
+
+            #CsEditTitle  {
+                clear: both;
+                font-weight: bold;
+                font-size: 1.2em;
+                padding-top: 13px;
+                padding-left: 5px;
+                width: 60%;
+            }
+
+            .CopyButton {
+                color: blue;
+                margin-left: 1px;
+                font-size: 0.8em !important;
+                font-weight: bold;
+            }
+
+            #CoordGrid {
+                height: 350px;
+                width: 85%;
+                clear: both;
+                margin-top: 4px;
+            }
+
+            #OrgGrid {
+                height: 350px;
+                width: 85%;
+                clear: both;
+                margin-top: 4px;
+            }
+
+            #CsGrid {
+                height: 350px;
+                width: 85%;
+                clear: both;
+                margin-top: 4px;
+            }
+
+            #CsEditGrid  {
+                height: 850px;
+                width: 90%;
+                clear: both;
+                margin-top: 4px;
+            }
+
+            #StaffGrid {
+                width: 98%;
+                clear: both;
+                margin-top: 4px;
+            }
+
+            #AllInfoGrid {
+                height: 600px;
+                width: 100%;
+                clear: both;
+            }
+
+            #EboardGrid {
+                height: 750px;
+                clear: both;
+                margin-top: 4px;
+            }
+
+           .NoteHeader {
+                background-color: #799BA6 !important;
+                color: #f3f123;
+                display: inline-block;
+                margin-left: 8px;
+                margin-right: 5px;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+
+            .GroupHeader {
+                background-color: #799BA6 !important;
+                display: inline-block;
+                width: 100%;
+            }
+
+            .GroupHeader:hover {
+                background-color: aliceblue !important;
+            }
+
+            .ui-tabs {
+                padding: 0px !important;
+            }
+
+            .ag-cell:hover {
+                border: 1px solid blue !important;
+            }
+
+            #AllInfoGrid .ag-row-level-0 {
+                background-color: #cacae4 !important;
+                font-weight: bold;
+            }
+
+            .ag-fresh .ag-body .ag-row-selected {
+                background-color: rgba(198, 163, 255, 0.7) !important;
+            }
+
+            #fragment-1, #fragment-2, #fragment-3, #fragment-4, #fragment-5 {
+/*                background-color: rgba(169, 52, 220, 0.6) !important; */
+                background-color:#5b2678;
+            }
+
+            .A-background {
+                /* Remember, must use low alpha value or row selection won't show */
+                background-color: rgba(181,105,233,0.5);
+            }
+
+            .B-background {
+                background-color: rgba(147,85,189,0.6);
+            }
+
+            #StaffFilterInput, #AllInfoFilterInput {
+                padding-left: 2px;
+                width: 470px;
+                margin-left: 21px;
+                margin-bottom: 12px;
+                float: left;
+                font-size: 1.2em;
+                height: 22px;
+            }
+
+            #DirectorGrid {
+                height: 132px;
+                width: 860px;
+                padding-bottom: 5px;;
+                float:left;
+            }
+
+            #CoordinatorDiv  {
+                padding-top: 19px;
+            }
+
+            #StaffDiv {
+                padding-top: 0px;
+            }
+
+            #AllInfoDiv {
+                padding-top: 19px;
+            }
+
+            /* Used by openTip */
+            .style-standard h1 {
+                color:blue;
+                font-size: 1.2em;
+            }
+
+            .style-standard td {
+                border: 1px solid blue;
+            }
+
+            .right-align {
+                text-align: right;
+            }
+
+            #tabContainer {
+                border-width: 2px;
+                width: 1368px;
+            }
+
+            #InputDiv, #EbInputDiv {
+                padding-top: 5px;
+                padding-bottom: 5px;
+                clear: both;
+            }
+
+            #SaveAsCsvButton1, #SaveAsCsvButton2, #SaveAsCsvButton3, #SaveAsCsvButton4, #SaveAsPdfButton {
+                color:blue;
+                margin-left: 4px;
+                padding-top: 3px;
+                padding-bottom: 3px;
+                font-size: 1.2em;
+            }
+
+            #updateButton {
+                width: 526px;
+                margin-left: 13px;
+                padding: 1px;
+                font-size: 1.1em;
+            }
+
+            #ebUpdateButton {
+                width: 526px;
+                margin-left: 13px;
+                padding: 1px;
+                font-size: 1.1em;
+            }
+
+            #dirSelectList {
+                width: 130px;
+                margin-left: 40px;
+                background-color: aliceblue;
+                font-size: 1.1em;
+            }
+
+            #coordSelectList {
+                width: 130px;
+                margin-left: 5px;
+                background-color: aliceblue;
+                font-size: 1.1em;
+            }
+
+            #ebCoordSelectList {
+                width: 187px;
+                margin-left: 163px;
+                background-color: aliceblue;
+                font-size: 1.1em;
+            }
+
+            #org1SelectList, #org2SelectList {
+                width: 130px;
+                background-color: aliceblue;
+                margin-left: 5px;
+                font-size: 1.1em;
+            }
+
+            #ebOrg1SelectList, #ebOrg2SelectList {
+                width: 190px;
+                background-color: aliceblue;
+                margin-left: 8px;
+                font-size: 1.1em;
+            }
+
+            #csSelectList {
+                width: 135px;
+                background-color: aliceblue;
+                margin-left: 5px;
+                font-size: 1.1em;
+            }
+
+            #note {
+                width:450px;
+                height:125px;
+                margin-left: 17px;
+                font-size: 1.1em;
+            }
+
+        </style>
+
+    </head>
+    <body>
+    <div id="tabContainer">
+        <ul>
+            <li><a href="#fragment-1"><span>Route List </span></a></li>
+            <li><a href="#fragment-2"><span>Eboard </span></a></li>
+            <li><a href="#fragment-3"><span>Contact Info</span></a></li>
+            <li><a href="#fragment-4"><span>All Info</span></a></li>
+            <li><a href="#fragment-5"><span>All Staff</span></a></li>
+            <li id="CsEditTab" class="NoShow"><a href="#fragment-6"><span>CS Edit</span></a></li>
+        </ul>
+
+        <div class="tabpage" id="fragment-1">
+            <div id="RouteListDiv">
+                <div id="RouteListTitle"></div>
+                <div id="DirectorGrid" class="ag-fresh"></div>
+                <textarea id="note" placeholder="Note..."></textarea>
+                <div id="InputDiv">
+                    <input id="updateButton" type="Button" value="Select Employer" disabled="true"></input>
+                    <select id="dirSelectList"></select>
+                    <select id="coordSelectList"></select>
+                    <select id="org1SelectList"></select>
+                    <select id="org2SelectList"></select>
+                    <select id="csSelectList"></select>
+                </div>
+                <div id="MainGrid" class="ag-fresh"></div>
+                <input id="SaveAsCsvButton1" type="Button" value="Save As .csv"></input>
+                <input id="SaveAsPdfButton"  type="Button" value="Save As .pdf"></input>
+
+                <div id="NoSeats"></div>
+                <div id="log-div">
+                    <div id="LogText"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="tabpage" id="fragment-2">
+            <div id="EboardDiv">
+                <div id="EbInputDiv">
+                    <input id="ebUpdateButton" type="Button" value="Select Eboard Role" disabled="true"></input>
+                    <select id="ebCoordSelectList"></select>
+                    <select id="ebOrg1SelectList"></select>
+                    <select id="ebOrg2SelectList"></select>
+                </div>
+                <div id="EboardGrid" class="ag-fresh"></div>
+                <input id="SaveAsCsvButton2" type="Button" value="Save As .csv"></input>
+            </div>
+        </div>
+
+        <div class="tabpage" id="fragment-3">
+
+            <div id="CoordinatorsDiv">
+                <div id="CoordinatorsTitle">Coordinators</div>
+                <div id="CoordGrid" class="ag-fresh"></div>
+            </div>
+
+            <div id="OrganizersDiv">
+                <div id="OrganizersTitle">Organizers</div>
+                <div id="OrgGrid" class="ag-fresh"></div>
+            </div>
+
+            <div id="CSsDiv">
+                <div id="CsTitle">Contract Specialists</div>
+                <div id="CsGrid" class="ag-fresh"></div>
+            </div>
+
+        </div>
+
+        <div class="tabpage" id="fragment-4">
+            <div id="AllInfoDiv">
+                <input id="AllInfoFilterInput" placeholder="Search..." type="text"/>
+                <input id="SaveAsCsvButton3" type="Button" value="Save As .csv"></input>
+                <div id="AllInfoGrid" class="ag-fresh"></div>
+            </div>
+        </div>
+
+        <div class="tabpage" id="fragment-5">
+            <div id="StaffDiv">
+                <input id="StaffFilterInput" placeholder="Search..." type="text"/>
+                <input id="SaveAsCsvButton4" type="Button" value="Save As .csv"></input>
+                <div id="StaffGrid" style="height: 600px;" class="ag-fresh"></div>
+            </div>
+        </div>
+
+        <div class="tabpage" id="fragment-6">
+            <div id="CsEditDiv">
+                <div id="CsEditTitle">Contract Specialists Maintenance
+                    <fieldset id="CsAddFs">
+                        <input id="IdInput" placeholder="Contact Id" type="text"/>
+                        <input id="CsAdd"  type="Button" value="Add"></input>
+                    </fieldset>
+                    <fieldset id="CsDelFs">
+                        <input id="CsDel"  type="Button" value="Del"></input>
+                    </fieldset>
+                    <fieldset id="CsUpdateFs">
+                        <input id="CsUpdate" type="Button" value="Update"></input>
+                    </fieldset>
+                </div>
+                <div id="CsEditGrid" class="ag-fresh"></div>
+            </div>
+        </div>
+    </div>
+    <div id="newtabs">
+    </div>
+
+    </body>
+    <script type="text/javascript">
+
+        // ***************** Issues *******************
+        // 1. Adding a CS messes up CS dropdown, dups.
+        //
+
+        // ***************** Functions *******************
+        function displayGrids() {
+
+            mainGridDiv = document.querySelector('#MainGrid');
+            new agGrid.Grid(mainGridDiv,  mainGridOptions);
+            mainGridOptions.api.setSortModel(initialMainSort);
+
+            coordGridDiv = document.querySelector('#CoordGrid');
+            new agGrid.Grid(coordGridDiv,  coordinatorGridOptions);
+            coordinatorGridOptions.api.setSortModel(nameSort);
+
+            orgGridDiv = document.querySelector('#OrgGrid');
+            new agGrid.Grid(orgGridDiv,  organizerGridOptions);
+            organizerGridOptions.api.setSortModel(nameSort);
+
+            dirGridDiv = document.querySelector('#DirectorGrid');
+            new agGrid.Grid(dirGridDiv,  directorGridOptions);
+
+            staffGridDiv = document.querySelector('#StaffGrid');
+            new agGrid.Grid(staffGridDiv,  staffGridOptions);
+            staffGridOptions.api.setSortModel(initialStaffSort);
+
+            csGridDiv = document.querySelector('#CsGrid');
+            new agGrid.Grid(csGridDiv,  csGridOptions);
+            csGridOptions.api.setSortModel(nameSort);
+
+            csEditGridDiv = document.querySelector('#CsEditGrid');
+            new agGrid.Grid(csEditGridDiv,  csEditGridOptions);
+            csEditGridOptions.api.setSortModel(nameSort);
+
+            allInfoGridDiv = document.querySelector('#AllInfoGrid');
+            new agGrid.Grid(allInfoGridDiv,  allInfoGridOptions);
+
+            eboardGridDiv = document.querySelector('#EboardGrid');
+            new agGrid.Grid(eboardGridDiv,  eboardGridOptions);
+            eboardGridOptions.api.setSortModel(seatNameSort);
+        }
+
+        function ebUpdateData() {
+            var tmpKHRLobject;
+
+            updateArray.length = 0; // http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript/1234337#1234337
+
+            ebCoordChoice = ebCoordDropdown.selectedIndex;
+            ebOrg1Choice  = ebOrg1Dropdown.selectedIndex;
+            ebOrg2Choice  = ebOrg2Dropdown.selectedIndex;
+
+            if(pendingUpdates) {
+                alert('Please wait for current update to finish');
+                return;
+            }
+
+            if (ebCoordChoice == 0 && ebOrg1Choice == 0 && ebOrg2Choice == 0) {
+                alert('You need to choose at least 1 person');
+                return
+            }
+
+            tmpKHRLobject = new sforce.SObject("KHRLobject__c");
+            delete tmpKHRLobject.type; // required as type property is added by ajax toolkit, which causes remote action call to fail if property is left on object when passed to controller.
+            tmpKHRLobject.DivisionCode__c     = sysDivisionCode;
+            tmpKHRLobject.CoordinatorId__c    = '';
+            tmpKHRLobject.Org1Id__c           = '';
+            tmpKHRLobject.Org2Id__c           = '';
+            tmpKHRLobject.CoordFlag__c        = '';
+            tmpKHRLobject.Org1Flag__c         = '';
+            tmpKHRLobject.Org2Flag__c         = '';
+            tmpKHRLobject.UpdateEboard__c     = 0;
+
+            switch (ebCoordChoice) {
+                case 0:
+                    break;
+                case 1:
+                    tmpKHRLobject.CoordFlag__c      = 'R';
+                    tmpKHRLobject.CoordinatorId__c  = '';
+                    break
+                default:
+                    // catches > 1
+                    ebCoordPtr          = ebCoordChoice -2; // -2 because Title + Vacant in first two dropdown items
+                    ebCoordinatorRecord = coordinatorDataArray[ebCoordPtr];
+                    tmpKHRLobject.CoordinatorId__c  = ebCoordinatorRecord.Id;
+                    tmpKHRLobject.CoordFlag__c      = 'C';
+            }
+
+            switch (ebOrg1Choice) {
+                case 0:
+                    break;
+                case 1:
+                    tmpKHRLobject.Org1Flag__c   = 'R';
+                    tmpKHRLobject.Org1Id__c     = '';
+                    break
+                default:
+                    // catches > 1
+                    ebOrg1Ptr    = ebOrg1Choice  -2; // -2 because Title + Vacant in first two dropdown items
+                    ebOrg1Record = organizerDataArray[ebOrg1Ptr];
+                    tmpKHRLobject.Org1Id__c     = ebOrg1Record.Id;    
+                    tmpKHRLobject.Org1Flag__c   = 'C';
+            }
+
+            switch (ebOrg2Choice) {
+                case 0:
+                    break;
+                case 1:
+                    tmpKHRLobject.Org2Flag__c  = 'R';
+                    tmpKHRLobject.Org2Id__c    = '';
+                    break
+                default:
+                    // catches > 1
+                    ebOrg2Ptr    = ebOrg2Choice  -2; // -2 because Title + Vacant in first two dropdown items
+                    ebOrg2Record = organizerDataArray[ebOrg2Ptr];
+                    tmpKHRLobject.Org2Id__c    = ebOrg2Record.Id;
+                    tmpKHRLobject.Org2Flag__c  = 'C';
+            }
+
+            tmpKHRLobject.UpdateEboard__c = 1;
+            tmpKHRLobject.EboardId__c     = selectedEbRec.Id;
+            updateArray.push(tmpKHRLobject);
+
+            now            = new Date();
+            localDateTime  = (now.toLocaleTimeString());
+            pendingUpdates = true;
+            KHRL_RemoteController18.EbUpdate(updateArray, ebUpdateResults);            
+        }
+
+        function ebUpdateResults(result, event) {
+            var noError = true;
+            var resultMap;
+            var errors = '';
+            var id;
+            var i;
+
+            pendingUpdates = false;
+            if (result.length > 0) {
+                for (i = 0; i < result.length; i++) {
+                    errors += result[i];
+                }
+                alert(errors);
+            }
+            else {
+                for(i = 0; i < eboardDataArray.length;i++) {
+                    if(eboardDataArray[i].Id == selectedEbRec.Id) {
+                        if (ebCoordChoice > 1) {
+                            eboardDataArray[i].CoordName = ebCoordinatorRecord.Name;
+                            eboardDataArray[i].CoordId = ebCoordinatorRecord.Id;
+                        }
+                        else {
+                            if (ebCoordChoice == 1) {
+                                eboardDataArray[i].CoordName = '';
+                                eboardDataArray[i].CoordId = '';
+                            }
+                        }
+
+                        if (ebOrg1Choice > 1) {
+                            eboardDataArray[i].Org1Name = ebOrg1Record.Name;
+                            eboardDataArray[i].Org1Id   = ebOrg1Record.Id;
+                        }
+                        else {
+                            if (ebOrg1Choice == 1) {
+                                eboardDataArray[i].Org1Name = '';
+                                eboardDataArray[i].Org1Id = '';
+                            }
+                        }
+
+                        if (ebOrg2Choice > 1) {
+                            eboardDataArray[i].Org2Name = ebOrg2Record.Name;
+                            eboardDataArray[i].Org2Id   = ebOrg2Record.Id;
+                        }
+                        else {
+                            if (ebOrg2Choice == 1) {
+                                eboardDataArray[i].Org2Name = '';
+                                eboardDataArray[i].Org2Id = '';
+                            }
+                        }
+                    }
+                }
+
+                for (i = 0; i < updateArray.length; i++) {
+                    console.log('Update OK for: ', updateArray[i]);
+                }
+
+                eboardGridOptions.api.refreshView();
+                ebReset();
+            }
+        }
+
+        function csUpdate() {
+            var i;
+            var chgArray;
+            var addArray;
+            var delArray;
+            var tmpKHRLobject;
+            var now;
+            var localDateTime;
+
+            if(pendingUpdates) {
+                alert('Please wait for current update to finish');
+                return;
+            }
+
+            chgArray = [];
+            addArray = [];
+            delArray = [];
+            updateArray.length = 0; // http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript/1234337#1234337
+
+            len = specialistDataArray.length;
+            for(i=0; i<len; i++ ) {
+                if(specialistDataArray[i].StatusCode == 'CD')
+                    delArray.push(specialistDataArray[i]);
+
+                if(specialistDataArray[i].StatusCode == 'CB' || specialistDataArray[i].StatusCode == 'CE' || specialistDataArray[i].StatusCode == 'CP')
+                    chgArray.push(specialistDataArray[i]);
+
+                if(specialistDataArray[i].Flag == 'N')
+                    addArray.push(specialistDataArray[i])
+            }
+
+            now           = new Date();
+            localDateTime = (now.toLocaleTimeString());
+
+            for (i=0;i<delArray.length;i++) {
+                tmpKHRLobject = new sforce.SObject("KHRLobject__c");
+                delete tmpKHRLobject.type; // required as type property is added by ajax toolkit, which causes remote action call to fail if property is left on object when passed to controller.
+                tmpKHRLobject.CsId__c    = delArray[i].ContId;
+                tmpKHRLobject.CsRecId__c = delArray[i].RecId;
+                tmpKHRLobject.CsOp__c    = 'Del';
+                updateArray.push(tmpKHRLobject);
+            }
+
+            for (i=0;i<chgArray.length;i++) {
+                tmpKHRLobject = new sforce.SObject("KHRLobject__c");
+                delete tmpKHRLobject.type; // required as type property is added by ajax toolkit, which causes remote action call to fail if property is left on object when passed to controller.
+                tmpKHRLobject.CsRecId__c = chgArray[i].RecId;
+                tmpKHRLobject.CsEmail__c = chgArray[i].Email;
+                tmpKHRLobject.CsPhone__c = chgArray[i].CellPhone;
+                tmpKHRLobject.CsOp__c    = 'Chg';
+                updateArray.push(tmpKHRLobject);
+            }
+
+            for (i=0;i<addArray.length;i++) {
+                tmpKHRLobject = new sforce.SObject("KHRLobject__c");
+                delete tmpKHRLobject.type; // required as type property is added by ajax toolkit, which causes remote action call to fail if property is left on object when passed to controller.
+                tmpKHRLobject.DivisionCode__c = sysDivisionCode;
+                tmpKHRLobject.CsId__c     = addArray[i].ContId;
+                tmpKHRLobject.CsEmail__c  = addArray[i].Email;
+                tmpKHRLobject.CsPhone__c  = addArray[i].CellPhone;
+                tmpKHRLobject.CsOp__c     = 'Add';
+                updateArray.push(tmpKHRLobject);
+            }
+            pendingUpdates = true;
+            KHRL_RemoteController18.CsUpdate(updateArray, csUpdateResults);
+        }
+
+        function csUpdateResults(result, event) {
+            var noError = true;
+            var resultMap;
+            var errors = '';
+            pendingUpdates = false;
+
+            if (result.length > 0) {
+                for (i = 0; i < result.length; i++) {
+                    errors += result[i];
+                }
+                alert(errors);
+            }
+            else {
+                for (i = 0; i < updateArray.length; i++) {
+                    console.log('Update OK for: ', updateArray[i]);
+                }
+
+                loadSpecialists();
+                csEditGridOptions.api.destroy();
+                csEditGridOptions = {
+                    columnDefs: csEditColumnDefs,
+                    rowData: specialistDataArray,
+                    enableSorting: true,
+                    suppressCellSelection: false,
+                    rowSelection: 'single',
+                    onRowSelected: csRowSelectedHandler
+                };
+                new agGrid.Grid(csEditGridDiv,  csEditGridOptions);
+                csEditGridOptions.api.setSortModel(nameSort);
+            }
+        }
+
+        function updateData() {
+
+            let accountId;
+            var updateRows;
+            var now;
+            var localDateTime;
+            var tmpKHRLobject;
+
+            if(pendingUpdates) {
+                alert('Please wait for current update to finish');
+                return;
+            }
+
+            updateRows  = []; // Related rows that have same seat and subseat as selectedRow.
+            updateArray.length = 0; // http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript/1234337#1234337
+
+            dirChoice   = directorDropdown.selectedIndex;
+            coordChoice = coordDropdown.selectedIndex;
+            org1Choice  = org1Dropdown.selectedIndex;
+            org2Choice  = org2Dropdown.selectedIndex;
+            csChoice    = csDropdown.selectedIndex;
+
+            noteText = '';
+            if(noteInput.value.length > 0)
+                noteText = noteInput.value;
+
+            if (dirChoice == 0 && coordChoice == 0 && org1Choice == 0 && org2Choice == 0 && csChoice == 0 && noteText == '') {
+                alert('You need to choose at least 1 person or enter a Note');
+                return
+            }
+
+            if (dirChoice > 0) {
+                dirPtr         = dirChoice -1; // -1 because Title in first dropdown item
+                directorRecord = directorDataArray[dirPtr];
+console.log('Dir choice:',directorRecord);
+            }
+
+            if (coordChoice > 1) {
+                coordPtr          = coordChoice -2; // -2 because Title + Vacant in first two dropdown items
+                coordinatorRecord = coordinatorDataArray[coordPtr];
+            }
+
+            if (org1Choice > 1) {
+                org1Ptr    = org1Choice  -2; // -2 because Title + Vacant in first two dropdown items
+                org1Record = organizerDataArray[org1Ptr];
+            }
+
+            if (org2Choice > 1) {
+                org2Ptr    = org2Choice  -2; // -2 because Title + Vacant in first two dropdown items
+                org2Record = organizerDataArray[org2Ptr];
+            }
+
+            if (csChoice > 1) {
+                csPtr    = csChoice -2; // -2 because Title + Vacant in first two dropdown items
+                csRecord = specialistDataArray[csPtr];
+            }
+
+            updateButton.disabled = true;
+            updateButton.value = 'Updating...';
+
+            var msg = '';
+            var indexOfRow;
+            var empId;
+            var empName;
+            for (i = 0; i < mainDataArray.length; i++) {
+                if (mainDataArray[i].Seat == selectedSeat && mainDataArray[i].SubSeat == selectedSubSeat) {
+                    empId      = mainDataArray[i].EmpAccountId;
+                    empName    = mainDataArray[i].Employer;
+                    updateRows.push({MainArrayIndex: i, EmpId:empId, EmpName:empName});
+                }
+            }
+
+            for (i=0;i<updateRows.length;i++) {
+                ptr   = updateRows[i].MainArrayIndex;
+                empId = mainDataArray[ptr].EmpAccountId;
+                tmpKHRLobject = new sforce.SObject("KHRLobject__c");
+                delete tmpKHRLobject.type; // required as type property is added by ajax toolkit, which causes remote action call to fail if property is left on object when passed to controller.
+                tmpKHRLobject.RowPtr__c           = ptr;
+                tmpKHRLobject.EmpAccountId__c     = empId;
+                //         tmpKHRLobject.EmpId__c            = mainDataArray[ptr].EmpId;
+                tmpKHRLobject.DirectorId__c       = directorDataArray[0].Id; // First item in this array is Division Director (based on dirSortByName)
+                tmpKHRLobject.DivisionCode__c     = sysDivisionCode;
+                tmpKHRLobject.CoordinatorId__c    = accountMap[empId].CordinatorId;
+                tmpKHRLobject.Org1Id__c           = accountMap[empId].Organizer1Id;
+                tmpKHRLobject.Org2Id__c           = accountMap[empId].Organizer2Id;
+                tmpKHRLobject.CsId__c             = accountMap[empId].SpecialistId;
+                tmpKHRLobject.DirectorFlag__c     = '';
+                tmpKHRLobject.CoordFlag__c        = '';
+                tmpKHRLobject.Org1Flag__c         = '';
+                tmpKHRLobject.Org2Flag__c         = '';
+                tmpKHRLobject.Note__c             = '';
+                tmpKHRLobject.ResetCS__c          = 0;
+                tmpKHRLobject.Constituency__c     = ''; // Only set this if more than cs or note passed.
+                tmpKHRLobject.UpdateEboard__c     = 0;
+
+                if(mainDataArray[ptr].EboardCheck) {
+                    tmpKHRLobject.UpdateEboard__c = 1;
+                }
+
+                if (coordChoice > 0 || org1Choice > 0 || org2Choice > 0) {
+                    tmpKHRLobject.Constituency__c = mainDataArray[ptr].Seat;
+                }
+
+                tmpKHRLobject.Regional_Director__c      = mainDataArray[ptr].RegionalDirectorId;
+                tmpKHRLobject.Regional_Director_Name__c = mainDataArray[ptr].RegionalDirector; 
+                if (dirChoice > 0) {
+                    tmpKHRLobject.DirectorFlag__c       = 'C';
+                    tmpKHRLobject.Regional_Director__c      = directorRecord.Id;
+                    tmpKHRLobject.Regional_Director_Name__c = directorRecord.Name; 
+                }
+
+                tmpKHRLobject.CoordinatorId__c          = mainDataArray[ptr].CoordId;
+                tmpKHRLobject.CoordName__c              = mainDataArray[ptr].Coordinator;
+                switch (coordChoice) {
+                case 0:
+                    break;
+                case 1:
+                    tmpKHRLobject.CoordFlag__c          = 'R';
+                    tmpKHRLobject.CoordinatorId__c      = '';
+                    break
+                default:
+                    // catches > 1
+                    tmpKHRLobject.CoordFlag__c          = 'C';
+                    tmpKHRLobject.CoordinatorId__c      = coordinatorRecord.Id;
+                    tmpKHRLobject.CoordName__c          = coordinatorRecord.Name;
+                    break;
+                }
+
+                tmpKHRLobject.Org1Id__c                 = mainDataArray[ptr].Org1Id;
+                tmpKHRLobject.Org1Name__c               = mainDataArray[ptr].Organizer1;
+                switch (org1Choice) {
+                case 0:
+                    break;
+                case 1:
+                    tmpKHRLobject.Org1Flag__c           = 'R';
+                    tmpKHRLobject.Org1Id__c             = '';
+                    break;
+                default:
+                    // catches > 1
+                    tmpKHRLobject.Org1Flag__c           = 'C';
+                    tmpKHRLobject.Org1Id__c             = org1Record.Id;
+                    tmpKHRLobject.Org1Name__c           = org1Record.Name;
+                    break;
+                }
+
+                tmpKHRLobject.Org2Id__c                 = mainDataArray[ptr].Org2Id;
+                tmpKHRLobject.Org2Name__c               = mainDataArray[ptr].Organizer2;
+                switch (org2Choice) {
+                case 0:
+                    break;
+                case 1:
+                    tmpKHRLobject.Org2Flag__c           = 'R';
+                    tmpKHRLobject.Org2Id__c             = '';
+                    break;
+                default:
+                    // catches > 1
+                    tmpKHRLobject.Org2Flag__c           = 'C';
+                    tmpKHRLobject.Org2Id__c             = org2Record.Id;
+                    tmpKHRLobject.Org2Name__c           = org2Record.Name;
+                    break;
+                }
+
+                // Contract Specialist or Note are only applied to clicked row.
+                if (tmpKHRLobject.EmpAccountId__c == selectedEmpId && (csChoice > 0 || noteText != '')) {
+                    if (csChoice == 1)
+                        tmpKHRLobject.ResetCS__c = 1;
+
+                    if (csChoice > 1)
+                        tmpKHRLobject.CsId__c = csRecord.ContId;
+
+                    if(noteText != '')
+                        tmpKHRLobject.Note__c = noteText;
+                }
+
+                updateArray.push(tmpKHRLobject);
+            }
+            now           = new Date();
+            localDateTime = (now.toLocaleTimeString());
+            pendingUpdates = true;
+
+            KHRL_RemoteController18.KhrlUpdate(updateArray, updateResults);
+        }
+
+        function updateResults(result, event) {
+            var noError = true;
+            var resultMap;
+            pendingUpdates = false;
+            if (result.length > 0) {
+                for (i = 0; i < result.length; i++) {
+                    if (result[i].indexOf('Error') != -1) {
+                        noError = false;
+                        if (result[i].indexOf('INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY') != -1)
+                            alert("Salesforce won't let you do this because the coordinator owns the Account." + String.fromCharCode(10, 13) +
+                                    "Change the Account owner and then you can do this.");
+                        else
+                            alert("failed to create Coordinator ATM record: " + i.toString());
+                        break;
+                    }
+                }
+            }
+            else {
+                for (i = 0; i < updateArray.length; i++) {
+                    ptr   = updateArray[i].RowPtr__c;
+                    empId = mainDataArray[ptr].EmpAccountId;
+                    if (dirChoice > 0) {
+                        mainDataArray[ptr].RegionalDirector   = directorRecord.Name;
+                        mainDataArray[ptr].RegionalDirectorId = directorRecord.Id;
+                    }
+
+                    if (coordChoice == 1) {
+                        mainDataArray[ptr].Coordinator = 'Vacant';
+                        mainDataArray[ptr].CoordId     = '';
+
+                    }
+                    if (coordChoice > 1) {
+                        mainDataArray[ptr].Coordinator = coordinatorRecord.Name;
+                        mainDataArray[ptr].CoordId     = coordinatorRecord.Id;
+                    }
+
+                    if (org1Choice == 1) {
+                        mainDataArray[ptr].Organizer1  = 'Vacant';
+                        mainDataArray[ptr].Org1Id      = '';
+                    }
+                    if (org1Choice > 1) {
+                        mainDataArray[ptr].Organizer1  = org1Record.Name;
+                        mainDataArray[ptr].Org1Id      = org1Record.Id;
+                    }
+
+                    if (org2Choice == 1) {
+                        mainDataArray[ptr].Organizer2  = '';
+                        mainDataArray[ptr].Org2Id      = '';
+                    }
+                    if (org2Choice > 1) {
+                        mainDataArray[ptr].Organizer2  = org2Record.Name;
+                        mainDataArray[ptr].Org2Id      = org2Record.Id;
+                    }
+
+                    if (csChoice == 1  && ptr == selectedRow) {
+                        mainDataArray[ptr].ContractSpecialist  = '';
+                        mainDataArray[ptr].CsContId    = '';
+                        specialistMap[empId].ContactId = '';
+                    }
+
+                    if (csChoice > 1  && mainDataArray[ptr].EmpAccountId == selectedEmpId) {
+                        mainDataArray[ptr].ContractSpecialist  = csRecord.Name;
+                        mainDataArray[ptr].CsContId            = csRecord.ContId;
+                        specialistMap[empId].ContactId         = csRecord.ContId;
+                    }
+
+                    if(noteText != '' && mainDataArray[ptr].EmpAccountId == selectedEmpId)
+                        mainDataArray[ptr].Note = noteText;
+                }
+                reset();
+            }
+        }
+
+        function reset() {
+            directorDropdown.selectedIndex = 0;
+            coordDropdown.selectedIndex    = 0;
+            org1Dropdown.selectedIndex     = 0;
+            org2Dropdown.selectedIndex     = 0;
+            csDropdown.selectedIndex       = 0;
+            updateButton.value             = 'Select Employer';
+            ebUpdateButton.value           = 'Select Eboard Role';
+            noteInput.value                = '';
+            dirPtr = coordPtr = org1Ptr = org2Ptr = csPtr = 0;
+            coordChoice = org1Choice = org2Choice = csChoice = 0;
+            ebCoordChoice = ebOrg1Choice = ebOrg2Choice = 0;
+            mainGridOptions.api.deselectAll();
+            mainGridOptions.api.refreshView();
+        }
+
+        function ebReset() {
+            ebCoordDropdown.selectedIndex  = 0;
+            ebOrg1Dropdown.selectedIndex   = 0;
+            ebOrg2Dropdown.selectedIndex   = 0;
+            csDropdown.selectedIndex       = 0;
+            ebUpdateButton.value           = 'Select Eboard Role';
+            ebCoordChoice = ebOrg1Choice = ebOrg2Choice = 0;
+        }
+
+        function processNotes(notesResults){
+            var accountId;
+            var note;
+
+            notesMap = {};
+            var notesRecords = notesResults.getArray('records');
+            for (i = 0; i < notesRecords.length; i++) {
+                accountId = notesRecords[i].EmpAccountId__c;
+                note      = notesRecords[i].Note__c;
+                if(note) {
+                    notesMap[accountId] = {Note:note,DivisionCode:sysDivisionCode};
+                }
+            }
+        }
+
+/*         function getEboardExceptions() {
+            let query = "SELECT KrlEboardExceptions__c FROM Common_Settings__c";
+            let i,l,exceptionRecord,exceptions,exceptSeat;
+
+            try {
+                let results = sforce.connection.query(query);
+                exceptionRecords = results.getArray('records');
+                exceptions = exceptionRecords[0].KrlEboardExceptions__c.split(',');
+                if(exceptions) {
+                    for(i=0,l=exceptions.length;i<l;i++) {
+                        exceptSeat = exceptions[i];
+                        exceptionsMap[exceptSeat] = 1;
+                    }
+                }
+            }
+            catch (e) {alert('An  error occurred retrieving from Common Settings: ' + e.faultstring);}
+        } */
+
+        function loadSpecialists() {
+            let specialistsQuery = "SELECT Id, Contact__c,Contact__r.Name,Contact__r.Id,Contact__r.LastName,Contact__r.FirstName,CellPhone__c,Email__c " +
+                "FROM ContractSpecialists__c WHERE Division__c = '" + sysDivision + "' AND Contact__r.Firstname != null ORDER BY Contact__r.FirstName,Contact__r.LastName";
+                    
+            try {
+                let specialistResults = sforce.connection.query(specialistsQuery);
+                processSpecialists(specialistResults);
+            }
+            catch (e) {alert('An  error occurred retrieving Specialists: ' + e.faultstring);}
+        }
+
+        function processSpecialists(specialistQueryResult) {
+            let specialistRecords,csContId,csRecId,csFirstName,csLastName,csUserName,csCellPhone,csPhone,csEmail,len;
+            specialistRecords   = specialistQueryResult.getArray('records');
+            specialistDataArray.length = 0; // http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript/1234337#1234337
+
+            len = specialistRecords.length;
+            for (i = 0; i < len; i++) {
+                if(specialistRecords[i].Contact__r) {
+                    csRecId     = specialistRecords[i].Id;
+                    csFirstName = toProperCase(specialistRecords[i].Contact__r.FirstName);
+                    csLastName  = toProperCase(specialistRecords[i].Contact__r.LastName);
+                    csUserName  = toProperCase(specialistRecords[i].Contact__r.Name);
+                    csCellPhone = phoneFormat(specialistRecords[i].CellPhone__c);
+                    csEmail     = specialistRecords[i].Email__c || '';
+                    csContId    = specialistRecords[i].Contact__r.Id;
+
+                    peopleMap[csContId] = {Id: csContId, Name: csUserName, Email: csEmail, CellPhone:csCellPhone,Phone:csPhone};
+                    specialistDataArray.push({RecId: csRecId, ContId:csContId, Name:csUserName, FirstName:csFirstName, LastName:csLastName, Title: 'Contract Specialist', Division:sysDivision, Email:csEmail, CellPhone:csCellPhone, EmailUpdated:false, CellPhoneUpdated:false, Flag:'C',StatusCode:'',Status:''});
+                }
+                else {
+                    alert('Record ' + i + ' not Linked to Contact');
+                    console.log('Record ' + i + ' not Linked to Contact');
+                }
+            }
+
+            if(csDropdown.length > 0) {
+                csDropdown.length = 0; // This is only thing I found that worked for select lists, too. http://stackoverflow.com/questions/1232040/how-do-i-empty-an-array-in-javascript/1234337#1234337
+            }
+
+            opt       = document.createElement("option");
+            opt.text  = 'Contract Specialist';
+            opt.value = 0;
+            csDropdown.add(opt, null);
+
+            opt       = document.createElement("option");
+            opt.text  = 'Vacant';
+            opt.value = 1;
+            csDropdown.add(opt, null);
+
+            for (i = 0; i < specialistDataArray.length; i++) {
+                opt = document.createElement("option");
+                opt.text  = specialistDataArray[i].Name;
+                opt.value = specialistDataArray[i].AccountId;
+                csDropdown.add(opt, null);
+            }
+
+        }
+
+        function loadEBoardSeats() {
+            let eboardSeatsQuery = `
+                        SELECT Id, Constituency__r.Name, RouteListAccountId__c,Executive_Body_Title__c,Name,Contact_Employer__c,Contact_Name__c,Coordinator__c,DivisionName__c,Organizer2__c,Organizer__c,Title__c,Organizer__r.Name,SeatHolder__r.Name,SeatHolder__c,SeatName__c 
+                        FROM EBoardSeats__c 
+                        WHERE E_Board_Year__c = '2017' And (
+                            (DivisionName__c = 'Union-wide' And Constituency__r.Name = 'ECMM') Or (DivisionName__c = 'Community'  )
+                        ) ORDER BY Constituency__r.Name NULLS FIRST `;
+            try {
+                var eboardSeatsResults = sforce.connection.query(eboardSeatsQuery);
+                processEBoardSeats(eboardSeatsResults);
+            }
+            catch(e) {alert('An error occurred retrieving EBoardSeats__c: ' + e.faultstring);}
+        }
+
+        function processEBoardSeats(pEBoardSeatResults) {
+            var id;
+            var accountId;
+            var seatName;
+            var seatHolder;
+            var executiveBodyTitle;
+            var cooordinatorId;
+            var organizer1Id;
+            var organizer2Id;
+            var cooordinatorName;
+            var organizer1Name;
+            var organizer2Name;
+            var constituency;
+
+            eboardDataArray = [];
+
+            var seatRecords = pEBoardSeatResults.getArray('records');
+            for (i = 0; i < seatRecords.length; i++) {
+                accountId    = cooordinatorId = organizer1Id = organizer2Id = '';
+                seatHolder   = cooordinatorName = organizer1Name = organizer2Name = '<empty>';
+                constituency = null;
+                id                 = seatRecords[i].Id;
+                accountId          = seatRecords[i].RouteListAccountId__c;
+                seatName           = seatRecords[i].SeatName__c;
+                executiveBodyTitle = seatRecords[i].Executive_Body_Title__c;
+                cooordinatorId     = seatRecords[i].Coordinator__c || '';
+                organizer1Id       = seatRecords[i].Organizer__c   || '';
+                organizer2Id       = seatRecords[i].Organizer2__c  || '';
+
+                if(seatRecords[i].SeatHolder__r)
+                    seatHolder = seatRecords[i].SeatHolder__r.Name;
+
+                if(cooordinatorId) {
+                    if(peopleMap[cooordinatorId])
+                        cooordinatorName = peopleMap[cooordinatorId].Name;
+                }
+
+                if(organizer1Id) {
+                    if(peopleMap[organizer1Id])
+                        organizer1Name = peopleMap[organizer1Id].Name;
+                }
+
+
+                if(organizer2Id) {
+                    if(peopleMap[organizer2Id])
+                        organizer2Name = peopleMap[organizer2Id].Name;
+                }
+
+                if(seatRecords[i].Constituency__r)
+                    constituency = seatRecords[i].Constituency__r.Name;
+
+                if( constituency == null && executiveBodyTitle != null )
+                    eboardDataArray.push({ Id: id, SeatName: seatName, Title: executiveBodyTitle, SeatHolder: seatHolder, CoordId: cooordinatorId, Org1Id: organizer1Id, Org2Id: organizer2Id, CoordName: cooordinatorName, Org1Name: organizer1Name, Org2Name: organizer2Name});
+
+                if (constituency != null) {
+                    if(exceptionsMap[constituency])
+                        eboardDataArray.push({ Id: id, SeatName: seatName, Title: executiveBodyTitle, SeatHolder: seatHolder, CoordId: cooordinatorId, Org1Id: organizer1Id, Org2Id: organizer2Id, CoordName: cooordinatorName, Org1Name: organizer1Name, Org2Name: organizer2Name});
+                    else {
+                        if (accountId)
+                            eboardMap[accountId] = { Id: id, SeatName: seatName, Title: executiveBodyTitle, SeatHolder: seatHolder, CoordId: cooordinatorId, Org1Id: organizer1Id, Org2Id: organizer2Id, CoordName: cooordinatorName, Org1Name: organizer1Name, Org2Name: organizer2Name};
+                        else
+                            console.log('* ' + seatName + ' not added to eboardMap because it is not tied to an Account *');
+                    }
+                }
+            }
+        }
+
+        function loadAccountTeamMembers() {
+            // Note: Can't have a ATM of 'Contract Specialist' as ATM records want a UserId and Contract Specialists only have a ContactId.
+            let query = "SELECT AccountId, Id, TeamMemberRole, User.Id, User.Name, User.Username, User.ManagerId From AccountTeamMember Where TeamMemberRole IN ('Coordinator','Organizer1','Organizer2') AND Account.Account_Group__c = '" + sysDivision + "' AND Account.Type = 'Employer' Order By AccountId, TeamMemberRole";
+
+            try {
+                var queryResults = sforce.connection.query(query);
+                processAccountTeamMembers(queryResults);
+            }
+            catch (e) {alert('An error occurred retrieving AccountTeamMembers: ' + e.faultstring);}
+        }
+
+        function processAccountTeamMembers(atmResults) {
+            let id,accountId,userId,loginId,userName,name,teamMemberRole;
+            let atmRecords = atmResults.getArray('records');
+            atmMap = [];
+            for (i = 0; i < atmRecords.length; i++) {
+                id             = atmRecords[i].Id;
+                accountId      = atmRecords[i].AccountId;
+                teamMemberRole = atmRecords[i].TeamMemberRole;
+                userId         = atmRecords[i].User.Id;
+                userName       = atmRecords[i].User.Username;
+                name           = atmRecords[i].User.Name;
+                managerId      = atmRecords[i].User.ManagerId;
+                atmMap[accountId + teamMemberRole] = {Id: id, AccountId: accountId,TeamMemberRole:teamMemberRole, Name:name, UserId:userId, UserName:userName,ManagerId:managerId};
+            }
+        }
+
+        function loadGoodAccounts() {
+            // Note: 1. Good Accounts defined as those with Constituency code.
+            let query = ` SELECT Hospital_System__c , Employer_ID__c, Regional_Director__c, Coordinator__c, Organizer_1__c, Organizer_2__c, Contract_Specialist__r.Name,Contract_Specialist__r.Id, Account_Group__c, Type, Region__c, Name, BU_Count__c, Id, Subseat__c,  Constituency__r.Name, FacilityNames__c, FacilityAddresses__c, Membership_Associate__c, Membership_Auditor__c 
+                          FROM Account 
+                          WHERE Account_Group__c = '${sysDivision}' And Type = 'Employer' And Active__c = 'YES' And Constituency__r.Name != null 
+                          ORDER BY Constituency__r.Name, Subseat__c Desc, Name Asc `;
+            console.log('Query:',query);
+            try {
+                var queryResults = sforce.connection.query(query);
+                processGoodAccounts(queryResults);
+            }
+            catch(e) {alert('An error occurred retrieving Accounts: ' + e.faultstring);}
+        }
+
+        function processGoodAccounts(accountResults) {
+            let constituency,accountRecords,accountRec,empAccountId,empName,empRegion,empId;
+            let len,seat,subseat,eboardEdit,corp,buCnt,first,priorSeat,rowGroup,rowFlip;
+            let regionalDirId,coordinatorId,organizer1Id,organizer2Id,specialistId,specialistName;
+            let linesRequired,facilityNames,facilityAddresses,associateId,auditorId;
+
+            accountIdsArray     = [];
+            accountMap          = {};
+            noSeatIdAccountMap  = {};
+            seatCountMap        = {};
+            seatSubseatCountMap = {};
+            uniqueSeatCountMap  = {};
+            specialistMap       = {};
+
+            totalLinesRequired = 0;
+            accountRecords  = accountResults.getArray('records');
+            len       = accountRecords.length-1;
+            seat      = '';
+            priorSeat = '';
+            rowFlip   = false;
+
+            for (i = 0; i <= len; i++) {
+                first             = false;
+                accountRec        = accountRecords[i];
+                empAccountId      = accountRec.Id;
+                empName           = toProperCase(accountRec.Name);
+                empRegion         = accountRec.Region__c;
+                empId             = accountRec.Employer_ID__c;
+                seat              = accountRec.Constituency__r.Name;
+                subseat           = accountRec.subseat__c              || '.1';
+                regionalDirId     = accountRec.Regional_Director__c    || '';
+                coordinatorId     = accountRec.Coordinator__c          || '';
+                organizer1Id      = accountRec.Organizer_1__c          || '';
+                organizer2Id      = accountRec.Organizer_2__c          || '';
+                corp              = accountRec.Hospital_System__c      || '';
+                buCnt             = parseInt(accountRec.BU_Count__c)   ||  0;
+                facilityNames     = accountRec.FacilityNames__c        || '';
+                facilityAddresses = accountRec.FacilityAddresses__c    || '';
+                associateId       = accountRec.Membership_Associate__c || '';
+                auditorId         = accountRec.Membership_Auditor__c   || '';
+                linesRequired     = 0;
+
+                if(facilityNames) {
+                    linesRequired = Math.ceil(facilityNames.length / lineLimit);
+                    totalLinesRequired += linesRequired;
+                }
+
+                if(accountRec.Contract_Specialist__r) {
+                    specialistId   = accountRec.Contract_Specialist__r.Id;
+                    specialistName = accountRec.Contract_Specialist__r.Name;
+                }
+                else {
+                    specialistId   = null;
+                    specialistName = 'Vacant';
+                }
+
+                specialistMap[empAccountId] = {
+                    AccountName:empName,
+                    ContactId:  specialistId,
+                    Name:       specialistName
+                };
+
+                if(seat != priorSeat)
+                    rowFlip = !rowFlip;
+
+                if(rowFlip)
+                    rowGroup = 'A';
+                else
+                    rowGroup = 'B';
+
+                constituency   = seat + subseat;
+                eboardEdit     = false;
+
+                if (seatCountMap[seat])
+                    seatCountMap[seat].Count++;
+                else
+                    seatCountMap[seat] = {Count: 1};
+
+                if (seatSubseatCountMap[constituency])
+                    seatSubseatCountMap[constituency].Count++;
+                else {
+                    first = true;
+                    seatSubseatCountMap[constituency] = {Count: 1};
+                    if(uniqueSeatCountMap[seat])
+                        uniqueSeatCountMap[seat].Count++;
+                    else
+                        uniqueSeatCountMap[seat] = {Count: 1};
+                }
+
+                accountIdsArray.push("'" + empAccountId + "'");
+                accountMap[empAccountId] = {
+                    EmpAccountId: empAccountId,
+                    EmpName: empName,
+                    Region: empRegion,
+                    EmpId: empId,
+                    Seat: seat,
+                    Subseat: subseat,
+                    First: first,
+                    EmpBuCnt: buCnt,
+                    Editable: false,
+                    RowGroup: rowGroup,
+                    RegionalDirId: regionalDirId,
+                    CordinatorId: coordinatorId,
+                    Organizer1Id: organizer1Id,
+                    Organizer2Id: organizer2Id,
+                    SpecialistId: specialistId,
+                    FacilityNames: facilityNames,
+                    FacilityAddresses: facilityAddresses,
+                    AssociateId:associateId,
+                    AuditorId:auditorId,
+                    WorksiteLines: linesRequired
+                };
+                priorSeat = seat;
+            }
+        }
+
+        function loadBadAccounts() {
+            // Note: Bad Accounts defined as those without Constituency code.
+            let query = `SELECT Hospital_System__c , Employer_ID__c, Regional_Director__c, Coordinator__c, Organizer_1__c, Organizer_2__c, Contract_Specialist__r.Name,Contract_Specialist__r.Id, Account_Group__c, Type, Region__c, Name, BU_Count__c, Id, Subseat__c,  Constituency__r.Name, FacilityNames__c, FacilityAddresses__c, Membership_Associate__c, Membership_Auditor__c 
+                         FROM Account 
+                         WHERE Account_Group__c = '${sysDivision}' And Type = 'Employer' And Active__c = 'YES' And Constituency__r.Name = null 
+                         ORDER BY Constituency__r.Name, Subseat__c Desc, Name Asc`;
+            console.log('Query:',query);
+
+            try {
+                var queryResults = sforce.connection.query(query);
+                processBadAccounts(queryResults);
+            }
+            catch(e) {alert('An error occurred retrieving Accounts: ' + e.faultstring);}
+        }
+
+        function processBadAccounts(accountResults) {
+            var accountRec;
+            var empName;
+            var empAccountId;
+            var empRegion;
+            var empId;
+            var constituency;
+            var accountRecords;
+            var seat;
+            var subseat;
+            var len;
+            var corp;
+            var buCnt;
+
+            noSeatIdAccountMap = {};
+
+            accountRecords  = accountResults.getArray('records');
+            len = accountRecords.length-1;
+            for (i = 0; i <= len; i++) {
+                accountRec     = accountRecords[i];
+                empAccountId   = accountRec.Id;
+                empName        = accountRec.Name;
+                empRegion      = accountRec.Region__c;
+                empId          = accountRec.Employer_ID__c;
+                buCnt          = parseInt(accountRec.BU_Count__c) || 0;
+                noSeatIdAccountMap[empAccountId] = {EmpAccountId:empAccountId,EmpName:empName,Region:empRegion,EmpId:empId,Constituency:'None',EmpBuCnt:buCnt};
+            }
+        }
+
+        function processExport(queryResult) {
+
+            var firstName;
+            var lastName;
+            var employer;
+            var employerId;
+            var role;
+            var output,output1,output2,output3,output4,output5 = '';
+
+            var exportRecords = queryResult.getArray('records');
+
+            for (i = 0; i < exportRecords.length; i++) {
+                firstName  = exportRecords[i].User.FirstName;
+                lastName   = exportRecords[i].User.LastName;
+                employer   = exportRecords[i].Account.Name;
+                employerId = exportRecords[i].Account.Employer_ID__c;
+                role       = exportRecords[i].TeamMemberRole;
+
+                if (role.toUpperCase() == 'COORDINATOR') {
+                    if (empMap[employerId]) {
+                        empMap[employerId].CoordFirstName = firstName;
+                        empMap[employerId].CoordLastName  = lastName;
+                    }
+                    else
+                        empMap[employerId] = {CoordFirstName: firstName, CoordLastName: lastName, OrgFirstName: 'Vacant', OrgLastName: 'Vacant'};
+                }
+                else {
+                    if (empMap[employerId]) {
+                        empMap[employerId].OrgFirstName = firstName;
+                        empMap[employerId].OrgLastName  = lastName;
+                    }
+                    else
+                        empMap[employerId] = {CoordFirstName: 'Vacant', CoordLastName: 'Vacant', OrgFirstName: firstName, OrgLastName: lastName};
+                }
+            }
+
+            output = '';
+            for(mapKey in empMap) {
+                output1 = " INSERT INTO Membership.dbo.gs_ECRN (EmployerId,CoordFirstName,CoordLastName,RepFirstName,RepLastName) VALUES ('" + mapKey + "',";
+                output2 = "'" + empMap[mapKey].CoordFirstName + "',";
+                output3 = "'" + empMap[mapKey].CoordLastName  + "',";
+                output4 = "'" + empMap[mapKey].OrgFirstName   + "',";
+                output5 = "'" + empMap[mapKey].OrgLastName    + "')\n";
+                output += output1 + output2 + output3 + output4 + output5;
+            }
+
+            var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "ATE.tab");
+        }
+
+        function saveBlob(blob,file) {
+            saveAs(blob, file);
+        }
+
+        function processPdfRow(node) {
+            let rec;
+            let regDirId = regDir   = regDirCell = regDirPhone = regDirEmail = '';
+            let coordId  = coord    = coordCell  = coordPhone  = coordEmail  = '';
+            let org1Id   = org1     = org1Cell   = org1Phone   = org1Email   = '';
+            let org2Id   = org2     = org2Cell   = org2Phone   = org2Email   = '';
+            let csContId = csName   = csCell     = csEmail     = '';
+            let region   = employer = employerId = worksites   = note = '';
+
+            rec         = node.data;
+            regDirId    = rec.RegionalDirectorId;
+            regDir      = rec.RegionalDirector;
+            regDirCell  = peopleMap[regDirId].CellPhone;
+            regDirPhone = peopleMap[regDirId].Phone;
+            regDirEmail = peopleMap[regDirId].Email;
+
+            coordId     = rec.CoordId;
+            if(peopleMap[coordId]) {
+                coord        = rec.Coordinator;
+                coordCell    = peopleMap[coordId].CellPhone;
+                coordPhone   = peopleMap[coordId].Phone;
+                coordEmail   = peopleMap[coordId].Email;
+            }    
+
+            org1         = rec.Organizer1;
+            org1Id       = rec.Org1Id;
+            if(peopleMap[org1Id]) {
+                org1Cell     = peopleMap[org1Id].CellPhone;
+                org1Phone    = peopleMap[org1Id].Phone;
+                org1Email    = peopleMap[org1Id].Email;
+            }
+
+            org2         = rec.Organizer2;
+            org2Id       = rec.Org2Id;
+            if(peopleMap[org2Id]) {
+                org2Cell     = peopleMap[org2Id].CellPhone;
+                org2Phone    = peopleMap[org2Id].Phone;
+                org2Email    = peopleMap[org2Id].Email;
+            }
+
+            csContId = rec.CsContId;
+            if(peopleMap[csContId]) {
+                csName  = peopleMap[csContId].Name;
+                console.log(csName);
+                csCell  = peopleMap[csContId].CellPhone;
+                console.log(csName,csCell);
+                csEmail = peopleMap[csContId].Email;
+                console.log(csName,csCell,csEmail);
+            }
+
+            note       = rec.CsNote;
+            region     = rec.Region;
+            employer   = rec.Employer;
+            employerId = rec.EmpAccountId;
+
+            pdfDataArray.push({Employer:employer,EmployerId:employerId,Region:region, RegDirId:regDirId, RegDir:regDir, RegDirCell:regDirCell, RegDirPhone:regDirPhone, RegDirEmail:regDirEmail,
+                CoordId:coordId, Coord:coord, CoordCell:coordCell, CoordPhone:coordPhone, CoordEmail:coordEmail,
+                Org1Id:org1Id, Org1:org1, Org1Cell:org1Cell, Org1Phone:org1Phone, Org1Email:org1Email,
+                Org2Id:org2Id, Org2:org2, Org2Cell:org2Cell, Org2Phone:org2Phone, Org2Email:org2Email,
+                CsContId:csContId,CsName:csName,CsCell:csCell,CsEmail:csEmail,
+                Note:note});
+
+        }
+
+        function saveAsPdf() {
+//      Found tips at https://www.sitepoint.com/generating-pdfs-from-web-pages-on-the-fly-with-jspdf/
+
+            let rec, regDirId, coordId, org1Id, org2Id, csContId,linesRequired;
+            let region = '';
+
+            pdfDataArray = []; // processPdfRow populates.
+            mainGridOptions.api.setSortModel(pdfSort);
+            mainGridOptions.api.forEachNodeAfterFilterAndSort(processPdfRow);
+            mainGridOptions.api.setSortModel(initialMainSort);
+
+            pdf     = new jsPDF('l', 'pt', 'letter');
+            yPos    = 60;
+            lineCnt =  0;
+
+            pageCnt=0;
+            i=0;
+            l=pdfDataArray.length -1;
+            pageTotal = Math.ceil((l + totalLinesRequired) / maxLinesPerPage);
+            while(i < l) {
+                region = pdfDataArray[i].Region;
+                while(region == pdfDataArray[i].Region && i < l) {
+                    newPage(pdf,region, 'A');
+                    printDivDir();
+                    printDir(i);
+                    regDir = pdfDataArray[i].RegDir;
+                    while(regDir == pdfDataArray[i].RegDir &&
+                    region == pdfDataArray[i].Region && i < l) {
+                        printCoord(i);
+                        coord = pdfDataArray[i].Coord;
+                        while(coord  == pdfDataArray[i].Coord  &&
+                        regDir == pdfDataArray[i].RegDir &&
+                        region == pdfDataArray[i].Region && i < l) {
+
+                            if (lineCnt > maxLinesPerPage) {
+                                newPage(pdf, region,'B');
+                            }
+                            printOrg1(i);
+                            if(pdfDataArray[i].Org2Id) printOrg2(i);
+                            org1 = pdfDataArray[i].Org1;
+                            while (org1 == pdfDataArray[i].Org1 &&
+                            coord == pdfDataArray[i].Coord &&
+                            regDir == pdfDataArray[i].RegDir &&
+                            region == pdfDataArray[i].Region && i < l) {
+                                employerId = pdfDataArray[i].EmployerId;
+
+                                linesRequired =  accountMap[employerId].WorksiteLines;
+                                if(lineCnt + linesRequired >= maxLinesPerPage )
+                                    newPage(pdf, region,'C');
+
+                                printCs(i);
+                                printWorksites(employerId);
+                                i++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            let fileName = 'CommunityRouteList (' + dateStr + ').pdf';
+            pdf.save(fileName);
+        }
+
+        function newPage(doc,reg,src) {
+
+            let options = { year: 'numeric', month: 'numeric', day: 'numeric'};
+
+
+            if(pageCnt>0) pdf.addPage();
+
+            lineCnt =  0;
+            yPos    = 50;
+            pageCnt++;
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(18);
+            doc.setFont('Helvetica');
+            doc.setFontType('bold');
+            doc.text(280,30, 'Community Route List - ' + toProperCase(reg));
+            doc.setLineWidth(1);
+            doc.line(5,40,780,40);
+            doc.setLineWidth(1);
+            doc.line(5,60,780,60);
+            doc.setFontSize(10);
+            doc.text( 20,55, 'Staff')
+            doc.text(180,55, 'Cell Phone #');
+            doc.text(280,55, 'Phone #');
+            doc.text(380,55, 'Email Address');
+            doc.text(590,55, 'Facilities');
+            doc.setFontType('normal');
+            doc.setFontSize(8);
+            doc.text(10,600, 'Data current as of: ' + dateStr);
+            doc.text(730,600, 'Page ' + pageCnt + ' of ' + pageTotal);
+            doc.setFontSize(10);
+        }
+
+        function printDivDir() {
+            let divDir = divDirCell = divDirPhone = divDirEmail = '';
+
+            divDir      = directorDataArray[0].Name;
+            divDirCell  = directorDataArray[0].CellPhone;
+            divDirPhone = directorDataArray[0].Phone;
+            divDirEmail = directorDataArray[0].Email;
+
+            yPos += 30;
+            pdf.setFillColor(220);
+            pdf.roundedRect(5,yPos-15,770,25,5,5,'F');
+            pdf.setFillColor(255);
+            pdf.setFontSize(10);
+            pdf.setFontType('normal');
+            pdf.text(10,yPos,  divDir);
+            pdf.text(180,yPos, divDirCell);
+            pdf.text(280,yPos, divDirPhone);
+            pdf.text(380,yPos, divDirEmail);
+            pdf.text(590,yPos, 'Divisional Director');
+            pdf.setDrawColor(60);
+            lineCnt++;
+        }
+
+        function printDir(ptr) {
+            let regDir = regDirCell = regDirPhone = regDirEmail = '';
+
+            regDir      = pdfDataArray[ptr].RegDir;
+            regDirCell  = pdfDataArray[ptr].RegDirCell;
+            regDirPhone = pdfDataArray[ptr].RegDirPhone;
+            regDirEmail = pdfDataArray[ptr].RegDirEmail;
+
+            yPos += 30;
+            pdf.text(10,yPos, regDir);
+            pdf.text(180,yPos, regDirCell);
+            pdf.text(280,yPos, regDirPhone);
+            pdf.text(380,yPos, regDirEmail);
+            pdf.text(590,yPos, 'Regional Director');
+            pdf.setDrawColor(60);
+            pdf.roundedRect(5,yPos-15,770,25,5,5,'S');
+            lineCnt++;
+        }
+
+        function printCoord(ptr) {
+            let coord = coordCell  = coordPhone = coordEmail = '';
+
+            coord      = pdfDataArray[ptr].Coord;
+            coordCell  = pdfDataArray[ptr].CoordCell;
+            coordPhone = pdfDataArray[ptr].CoordPhone;
+            coordEmail = pdfDataArray[ptr].CoordEmail;
+
+            if (lineCnt + 4 > maxLinesPerPage) newPage(pdf, region,'B2');
+            yPos += 30;
+            pdf.text(20,yPos, coord);
+            pdf.text(180,yPos, coordCell);
+            pdf.text(280,yPos, coordPhone);
+            pdf.text(380,yPos, coordEmail);
+            pdf.text(590,yPos, 'Field Coordinator');
+            pdf.setDrawColor('255','0','0');
+            pdf.setDrawColor(190);
+            pdf.roundedRect(15,yPos-15,760,25,5,5,'S');
+            lineCnt++;
+        }
+
+        function printOrg1(ptr) {
+            let org1 = org1Cell = org1Phone = org1Email = employer = region = '';
+
+            org1      = pdfDataArray[ptr].Org1;
+            org1Cell  = pdfDataArray[ptr].Org1Cell;
+            org1Phone = pdfDataArray[ptr].Org1Phone;
+            org1Email = pdfDataArray[ptr].Org1Email;
+            employer  = pdfDataArray[ptr].Employer;
+            region    = pdfDataArray[ptr].Region;
+
+            yPos += 30;
+            pdf.text(30,yPos, org1);
+            pdf.text(180,yPos, org1Cell);
+            pdf.text(280,yPos, org1Phone);
+            pdf.text(380,yPos, org1Email);
+            pdf.text(590,yPos, employer);
+            lineCnt++;
+        }
+
+        function printOrg2(ptr) {
+            let org2 = org2Cell = org2Phone = org2Email = employer = region = '';
+
+            org2      = pdfDataArray[ptr].Org2;
+            org2Cell  = pdfDataArray[ptr].Org2Cell;
+            org2Phone = pdfDataArray[ptr].Org2Phone;
+            org2Email = pdfDataArray[ptr].Org2Email;
+            employer  = pdfDataArray[ptr].Employer;
+            region    = pdfDataArray[ptr].Region;
+
+            yPos += 30;
+            pdf.text(30,yPos, org2);
+            pdf.text(180,yPos, org2Cell);
+            pdf.text(280,yPos, org2Phone);
+            pdf.text(380,yPos, org2Email);
+            pdf.text(590,yPos, employer);
+            lineCnt++;
+        }
+
+        function printCs(ptr) {
+            let csName = csCell = csEmail = employer = region = '';
+
+            csName    = pdfDataArray[ptr].CsName  + ' (cs)';
+console.log(ptr,csName);            
+            csCell    = pdfDataArray[ptr].CsCell;
+            csEmail   = pdfDataArray[ptr].CsEmail;
+            employer  = pdfDataArray[ptr].Employer;
+            region    = pdfDataArray[ptr].Region;
+
+            yPos += 30;
+            pdf.text(30,yPos, csName);
+            pdf.text(180,yPos, csCell);
+            pdf.text(380,yPos, csEmail);
+            pdf.text(590,yPos, employer);
+            lineCnt++;
+
+        }
+
+        function printWorksites(empId) {
+            let i,l,emp,worksites,worksiteStr,worksiteArray,worksiteOutput,w,t;
+
+            worksiteOutput = [];
+            worksites = accountMap[empId].FacilityNames;
+            emp       = accountMap[empId].EmpName;
+
+            lastBar = worksites.lastIndexOf('|');
+            worksiteStr = worksites.substring(0,lastBar);
+
+            worksiteArray = worksiteStr.split('|');
+            l = worksiteArray.length;
+            t = '';
+
+            pdf.setFontSize(8);
+
+            for(i=0;i<l;i++) {
+                w = worksiteArray[i];
+                if(t.length + w.length > lineLimit) {
+                    worksiteOutput.push(t);
+                    t = '';
+                }
+                if(i<l-1) t += w.trim() + ',';
+                else t += w.trim();
+            }
+            if(t) worksiteOutput.push(t);
+            l = worksiteOutput.length;
+            for(i=0;i<l;i++) {
+                t = worksiteOutput[i];
+                if(t) {
+                    lineCnt += 0.5;
+                    yPos += 20;
+                    pdf.text(40,yPos,t);
+                }
+            }
+            pdf.setFontSize(10);
+        }
+
+        function saveAsCsv1() {
+            mainGridOptions.columnApi.setColumnVisible('Eboard',false);
+            mainGridOptions.columnApi.setColumnVisible('Sync',false);
+            mainGridOptions.api.exportDataAsCsv({fileName: 'CommunityData.csv'});
+            mainGridOptions.columnApi.setColumnVisible('Eboard',true);
+            mainGridOptions.columnApi.setColumnVisible('Sync',true);
+        }
+
+        function saveAsCsv2() {
+            eboardGridOptions.api.exportDataAsCsv({fileName: 'CommunityEboard.csv'});
+        }
+
+        function saveAsCsv3() {
+            allInfoGridOptions.api.exportDataAsCsv({fileName: 'AllInfo.csv'});
+        }
+
+        function saveAsCsv4() {
+            staffGridOptions.columnApi.setColumnVisible('Copy',false);
+            staffGridOptions.api.exportDataAsCsv({fileName: 'AllStaff.csv'});
+            staffGridOptions.columnApi.setColumnVisible('Copy',true);
+        }
+
+        function loadStaff() {
+           let staffQuery = `Select UserRole.Name, ActingDivision__c, ActingTitle__c, Acting_Manager__c, Department, Division, Email, FirstName, Id, LastName, Location__c, ManagerId,Mobile__c, Name, Phone, Title, Username  
+                             FROM User 
+                             Where IsActive = true And 
+                                   UserRoleId != NULL And 
+                                   (Title != null Or ActingTitle__c != null) Order By FirstName, LastName, ActingTitle__c Desc`;
+            try {
+                let staffResults = sforce.connection.query(staffQuery);
+                processStaffResults(staffResults);
+            }
+            catch (e) {alert('An error occurred retrieving Staff: ' + e.faultstring);}
+        }
+
+        function processStaffResults(staffQueryResult) {
+            let i,userRole,actingDivision,actingTitle,actingManager,cellPhone,currentUserId,department,division,divisionToUse,email,firstName,lastName,name,location,managerId,phone,title,titleToUse,userId;
+
+            addOption(directorDropdown,'Director',0);
+            addOption(coordDropdown,'Coordinator',0);
+            addOption(coordDropdown,'Vacant',0);
+            addOption(org1Dropdown,'Organizer',0);
+            addOption(org1Dropdown,'Vacant',0);
+            addOption(org2Dropdown,'Organizer',0);
+            addOption(org2Dropdown,'Vacant',0);
+
+            addOption(ebCoordDropdown,'Coordinator',0);
+            addOption(ebCoordDropdown,'Vacant',0);
+            addOption(ebOrg1Dropdown,'Organizer',0);
+            addOption(ebOrg1Dropdown,'Vacant',0);
+            addOption(ebOrg2Dropdown,'Organizer',0);
+            addOption(ebOrg2Dropdown,'Vacant',0);
+
+            let staffRecords = staffQueryResult.getArray('records');
+            for (i = 0; i < staffRecords.length; i++) {
+                actingDivision = toProperCase(staffRecords[i].ActingDivision__c);
+                actingManager  = toProperCase(staffRecords[i].Acting_Manager__c);
+                actingTitle    = toProperCase(staffRecords[i].ActingTitle__c);
+                cellPhone      = phoneFormat(staffRecords[i].Mobile__c);
+                department     = toProperCase(staffRecords[i].Department);
+                division       = toProperCase(staffRecords[i].Division);
+                email          = staffRecords[i].Email.toLowerCase();
+                firstName      = toProperCase(staffRecords[i].FirstName);
+                lastName       = toProperCase(staffRecords[i].LastName);
+                name           = toProperCase(staffRecords[i].Name);
+                location       = toProperCase(staffRecords[i].Location__c);
+                managerId      = toProperCase(staffRecords[i].ManagerId);
+                phone          = phoneFormat(staffRecords[i].Phone);
+                title          = toProperCase(staffRecords[i].Title);
+                userId         = staffRecords[i].Id;
+                userName       = staffRecords[i].Username;
+                userRole       = toProperCase(staffRecords[i].UserRole.Name);
+
+                if (actingTitle != 'Missing')
+                    titleToUse = toProperCase(actingTitle);
+                else
+                    titleToUse = toProperCase(title);
+
+            //    if (actingDivision != 'Missing')
+            //        divisionToUse = actingDivision;
+            //    else
+                    divisionToUse = division;
+
+                if(userRole == 'Temp') {
+                    if ((divisionToUse == sysDivision) && (titleToUse.substr(0, 9) == 'Union Rep' || titleToUse.substr(0, 4) == 'Both')) {
+                        peopleMap[userId] = {Id: userId, Name: name, UserName: userName, Title:titleToUse, Division: divisionToUse, Email: email, CellPhone:cellPhone, Phone:phone, ManagerId:managerId};
+                    }
+                }
+                else {
+                    peopleMap[userId] = {Id: userId, Name: name, UserName: userName, Title:titleToUse, Division: divisionToUse, Email: email, CellPhone:cellPhone, Phone:phone, ManagerId:managerId};
+                }
+                staffDataArray.push({
+                    FirstName:firstName,
+                    LastName: lastName,
+                    Division: divisionToUse,
+                    Title: titleToUse,
+                    Email: email,
+                    Id: userId,
+                    CellPhone: cellPhone,
+                    Phone: phone,
+                    Location: location
+                });
+
+                if ( department == 'Ops/Fin-Data' || (divisionToUse == sysDivision && titleToUse == 'Admin Coord'))
+                    editorMap[userId] = {Id: userId, FirstName: firstName, LastName: lastName, Title:titleToUse,Email:email};
+
+                if (divisionToUse == sysDivision) {
+                    var test = titleToUse.match(/Director/g);
+                    if (test != null) {
+                        directorDataArray.push({Id: userId, Name: name, FirstName: firstName, LastName: lastName, Title: titleToUse, Division: divisionToUse, Email: email, CellPhone: cellPhone, Phone: phone, Location: location});
+                        addOption(directorDropdown,name,userId);
+                    }
+                }
+
+                if (titleToUse.length > 0) {
+                    if (titleToUse.substr(0, 9) == 'Mbr Assoc' && department == 'Ops/Fin-Membership') {
+                        associateMap[userId] = {Id: userId, Name: name, Title:titleToUse, Division: divisionToUse, Email: email, CellPhone:cellPhone, Phone:phone};
+                    }
+
+                    if (titleToUse.substr(0,11) == 'Mbr Auditor'  && department == 'Ops/Fin-Membership') {
+                        auditorMap[userId] = {Id: userId, Name: name, Title: titleToUse, Division: divisionToUse, Email: email, CellPhone: cellPhone, Phone: phone};
+                    }
+
+                    if ((divisionToUse == sysDivision) && (titleToUse.substr(0, 5) == 'Coord' || titleToUse.substr(0, 4) == 'Both')) {
+                        coordinatorDataArray.push({ Name: name, FirstName: firstName, LastName: lastName, Title: titleToUse, Division: divisionToUse, Id: userId, Email: email, CellPhone: cellPhone, Phone: phone, Location: location});
+                        if (firstName != 'Missing') {
+                            addOption(coordDropdown,name,userId);
+                            addOption(ebCoordDropdown,name,userId);
+                        }
+                    }
+
+                    if ((divisionToUse == sysDivision) && (titleToUse.substr(0, 9) == 'Union Rep' || titleToUse.substr(0, 4) == 'Both')) {
+                        organizerDataArray.push({ Name: name, FirstName: firstName, LastName: lastName, Title: titleToUse, Division: divisionToUse, Id: userId, Email: email, CellPhone: cellPhone, Phone: phone, Location: location});
+                        if (firstName != 'Missing') {
+                            addOption(org1Dropdown,name,userId);
+                            addOption(org2Dropdown,name,userId);
+                            addOption(ebOrg1Dropdown,name,userId);
+                            addOption(ebOrg2Dropdown,name,userId);
+                        }
+                    }
+                }
+            }
+
+            dirSortByName();  // This is a fudge!  Works at the moment due to Marcus Hatcher being first, alphabetically.  
+
+            currentUserId = sforce.connection.getUserInfo().userId;
+            if(!editorMap[currentUserId]) {
+                inputDiv.style.display   = "none"; // Hide controls for non Data Team or Admins.
+                ebInputDiv.style.display = "none";
+                csEditTab.style.display  = "none";
+                //         saveAsPdfButton.style.display = "none";
+            }
+        }
+
+        function addOption(dropDown,name,id) {
+            var opt = document.createElement("option");
+            opt.text  = name;
+            opt.value = id;
+            dropDown.add(opt, null);
+        }
+
+        function loadNotes() {
+            var notesQuery = "SELECT EmpAccountId__c, Note__c FROM KHRLnotes__c Where DivisionCode__c = '" + sysDivisionCode + "' Order By EmpAccountId__c";
+
+            try {
+                var notesResults = sforce.connection.query(notesQuery);
+                processNotes(notesResults);
+            }
+            catch (e) {alert('An  error occurred retrieving Notess: ' + e.faultstring);}
+        }
+
+        function dirSortByName() {
+            directorDataArray.sort(function (a, b) {
+                let nameA = a.LastName.toLowerCase(), nameB = b.LastName.toLowerCase()
+                if (nameA < nameB) //sort string ascending
+                    return -1
+                if (nameA > nameB)
+                    return 1
+                return 0 //default return value (no sorting)
+            });
+        }
+
+        function mainSortByEmpName() {
+            mainDataArray.sort(function (a, b) {
+                let nameA = a.Employer.toLowerCase(), nameB = b.Employer.toLowerCase()
+                if (nameA < nameB) //sort string ascending
+                    return -1
+                if (nameA > nameB)
+                    return 1
+                return 0 //default return value (no sorting)
+            });
+        }
+
+        function mainSortBySeatSubSeat() {
+            mainDataArray.sort(function (a, b) {
+                let nameA = a.Seat.toLowerCase() + a.SubSeat;
+                let nameB = b.Seat.toLowerCase() + b.SubSeat;
+                if (nameA < nameB) //sort string ascending
+                    return -1
+                if (nameA > nameB)
+                    return 1
+                return 0 //default return value (no sorting)
+            });
+        }
+
+        function infoByEmployer() {
+            let empAccountId,empName,coordinatorName,coordEmail,coordCellPhone,coordPhone,coordinatorId,org1Name,org1Email,org1CellPhone,org1Phone,org1Id,org2Name,org2Email,org2CellPhone,org2Phone,org2Id;
+            let csContId,csName,csEmail,csCellPhone,csPhone,note,directorName,directorEmail,directorCellPhone,directorPhone;
+            let regDirObj,coordObj,org1Obj,org2Obj,csObj
+            let facilityNames,facilityAddresses,addr,addrPtr,coordDivision,regionalDirId,regionalDirName,regDirEmail;
+            var regDirCellPhone,regDirPhone,regDirDivision,associateId,auditorId,associateName,associateEmail,associateCellPhone,associatePhone,associateObj,auditorName,auditorEmail,auditorCellPhone,auditorPhone,auditorObj;
+
+            directorName      = directorDataArray[0].Name;
+            directorEmail     = directorDataArray[0].Email;
+            directorCellPhone = directorDataArray[0].CellPhone;
+            directorPhone     = directorDataArray[0].Phone;
+
+            mainSortByEmpName();
+            for (i = 0; i < mainDataArray.length; i++) {
+                empAccountId      = mainDataArray[i].EmpAccountId;
+                empName           = mainDataArray[i].Employer;
+                regionalDirId     = mainDataArray[i].RegionalDirectorId;
+                regionalDirName   = mainDataArray[i].RegionalDirector;
+                coordinatorName   = mainDataArray[i].Coordinator;
+                coordinatorId     = mainDataArray[i].CoordId;
+                org1Name          = mainDataArray[i].Organizer1;
+                org1Id            = mainDataArray[i].Org1Id;
+                org2Name          = mainDataArray[i].Organizer2;
+                org2Id            = mainDataArray[i].Org2Id;
+                csContId          = mainDataArray[i].CsContId;
+                csName            = mainDataArray[i].ContractSpecialist;
+                note              = mainDataArray[i].Note || 'No note!';
+                facilityNames     = mainDataArray[i].FacilityNames;
+                facilityAddresses = mainDataArray[i].FacilityAddresses;
+                associateId       = mainDataArray[i].AssociateId;
+                auditorId         = mainDataArray[i].AuditorId;
+
+                addrPtr = 0;
+                addr    = mainDataArray[i].AddressArray[addrPtr];
+                allInfoDataArray.push({Employer: empName, Name:directorName, Title:'Director',Email:directorEmail, CellPhone:directorCellPhone, Phone: directorPhone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Note:note});
+
+                if(!allInfoMap[empName]) {
+                    allInfoMap[empName] = {
+                        FacilityNames:facilityNames,
+                        FacilityAddresses:addr,
+                        DirInfo:       {Exists: true, Name:directorName, Title:'Director',Email:directorEmail, CellPhone:directorCellPhone, Phone: directorPhone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Note:note},
+                        CoordInfo:     {Exists: false},
+                        Org1Info:      {Exists: false},
+                        Org2Info:      {Exists: false},
+                        CsInfo:        {Exists: false},
+                        RegDirInfo:    {Exists: false},
+                        AssociateInfo: {Exists: false},
+                        AuditorInfo:   {Exists: false}
+                    }
+                }
+
+                if (peopleMap[regionalDirId]) {
+                    regDirEmail     = peopleMap[regionalDirId].Email;
+                    regDirCellPhone = peopleMap[regionalDirId].CellPhone;
+                    regDirPhone     = peopleMap[regionalDirId].Phone;
+                    regDirDivision  = peopleMap[regionalDirId].Division;
+                    regDirObj       = {Employer: empName, Name:regionalDirName, Title:'Regional Director',Division:regDirDivision, Email:regDirEmail, CellPhone:regDirCellPhone,Phone:regDirPhone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Exists: true,Note:note};
+                    allInfoDataArray.push(regDirObj);
+                    allInfoMap[empName].RegDirInfo = regDirObj;
+                }
+
+                if (peopleMap[coordinatorId]) {
+                    coordEmail     = peopleMap[coordinatorId].Email;
+                    coordCellPhone = peopleMap[coordinatorId].CellPhone;
+                    coordPhone     = peopleMap[coordinatorId].Phone;
+                    coordDivision  = peopleMap[coordinatorId].Division;
+                    coordObj       = {Employer: empName, Name:coordinatorName, Title:'Coordinator',Division:coordDivision, Email:coordEmail, CellPhone:coordCellPhone,Phone:coordPhone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Exists: true,Note:note};
+                    allInfoDataArray.push(coordObj);
+                    allInfoMap[empName].CoordInfo = coordObj;
+                }
+
+                if (peopleMap[org1Id]) {
+                    addrPtr++;
+                    addr = mainDataArray[i].AddressArray[addrPtr];
+                    org1Email     = peopleMap[org1Id].Email;
+                    org1CellPhone = peopleMap[org1Id].CellPhone;
+                    org1Phone     = peopleMap[org1Id].Phone;
+                    org1Division  = peopleMap[org1Id].Division;
+                    org1Obj       = {Employer: empName, Name:org1Name, Title:'Organizer',Division:org1Division,Email:org1Email, CellPhone:org1CellPhone, Phone: org1Phone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Exists: true,Note:note};
+                    allInfoDataArray.push(org1Obj);
+                    allInfoMap[empName].Org1Info = org1Obj;
+                }
+
+                if (peopleMap[org2Id]) {
+                    addrPtr++;
+                    addr = mainDataArray[i].AddressArray[addrPtr];
+                    org2Email     = peopleMap[org2Id].Email;
+                    org2CellPhone = peopleMap[org2Id].CellPhone;
+                    org2Phone     = peopleMap[org2Id].Phone;
+                    org2Division  = peopleMap[org2Id].Division;
+                    org2Obj       = {Employer: empName, Name:org2Name, Title:'Organizer',Division:org2Division,Email:org2Email, CellPhone:org2CellPhone, Phone: org2Phone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Exists: true,Note:note};
+                    allInfoDataArray.push(org2Obj);
+                    allInfoMap[empName].Org2Info = org2Obj;
+                }
+
+                if(peopleMap[csContId]) {
+                    addrPtr++;
+                    addr = mainDataArray[i].AddressArray[addrPtr];
+                    csEmail     = peopleMap[csContId].Email;
+                    csCellPhone = peopleMap[csContId].CellPhone;
+                    csPhone     = peopleMap[csContId].Phone;
+                    csObj       = {Employer: empName, Name:csName, Title:'Contract Specialist',Division:sysDivision, Email:csEmail, CellPhone:csCellPhone, Phone: csPhone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Exists: true,Note:note};
+                    allInfoDataArray.push(csObj);
+                    allInfoMap[empName].CsInfo = csObj;
+                }
+
+                if(associateMap[associateId]) {
+                    addrPtr++;
+                    addr = mainDataArray[i].AddressArray[addrPtr];
+                    associateName      = associateMap[associateId].Name;
+                    associateEmail     = associateMap[associateId].Email;
+                    associateCellPhone = associateMap[associateId].CellPhone;
+                    associatePhone     = associateMap[associateId].Phone;
+                    associateObj       = {Employer: empName, Name:associateName, Title:'Mbr Associate',Division:sysDivision, Email:associateEmail, CellPhone:associateCellPhone, Phone: associatePhone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Exists: true,Note:note};
+                    allInfoDataArray.push(associateObj);
+                    allInfoMap[empName].AssociateInfo = associateObj;
+                }
+
+                if(auditorMap[auditorId]) {
+                    addrPtr++;
+                    addr = mainDataArray[i].AddressArray[addrPtr];
+                    auditorName      = auditorMap[auditorId].Name;
+                    auditorEmail     = auditorMap[auditorId].Email;
+                    auditorCellPhone = auditorMap[auditorId].CellPhone;
+                    auditorPhone     = auditorMap[auditorId].Phone;
+                    auditorObj       = {Employer: empName, Name:auditorName, Title:'Mbr Auditor',Division:sysDivision, Email:auditorEmail, CellPhone:auditorCellPhone, Phone: auditorPhone,FacilityNames:facilityNames,FacilityAddresses:facilityAddresses,Exists: true,Note:note};
+                    allInfoDataArray.push(auditorObj);
+                    allInfoMap[empName].AuditorInfo = auditorObj;
+                }
+            }
+            stop_here = 9;
+            mainSortBySeatSubSeat();
+        }
+
+        function phoneFormat(s) {
+            var s1;
+            if(s == null || s.trim().length < 10)
+                s1 = '';
+            else {
+                if(s == undefined) {
+                alert('UUUUUUUUUUUUUUUUUUUUUUU');
+            }
+                s1 = s.trim().replace(/[^0-9]/g,'');
+                s1 = '(' + s1.substr(0,3) + ') ' + s1.substr(3,3) + '-' + s1.substr(6);
+            }
+            return s1;
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = 'Missing';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function showNoSeats() {
+            var noSeatArray;
+            var key;
+            var i;
+            var warning;
+            var msg;
+
+            warning = [];
+            if(noSeatIdAccountMap) {
+                noSeatArray = Object.keys(noSeatIdAccountMap);
+                if(noSeatArray.length>0) {
+                    for (i = 0; i < noSeatArray.length; i++) {
+                        key = noSeatArray[i];
+                        noSeatRec = noSeatIdAccountMap[key];
+                        warning.push(toProperCase(noSeatRec.EmpName));
+                    }
+                    warning.sort();
+                    msg = 'FYI: The following Facilities have no Seat Id assigned and therefore cannot have their people managed until they do: <strong>' + warning.join() + '</strong>';
+                    noSeats.innerHTML = msg;
+                }
+            }
+        }
+
+        function chopAddresses(pAddrr,pCount) {
+            /*
+             returns an array of pAddr chopped up into pCount lines, removing dups.
+
+             e.g. (assuming a pCount of 4)
+             '2213 Buchannan Rd., Antioch, CA 94509 | 3400 Delta Fair Blvd., Antioch, CA 94509 | 3400 Delta Fair Blvd., Antioch, CA 94509 | 3400 Delta Fair Blvd., Antioch, CA 94509 | 3400 Delta Fair Blvd., Antioch, CA 94509 | 3604 Delta Fair Blvd., Antioch, CA 94509 | 3624 Delta Fair Blvd., Bldg. C, Antioch, CA 94509 | 3624 Delta Fair Blvd., Bldg. E, Antioch, CA 94509 | 4501 Sand Creek Rd., Antioch, CA 94531 | 4501 Sand Creek Rd., Antioch, CA 94531 | 4501 Sand Creek Rd., Antioch, CA 94531 | 4501 Sand Creek Rd., Antioch, CA 94531 |'
+             ==>
+             [0] = '2213 Buchannan Rd., Antioch, CA 94509     | 3624 Delta Fair Blvd., Bldg. E, Antioch, CA 94509  '
+             [1] = '3400 Delta Fair Blvd., Antioch, CA 94509  | 4501 Sand Creek Rd., Antioch, CA 94531  '
+             [2] = '3604 Delta Fair Blvd., Antioch, CA 94509  | '
+             [3] = '3624 Delta Fair Blvd., Bldg. C, Antioch, CA 94509  | '
+             */
+            var addrCount;
+            var addrPerLine;
+            var addrArray;
+            var outArray;
+            var linePtr = 0;
+            var ptr     = 0;
+            var addr;
+            var i;
+            var seenBefore = {};
+            var realLength;
+            var addrStr;
+            realLength  = pAddrr.lastIndexOf(' |') -1;
+            addrStr     = pAddrr.substr(0,realLength);
+
+            addrArray   = addrStr.split('|');
+            addrCount   = addrArray.length;
+            addrPerLine = addrCount / pCount;
+            outArray    = new Array(pCount);
+            for (i = 0; i <= pCount; i++) {
+                outArray[i] = '';
+            }
+
+            while(ptr < addrCount) {
+                addr = addrArray[ptr];
+                addr = addr.trim();
+                if(!seenBefore[addr]) {
+                    seenBefore[addr] = true;
+                    outArray[linePtr] += addr + ' | ';
+                    linePtr++;
+                    if(linePtr > pCount)
+                        linePtr = 0;
+                }
+                ptr++;
+            }
+            return outArray;
+        }
+
+        function buildArray() {
+            let accountRec,seat,subSeat,empName,empAccountId,empId,empRegion,csName,coordinatorId,org1Id,org2Id,csContId,eboardSeatId,csNote,mapKey,buCnt,editable,rowGroup,eboardCheck,first,eboardEdit;
+            let regionalDirId,regionalDirName,accountCoordId,accountOrg1Id,accountOrg2Id,atmCoordName,atmCoordId,atmOrg1Name,atmOrg1Id,atmOrg2Name,atmOrg2Id;
+            let accountCoordName,accountOrg1Name,accountOrg2Name,eboardCoordId,eboardOrg1Id,eboardOrg2Id;
+            let eboardCoordName,eboardOrg1Name,eboardOrg2Name;
+            let diff,auditorId,associateId,staffCount,facilityAddresses,facilityNames;
+
+            for (mapKey in accountMap) {
+                staffCount        = 0;
+                atmCoordName      = atmOrg1Name = 'Vacant';
+                regionalDirName   = coordinatorName = org1Name = accountCoordName = accountOrg1Name = '';
+                accountCoordId    = regionalDirId = accountOrg1Id = accountOrg2Id = accountOrg2Name = '';
+                coordinatorId     = org1Id = org2Name = org2Id = csContId = csName = csNote = '';
+                eboardSeatId      = eboardCoordId = eboardOrg1Id  = eboardOrg2Id  = eboardCoordName = eboardOrg1Name = eboardOrg2Name = '';
+                atmCoordId        = atmOrg1Id = atmOrg2Name = atmOrg2Id = '';
+                eboardCheck       = false;
+                eboardEdit        = false;
+                accountRec        = accountMap[mapKey];
+                empAccountId      = accountRec.EmpAccountId;
+                empName           = accountRec.EmpName;
+                empRegion         = accountRec.Region;
+                empId             = accountRec.EmpId;
+                seat              = accountRec.Seat;
+                subSeat           = accountRec.Subseat;
+                first             = accountRec.First;
+                buCnt             = accountRec.EmpBuCnt;
+                editable          = accountRec.Editable;
+                rowGroup          = accountRec.RowGroup;
+                regionalDirId     = accountRec.RegionalDirId;
+                accountCoordId    = accountRec.CordinatorId;
+                accountOrg1Id     = accountRec.Organizer1Id;
+                accountOrg2Id     = accountRec.Organizer2Id;
+                facilityNames     = accountRec.FacilityNames;
+                facilityAddresses = accountRec.FacilityAddresses;
+                associateId       = accountRec.AssociateId;
+                auditorId         = accountRec.AuditorId;
+
+                if(regionalDirId) {
+                    if(peopleMap[regionalDirId])
+                        regionalDirName = peopleMap[regionalDirId].Name;
+                }
+
+                if (accountCoordId) {
+                    if(peopleMap[accountCoordId])
+                        accountCoordName = peopleMap[accountCoordId].Name;
+                }
+
+                if(accountOrg1Id) {
+                    if(peopleMap[accountOrg1Id])
+                        accountOrg1Name = peopleMap[accountOrg1Id].Name;
+                }
+
+                if(accountOrg2Id) {
+                    if(peopleMap[accountOrg2Id])
+                        accountOrg2Name = peopleMap[accountOrg2Id].Name;
+                }
+
+                if(atmMap[empAccountId + 'Coordinator']) {
+                    atmCoordName = atmMap[empAccountId + 'Coordinator'].Name;
+                    atmCoordId   = atmMap[empAccountId + 'Coordinator'].UserId;
+                    staffCount++;
+                }
+
+                if(atmMap[empAccountId + 'Organizer1']) {
+                    atmOrg1Name  = atmMap[empAccountId + 'Organizer1'].Name;
+                    atmOrg1Id    = atmMap[empAccountId + 'Organizer1'].UserId;
+                    staffCount++;
+                }
+
+                if(atmMap[empAccountId + 'Organizer2']) {
+                    atmOrg2Name  = atmMap[empAccountId + 'Organizer2'].Name;
+                    atmOrg2Id    = atmMap[empAccountId + 'Organizer2'].UserId;
+                    staffCount++;
+                }
+
+                if(specialistMap[empAccountId]) {
+                    csName   = specialistMap[empAccountId].Name;
+                    csContId = specialistMap[empAccountId].ContactId;
+                    staffCount++;
+                }
+
+                if(notesMap[empAccountId]) {
+                    csNote = notesMap[empAccountId].Note;
+                }
+
+                if(eboardMap[empAccountId]) {
+                    eboardSeatId    = eboardMap[empAccountId].Id;
+                    eboardCoordId   = eboardMap[empAccountId].CoordId;
+                    eboardOrg1Id    = eboardMap[empAccountId].Org1Id;
+                    eboardOrg2Id    = eboardMap[empAccountId].Org2Id;
+                    eboardCoordName = eboardMap[empAccountId].CoordName;
+                    eboardOrg1Name  = eboardMap[empAccountId].Org1Name;
+                    eboardOrg2Name  = eboardMap[empAccountId].Org2Name;
+                    eboardCheck = true;
+                }
+
+                if(!exceptionsMap[seat]) {
+                    if (first && uniqueSeatCountMap[seat].Count > 1)
+                        eboardEdit = true;
+                }
+
+                diff = 0;
+                if(atmCoordId != accountCoordId )
+                    diff = 1;
+                if(atmOrg1Id != accountOrg1Id)
+                    diff += 2;
+                if(atmOrg2Id != accountOrg2Id)
+                    diff += 4;
+                if(atmCoordId != eboardCoordId)
+                    diff += 8;
+                if(atmOrg1Id != eboardOrg1Id)
+                    diff += 16;
+                if(atmOrg2Id != eboardOrg2Id)
+                    diff += 32;
+
+                var choppedArray = chopAddresses(facilityAddresses, staffCount);
+
+                mainDataArray.push( {
+                    EmpAccountId: empAccountId,
+                    StaffCount: staffCount,
+                    Diff: diff,
+                    Region: empRegion,
+                    Seat: seat,
+                    SubSeat: subSeat,
+                    First: first,
+                    Editable:eboardEdit,
+                    RowGroup:rowGroup,
+                    EBoardSeatId: eboardSeatId,
+                    EboardCheck: eboardCheck,
+                    Employer: empName,
+                    BuCount: buCnt,
+
+                    Coordinator: atmCoordName,
+                    Organizer1: atmOrg1Name,
+                    Organizer2: atmOrg2Name,
+                    CoordId: atmCoordId,
+                    Org1Id: atmOrg1Id,
+                    Org2Id: atmOrg2Id,
+
+                    RegionalDirectorId: regionalDirId,
+                    RegionalDirector: regionalDirName,
+
+                    AccountCoordinator: accountCoordName,
+                    AccountOrganizer1: accountOrg1Name,
+                    AccountOrganizer2: accountOrg2Name,
+                    AccountCoordId: accountCoordId,
+                    AccountOrg1Id: accountOrg1Id,
+                    AccountOrg2Id: accountOrg2Id,
+
+                    EboardCoordinator: eboardCoordName,
+                    EboardOrganizer1: eboardOrg1Name,
+                    EboardOrganizer2: eboardOrg2Name,
+                    EboardCoordId: eboardCoordId,
+                    EboardOrg1Id: eboardOrg1Id,
+                    EboardOrg2Id: eboardOrg2Id,
+
+                    ContractSpecialist:csName,
+                    CsContId:csContId,
+                    Note:csNote,
+
+                    FacilityNames: facilityNames,
+                    FacilityAddresses:facilityAddresses,
+                    AddressArray: choppedArray,
+
+                    AssociateId: associateId,
+                    AuditorId: auditorId
+                });
+            }
+
+        }
+
+        function staffFilterInputHandler(e) {
+            var searchText = e.target.value;
+            staffGridOptions.api.setQuickFilter(searchText);
+        }
+
+        function allInfoFilterInputHandler(e) {
+            var searchText = e.target.value;
+            allInfoGridOptions.api.setQuickFilter(searchText);
+        }
+
+        function initAgGrid() {
+
+            agGrid.LicenseManager.setLicenseKey("United_Healthcare_Workers_West_10-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+
+            rowBackgroundClassRules = {
+                'A-background' : function(params) {
+                    return params.data.RowGroup == 'A';
+                },
+                'B-background': function(params) {
+                    return params.data.RowGroup == 'B';
+                }
+            };
+
+            mainColumnDefs = [
+                {width:  90, suppressMenu: true,  headerName: 'Region',      field: 'Region',   sortingOrder: ['asc','desc'],cellClassRules: rowBackgroundClassRules},
+                {width:  60, suppressMenu: true,  headerName: 'Seat',        field: 'Seat',     valueGetter: 'data.Seat + data.SubSeat', sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {width:  55, suppressMenu: true,  headerName: 'Eboard',      colId: 'Eboard',   cellRenderer: eboardRenderer,     cellClass: 'Eboard', cellClassRules: rowBackgroundClassRules, suppressSorting: true},
+                {width:  80, suppressMenu: true,  headerName: 'Sync',        colId: 'Sync',     cellRenderer:differencesRenderer, cellClassRules: rowBackgroundClassRules, suppressSorting: true},
+                {width: 240, suppressMenu: false, headerName: 'Employer',    field: 'Employer', filter: 'text',sortingOrder: ['asc','desc'],cellClassRules: rowBackgroundClassRules},
+                {width:  55, suppressMenu: true,  headerName: 'BU',          field: 'BuCount', sortingOrder: ['asc','desc'], cellClass: 'right-align', cellClassRules: rowBackgroundClassRules},
+                {width: 140, suppressMenu: false, headerName: 'Director',    field: 'RegionalDirector',     filter: 'text', sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {width: 140, suppressMenu: false, headerName: 'Coordinator', field: 'Coordinator',  filter: 'text', sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {width: 140, suppressMenu: false, headerName: 'Organizer1',  field: 'Organizer1',   filter: 'text', sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {width: 140, suppressMenu: false, headerName: 'Organizer2',  field: 'Organizer2',   filter: 'text', sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {width: 120, suppressMenu: false, headerName: 'ContractSpecialist', field:'ContractSpecialist',  filter: 'text', sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules},
+                {width: 260, suppressMenu: true,  headerName: 'Note',        field: 'Note',  sortingOrder: ['asc','desc'], cellClassRules: rowBackgroundClassRules}
+            ];
+
+            directorColumnDefs = [
+                {headerName: 'Name',        field: 'Name',       width: 200},
+                {headerName: 'Cell Phone',  field: 'CellPhone',  width: 130},
+                {headerName: 'Phone',       field: 'Phone',      width: 130},
+                {headerName: 'Email',       field: 'Email',      width: 220},
+                {headerName: 'Title',       field: 'Title',      width: 170, sort: 'desc'}
+            ];
+
+            staffColumnDefs = [
+                {headerName: 'First Name',  field: 'FirstName',  width: 132},
+                {headerName: 'Last Name',   field: 'LastName',   width: 120},
+                {headerName: 'Division',    field: 'Division',   width: 180},
+                {headerName: 'Title',       field: 'Title',      width: 180},
+                {headerName: 'Email',       field: 'Email',      width: 274},
+                {headerName: 'CellPhone',   field: 'CellPhone',  width: 120},
+                {headerName: 'Phone',       field: 'Phone',      width: 120},
+                {headerName: 'Location',    field: 'Location',   width: 120}
+            ];
+
+            nameColumnDefs = [
+                {headerName: 'First Name',  field: 'FirstName',  width: 132},
+                {headerName: 'Last Name',   field: 'LastName',   width: 120},
+                {headerName: 'Title',       field: 'Title',      width: 180},
+                {headerName: 'Email',       field: 'Email',      width: 274},
+                {headerName: 'CellPhone',   field: 'CellPhone',  width: 120},
+                {headerName: 'Phone',       field: 'Phone',      width: 120},
+                {headerName: 'Location',    field: 'Location',   width: 120}
+            ];
+
+            csNameColumnDefs = [
+                {headerName: 'First Name',  field: 'FirstName',  width: 132},
+                {headerName: 'Last Name',   field: 'LastName',   width: 120},
+                {headerName: 'Title',       field: 'Title',      width: 180},
+                {headerName: 'Email',       field: 'Email',      width: 274},
+                {headerName: 'CellPhone',   field: 'CellPhone',  width: 120}
+            ];
+
+            csEditColumnDefs = [
+                {headerName: 'First Name',  field: 'FirstName',  width: 132},
+                {headerName: 'Last Name',   field: 'LastName',   width: 120},
+                {headerName: 'Title',       field: 'Title',      width: 180},
+                {headerName: 'Email',       field: 'Email',      width: 274, editable:true, onCellValueChanged: csChange},
+                {headerName: 'CellPhone',   field: 'CellPhone',  width: 120, editable:true, onCellValueChanged: csChange},
+                {headerName: 'Status',      field: 'Status',     width: 200}
+            ];
+
+//              {headerName: 'Note',     field: 'Note',         width:  252,  rowGroupIndex: 1},   
+//                 headerGroupComponent:MyEmployerHeaderGroupComponent,
+//                         headerGroupComponent:MyNoteHeaderGroupComponent,
+/*
+            var allContactsColumnDefs = [{
+                headerName: "Employer",
+                groupId: "Employer",
+                children: [
+                    {headerName: 'Employer',     field: 'Employer',         width:  252},
+                    {
+                        headerName: "Note",
+                        groupId: "Note",
+                        children: [
+                            {headerName: "Note",         field: "Note",hide: false,  width:  150,  columnGroupShow: 'closed'}
+                        ]
+                    },
+                    {headerName: 'Name',         field: 'Name',             width:  252, suppressSorting: false},
+                    {headerName: 'Title',        field: 'Title',            width:  180, suppressSorting: false},
+                    {headerName: 'Email',        field: 'Email',            width:  274, suppressSorting: false},
+                    {headerName: 'CellPhone',    field: 'CellPhone',        width:  120, suppressSorting: false},
+                    {headerName: 'Phone',        field: 'Phone',            width:  120, suppressSorting: false},
+                    {headerName: 'Addresses',    field: 'FacilityAddresses',width:  5154, suppressSorting: false},
+                    {headerName: 'Facilities',   field: 'FacilityNames',    width:  3000, suppressSorting: false}
+                ]
+            }];
+
+
+                            {headerName: "Note",         field: "Note",hide: false,  width:  150},
+
+*/
+
+            var allContactsColumnDefs = [
+                {headerName: 'Employer',     field: 'Employer',         width:  252,  rowGroupIndex: 0},
+                {headerName: 'Name',         field: 'Name',             width:  252, suppressSorting: false},
+                {headerName: 'Title',        field: 'Title',            width:  180, suppressSorting: false},
+                {headerName: 'Email',        field: 'Email',            width:  274, suppressSorting: false},
+                {headerName: 'CellPhone',    field: 'CellPhone',        width:  120, suppressSorting: false},
+                {headerName: 'Phone',        field: 'Phone',            width:  120, suppressSorting: false},
+                {headerName: 'Addresses',    field: 'FacilityAddresses',width:  5154, suppressSorting: false},
+                {headerName: 'Facilities',   field: 'FacilityNames',    width:  3000, suppressSorting: false}
+            ];
+
+/*
+            function MyNoteHeaderGroupComponent() { 
+                // MyHeaderComponent() {
+            }
+
+            MyNoteHeaderGroupComponent.prototype.init = function (agParams){
+            //MyHeaderComponent.prototype.init = function (agParams){
+                this.agParams = agParams;
+                this.eGui = document.createElement('div');
+                this.eGui.innerHTML = '<div class="customHeaderLabel"> ** </div>' ;
+            };
+
+            MyNoteHeaderGroupComponent.prototype.getGui = function (){
+            //MyHeaderGroupComponent.prototype.getGui = function (){
+                return this.eGui;
+            };
+
+            MyNoteHeaderGroupComponent.prototype.destroy = function () {};
+
+                headerGroupComponent:MyEmployerHeaderGroupComponent,
+
+            function MyEmployerHeaderGroupComponent() {}
+            MyDataHeaderGroupComponent.prototype.init = function (agParams){
+            //MyHeaderComponent.prototype.init = function (agParams){
+console.log('agParams :: ' , agParams);                
+                this.agParams = agParams;
+                this.eGui = document.createElement('div');
+                this.eGui.innerHTML = '<div class="customHeaderLabel"> ** </div>' ;
+                return this.eGui;
+            };
+
+            MyEmployerHeaderGroupComponent.prototype.getGui = function (){
+            //MyHeaderGroupComponent.prototype.getGui = function (){
+                return this.eGui;
+            };
+
+            MyEmployerHeaderGroupComponent.prototype.destroy = function () {};
+
+/*
+
+            allContactsColumnDefs = [
+                {headerName: 'Note',         field: 'Note',             width:  252,  rowGroupIndex: 0},
+                {headerName: 'Name',         field: 'Name',             width:  252, suppressSorting: false},
+                {headerName: 'Title',        field: 'Title',            width:  180, suppressSorting: false},
+                {headerName: 'Email',        field: 'Email',            width:  274, suppressSorting: false},
+                {headerName: 'CellPhone',    field: 'CellPhone',        width:  120, suppressSorting: false},
+                {headerName: 'Phone',        field: 'Phone',            width:  120, suppressSorting: false},
+                {headerName: 'Addresses',   field: 'FacilityAddresses',width:  5154, suppressSorting: false},
+                {headerName: 'Facilities',  field: 'FacilityNames',    width:  3000, suppressSorting: false}
+            ];
+
+            allContactsColumnDefs = [
+                {headerName: 'Employer',     field: 'Employer',         width:  252,  rowGroupIndex: 0},
+                {headerName: 'Name',         field: 'Name',             width:  252, suppressSorting: false},
+                {headerName: 'Title',        field: 'Title',            width:  180, suppressSorting: false},
+                {headerName: 'Email',        field: 'Email',            width:  274, suppressSorting: false},
+                {headerName: 'CellPhone',    field: 'CellPhone',        width:  120, suppressSorting: false},
+                {headerName: 'Phone',        field: 'Phone',            width:  120, suppressSorting: false},
+                {headerName: 'Addresses',   field: 'FacilityAddresses',width:  5154, suppressSorting: false},
+                {headerName: 'Facilities',  field: 'FacilityNames',    width:  3000, suppressSorting: false}
+            ];*/
+
+            eboardColumnDefs = [
+                {headerName: 'SeatName',   field: 'SeatName',   width: 300},
+                {headerName: 'SeatHolder', field: 'SeatHolder', width: 200},
+                {headerName: 'Role',       field: 'Title',      width: 240},
+                {headerName: 'CoordName',  field: 'CoordName',  width: 200},
+                {headerName: 'Org1Name',   field: 'Org1Name',   width: 200},
+                {headerName: 'Org2Name',   field: 'Org2Name',   width: 200}
+            ];
+
+            mainGridOptions = {
+                columnDefs: mainColumnDefs,
+                rowData: mainDataArray,
+                enableSorting: true,
+                enableFilter: true,
+                rowSelection: 'single',
+                onRowSelected: rowSelectedHandler
+            };
+
+            directorGridOptions = {
+                columnDefs: directorColumnDefs,
+                rowData: directorDataArray,
+                enableSorting: false,
+                suppressCellSelection: true,
+                suppressHorizontalScroll: true
+            };
+
+            coordinatorGridOptions = {
+                columnDefs: nameColumnDefs,
+                rowData: coordinatorDataArray,
+                enableSorting: true,
+                suppressCellSelection: true
+            };
+
+            organizerGridOptions = {
+                columnDefs: nameColumnDefs,
+                rowData: organizerDataArray,
+                enableSorting: true,
+                suppressCellSelection: true
+            };
+
+            csGridOptions = {
+                columnDefs: csNameColumnDefs,
+                rowData: specialistDataArray,
+                enableSorting: true,
+                suppressCellSelection: true
+            };
+
+            csEditGridOptions = {
+                columnDefs: csEditColumnDefs,
+                rowData: specialistDataArray,
+                enableSorting: true,
+                suppressCellSelection: false,
+                rowSelection: 'single',
+                onRowSelected: csRowSelectedHandler
+            };
+
+            staffGridOptions = {
+                columnDefs: staffColumnDefs,
+                rowData: staffDataArray,
+                enableSorting: true,
+                enableFilter: true
+            };
+
+            allInfoGridOptions = {
+                columnDefs: allContactsColumnDefs,
+                rowData: allInfoDataArray,
+                enableSorting: true,
+                suppressCellSelection: true,
+                groupHideGroupColumns: false,
+                groupSuppressAutoColumn: false,
+                groupUseEntireRow: true,
+                groupDefaultExpanded:-1,
+                groupRowRenderer: allInfoGroupRowRenderer
+            };
+
+//                 groupRowRenderer: allInfoGroupRowRenderer
+
+            eboardGridOptions = {
+                columnDefs: eboardColumnDefs,
+                rowData: eboardDataArray,
+                enableSorting: true,
+                enableFilter: false,
+                rowSelection: 'single',
+                onRowSelected: ebRowSelectedHandler
+            };
+
+            initialMainSort = [
+                {colId: 'Seat', sort: 'asc'}
+            ];
+
+            pdfSort = [
+                {colId: 'Region', sort: 'desc'},
+                {colId: 'RegionalDirector', sort: 'asc'},
+                {colId: 'Coordinator', sort: 'asc'},
+                {colId: 'Organizer1',  sort: 'asc'},
+                {colId: 'Employer',    sort: 'asc'}
+            ];
+
+            nameSort = [
+                {colId: 'LastName', sort: 'asc'},
+                {colId: 'FirstName', sort: 'asc'}
+            ];
+
+            empSort = [
+                {colId: 'Employer', sort: 'asc'}
+            ];
+
+            seatNameSort  = [
+                {colId: 'SeatName', sort: 'asc'}
+            ];
+
+            initialDirectorSort = [
+                {colId: 'Title', sort: 'asc'},
+                {colId: 'Name', sort: 'asc'}
+            ];
+
+            initialStaffSort = [
+                {colId: 'Last Name', sort: 'asc'},
+                {colId: 'First Name', sort: 'asc'},
+                {colId: 'Title', sort: 'asc'}
+            ];
+
+            Opentip.styles.myStyle = {
+                target: true,
+                stem: true,
+                showOn: "mouseover",
+                offset: [0,-130],
+                tipJoint: "top",
+                stemBase: 16,
+                stemLength:15,
+                delay:0.1,
+                background : "#F0F8FF",
+                borderWidth : 0
+            };
+
+            Opentip.styles.myStyle2 = {
+                target: true,
+                stem: true,
+                showOn: "mouseover",
+                autoOffset:true,
+                offset: [-30,0],
+                tipJoint: "left",
+                stemBase: 16,
+                stemLength:25,
+                delay:0,
+                background : "#F0F8FF",
+                borderWidth : 0
+            };
+        }
+
+        function csChange(param) {
+            var what = param.colDef.field;
+            var val  = param.newValue;
+            var status;
+            var statusCode;
+
+            if(what == 'Email')
+                param.data.EmailUpdated = true;
+
+            if(what == 'CellPhone')
+                param.data.CellPhoneUpdated = true;
+
+            if(val > '') {
+                if(param.data.EmailUpdated && param.data.CellPhoneUpdated) {
+                    status = 'Both (pending update)';
+                    statusCode = param.data.Flag + 'B'; // statusCode = 'NB' - New Both, statusCode = 'CB' -Change Both
+                }
+                else if(param.data.EmailUpdated) {
+                    status = 'Email (pending update)';
+                    statusCode = param.data.Flag + 'E'; // statusCode = 'NE' - New Email, statusCode = 'CE' -Change Email
+                }
+                else if(param.data.CellPhoneUpdated) {
+                    status = 'Cell Phone (pending update)';
+                    statusCode = param.data.Flag + 'P'; // statusCode = 'NP' - New Phone, statusCode = 'CP' -Change Phone
+                }
+                param.data.Status     = status;
+                param.data.StatusCode = statusCode;
+                csEditGridOptions.api.refreshView();
+            }
+        }
+
+        function locationsRenderer(param) {
+            var newDiv   = document.createElement('div');
+            var locs       = param.data.Locations;
+
+            if(locs) {
+                var locsArray = locs.split('|');
+                var tipContent = ' <ul> ';
+                var locItem;
+                var tipTitle = 'Facilities';
+                var liCnt = 0;
+
+                for (i = 0; i < locsArray.length; i++) {
+                    locItem = locsArray[i].trim();
+                    if (locItem.length > 0) {
+                        liCnt++;
+                        tipContent += '<li> ' + locItem + '</li>';
+                    }
+                }
+                tipContent += ' </ul> ';
+
+                var newTN = document.createTextNode('Locations: ' + liCnt);
+                newDiv.appendChild(newTN);
+                var tipC = new Opentip(newDiv, tipContent, tipTitle, {fixed: true, style: "myStyle2"});
+            }
+            else {
+                var newTN = document.createTextNode('Locations: 0');
+                newDiv.appendChild(newTN);
+            }
+            return newDiv;
+        }
+
+        function formatFacilityOrAddrress(pStr) {
+
+            var facLen   = pStr.length;
+            var lastChar = pStr.substr(facLen-1,1);
+            if(lastChar == '|')
+                pStr = pStr.substr(0,facLen-1);
+
+            facStr = pStr.trim();
+            var pipe = / \|/g;
+            var facStrF = facStr.replace (pipe, ',');
+            return facStrF;
+        }
+
+        function allInfoGroupRowRenderer(param) {
+            let newDiv    = document.createElement('div');
+            let facNames  = formatFacilityOrAddrress(param.node.childrenAfterSort[0].data.FacilityNames);
+            let newTnEmp  = document.createTextNode( param.node.key );
+            let newTnFacs = document.createTextNode( ' ( Facilities:' + facNames  + ')');
+
+            newDiv.appendChild(newTnEmp);
+            if(param.node.childrenAfterSort[0].data.Note != 'No note!') {
+                let note       = param.node.childrenAfterSort[0].data.Note;
+                let newTnNote  = document.createTextNode( ' Note: ' + note );
+                let noteDiv    = document.createElement('div');
+                noteDiv.setAttribute('class', 'NoteHeader');
+                noteDiv.appendChild(newTnNote);
+                newDiv.appendChild(noteDiv);
+            }
+
+            newDiv.appendChild(newTnFacs);
+            newDiv.setAttribute('class', 'GroupHeader');
+            return newDiv;
+        }
+
+        function rowSelectedHandler(event) {
+            // Since ag-Grid 4.0, this is called twice: Once for the newly selected row and again if there was a previously selected row.
+            if(event.node.isSelected()) {
+                selectedRow      = event.node.childIndex;
+                selectedEmpId    = event.node.data.EmpAccountId;
+                selectedSeat     = event.node.data.Seat;
+                selectedSubSeat  = event.node.data.SubSeat;
+                selectedEmp      = event.node.data.Employer;
+                noteInput.value  = event.node.data.Note;
+                updateButton.value = 'Update ' + selectedEmp + ' (and ' + selectedSeat + selectedSubSeat + ')';
+                updateButton.disabled = false;
+            }
+        }
+
+        function csRowSelectedHandler(event) {
+            // Since ag-Grid 4.0, this is called twice: Once for the newly selected row and again if there was a previously selected row.
+            if(event.node.isSelected()) {
+                // Note: agGrid is a bit screwed up when it comes to event.node.childIndex.  This returns virtual index of sorted grid, not actual underlying array index.
+                selectedCsRow    = event.node.childIndex;
+                selectedCsContId = event.node.data.ContId;
+                selectedCsRec    = event.node.data;
+                selectedCsNode   = event.node;
+            }
+        }
+
+        function ebRowSelectedHandler(event) {
+            // Since ag-Grid 4.0, this is called twice: Once for the newly selected row and again if there was a previously selected row.
+            if(event.node.isSelected()) {
+                selectedEbRec = event.node.data;
+                ebUpdateButton.value = 'Update ' + event.node.data.SeatName;
+                ebUpdateButton.disabled = false;
+            }
+        }
+
+        function differencesRenderer(params) {
+            var C1  = params.data.Coordinator        || '';
+            var O1  = params.data.Organizer1         || '';
+            var O2  = params.data.Organizer2         || '';
+            var AC1 = params.data.AccountCoordinator || '';
+            var AO1 = params.data.AccountOrganizer1  || '';
+            var AO2 = params.data.AccountOrganizer2  || '';
+            var EC1 = params.data.EboardCoordinator  || '';
+            var EO1 = params.data.EboardOrganizer1   || '';
+            var EO2 = params.data.EboardOrganizer2   || '';
+
+            var newDiv = document.createElement('div');
+            var tipTitle   = params.data.Employer;
+            var tipContent = ' ' +
+                    '<table> ' +
+                    ' <tr> '   +
+                    '   <td style="width:60px;padding-left:5px;padding-right:5px;">CRL</td>' +
+                    '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + C1 + '</td>' +
+                    '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + O1 + '</td>' +
+                    '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + O2 + '</td>' +
+                    ' </tr>'   +
+                    ' <tr> '   +
+                    '   <td style="width:60px;padding-left:5px;padding-right:5px;">Account</td>' +
+                    '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + AC1 + '</td>' +
+                    '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + AO1 + '</td>' +
+                    '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + AO2 + '</td>' +
+                    ' </tr>';
+
+            if(params.data.EboardCheck) {
+                tipContent +=
+                        ' <tr> ' +
+                        '   <td style="width:60px;padding-left:5px;padding-right:5px;">Eboard</td>' +
+                        '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + EC1 + '</td>' +
+                        '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + EO1 + '</td>' +
+                        '   <td style="width:200px;padding-left:5px;padding-right:5px;"> ' + EO2 + '</td>' +
+                        ' </tr>';
+            }
+            tipContent += '</table>';
+            var tipC = new Opentip(newDiv, tipContent, tipTitle, { style: "myStyle" });
+            var svg1 = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            var snap = Snap(svg1);
+            var acCircle  = snap.circle(10,  4, 4);
+            var ao1Circle = snap.circle(30,  4, 4);
+            var ao2Circle = snap.circle(50,  4, 4);
+
+            if(params.data.Diff & 1)
+                acCircle.attr({fill: "#FF0000"});
+            else
+                acCircle.attr({fill: "#00FF00"});
+
+            if(params.data.Diff & 2)
+                ao1Circle.attr({fill: "#FF0000"});
+            else
+                ao1Circle.attr({fill: "#00FF00"});
+
+            if(params.data.Diff & 4)
+                ao2Circle.attr({fill: "#FF0000"});
+            else
+                ao2Circle.attr({fill: "#00FF00"});
+
+            if(params.data.EboardCheck) {
+                // Only show dots for Account that controls eboard
+                var ecCircle  = snap.circle(10, 16, 4);
+                var eo1Circle = snap.circle(30, 16, 4);
+                var eo2Circle = snap.circle(50, 16, 4);
+
+                if(params.data.Diff & 8)
+                    ecCircle.attr({fill: "#FF0000"});
+                else
+                    ecCircle.attr({fill: "#00FF00"});
+
+                if(params.data.Diff & 16)
+                    eo1Circle.attr({fill: "#FF0000"});
+                else
+                    eo1Circle.attr({fill: "#00FF00"});
+
+                if(params.data.Diff & 32)
+                    eo2Circle.attr({fill: "#FF0000"});
+                else
+                    eo2Circle.attr({fill: "#00FF00"});
+            }
+            newDiv.appendChild(svg1);
+            return newDiv;
+        }
+
+        function employerCellRenderer(params) {
+            var t;
+            t = 22;
+            return params.value;
+        }
+
+        function copyRenderer(params) {
+            var copyButton;
+            var t;
+            copyButton = document.createElement('button');
+            copyButton.setAttribute('class', 'CopyButton');
+            t = document.createTextNode("+");
+            copyButton.appendChild(t);
+            return copyButton;
+        }
+
+        function eboardRenderer(params) {
+            var newInput;
+
+            if(params.data.Editable) {
+                newInput          = document.createElement('input');
+                newInput.name     = params.data.Seat;
+                newInput.type     = 'radio';
+                newInput.checked  = params.data.EboardCheck;
+                newInput.addEventListener('click', function () {
+                    var currentRowData;
+                    for(i=0;i<mainDataArray.length;i++) {
+                        if(mainDataArray[i].Seat == params.data.Seat)
+                            mainDataArray[i].EboardCheck = false;
+                    }
+                    params.data.EboardCheck = true;
+                    mainGridOptions.api.softRefreshView();
+                });
+            }
+            else {
+                if(!exceptionsMap[params.data.Seat]) {
+                    newInput = document.createElement('input');
+                    newInput.name = params.data.Seat;
+                    newInput.type = 'checkbox';
+                    newInput.checked = params.data.EboardCheck;
+                    newInput.disabled = true;
+                }
+                else {
+                    newInput = document.createTextNode('');
+                }
+            }
+            return newInput;
+        }
+
+        function csAdd() {
+            var enteredId;
+            var contactArray;
+            var cList;
+            var len;
+            var i;
+            var present = false;
+
+            var contactId;
+            var contactFn;
+            var contactLn;
+            var contactName;
+
+            contactArray = [];
+            enteredId = idInput.value;
+
+            if(enteredId.length > 0) {
+                if (enteredId.length == 15 || enteredId.length == 18) {
+                    contactArray.push(enteredId);
+                    try {
+                        cList = sforce.connection.retrieve('Id,FirstName,LastName,Name', 'Contact', contactArray);
+                        contactId   = cList[0].Id;
+                        contactFn   = cList[0].FirstName;
+                        contactLn   = cList[0].LastName;
+                        contactName = cList[0].Name;
+                        len = specialistDataArray.length;
+                        for(i=0; i<len; i++ ) {
+                            if(specialistDataArray[i].ContId == contactId) {
+                                present = true;
+                                break;
+                            }
+                        }
+                        if(!present) {
+                            csEditGridOptions.api.setSortModel(null); // Have to turn off sort before insert to get lastRenderedRow correctly.
+                            specialistDataArray.push({RecId: 'new', ContId: contactId, Name: contactName, FirstName: contactFn, LastName: contactLn, Title: 'Contract Specialist', Division: sysDivision, Email: '', CellPhone: '', EmailUpdated: false, CellPhoneUpdated: false, Flag:'N', Status: 'Just added', StatusCode:'N'});
+                            csEditGridOptions.api.setRowData(specialistDataArray);
+                            var rt = csEditGridOptions.api.rowRenderer.lastRenderedRow;
+                            var renderedRows = csEditGridOptions.api.getRenderedNodes();
+                            var newRow = renderedRows[rt];
+                            newRow.setSelected(true, true);
+                            csEditGridOptions.api.setSortModel(nameSort);
+                            csEditGridOptions.api.ensureIndexVisible(rt);
+                            csEditGridOptions.api.refreshView();
+                        }
+                        else {
+                            alert(contactName + ' is already in the table.');
+                        }
+                    }
+                    catch(e) {
+                        if(e.faultcode == 'sf:MALFORMED_ID')
+                            alert('That Contact Id is not valid')
+                        else
+                            alert('An error occurred retrieving Contact: ' + e.faultstring);
+                        return;
+                    }
+                }
+                else {
+                    alert('Ids must be 15 or 18 characters');
+                    return;
+                }
+            }
+            else
+            {
+                alert('Please enter a Contact Id');
+                return;
+            }
+        }
+
+        function csDel() {
+            var mapKey;
+            var assignedList;
+            var assignedTo;
+            var arrayCopy;
+            assignedTo   = '';
+            assignedList = [];
+            arrayCopy    = [];
+
+            if(selectedCsRec.Flag == 'C') {
+                for (mapKey in specialistMap) {
+                    if (specialistMap[mapKey].ContactId == selectedCsRec.ContId) {
+                        assignedList.push(specialistMap[mapKey].AccountName);
+                    }
+                }
+                if (assignedList.length > 0) {
+                    if (assignedList.length > 1) {
+                        len = assignedList.length;
+                        for (i = 0; i < len - 1; i++) {
+                            assignedTo += assignedList[i];
+                            if (i + 1 < len - 1)
+                                assignedTo += ',';
+                        }
+                        assignedTo += ' and ' + assignedList[i];
+                    }
+                    else {
+                        assignedTo = assignedList[0];
+                    }
+                    alert('Cannot delete ' + selectedCsRec.Name + ' as they are assigned to ' + assignedTo);
+                }
+                else {
+                    selectedCsNode.data.Status     = 'Delete (pending update)';
+                    selectedCsNode.data.StatusCode = selectedCsRec.Flag + 'D'; // statusCode = 'CD' -Current Delete
+                    csEditGridOptions.api.refreshView();
+                }
+            }
+            else {
+                // User wants to delete a record they just added, so just remove from grid:
+
+                // Until agGrid gives us the much promised deleteRow method, have to copy the array as splicing with an index isn't viable with current virtual model used by agGrid.
+                len = specialistDataArray.length;
+                for(i=0; i<len; i++ ) {
+                    if(specialistDataArray[i].ContId != selectedCsRec.ContId) {
+                        arrayCopy.push(specialistDataArray[i]);
+                    }
+                }
+                specialistDataArray = null;                 // Be extra sure to GC.
+                specialistDataArray = arrayCopy.slice(0);   // Tip found at https://davidwalsh.name/javascript-clone-array
+                csEditGridOptions.api.setRowData(specialistDataArray);
+                csEditGridOptions.api.refreshView();
+            }
+        }
+
+        function log(pText) {
+            let date = new Date();
+            let options = { year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute:'numeric', second:'numeric'};
+            let dateStr = date.toLocaleString('en-US', options);
+            let d = document.createElement('div');
+            let t = document.createTextNode(pText);
+            let x = document.createTextNode('[' + dateStr + '] ');
+            d.appendChild(x);
+            d.appendChild(t);
+            logText.appendChild(d);
+        }
+
+
+        // *****************  Globals ********************
+        let mainDataArray          = [];
+        let coordinatorDataArray   = [];
+        let organizerDataArray     = [];
+        let staffDataArray         = [];
+        let directorDataArray      = [];
+        let specialistDataArray    = [];
+        let allInfoDataArray       = [];
+        let eboardDataArray        = [];
+        let updateArray            = []; // KHRLobjects array used to pass params to controller.
+
+        let peopleMap              = {};
+        let eboardMap              = {};
+        let specialistMap          = {};
+        let auditorMap             = {};
+        let associateMap           = {};
+        let editorMap              = {};
+        let empMap                 = {};
+        let allInfoMap             = {};
+
+        let mainColumnDefs         = [];
+        let nameColumnDefs         = [];
+        let coordinatorColumnDefs  = [];
+        let organizerColumnDefs    = [];
+        let staffColumnDefs        = [];
+        let directorColumnDefs     = [];
+        let csNameColumnDefs       = [];
+        let csEditColumnDefs       = [];
+        let eboardColumnDefs       = [];
+
+        let mainGridOptions        = {};
+        let organizerGridOptions   = {};
+        let coordinatorGridOptions = {};
+        let csGridOptions          = {};
+        let csEditGridOptions      = {};
+        let allInfoGridOptions     = {};
+        let eboardGridOptions      = {};
+
+        let directorGridOptions    = {};
+        let staffGridOptions       = {};
+        let staffDataSource        = {};
+        let exceptionsMap          = {}; // Exceptions allow all seats for specified code to appear in Eboard tab and lets Elaine edit people individually.
+
+        let initialMainSort,initialDirectorSort,initialStaffSort,nameSort,empSort,pdfSort;
+        let noError,seatNameSort,rowBackgroundClassRules;
+        let ptr,dirPtr,coordPtr,directorRecord,coordinatorRecord,org1Ptr,org1Record,org2Ptr,org2Record,csPtr,dirChoice,coordChoice, csChoice, org1Choice, org2Choice;
+
+        let ebCoordChoice,ebOrg1Choice,ebOrg2Choice,csRecord,noteText,pendingUpdates;
+        let selectedRow,selectedSeat,selectedSubSeat,selectedEmp,selectedEbRec;
+
+        let accountIdsArray,accountMap,noSeatIdAccountMap,seatCountMap,seatSubseatCountMap,uniqueSeatCountMap;
+        let atmMap,atmMapNew,notesMap;
+
+        let mainGridDiv,coordGridDiv,orgGridDiv,dirGridDiv,staffGridDiv;
+        let csGridDiv,csEditGridDiv,allInfoGridDiv,selectedEmpId;
+        let selectedCsRow,selectedCsContId,selectedCsRec,selectedCsNode;
+        let fullHost,host,firstDot,appTitle;
+        let pdf,pdfDataArray,lineCnt,pageCnt,yPos;
+        let tmpSelect;
+        let pageTotal,totalLinesRequired;
+
+        const date            = new Date();
+        const dateOptions     = { year: 'numeric', month: 'numeric', day: 'numeric'};
+        const dateStr         = date.toLocaleString('en-US', dateOptions);
+        const maxLinesPerPage = 16;  // using landscape mode
+        const lineLimit       = 170;
+
+        const routeListTitle     = document.getElementById('RouteListTitle');
+        const inputDiv           = document.getElementById('InputDiv');
+        const ebInputDiv         = document.getElementById('EbInputDiv');
+        const csEditTab          = document.getElementById('CsEditTab');
+        const staffFilterInput   = document.getElementById("StaffFilterInput");
+        const allInfoFilterInput = document.getElementById("AllInfoFilterInput");
+
+        const directorDropdown  = document.getElementById("dirSelectList");            
+        const coordDropdown     = document.getElementById("coordSelectList");
+        const org1Dropdown      = document.getElementById("org1SelectList");
+        const org2Dropdown      = document.getElementById("org2SelectList");
+        const coordCheckBox     = document.getElementById("coordCheckBox");
+        const org1CheckBox      = document.getElementById("org1CheckBox");
+        const org2CheckBox      = document.getElementById("org2CheckBox");
+        const csCheckBox        = document.getElementById("csCheckBox");
+        const csDropdown        = document.getElementById("csSelectList");
+        const csDisplay         = document.getElementById("csDisplay");
+
+        const ebCoordDropdown   = document.getElementById("ebCoordSelectList");
+        const ebOrg1Dropdown    = document.getElementById("ebOrg1SelectList");
+        const ebOrg2Dropdown    = document.getElementById("ebOrg2SelectList");
+
+        const noteInput         = document.getElementById("note");
+        const noSeats           = document.getElementById("NoSeats");
+
+        const updateButton      = document.getElementById("updateButton");
+        const ebUpdateButton    = document.getElementById("ebUpdateButton");
+        const saveAsCsvButton1  = document.getElementById("SaveAsCsvButton1");
+        const saveAsCsvButton2  = document.getElementById("SaveAsCsvButton2");
+        const saveAsCsvButton3  = document.getElementById("SaveAsCsvButton3");
+        const saveAsCsvButton4  = document.getElementById("SaveAsCsvButton4");
+        const saveAsPdfButton   = document.getElementById("SaveAsPdfButton");
+        const csAddButton       = document.getElementById("CsAdd");
+        const csDelButton       = document.getElementById("CsDel");
+        const csUpdateButton    = document.getElementById("CsUpdate");
+        const idInput           = document.getElementById("IdInput");
+        const logText           = document.getElementById('LogText');
+
+        const sysDivision     = 'Community';
+        const sysDivisionCode = 'C';
+
+        // ************* Main Program Entry **************
+        $(function() {
+
+            $("#tabContainer").tabs();
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            if(sforce.connection.sessionId == null) {
+                alert('Error connecting to Salesforce - Please refresh page');
+                return;
+            }
+
+            routeListTitle.innerHTML = sysDivision + ' Route List';
+
+  //          getEboardExceptions();
+            loadStaff();
+            loadEBoardSeats();
+            loadGoodAccounts();
+//            loadBadAccounts();
+            loadAccountTeamMembers();
+            loadSpecialists();
+            loadNotes();
+            buildArray();
+            infoByEmployer();
+            initAgGrid();
+            displayGrids();
+
+            showNoSeats();
+
+            updateButton.addEventListener("click", updateData, false);
+            ebUpdateButton.addEventListener("click", ebUpdateData, false);
+            saveAsCsvButton1.addEventListener("click", saveAsCsv1, false);
+            saveAsCsvButton2.addEventListener("click", saveAsCsv2, false);
+            saveAsCsvButton3.addEventListener("click", saveAsCsv3, false);
+            saveAsCsvButton4.addEventListener("click", saveAsCsv4, false);
+            saveAsPdfButton.addEventListener("click",  saveAsPdf,  false);
+            csAddButton.addEventListener("click",  csAdd, false);
+            csDelButton.addEventListener("click",  csDel, false);
+            csUpdateButton.addEventListener("click", csUpdate, false);
+
+            staffFilterInput.addEventListener ("input", staffFilterInputHandler, false);
+            allInfoFilterInput.addEventListener ("input", allInfoFilterInputHandler, false);
+
+        });
+
+    </script>
+    </html>
+</apex:page>

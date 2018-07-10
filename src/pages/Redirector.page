@@ -1,0 +1,55 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+    
+    <title>SEIU-UHW Redirector</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+</head>
+
+  <body>
+  <div align="center">
+  &nbsp;<br/>
+  <font size="+1" color="#481C60">Loading...</font><br/>
+  &nbsp;<br/>  
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/logo_round_small.png')}"></img>
+  
+  <script language="JavaScript">
+  
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var purl = decodeURIComponent("{!$CurrentPage.parameters.purl}");
+    if (purl.indexOf("/") < 0) {
+      purl = "/" + purl;
+    }
+    navigateTo(purl);
+
+</script>  
+  </div>
+    </body>
+</html>
+
+
+</apex:page>

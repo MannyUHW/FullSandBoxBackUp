@@ -1,0 +1,473 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>MO: Election Shifts</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+
+<script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/35.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+</head>
+
+<body>
+<div align="center">
+<table><tr valign="top"><td align="center">  
+  
+  
+    <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:window.history.back();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="MO_Main_Page"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    
+  </td>
+  </tr>
+  </table>
+  
+  <br><font color="#481C60" size="+2"><b>Election Shifts Dashboard</b></font></br>
+          <br>&nbsp;</br>
+    
+    <button class="btn btn-lg btn-primary" type="submit" onclick="navigateTo('{!$Page.MO_Enter_Shifts}');">  
+
+      &nbsp;&nbsp;
+      Enter Election Shift
+      &nbsp;&nbsp;
+      
+    </button><br></br>  
+      <br>&nbsp;</br> 
+    
+    <div id="dashDiv"></div>
+
+      <br>&nbsp;</br>&nbsp;&nbsp;&nbsp;&nbsp;
+      <b>Filter List:</b> 
+      <select id="filterSelect">
+        <option value="show_all">Show All</option>
+        <option value="shift_today">Shift Today</option>
+        <option value="shift_tomorrow">Shift Tomorrow</option>  
+        <option value="no_show_zeros">No Shows w Zero Complete</option>                       
+      </select>
+      <br>&nbsp;</br>      
+    
+        <div id="leadersDiv"></div>
+        
+        &copy; 2016 SEIU-UHW. All rights reserved.
+
+</td>
+</tr>
+</table>
+  
+</div>
+
+
+
+<script language="JavaScript">
+
+var debugRecruit = null;
+
+var DIGITS = "0123456789";
+
+var ALL = "ALL";
+var SIGNED_UP = "Signed Up";
+var COMPLETED = "Completed";
+var PARTIAL = "Partial";
+var NO_SHOW = "No Show";
+var CANCELED = "Canceled";
+var FUTURE = "Future";
+
+if (sessionStorage.getItem("election_shifts_filter_list") == null || sessionStorage.getItem("election_shifts_filter_list") == "") {
+  $( "#filterSelect" ).val("show_all");
+  sessionStorage.setItem("election_shifts_filter_list", "show_all");
+} else {
+  $( "#filterSelect" ).val(sessionStorage.getItem("election_shifts_filter_list"));
+}
+var filterSelect = $( "#filterSelect" ).val();
+
+$( "#filterSelect " ).change(function() {
+    sessionStorage.setItem("election_shifts_filter_list", $( "#filterSelect" ).val());
+    navigateTo("{! $Page.MO_Election_Dashboard}");
+    return false;
+});
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+var emids = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnames = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").split(",");
+if (emnames[emnames.length - 1] == "") {
+  emnames.splice(emnames.length - 1, 1);
+}
+
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+    
+
+
+var sortSet = [];
+var keyMap = {};
+var completedSet = [];
+var lastCompletedMap = {};
+var nextSignedUpMap = {};
+
+var staffId = "";
+
+try{ 
+
+      var user = sforce.connection.getUserInfo();
+      var userName = user.userName;
+      var query = "SELECT ID, Name, Staff_Contact_Id__c, Title from User WHERE User.username=\'" + userName + "\' and Staff_Contact_Id__c != null";
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records');       
+
+      if (records1.length > 0) {
+        staffId = records1[0].Staff_Contact_Id__c;
+      }
+      
+
+  var query = "select Id, Effective_Date__c, End_Date__c, Name from Survey_Question__c where Linked_to_Recruits__c  = true AND Survey_Code__c=\'" + localStorage.getItem("mo_sync_shifts_code") + "\' ";
+  //alert(query);
+  console.log(query);
+  var result = sforce.connection.query(query);
+  var records = result.getArray("records");
+  var startDate = new Date();
+  var endDate = new Date();
+  if (records.length > 1) {
+    alert("Error.  You can only have one Survey Question linked to Recruits at a time in Mobile Organizer.  Multiple found.");
+  } else if (records.length == 0) {
+    alert("Error.  You must have one Survey Question linked to Recruits for the MO Election Dashboard.  None found.");
+  } else {
+    startDate = records[0].Effective_Date__c;
+    endDate = records[0].End_Date__c;
+  }
+
+  var query = "select Id, Alt_First_Name__c, Alt_Last_Name__c, Alt_Middle_Name__c, Alt_Phone__c, Alt_Person_Type__c, Volunteer_Date__c, Recruit_Name__c, Recruit__r.LastName, Recruit__r.FirstName, Recruit__r.MiddleName, Employer_Name__c, Recruit__r.Department, Recruited_By__r.Name, Recruit__r.HomePhone, Recruit__r.MobilePhone, Recruit__r.COPE_Pledge__c, Recruit__c, FID__c, Recruit_Status__c, Shift_Status__c, Location__c, Employer_ID__c, Total_Shift__c  from Recruit__c where (NOT Alt_Last_Name__c like \'%dummy%\') AND ";
+  query += " ( Recruit__c = \'" + staffId + "\' OR (";
+  for (var emdex = 0; emdex < emnames.length; emdex++) {
+    if (emdex > 0) {
+      query = query + " OR ";
+    }
+    query = query + " Employer_Name__c =\'" + emnames[emdex] + "\' ";         
+  } 
+  query += ")) AND (Recruit_Status__c != \'Canceled\' OR Total_Shift__c > 0) AND Volunteer_Date__c >= " + moment(startDate).format("YYYY-MM-DD") + "  AND Volunteer_Date__c <= " + moment(endDate).format("YYYY-MM-DD") + " order by Volunteer_Date__c desc";
+  //alert(query);
+  
+  var ldrWriter = "";
+  console.log(query);
+  var result = sforce.connection.query(query); 
+  var records = result.getArray("records");
+  var todayDate = new Date();
+  
+  var yesTodaySet = [];
+  var yesTomorrowSet = [];
+    
+  var todayString = moment().format("YYYY-MM-DD");
+  var tomorrowString = moment().add(1, "days").format("YYYY-MM-DD");  
+  //alert(tomorrowString); 
+  
+  for (var i = 0; i < records.length; i++) {
+    debugRecruit = records[i];
+    var key = null;
+    if (records[i].FID__c != null) {
+      key = JSON.stringify([records[i].Recruit__r.LastName, records[i].Recruit__r.FirstName, records[i].FID__c]);
+    } else {
+      key = JSON.stringify([records[i].Alt_Last_Name__c, records[i].Alt_First_Name__c, 0]);
+    }
+    if (sortSet.indexOf(key) < 0) {
+      sortSet.push(key);
+      keyMap[key] = records[i];
+    }
+    
+    if (records[i].Volunteer_Date__c == todayString) {
+      yesTodaySet.push(key);
+    } else if (records[i].Volunteer_Date__c == tomorrowString) {
+      yesTomorrowSet.push(key)    
+    }
+    
+    var shiftDate = moment(records[i].Volunteer_Date__c, 'YYYY-MM-DD');    
+    var shiftMillis = shiftDate.toDate().getTime();
+    if (records[i].Recruit_Status__c == SIGNED_UP) {
+      incrementCounter([SIGNED_UP, ALL], 1.0);
+      incrementCounter([SIGNED_UP, key], 1.0);
+     
+      //alert(JSON.stringify(shiftDate));
+      if (shiftDate.format("YYYY-MM-DD") == todayString || shiftMillis > todayDate.getTime()) {
+        if (nextSignedUpMap[key] == null) {
+          nextSignedUpMap[key] = shiftDate.toDate();
+        } else if (shiftDate.format("YYYY-MM-DD") == todayString || shiftMillis < nextSignedUpMap[key].getTime()) {
+          nextSignedUpMap[key] = shiftDate.toDate();
+        }  
+        incrementCounter([FUTURE, ALL], 1.0);
+        incrementCounter([FUTURE, key], 1.0);  
+      } else {
+        if (parseFloat(records[i].Total_Shift__c) == 0) {
+          incrementCounter([NO_SHOW, ALL], 1.0);
+          incrementCounter([NO_SHOW, key], 1.0);
+        }
+      }
+    }
+    if (records[i].Total_Shift__c != null && parseFloat(records[i].Total_Shift__c) > 0) {
+      //alert("completed shift by " + records[i].Recruit_Name__c);
+      incrementCounter([COMPLETED, ALL], parseFloat(records[i].Total_Shift__c));
+      incrementCounter([COMPLETED, key], parseFloat(records[i].Total_Shift__c));
+      if (completedSet.indexOf(key) < 0) {
+        completedSet.push(key);
+      }
+      if (lastCompletedMap[key] == null) {
+        lastCompletedMap[key] = shiftDate.toDate();
+      } else if (shiftMillis > lastCompletedMap[key].getTime()) {
+        lastCompletedMap[key] = shiftDate.toDate();
+      }
+    } 
+  }
+   
+  sortSet.sort();
+  
+  
+  ldrWriter += "<table cellpadding=\"5\">\n";
+  ldrWriter += "<tr valign=\"bottom\">\n";
+  ldrWriter += "<td bgcolor=\"#481C60\" width=\"60%\" align=\"center\"><font color=\"white\">Name</font></td>";    
+  ldrWriter += "<td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Shifts<br/>Signed-Up</font></td>"; 
+  ldrWriter += "<td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Shifts<br/>Completed</font></td>";      
+  ldrWriter += "</tr>\n";
+  
+  ldrCounter = 0;
+  
+  for (var i = 0; i < sortSet.length; i++) {
+      var rowWriter = "";
+      rowWriter += "<tr valign=\"top\">\n";
+      var key = sortSet[i];
+      var recruit = keyMap[key];
+      debugRecruit = recruit;
+      var params = "fid=" + encodeURIComponent(recruit.FID__c);
+      if (recruit.FID__c == null) {
+        params = "altlast=" + recruit.Alt_Last_Name__c;
+        params += "&altfirst="  + recruit.Alt_First_Name__c;
+        params += "&altemid="  + recruit.Employer_ID__c ;
+        params += "&altmiddle="  + recruit.Alt_Middle_Name__c;
+        params += "&altphone="  + recruit.Alt_Phone__c;            
+        params += "&altemail="  + recruit.Alt_Email__c;                
+        params += "&altptype="  + recruit.Alt_Person_Type__c; 
+      }      
+
+      
+      rowWriter += "<tr valign=\"top\">\n";
+      rowWriter += "<td><b><font size=\"+1\"><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Shifts}?" + params + "\');\">" + recruit.Recruit_Name__c + "</a></font></b></td>";
+      rowWriter += "<td align=\"center\"><font size=\"+1\">" + getCounter([SIGNED_UP, key]) + "</font></td>";
+      rowWriter += "<td align=\"center\"><font size=\"+1\">" + getCounter([COMPLETED, key]) + "</font></td>";         
+      rowWriter += "</tr>\n";
+      
+      rowWriter += "<tr valign=\"top\">\n";
+      rowWriter += "<td colspan=\"3\">\n";
+      rowWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      var emName = toProperCase(recruit.Employer_Name__c); 
+      emName = emName.replace("Hospital", "");
+      emName = emName.replace("Medical Center", "");      
+      emName = emName.replace("Med Ctr", "");            
+      emName = emName.replace("Health Centers", "");          
+      rowWriter += emName + "<br/>"; 
+            
+      rowWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      var dept = "Unknown Dept";
+      if (recruit.FID__c != null) {
+        dept = toProperCase(recruit.Recruit__r.Department);
+      } else {
+        dept = recruit.Alt_Person_Type__c;    
+      }
+      if (dept == null) {
+        dept = "Unknown Dept";
+      }
+      if (dept.length > 28) {
+        dept = dept.substring(0, 28) + "<br/>" +  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + dept.substring(28);
+      }
+      
+      rowWriter += dept + "<br/>"; 
+      if (recruit.FID__c != null) {
+        rowWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COPE:&nbsp;&nbsp;&nbsp;&nbsp;$";
+        var cope = 0.0;
+        if (recruit.Recruit__r.COPE_Pledge__c != null) {
+          cope = parseFloat(recruit.Recruit__r.COPE_Pledge__c);
+        } 
+        rowWriter +=  cope.toFixed(0) + "<br/>"; 
+        rowWriter += "<font size=\"-2\">&nbsp;</font><br/>";      
+        if (recruit.Recruit__r.HomePhone != null && recruit.Recruit__r.HomePhone != "") {
+        
+          var home = recruit.Recruit__r.HomePhone;
+          var cleansedPhone ="";
+          for (var g = 0; g < home.length; g++) {
+            if (DIGITS.indexOf(home.substring(g, g+1)) >= 0) {
+              cleansedPhone += home.substring(g, g+1);
+            }
+          } 
+        
+          rowWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H:&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"tel:" + cleansedPhone + "\">";
+          rowWriter += recruit.Recruit__r.HomePhone + "</a><br/>";
+          rowWriter += "<font size=\"-2\">&nbsp;</font><br/>";
+        }
+        if (recruit.Recruit__r.MobilePhone != null && recruit.Recruit__r.MobilePhone != "") {
+        
+          var mobile = recruit.Recruit__r.MobilePhone ;
+          var cleansedPhone ="";
+          for (var g = 0; g < mobile.length; g++) {
+            if (DIGITS.indexOf(mobile.substring(g, g+1)) >= 0) {
+              cleansedPhone += mobile.substring(g, g+1);
+            }
+          }
+        
+          rowWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;C:&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"tel:" + cleansedPhone + "\">";
+          rowWriter += recruit.Recruit__r.MobilePhone+ "</a><br/>";
+        }        
+      } else if (recruit.Alt_Phone__c != null && recruit.Alt_Phone__c != "") {
+
+          var altphone = recruit.Alt_Phone__c ;
+          var cleansedPhone ="";
+          for (var g = 0; g < altphone .length; g++) {
+            if (DIGITS.indexOf(altphone .substring(g, g+1)) >= 0) {
+              cleansedPhone += altphone .substring(g, g+1);
+            }
+          }
+
+          rowWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;H:&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"tel:" + cleansedPhone + "\">";
+          rowWriter += recruit.Alt_Phone__c + "</a><br/>";      
+      }
+      
+      rowWriter += "</td>\n";
+
+      rowWriter += "</tr>\n";
+
+      rowWriter += "<tr valign=\"top\">\n";
+      var collector = "Collector Not in Turf";
+      if (recruit.Recruited_By__r != null) {
+        collector = recruit.Recruited_By__r.Name;
+      }
+      rowWriter += "<td colspan=\"3\" align=\"center\"><font size=\"-2\">Recruiter/Collector: " + collector + "</font></td></tr>";
+      
+      rowWriter += "<tr valign=\"top\">\n";
+      rowWriter += "<td colspan=\"3\" align=\"center\"><table border=\"0\" width=\"100%\"><tr><td align=\"center\" width=\"50%\"><font  color=\"#481C60\"  size=\"-2\">Last Completed:</font><br/>";
+      if (lastCompletedMap[key] != null) {
+        rowWriter += moment(lastCompletedMap[key]).format("ddd MMM DD");
+      } else {
+        rowWriter += "None Completed";
+      }
+
+      rowWriter += "</td>\n";      
+      rowWriter += "<td  width=\"50%\" align=\"center\"><font color=\"#481C60\" size=\"-2\">Next Shift:</font><br/>";
+      if (nextSignedUpMap[key] != null) {
+        rowWriter += moment(nextSignedUpMap[key]).format("ddd MMM DD");
+        var tomorrow2 = moment(tomorrowString, "YYYY-MM-DD").format("ddd MMM DD");
+        if (tomorrow2 != moment(nextSignedUpMap[key]).format("ddd MMM DD") && yesTomorrowSet.indexOf(key) >= 0) {
+          rowWriter += "<br/>" + tomorrow2 ;
+        }
+      } else { 
+        rowWriter += "No Sign-Ups";
+      }
+      
+      rowWriter += "</td>\n";
+      rowWriter += "</tr>\n";
+      rowWriter += "<tr valign=\"top\"><td colspan=\"2\" align=\"center\">________________________________________________</td></tr></table></td></tr>\n";
+      
+      if (filterSelect == "show_all") {
+        ldrWriter += rowWriter;
+        ldrCounter++;
+      } else if (filterSelect == "shift_today" && yesTodaySet.indexOf(key) >= 0) {
+        ldrWriter += rowWriter;
+        ldrCounter++;
+      } else if (filterSelect == "shift_tomorrow" && yesTomorrowSet.indexOf(key) >= 0) {
+        ldrWriter += rowWriter;
+        ldrCounter++;        
+      } else if (filterSelect == "no_show_zeros" && lastCompletedMap[key] == null) {
+        ldrWriter += rowWriter;
+        ldrCounter++;        
+      }
+  }
+  
+  ldrWriter += "</table>\n\n";
+  ldrWriter = "<i>List Count = " + ldrCounter +"</i><br/>" + ldrWriter ;
+  
+  $("#leadersDiv").html(ldrWriter);
+  
+  var dashWriter = "";
+  dashWriter += "<table>";
+  dashWriter += "<tr valign=\"top\"><td align=\"right\"><font size=\"+1\"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign-Ups</b></font></td><td>&nbsp;</td><td align=\"center\"><font size=\"+1\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + getCounter([SIGNED_UP, ALL]).toFixed(0) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td></tr>";  
+  dashWriter += "<tr valign=\"top\"><td align=\"right\"><font size=\"+1\"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Completed Shifts</b></font></td><td>&nbsp;</td><td align=\"center\"><font size=\"+1\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + getCounter([COMPLETED, ALL]).toFixed(1) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td></tr>";    
+  dashWriter += "<tr valign=\"top\"><td align=\"right\"><font size=\"+1\"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ldrs w Completed Shift</b></font></td><td>&nbsp;</td><td align=\"center\"><font size=\"+1\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + completedSet.length + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td></tr>";      
+  dashWriter += "<tr valign=\"top\"><td align=\"right\"><font size=\"+1\"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No Shows</b></font></td><td>&nbsp;</td><td align=\"center\"><font size=\"+1\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + getCounter([NO_SHOW, ALL]).toFixed(0) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td></tr>";    
+  dashWriter += "<tr valign=\"top\"><td align=\"right\"><font size=\"+1\"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In Future</b></font></td><td>&nbsp;</td><td align=\"center\"><font size=\"+1\">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + getCounter([FUTURE, ALL]).toFixed(0) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td></tr>";      
+  dashWriter += "</table>";  
+   
+  $("#dashDiv").html(dashWriter);
+    
+    
+} catch(e) { 
+       alert('An Error has Occured. Error:' +e + "\n" + JSON.stringify(debugRecruit)); 
+} 
+
+
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

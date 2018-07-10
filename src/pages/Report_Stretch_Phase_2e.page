@@ -1,0 +1,1214 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/38.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/38.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<link rel="stylesheet" href="{!URLFOR($Resource.mo_assets, '/mo_assets/css/tablesorter/tablesorter_blue_style.css')}" type="text/css" id="" media="print, projection, screen" />
+<style type="text/css" media="screen,print">
+   .page-breaker {
+     display: block;
+     page-break-after: always;
+     border :1px solid black
+   }
+</style>
+<div align="center">
+<font size="+2"><div id="titleDiv">Stretch Phase 2 Report</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+
+<div id="mainDiv" style="display: none;">
+
+<br>&nbsp;</br>
+
+<font color="green">
+<div align="center" id="filterDiv"></div>
+</font>
+
+<font size="+2"><div align="center" id="progressDiv">0%</div></font>
+
+<a name="divAnchor"></a>
+
+<div align="center" id="countDiv">
+<div id="divTitle"><font size="+1">Divisions</font></div>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Division</font></td>
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Ldrs<br/>Nominated</font></td>              
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Nominated<br/>Goal</font></td>                                      
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Nominated<br/>Pct</font></td>                                                  
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Ldrs<br/>Completed</font></td>             
+    <td bgcolor="#481C60" width="8%" class="extendCols" align="center"><font color="white">Noms Not<br/>Cntactd</font></td>             
+    <td bgcolor="#481C60" width="8%" class="extendCols" align="center"><font color="white">Not<br/>Ldrs</font></td>                     
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td> 
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Compltd<br/>Ldr Goal</font></td>                                      
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Compltd<br/>Ldr Pct</font></td>  
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td> 
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Signtrs<br/>Gathered</font></td>                            
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Signtrs<br/>Goal</font></td>    
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Signtrs<br/>Pct</font></td>        
+</tr>
+<tbody class="divisionRowTemplate" >
+<tr valign="top">
+    <td align="center">{{divLink}}</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([DIVISION, div, CODE_NOMINATION , "M"]) + getCounter([DIVISION, div, CODE_NOMINATION , "W"]) + getCounter([DIVISION, div, CODE_NOMINATION , "A"]) + getCounter([DIVISION, div, CODE_NOMINATION , "O"]) + getCounter([DIVISION, div, CODE_NOMINATION , "X"])}}</td>
+    <td align="center">{{2 * (getCounter([DIVISION, div, BU]) * 1.0 / 100.0).toFixed(0)}}</td> 
+    <td align="center">{{(100 * (getCounter([DIVISION, div, CODE_NOMINATION , "W"]) + getCounter([DIVISION, div, CODE_NOMINATION , "M"]) + getCounter([DIVISION, div, CODE_NOMINATION , "A"]) + getCounter([DIVISION, div, CODE_NOMINATION , "O"])) / (2 * (getCounter([DIVISION, div, BU]) * 1.0 / 100.0))).toFixed(0)}}%</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([DIVISION, div, CODE_NOMINATION , "W"])}}</td>
+    <td align="center">{{getCounter([DIVISION, div, CODE_NOMINATION , "A"]) + getCounter([DIVISION, div, CODE_NOMINATION , "O"])}}</td>
+    <td class="extendCols" align="center">{{getCounter([DIVISION, div, CODE_NOMINATION , "M"])}}</td>
+    <td class="extendCols" align="center">{{getCounter([DIVISION, div, CODE_NOMINATION , "X"])}}</td>
+
+    <td bgcolor="#481C60" ></td>
+
+    <td align="center">{{(getCounter([DIVISION, div, BU]) * 1.0 / 100.0).toFixed(0)}}</td>
+    <td align="center">{{(100 * (getCounter([DIVISION, div, CODE_NOMINATION , "A"]) + getCounter([DIVISION, div, CODE_NOMINATION , "O"])) / (getCounter([DIVISION, div, BU]) * 1.0 / 100.0)).toFixed(0)}}%</td>
+    <td bgcolor="#481C60" ></td>
+
+    <td align="center">{{getCounter([DIVISION, div, CODE_PETITION, "Y"])}}</td>
+    <td align="center">{{(getCounter([DIVISION, div, BU]) * 1.0 / 100.0).toFixed(0) * 10}}</td>
+    <td align="center">{{(100 * getCounter([DIVISION, div, CODE_PETITION, "Y"]) / (getCounter([DIVISION, div, BU]) * 1.0 / 10.0)).toFixed(0)}}%</td>    
+</tr>                
+</tbody>
+</table>
+<br/>&nbsp;<br/>
+</div>
+
+<a name="regionAnchor"></a>
+<div align="center" id="regionDiv">
+<div id="regionDivTitle"><font size="+1">Regions</font></div>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Division</font></td>
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Regional<br/>Director</font></td>    
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Ldrs<br/>Nominated</font></td>              
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Nominated<br/>Goal</font></td>                                      
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Nominated<br/>Pct</font></td>                                                  
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Ldrs<br/>Completed</font></td> 
+    <td bgcolor="#481C60" width="7%" class="extendCols" align="center"><font color="white">Noms Not<br/>Cntactd</font></td>             
+    <td bgcolor="#481C60" width="7%" class="extendCols" align="center"><font color="white">Not<br/>Ldrs</font></td>                                                                          
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td> 
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Compltd<br/>Ldr Goal</font></td>                                      
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Compltd<br/>Ldr Pct</font></td>      
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Signtrs<br/>Gathered</font></td>    
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Signtrs<br/>Goal</font></td>    
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Signtrs<br/>Pct</font></td>                             
+</tr>
+<tbody class="regionalRowTemplate" >
+<tr valign="top">
+    <td align="center">{{divLink}}</td>
+    <td align="center">{{regionalDirectorLink}}</td>    
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_NOMINATION , "M"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "W"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "A"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "O"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_NOMINATION , "X"]) }}</td>
+    <td align="center">{{2 * (getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]) * 1.0 / 100.0).toFixed(0)}}</td>
+    <td align="center">{{(100 * (getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "W"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_NOMINATION , "M"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_NOMINATION , "A"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_NOMINATION , "O"])) / (2 * (getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]) * 1.0 / 100.0))).toFixed(0)}}%</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "W"])}}</td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_NOMINATION , "A"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_NOMINATION , "O"])}}</td>
+    <td class="extendCols" align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "M"])}}</td>
+    <td class="extendCols" align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "X"])}}</td>    
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{(getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]) * 1.0 / 100.0).toFixed(0)}}</td>
+    <td align="center">{{(100 * (getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "A"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_NOMINATION , "O"])) / (getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]) * 1.0 / 100.0)).toFixed(0)}}%</td>    
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector,  CODE_PETITION, "Y"])}}</td>
+    <td align="center">{{(getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]) * 1.0 / 100.0).toFixed(0) * 10}}</td>
+    <td align="center">{{(100 * getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_PETITION, "Y"]) / (getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]) * 1.0 / 10.0)).toFixed(0)}}%</td>        
+</tr>                
+</tbody>
+</table>
+<br/>&nbsp;<br/>
+</div>
+
+<a name="coordinatorAnchor"></a>
+
+<div align="center" id="coordinatorDiv">
+<div id="coordinatorDivTitle"><font size="+1">Coordinators</font></div>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Division</font></td>
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Regional<br/>Director</font></td>    
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Coordinator</font></td>     
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Ldrs<br/>Nominated</font></td>              
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Nominated<br/>Goal</font></td>                                      
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Nominated<br/>Pct</font></td>                                                  
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Ldrs<br/>Completed</font></td>             
+    <td bgcolor="#481C60" width="6%" class="extendCols" align="center"><font color="white">Noms Not<br/>Cntacted</font></td>             
+    <td bgcolor="#481C60" width="6%" class="extendCols" align="center"><font color="white">Not<br/>Ldrs</font></td>                                                                                                                               
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Compltd<br/>Ldr Goal</font></td>                                      
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Compltd<br/>Ldr Pct</font></td>      
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Signtrs<br/>Gathered</font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Signtrs<br/>Goal</font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Signtrs<br/>Pct</font></td>                                                         
+</tr>
+<tbody class="coordinatorRowTemplate" >
+<tr valign="top">
+    <td align="center">{{divLink}}</td>
+    <td align="center">{{regionalDirectorLink}}</td>    
+    <td align="center">{{coordinatorLink}}</td>     
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector,  coordinator, CODE_NOMINATION , "M"]) + getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "W"]) + getCounter([COORDINATOR, div, regionalDirector,  coordinator, CODE_NOMINATION , "A"]) + getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "O"]) + getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "X"])}}</td>
+    <td align="center">{{2 * (getCounter([COORDINATOR, div, regionalDirector,  coordinator, BU]) * 1.0 / 100.0).toFixed(0)}}</td>
+    <td align="center">{{(100 * (getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "W"]) + getCounter([COORDINATOR, div, regionalDirector,  coordinator, CODE_NOMINATION , "M"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, coordinator, CODE_NOMINATION , "A"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, coordinator, CODE_NOMINATION , "O"])) / (2 * (getCounter([COORDINATOR, div, regionalDirector,  coordinator, BU]) * 1.0 / 100.0))).toFixed(0)}}%</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "W"])}}</td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_NOMINATION , "A"]) + getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "O"])}}</td>
+    <td class="extendCols" align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "M"])}}</td>
+    <td class="extendCols" align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "X"])}}</td>    
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td> 
+    <td align="center">{{(getCounter([COORDINATOR, div, regionalDirector,  coordinator, BU]) * 1.0 / 100.0).toFixed(0)}}</td>
+    <td align="center">{{(100 * (getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "A"]) + getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_NOMINATION , "O"])) / (getCounter([COORDINATOR, div, regionalDirector,  coordinator, BU]) * 1.0 / 100.0)).toFixed(0)}}%</td>    
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td> 
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_PETITION, "Y"])}}</td>
+    <td align="center">{{(getCounter([COORDINATOR, div, regionalDirector, coordinator, BU]) * 1.0 / 100.0).toFixed(0) * 10}}</td>
+    <td align="center">{{(100 * getCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_PETITION, "Y"]) / (getCounter([COORDINATOR, div, regionalDirector, coordinator, BU]) * 1.0 / 10.0)).toFixed(0)}}%</td>            
+</tr>                
+</tbody>
+</table>
+<br/>&nbsp;<br/>
+</div>
+
+
+<a name="organizerAnchor"></a>
+
+<div align="center" id="organizerDiv">
+<div id="organizerDivTitle"><font size="+1">Organizers</font></div>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Division</font></td>
+    <td bgcolor="#481C60" width="9%" align="center"><font color="white">Regional<br/>Director</font></td>    
+    <td bgcolor="#481C60" width="9%" align="center"><font color="white">Coordinator</font></td>     
+    <td bgcolor="#481C60" width="9%" align="center"><font color="white">Organizer</font></td>       
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Ldrs<br/>Nominated</font></td>              
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Nominated<br/>Goal</font></td>                                      
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Nominated<br/>Pct</font></td>                                                  
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Ldrs<br/>Completed</font></td>             
+    <td bgcolor="#481C60" width="6%" class="extendCols" align="center"><font color="white">Noms Not<br/>Cntacted</font></td>             
+    <td bgcolor="#481C60" width="6%" class="extendCols" align="center"><font color="white">Not<br/>Ldrs</font></td>                                                                                                                                     
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Compltd<br/>Ldr Goal</font></td>                                      
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Compltd<br/>Ldr Pct</font></td>          
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Signtrs<br/>Gathered</font></td>                            
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Signtrs<br/>Goal</font></td>                            
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Signtrs<br/>Pct</font></td>                                    
+</tr>
+<tbody class="organizerRowTemplate" >
+<tr valign="top">
+    <td align="center">{{divLink}}</td>
+    <td align="center">{{regionalDirectorLink}}</td>    
+    <td align="center">{{coordinatorLink}}</td>     
+    <td align="center">{{organizerLink}}</td>         
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer,  CODE_NOMINATION , "M"]) + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,   CODE_NOMINATION , "W"]) + getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer,  CODE_NOMINATION , "A"]) + getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer,  CODE_NOMINATION , "O"]) + getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer,  CODE_NOMINATION , "X"])}}</td>
+    <td align="center">{{2 * (getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer, BU]) * 1.0 / 100.0).toFixed(0)}}</td>
+    <td align="center">{{(100 * (getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,   CODE_NOMINATION , "W"]) + getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer,  CODE_NOMINATION , "M"]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, coordinator, organizer,  CODE_NOMINATION , "A"]) + getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer,  CODE_NOMINATION , "O"])) / (2 * (getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer, BU]) * 1.0 / 100.0))).toFixed(0)}}%</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,   CODE_NOMINATION , "W"])}}</td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  CODE_NOMINATION , "A"]) + getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer,  CODE_NOMINATION , "O"])}}</td>
+    <td class="extendCols" align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,   CODE_NOMINATION , "M"])}}</td>
+    <td class="extendCols" align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,   CODE_NOMINATION , "X"])}}</td>    
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{(getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU]) * 1.0 / 100.0).toFixed(0)}}</td>
+    <td align="center">{{(100 * (getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,   CODE_NOMINATION , "A"]) + getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer,  CODE_NOMINATION , "O"])) / (getCounter([ORGANIZER, div, regionalDirector,  coordinator, organizer, BU]) * 1.0 / 100.0)).toFixed(0)}}%</td>    
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,   CODE_PETITION, "Y"])}}</td>
+    <td align="center">{{(getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU]) * 1.0 / 100.0).toFixed(0) * 10}}</td>
+    <td align="center">{{((100 * getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_PETITION, "Y"])) / ((getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU]) * 1.0 / 100.0).toFixed(0) * 10)).toFixed(0)}}%</td>            
+</tr>                
+</tbody>
+</table>
+<br/>&nbsp;<br/>
+</div>
+
+
+<a name="leaderAnchor"></a>
+
+<div align="center" id="leaderDiv">
+<div id="leaderDivTitle"><font size="+1">Leaders</font></div>
+<div id="leaderCountDiv"></div>
+<br/>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="7%" align="center"><font color="white">Division</font></td>
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Reg<br/>Director</font></td>
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Coordinator</font></td>
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Organizer</font></td>
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Employer</font></td>               
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="12%" align="center"><font color="white">Ldr<br/>Name</font></td>              
+    <td bgcolor="#481C60" width="12%" align="center"><font color="white">Dept</font></td>                  
+    <td bgcolor="#481C60" width="15%" align="center"><font color="white">Nomination<br/>Status</font></td>                                      
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Petition Count</font></td>                                                  
+</tr>
+<tbody class="leaderRowTemplate" >
+<tr valign="top">
+    <td align="center">{{sr.Division__c}}</td>
+    <td align="left">{{toProperCase(regionalDirector)}}</td>
+    <td align="center">{{coordinator}}</td>
+    <td align="center">{{organizer}}</td>
+    <td align="center">{{toProperCase(sr.Employer_Name__c)}}</td>                
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{sr.Contact_Name__c}}</td>
+    <td align="center">{{toProperCase(sr.Department__c)}}</td>
+    <td align="center">{{responseLink}}{{overrideInfo}}</td>
+    <td align="center">{{petitionCount}}{{errorText}}</td>
+</tr>                
+</tbody>
+</table>
+<br/>&nbsp;<br/>
+</div>
+
+
+<a name="deptAnchor"></a>
+<!--<div id="deptDivTitle"><font size="+1">Departments</font></div>--> 
+<div id="deptDivTitle"><font size="+1"></font></div>
+<div align="center" id="deptDiv"></div>
+
+<a name="empAnchor"></a>
+<!--<div id="deptDivTitle"><font size="+1">Departments</font></div>--> 
+<div id="empDivTitle"><font size="+1"></font></div>
+<div align="center" id="empDiv"></div>
+
+</div>
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+
+<script language="JavaScript">
+
+$("#mainDiv").hide();
+
+var debugString = "";
+var debugWriter = "";
+
+    var gibsonWriter = "GIBSON WRITER<br/>";
+
+var lastRecord = null;
+
+var ALL = "ALL";
+
+
+var CODE_REACH = "J02";
+var CODE_STRETCH = "S02";
+var CODE_NOMINATION = "S03";
+var CODE_PETITION = "S04";
+
+var LEADER = "LEADER";
+
+
+var DISTRICT = "DISTRICT";
+var SEAT = "SEAT";
+var EMPLOYER = "EMPLOYER";
+var EBOARD = "EBOARD";
+var LEADERS = "LEADERS";
+var SIGNATURES = "SIGNATURES";
+var TURF = "TURF";
+var COORDINATOR = "COORDINATOR";
+var ORGANIZER = "ORGANIZER";
+
+var COPE = "COPE";
+var SHIFT = "SHIFT";
+var AGE_RANGE = "AGE_RANGE";
+
+var REGIONAL_DIRECTOR = "REGIONAL_DIRECTOR";
+var DIVISION = "DIVISION";
+
+var OVERRIDE = "OVERRIDE";
+var GOAL = "GOAL";
+
+var BU = "BU";
+var DEPARTMENT = "DEPARTMENT";
+
+var LDRLDR = "LDRLDR";
+ 
+var LAST_7_DAYS = "LAST_7_DAYS"; 
+ 
+var DIVS = ["HOSPITAL", "KAISER"];
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+function processTemplate(pTemplate) {
+ var templateVars = pTemplate.match(/{{([^{}]+)}}/g);
+ var newWriter = pTemplate;
+ for (var q = 0; q < templateVars.length; q++) {   
+   var evalCode = templateVars[q].substring(2, templateVars[q].length -2);
+   var evalValue = eval(evalCode);
+   newWriter = newWriter.replace(templateVars[q], evalValue);
+ }
+ return newWriter;
+}
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              pWorksite = pWorksite.replace(/\./g,'');
+              pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return toProperCase(dept);
+}
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == null || mode == "null" || mode == "") {
+  mode = "summary"; 
+}
+mode = mode.toLowerCase();
+if (mode == "espanol") {
+  $("#filterDiv").html("Mode = L&iacute;deres en Espa&ntilde;ol");
+} else if (mode == "eboard") {
+  $("#filterDiv").html("Mode = Incoming Executive Board");
+} else if (mode == "departments2") {
+  $("#filterDiv").html("Mode = Departments Sorted by Reach Percent (Min 10 Mbrs in Dept BU)");
+} else if (mode == "departments1") {
+  $("#filterDiv").html("Mode = Departments Sorted by Reach Count");  
+} else if (mode == "toofew") {
+  $("#filterDiv").html("Mode = Leaders Marked As Having Achieved Goals with Fewer Than 10 Petitions");  
+} else { 
+  $("#filterDiv").html("Mode = " + toProperCase(mode));
+}
+
+
+var filter = "{!$CurrentPage.parameters.filter}";
+
+//$(function() {
+
+if (filter == null || filter == "null" || filter == "") {
+  filter = null;
+} else {
+  filter = filter.toLowerCase();
+  $("#filterDiv").html($("#filterDiv").html() + "<br/>Filter = " + toProperCase(filter) );
+}
+$("#filterDiv").html($("#filterDiv").html() +  "<br/>&nbsp;<br/>");
+
+
+var corporation = "{!$CurrentPage.parameters.corporation}";
+if (corporation == null || corporation == "null" || corporation == "") {
+  corporation = null;
+}
+if (corporation != null) {
+  $("#filterDiv").html("Mode = " + toProperCase(mode) + "<br/>" + "Corporation = " + toProperCase(corporation) +  "<br/>&nbsp;<br/>");
+}
+
+var Turf = {};
+
+function getEmployers(pStaff) {
+  var emWriter = "";
+  for (var emName in Turf) {
+     var turfa = Turf[emName];
+     if (turfa.Organizer.toLowerCase()  == pStaff.toLowerCase()  || turfa.Coordinator.toLowerCase() == pStaff.toLowerCase() || turfa.RegionalDirector.toLowerCase()  == pStaff.toLowerCase() )   {
+       if (emWriter != "") {
+         emWriter += "; ";
+       }
+       emWriter += toProperCase(emName);
+     }
+   }
+   return emWriter;
+}
+
+
+var uid = null;
+var title = null;
+var userFullName = null;
+
+var divisionSet = new Array();
+var districtSet = new Array();
+var seatSet = new Array();
+
+var commentsMap = {};
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var user = sforce.connection.getUserInfo();
+    var userName = user.userName;
+    var query = "SELECT ID, Name, Division, Title from User WHERE User.username=\'" + userName + "\'";
+    debugWriter += query + "<br/>\n";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length != 1) throw "unable to find user";
+    uid = records[0].Id;
+    userFullName = records[0].Name;
+    title = records[0].Title;
+    division = records[0].Division;
+    var division2 = division.toLowerCase();
+    
+    var isOrganizer = false;
+    var isCoordinator = false;    
+    var isKaiser = false;
+    var isHospital = false;    
+    if (division2.indexOf("kaiser") >= 0 || division2.indexOf("hosp") >= 0) {
+      if (title.toLowerCase().indexOf("organizer") >= 0 || title.toLowerCase().indexOf("rep/org") >= 0) {
+        isOrganizer = true;
+        //alert(" is an organizer!");
+      }
+      if (title.toLowerCase().indexOf("coordinator") >= 0) {
+        isCoordinator = true;
+        //alert(" is a coordinator!");        
+      }
+      if (division2.indexOf("kaiser") >= 0) {
+        isKaiser = true;
+      } else {
+        isHospital = true;
+      }
+    }
+  
+    //
+    //  get department counts
+    //  partitioned by Division and Employer ID to avoid hitting governor limits.
+    //  
+    var deptSet = new Array();
+    var deptSet2 = new Array();    
+    
+    var shiftSet = new Array();
+    var ageRangeSet = new Array();
+    
+    if (isOrganizer || isCoordinator || mode.indexOf("departments") == 0 || mode == "all") {     
+      
+      for (var i = 0; i < 20; i++) {    
+        var division = "HOSPITAL";
+        if (i % 2 == 1) {
+          division = "KAISER";
+        }
+        var query = "select account.name, Worksite__c, Department, count(id) from contact where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND  In_Current_BU__c = true and (account.Account_Group__c = \'" + division + "\' and account.employer_id__c like \'%" + Math.floor(i/2) + "\') group by account.name, Worksite__c, Department"
+        debugWriter += query + "<br/>\n";
+        var records = sforce.connection.query(query);    
+        var records1 = records.getArray('records'); 
+        for(var j=0;j < records1.length; j++){
+          lastRecord = records1[j];
+          if (records1[j].Department == null || records1[j].Department == "null" || records1[j].Department == "") {
+            records1[j].Department = "Unknown";
+          } 
+          var dept = getModDepartment(records1[j].Name, records1[j].Worksite__c, records1[j].Department);
+     
+          incrementCounter([DEPARTMENT, BU, records1[j].Name, dept ], parseFloat(records1[j].expr0));
+          if (deptSet2.indexOf(JSON.stringify([records1[j].Name, dept ])) < 0) {
+            deptSet.push([records1[j].Name, dept ]);
+            deptSet2.push(JSON.stringify([records1[j].Name, dept ]));             
+          }
+        }
+      }
+    } else if (mode == "employers") {
+       
+      for (var i = 0; i < 200; i++) {    
+        document.getElementById("progressDiv").innerHTML = "" + (i / 4).toFixed(0) + "%";      
+
+       
+        var query = "select account.name, Worksite__c, Department, Shift__c, Age_Range__c, COPE_Pledge__c from contact where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND  In_Current_BU__c = true AND "
+        query += " Account.Account_Group__c = ";
+        if (i % 2 == 0) {
+          query += "\'HOSPITAL\'";
+        } else {
+          query += "\'KAISER\'";        
+        }
+        query += " AND ";
+        if (i < 20) {
+          query += " FID__c like \'%0" + Math.floor(i/2).toFixed(0) + "\' ";       
+        } else {
+          query += " FID__c like \'%" + Math.floor(i/2).toFixed(0) + "\' ";        
+        }
+        debugWriter += query + "<br/>\n";        
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+        for(var j=0;j < records1.length; j++){
+          incrementCounter([EMPLOYER, BU, records1[j].Account.Name], 1.0);
+          var dept = getModDepartment(records1[j].Account.Name, records1[j].Worksite__c, records1[j].Department);
+          incrementCounter([DEPARTMENT, BU, records1[j].Account.Name, dept ], 1.0);
+          if (deptSet2.indexOf(JSON.stringify([records1[j].Account.Name, dept ])) < 0) {
+            deptSet.push([records1[j].Account.Name, dept ]);
+            deptSet2.push(JSON.stringify([records1[j].Account.Name, dept ]));             
+          }
+          if (  records1[j].COPE_Pledge__c != null && records1[j].COPE_Pledge__c != "null" && records1[j].COPE_Pledge__c != "") {                  
+            incrementCounter([DEPARTMENT, COPE, records1[j].Account.Name, dept ], parseFloat(records1[j].COPE_Pledge__c));        
+            incrementCounter([EMPLOYER, COPE, records1[j].Account.Name], parseFloat(records1[j].COPE_Pledge__c));        
+          }
+          var shift = "Unknown";
+          if (records1[j].Shift__c != null && records1[j].COPE_Pledge__c != "null" && records1[j].COPE_Pledge__c != "") { 
+            shift = records1[j].Shift__c;
+          }
+          var shiftKey = JSON.stringify([records1[j].Account.Name, shift]);
+          if (shiftSet.indexOf(shiftKey) < 0) {
+            shiftSet.push(shiftKey);
+          }
+          incrementCounter([DEPARTMENT, SHIFT, BU, records1[j].Account.Name, dept, shift ], 1.0);        
+          incrementCounter([EMPLOYER, SHIFT, BU,  records1[j].Account.Name, shift], 1.0);        
+          
+          if (records1[j].Age_Range__c.indexOf("25") >= 0 || records1[j].Age_Range__c.indexOf("35") >= 0) {
+            records1[j].Age_Range__c = "35 and Under";
+          }
+          if (ageRangeSet.indexOf(records1[j].Age_Range__c) < 0) {
+            ageRangeSet.push(records1[j].Age_Range__c);
+          }
+          incrementCounter([EMPLOYER, AGE_RANGE, BU, records1[j].Account.Name, records1[j].Age_Range__c], 1.0);  
+                                
+        }      
+      }    
+    }
+
+    var emCorpMap = {};
+        
+    var query = "select Id, Name, Employer_Id__c, Region__c, Account_Group__c, Regional_Director__r.Name, Coordinator__r.Name, Organizer_1__r.Name, District_2017__r.Name, Constituency__r.Name, Hospital_System__c  from Account where MO_Active__c = true AND (NOT Name like \'pomona valley%\') AND (NOT Name like \'parkview%\') AND ( Account_Group__c = \'KAISER\' OR Account_Group__c = \'HOSPITAL\' ) ";
+    if (isOrganizer) {
+       query += " AND (Organizer_1__c = \'" + uid + "\' OR Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       query += " AND (Coordinator__c = \'" + uid + "\' ) ";    
+    }
+    if (isKaiser) {
+      //query += " AND Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account_Group__c like \'HOSPITAL%\' ";
+    } 
+    if (corporation != null) {
+      query += " AND Hospital_System__c like \'" + corporation + "%\' ";
+    }    
+    var emSet = [];
+    debugWriter += query + "<br/>\n";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+     
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      
+      if (1 == 1) {
+
+        emCorpMap[records1[i].Name.toLowerCase()] = records1[i].Hospital_System__c;
+      
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+        Turf[records1[i].Name].RegionalDirector = "Vacant";
+        if (records1[i].Regional_Director__r != null) {    
+          Turf[records1[i].Name].RegionalDirector = records1[i].Regional_Director__r.Name;         
+        } else {
+          Turf[records1[i].Name].RegionalDirector = "Vacant";         
+        }
+        
+
+        if (records1[i].Account_Group__c.trim().toUpperCase() == "HOSPITAL") {
+          Turf[records1[i].Name].RegionalDirector = records1[i].Region__c + " - " + Turf[records1[i].Name].RegionalDirector;         
+        }  
+        Turf[records1[i].Name].RegionalDirector = Turf[records1[i].Name].RegionalDirector.replace("(Kathryn) ", "");
+             
+        Turf[records1[i].Name].Organizer = "Vacant";
+        if (records1[i].Organizer_1__r != null) {         
+          Turf[records1[i].Name].Organizer = records1[i].Organizer_1__r.Name;
+        }
+        Turf[records1[i].Name].Coordinator = "Vacant";
+        if (records1[i].Coordinator__r != null) {         
+          Turf[records1[i].Name].Coordinator = records1[i].Coordinator__r.Name;
+        }
+        
+
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+      
+        if (divisionSet.indexOf(records1[i].Account_Group__c) < 0) {
+          divisionSet.push(records1[i].Account_Group__c);
+        }
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+
+        if (emSet.indexOf(records1[i].Name) < 0) {
+          emSet.push(records1[i].Name);
+        }
+        if (records1[i].District_2017__r != null && districtSet.indexOf(records1[i].District_2017__r.Name) < 0) {
+          districtSet.push(records1[i].District_2017__r.Name);
+        }
+        if (records1[i].Constituency__r != null && seatSet.indexOf(records1[i].Constituency__r.Name) < 0) {
+          seatSet.push(records1[i].Constituency__r.Name);
+        }
+          
+      }
+    }
+    
+    var query = "select Account.Name, Count(Id) from Contact where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND (Account.Account_Group__c = \'KAISER\' OR Account.Account_Group__c = \'HOSPITAL\' ) and In_Current_BU__c = true "
+    if (isOrganizer) {
+       query += " AND (Account.Organizer_1__c = \'" + uid + "\' OR Account.Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       query += " AND (Account.Coordinator__c = \'" + uid + "\' ) ";    
+    }
+    if (isKaiser) {
+      //query += " AND Account.Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account.Account_Group__c like \'HOSPITAL%\' ";
+    }     
+    if (corporation != null) {
+      query += " AND Account.Hospital_System__c like \'" + corporation + "%\' ";
+    }
+    query += " group by Account.Name";
+    debugWriter += query + "<br/>\n";    
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      //alert(records1[i].Name + "=" + records1[i].expr0); 
+      
+      if (Turf[records1[i].Name] != null) {
+        
+        Turf[records1[i].Name].BU_Count = records1[i].expr0;
+      
+        var organizer = Turf[records1[i].Name].Organizer;
+        var coordinator = Turf[records1[i].Name].Coordinator;
+        var regionalDirector = Turf[records1[i].Name].RegionalDirector;   
+        var div = Turf[records1[i].Name].Division;
+      
+        incrementCounter([ALL, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([DIVISION, div, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([DIVISION, "ALL", BU], parseFloat(records1[i].expr0));           
+        incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU], parseFloat(records1[i].expr0));           
+        incrementCounter([COORDINATOR, div, regionalDirector, coordinator, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU], parseFloat(records1[i].expr0));                 
+        incrementCounter([EMPLOYER, records1[i].Name],  parseFloat(records1[i].expr0));
+      }
+    }    
+    
+    if (isOrganizer || isCoordinator) {
+      //alert(" employers = " + JSON.stringify(emSet));
+    }
+    //alert("retrieving users");
+    
+    debugWriter += "<br/>&nbsp;<br/> Creating Turf Sort Set... <br/>&nbsp;<br/>\n";
+
+    var leaderSortSet = new Array();    
+    var turfSortSet = new Array();
+    var coorSortSet = new Array();    
+    var regDirSortSet = new Array();  
+    
+    for (var emName in Turf) {
+        var turfa = Turf[emName];
+        //alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer]);
+        var div = turfa.Division.toLowerCase().trim();
+        if (turfSortSet.indexOf(turfKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          incrementCounter([DIVISION, div, TURF], 1.0);
+          incrementCounter([DIVISION, "ALL", TURF], 1.0);          
+          incrementCounter([REGIONAL_DIRECTOR, div, turfa.RegionalDirector, TURF], 1.0);
+          incrementCounter([COORDINATOR, div, turfa.RegionalDirector, turfa.Coordinator, TURF], 1.0);
+          incrementCounter([ORGANIZER, div, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer, TURF], 1.0);                    
+          turfSortSet.push(turfKey);
+        }
+        
+        var coorKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator]);
+        if (coorSortSet.indexOf(coorKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant" && turfa.Coordinator.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            coorSortSet.push(coorKey);
+          }
+        }    
+        
+        var regDirKey = JSON.stringify([turfa.Division, turfa.RegionalDirector]);
+        if (regDirSortSet.indexOf(regDirKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            regDirSortSet.push(regDirKey);
+          }
+        }   
+        
+    }
+    
+    turfSortSet.sort();
+    coorSortSet.sort();
+    regDirSortSet.sort();
+    
+    //alert("got Account Team");
+
+ 
+    var ccSet = [];
+    var ccMap = {};    
+
+    var ldrRoleMap = {};
+
+    //
+    //  get Survey Responses for Jan 2017 Leader Test and Reach
+    //
+    var leaderAssessMap = {};
+    
+    var ggg = 0;
+    
+    var divArray = ["HOSPITAL", "KAISER"];
+    
+    var petitionCountMap = {};
+    var petitionCidMap = {};    
+    var petitionWorkingMap = {};    
+    var leaderMap = {};
+    var leaderSortSet = [];
+    var reachSet = [];
+    
+    for (var d = 0; d < divArray.length; d++) {
+      for (a0 = 0; a0 < 20; a0++) {  
+        var a = Math.floor(a0 / 2);
+        if (mode == "employers") {
+          document.getElementById("progressDiv").innerHTML = "" + (50 + ((25 * d) + (a * 2.5))).toFixed(0) + "%";
+        } else { 
+          document.getElementById("progressDiv").innerHTML = "" + ((50 * d) + (a * 5)) + "%";
+        } 
+  
+        var query = "select Id, Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, Contact__r.Worksite__c, Department__c, Contact__r.Shift__c, Contact__r.Age_Range__c, Question_Name__c, Survey_Code__c, Response_Value__c, Add_Info_Numeric__c, Collected_By__c, Collected_By_Name__c, Collected_By_Employer_Name__c, Contact__r.Ethnicity__c, Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, Contact__r.COPE_Pledge__c, Add_Info__c, Collected_By__r.Worksite__c, Collected_By__r.Department, Contact__r.In_Current_BU__c, Collected_By__r.Age_Range__c, Collected_By__r.Shift__c, Collected_By__r.In_Current_BU__c, Survey_How_Old__c, Report_Group__c, Contact__r.Tier_Staff__c, Collected_By__r.Tier_Staff__c, LastModifiedBy.Name from Survey_Response__c where CreatedDate >= 2017-04-01T14:04:00Z AND (";
+        if (a == 0) { 
+          query += " FID__c = null OR ";
+        }
+        query += " FID__c like \'%" + a + "\' ) ";
+        //query += " AND (Division__c = \'KAISER\' OR Division__c = \'HOSPITAL\' ) ";      
+        query += " AND Division__c = \'" + divArray[d] + "\' ";    
+        if (a0 % 2 == 1) {
+          query += " AND Region__c = \'NORTH\' ";
+        } else {
+          query += " AND Region__c != \'NORTH\' ";
+        }      
+        query += " AND (NOT Employer_Name__c like \'pomona valley%\') AND (NOT Employer_Name__c like \'parkview%\') ";
+        query += " AND ((Survey_Code__c = \'S02\' AND Report_Group__c like \'%reach%\' ) OR (Survey_Code__c = \'S03\' AND (Add_Info_Numeric__c >= 3.0 OR Response_Value__c like \'W%\' OR Response_Value__c like \'A%\')) OR Survey_Code__c = \'S04\'  )  ";
+        if (corporation != null) {
+          query += " AND ( Contact__r.Account.Hospital_System__c like \'" + corporation + "%\' OR  Collected_By__r.Account.Hospital_System__c like \'" + corporation + "%\' ) ";
+        } 
+        if (isCoordinator || isOrganizer) {
+          query += " AND ( ";
+          for (var j = 0; j < emSet.length; j++) {
+            if (j > 0) {
+              query += " OR ";
+            }
+            query += " Employer_Name__c = \'" + emSet[j] + "\' ";
+          }        
+          query += " ) ";
+        }      
+        query += " AND (Response_Value__c like \'y%\' or Response_Value__c like \'w%\' or Response_Value__c like \'m%\' or Response_Value__c like \'o%\' or Response_Value__c like \'a%\' or Response_Value__c like \'x%\')";      
+        query += " AND Contact__r.Tier_Staff__c != null ";
+        debugWriter += query + "<br/>\n";
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+ 
+        if (records1.length == 2000) {
+          alert("SALESFORCE GOVERNOR LIMIT REACHED.  Truncated at 2000 records for div " + divArray[d] + ", partition = " + a0 + ".  Please contact Data Group.");
+        }
+
+        debugString += query + " - " + records1.length + "<br/>";
+
+        for(var i=0;i < records1.length; i++){ 
+          //alert(JSON.stringify(records1[i]));
+
+          lastRecord = records1[i];
+          var organizer = "Vacant";
+          var coordinator = "Vacant";
+          var regionalDirector = "Vacant"; 
+          var div = records1[i].Division__c;    
+          var emName =   records1[i].Employer_Name__c;
+          if (records1[i].Collected_By_Employer_Name__c != null && records1[i].Collected_By_Employer_Name__c != "" && Turf[records1[i].Collected_By_Employer_Name__c ] != null) {
+              organizer = Turf[records1[i].Collected_By_Employer_Name__c ].Organizer;
+              coordinator = Turf[records1[i].Collected_By_Employer_Name__c ].Coordinator;
+              regionalDirector = Turf[records1[i].Collected_By_Employer_Name__c ].RegionalDirector;                      
+              emName =  records1[i].Collected_By_Employer_Name__c;              
+          } else if (Turf[records1[i].Employer_Name__c] != null) {
+              organizer = Turf[records1[i].Employer_Name__c].Organizer;
+              coordinator = Turf[records1[i].Employer_Name__c].Coordinator;
+              regionalDirector = Turf[records1[i].Employer_Name__c].RegionalDirector;              
+          }           
+               
+          var response = records1[i].Response_Value__c.trim().substring(0,1).toLowerCase();
+          var srCode = records1[i].Survey_Code__c;
+
+          var reportGroup = records1[i].Report_Group__c;
+          
+          var countIt = true;
+          if (srCode == CODE_NOMINATION && reportGroup != null && reportGroup.toLowerCase().indexOf("reach") >= 0) {
+            var reachCount = parseInt(reportGroup.substring(14, 16));
+            debugWriter += "<br/>Reach Count for " + records1[i].Contact_Name__c + " = " + reachCount + " (_" +  reportGroup.substring(14, 16) + "_)\n";
+            //var reachCount = parseInt(reportGroup);
+            if (reachCount > 0) {
+              countIt = false;
+            } 
+          }    
+          if (srCode == CODE_PETITION && (records1[i].Collected_By__c == null || records1[i].Collected_By_Employer_Name__c.toUpperCase().indexOf("SEIU") > 0 || records1[i].Collected_By__r.Tier_Staff__c == null)) {
+            countIt = false;          
+          } 
+
+          if (srCode == CODE_NOMINATION && countIt) {
+            incrementCounter([ALL, srCode , response], 1.0);          
+            incrementCounter([DIVISION, div, srCode , response], 1.0);   
+            incrementCounter([DIVISION, "ALL", srCode , response], 1.0);                  
+            incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, srCode , response], 1.0);          
+            incrementCounter([COORDINATOR, div, regionalDirector, coordinator, srCode , response], 1.0);          
+            incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, srCode , response], 1.0);                    
+            if (response == "w" || response == "a" || response == "o") {
+              if (records1[i].Contact__c != null && petitionWorkingMap[records1[i].Contact__c] == null) {
+                petitionWorkingMap[records1[i].Contact__c] = records1[i];
+              }
+            }
+            var  sortKey = JSON.stringify([div, regionalDirector, coordinator, organizer, records1[i].Employer_Name__c, records1[i].Contact_Name__c, records1[i].Contact__c ]);            
+            leaderMap[records1[i].Contact__c] = records1[i];
+            if (leaderSortSet.indexOf(sortKey) < 0) {
+              leaderSortSet.push(sortKey);
+            }
+          } else if (srCode == CODE_PETITION && countIt) {
+            var petCount = 0;
+            if (petitionCountMap[records1[i].Collected_By__c] != null) {
+              petCount = petitionCountMap[records1[i].Collected_By__c];
+            }
+            petCount++;
+            petitionCountMap[records1[i].Collected_By__c] = petCount;
+            
+            var cidSet = [];
+            if (petitionCidMap[records1[i].Collected_By__c] != null) {
+              cidSet = petitionCidMap[records1[i].Collected_By__c];
+            }
+            if (records1[i].Contact__c != null && cidSet.indexOf(records1[i].Contact__c) < 0) {
+              cidSet.push(records1[i].Contact__c);
+            }
+            petitionCidMap[records1[i].Collected_By__c] = cidSet;
+            
+            var  sortKey = JSON.stringify([div, regionalDirector, coordinator, organizer, records1[i].Collected_By_Employer_Name__c, records1[i].Collected_By_Name__c, records1[i].Collected_By__c ]);                        
+            var sr = records1[i];
+            sr.Response_Value__c = "N. Not Nominated";
+            sr.Contact__c = records1[i].Collected_By__c;
+            sr.Contact_Name__c = records1[i].Collected_By_Name__c;
+            sr.Department__c = records1[i].Collected_By__r.Department;
+            sr.Employer_Name__c =    records1[i].Collected_By_Employer_Name__c;                                
+            if (leaderMap[sr.Contact__c] == null) {
+              leaderMap[sr.Contact__c] = sr;
+              if (leaderSortSet.indexOf(sortKey) < 0) {
+                leaderSortSet.push(sortKey);
+              }              
+            }
+            
+          } else if (srCode == CODE_STRETCH && reportGroup.toLowerCase().indexOf("reach") >= 0) {
+              if (reachSet.indexOf(records1[i].Contact__c) < 0) {
+                reachSet.push(records1[i].Contact__c);
+              }                          
+          }
+        }
+      }
+    }
+    
+    if (mode.indexOf("override") == 0) {
+      for (var i = 0; i < 10; i++) {
+        var query = "select Id, Comments__c from Survey_Response__c where Survey_Code__c = \'S03\' and FID__c like \'%" + i + "\' ";
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+         if (records1.length == 1000) {
+          alert("SALESFORCE GOVERNOR LIMIT REACHED.  Truncated at 1000 records for survey code S03.");
+        }
+        debugString += query + " - " + records1.length + "<br/>";
+        for(var j = 0; j < records1.length; j++){         
+          if (records1[j].Comments__c != null && records1[j].Comments__c.trim().length > 0) {
+            commentsMap[records1[j].Id] = records1[j].Comments__c;
+          }
+        }
+      }
+    }
+    
+
+    
+    //
+    // only count working petitioners
+    //
+    for (var cid in petitionWorkingMap) {
+
+        var sr = petitionWorkingMap[cid];
+        lastRecord = sr;
+        var organizer = "Vacant";
+        var coordinator = "Vacant";
+        var regionalDirector = "Vacant"; 
+        var div = sr.Division__c;           
+      
+        //this is for PETITIONS
+        var srCode = CODE_PETITION ;
+        var response = "y";
+        if (Turf[sr.Employer_Name__c] != null) {
+          organizer = Turf[sr.Employer_Name__c].Organizer;
+          coordinator = Turf[sr.Employer_Name__c].Coordinator;
+          regionalDirector = Turf[sr.Employer_Name__c].RegionalDirector;  
+          var petCount = 0;
+          //if (petitionCountMap[sr.Contact__c] != null) {
+          //  petCount = petitionCountMap[sr.Contact__c];
+          //}
+          if (petitionCidMap[sr.Contact__c] != null) {
+            for (var k = 0; k < petitionCidMap[sr.Contact__c].length; k++) {
+              var cid = petitionCidMap[sr.Contact__c][k];
+              if (reachSet.indexOf(cid) < 0) {
+                petCount++;
+                if (sr.Employer_Name__c.toLowerCase().indexOf("kaiser") == 0 && sr.Contact_Name__c.toLowerCase().indexOf("gibson") >= 0) {
+                  gibsonWriter += cid  + "<br/>";
+                }
+              }
+            } 
+          }
+          petitionCountMap[sr.Contact__c] = petCount;
+        }
+        debugWriter += "\n<br/>pet count = " + petCount + ", " + JSON.stringify(sr);
+        incrementCounter([ALL, srCode , response], petCount );          
+        incrementCounter([DIVISION, div, srCode , response], petCount );   
+        incrementCounter([DIVISION, "ALL", srCode , response], petCount );                  
+        incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, srCode , response], petCount );          
+        incrementCounter([COORDINATOR, div, regionalDirector, coordinator, srCode , response], petCount );          
+        incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, srCode , response], petCount );   
+     
+    }
+    
+    debugWriter += "\n<br/>&nbsp;<br/>\nBuilding Division Summary...<br/>\n";
+    
+    var divTemplate = $(".divisionRowTemplate").html();
+    
+    debugWriter += "\n<br/>div template = " + divTemplate; 
+    
+    //var templateVars = divTemplate.match(/{{([^{}]+)}}/g);
+    //debugWriter += "\n<br/>&nbsp;<br/>\nTemplate Vars = " + JSON.stringify(templateVars) + "<br/>\n";
+    
+    var rowCounter = 0;
+    
+    //
+    //  Division Counts
+    //
+    var newWriter = "";
+    divArray.push("ALL");
+    for (var ddex = 0; ddex < divArray.length; ddex++) {
+      var division = divArray[ddex];
+      var div = toProperCase(division);
+      if (filter == null || division.toLowerCase() == filter.toLowerCase()) {            
+        var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+        divTemplate = $(".divisionRowTemplate").html();    
+        var processedWriter = processTemplate(divTemplate);  
+        if (division.toUpperCase() == "ALL") {
+             processedWriter = processedWriter.replace(">All<", "> <b>All</b> <");
+        }      
+        newWriter += processedWriter;
+        rowCounter++;
+      }
+    }
+    $(".divisionRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isCoordinator || isOrganizer) {
+      $("#countDiv").hide();
+    }
+    var rowCounter = 0;
+
+    //
+    //  Regional Counts
+    //
+    var newWriter = "";
+    var lastRegionalDirector = "";
+    for (var tdex = 0; tdex < turfSortSet.length; tdex++) {
+      var tarray = JSON.parse(turfSortSet[tdex]);
+      var division = tarray[0];
+      var regionalDirector = toProperCase(tarray[1]);
+      var coordinator = toProperCase(tarray[2]);
+      var organizer = toProperCase(tarray[3]);
+      if ( lastRegionalDirector != regionalDirector) {  
+        if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0) {                                 
+          var div = toProperCase(division);
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regionalDirectorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coordinatorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var organizerLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer ) + "\">" + organizer + "</a>";          
+          regionalTemplate = $(".regionalRowTemplate").html();    
+          var processedWriter = processTemplate(regionalTemplate );      
+          newWriter += processedWriter;
+          rowCounter++
+        }
+      }
+      lastRegionalDirector = regionalDirector;
+    }
+    $(".regionalRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isCoordinator || isOrganizer) {
+      $("#regionDiv").hide();
+    }
+    var rowCounter = 0;
+
+    //
+    //  Coordinator Counts
+    //
+    var newWriter = "";
+    var lastCoordinator = "";
+    for (var tdex = 0; tdex < turfSortSet.length; tdex++) {
+      var tarray = JSON.parse(turfSortSet[tdex]);
+      var division = tarray[0];
+      var regionalDirector = toProperCase(tarray[1]);
+      var coordinator = toProperCase(tarray[2]);
+      var organizer = toProperCase(tarray[3]);
+      if ( lastCoordinator != coordinator) { 
+        if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0 || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) {                                  
+          var div = toProperCase(division);
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regionalDirectorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coordinatorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var organizerLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer ) + "\">" + organizer + "</a>";            
+          coordinatorTemplate = $(".coordinatorRowTemplate").html();    
+          var processedWriter = processTemplate(coordinatorTemplate );      
+          newWriter += processedWriter;
+          rowCounter++;
+        }
+      }
+      lastCoordinator = coordinator;
+    }
+    $(".coordinatorRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isOrganizer) {
+      $("#coordinatorDiv").hide();
+    }
+    var rowCounter = 0;
+
+    //
+    //  Organizer Counts
+    //
+    var newWriter = "";
+    var lastCoordinator = "";
+    var lastOrganizer = "";    
+    for (var tdex = 0; tdex < turfSortSet.length; tdex++) {
+      var tarray = JSON.parse(turfSortSet[tdex]);
+      var division = tarray[0];
+      var regionalDirector = toProperCase(tarray[1]);
+      var coordinator = toProperCase(tarray[2]);
+      var organizer = toProperCase(tarray[3]);
+      if ( lastCoordinator != coordinator || lastOrganizer != organizer) {                       
+        if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0 || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) {      
+          var div = toProperCase(division);
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regionalDirectorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coordinatorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var organizerLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer ) + "\">" + organizer + "</a>";            
+          organizerTemplate = $(".organizerRowTemplate").html();    
+          var processedWriter = processTemplate(organizerTemplate );      
+          newWriter += processedWriter;
+        }
+      }
+      lastOrganizer = organizer;
+      lastCoordinator = coordinator;      
+    }
+    $(".organizerRowTemplate").html(newWriter);
+
+    var rowCounter = 0;
+
+    //
+    //  Leaders Counts
+    //
+    var newWriter = "";
+    leaderSortSet.sort();
+    debugWriter += "\n<br/>leader sort set length = " + leaderSortSet.length;
+     
+    var writeCount = 0;
+    
+    for (var ldex = 0; ldex < leaderSortSet.length; ldex++) {
+        var larray = JSON.parse(leaderSortSet[ldex]);
+        var cid = larray[6];
+        debugWriter += "\n<br/>cid = " + cid + ", " + larray[5] + " - " + larray[4] + "; response = " + sr.Response_Value__c;
+        var petitionCount = 0;
+        var sr = leaderMap[cid];
+        if (petitionCountMap[sr.Contact__c] != null) {
+          petitionCount = petitionCountMap[sr.Contact__c];
+        }
+        if (sr.Employer_Name__c != null && Turf[sr.Employer_Name__c] != null) {
+          var division = Turf[sr.Employer_Name__c].Division;
+          var organizer = Turf[sr.Employer_Name__c].Organizer;
+          var coordinator = Turf[sr.Employer_Name__c].Coordinator;
+          var regionalDirector = Turf[sr.Employer_Name__c].RegionalDirector;  
+          var errorText = "";
+          var overrideInfo = "";
+          if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0 || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) {      
+            var response = sr.Response_Value__c.toLowerCase().substring(0, 1);
+            var responseLink = "<a target=\"_BLANK\" href=\"/" + sr.Id + "\">" + sr.Response_Value__c + "</a>";
+            if (response == "w" || response == "a" || response == "o" || (response == "m" && petitionCount > 0)) {
+              if (response == "a" && petitionCount < 10) {
+                errorText = "&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\" size=\"+2\">TOO FEW PETITIONS</font>";
+              }
+              if (mode == "summary" || mode.indexOf("extend") == 0 || (mode.indexOf("override") >= 0 && response == "o") || (mode.indexOf("toofew") >= 0 && response == "a" && petitionCount < 10)) {
+                var comment = "";
+                if (commentsMap[sr.Id] != null && commentsMap[sr.Id].length > 0) {
+                  comment = commentsMap[sr.Id];
+                }
+                if (mode.indexOf("override") >= 0) {
+                  overrideInfo ="<br/><font size=\"-2\">" + sr.LastModifiedBy.Name + "<br/>" + comment + "</font>";
+                }              
+                ldrTemplate = $(".leaderRowTemplate").html();        
+                var processedWriter = processTemplate(ldrTemplate); 
+                newWriter += processedWriter;    
+                writeCount++;   
+              }
+            }
+          }
+        }
+    }
+    $(".leaderRowTemplate").html(newWriter);
+    $("#leaderCountDiv").html("Leaders = " + writeCount);      
+          
+    if (mode.indexOf("override") >= 0 || mode.indexOf("toofew") >= 0 ) {
+      $("#countDiv").hide();
+      $("#regionDiv").hide();
+      $("#coordinatorDiv").hide();
+      $("#organizerDiv").hide();                  
+    }      
+
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+
+  document.getElementById("progressDiv").innerHTML = ""; 
+  $("#mainDiv").show();
+  
+//});
+  $( ".extendCols" ).show();
+
+//if (mode.indexOf("extend") == 0) {
+//  $( ".extendCols" ).show();
+//} else {
+//  $( ".extendCols" ).hide();
+//}
+
+  //document.getElementById("debugDiv").innerHTML = debugWriter ; 
+   
+</script> 
+  
+</apex:page>

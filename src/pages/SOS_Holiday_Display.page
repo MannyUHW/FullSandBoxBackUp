@@ -1,0 +1,23 @@
+<apex:page standardController="SOS_Time_Off_Balance__c" extensions="SOS_TOB_Controller" showHeader="false" sidebar="false">
+    <apex:form >
+        <!-- <apex:pageblock >
+            <apex:pageBlockTable value="{!torlst}" var="tor" rendered="{!NOT(ISNULL(torlst))}">
+                <apex:column value="{!tor.Type__c}"/>  
+                <apex:column value="{!tor.Total_Hours_Requested__c}"/>
+                <apex:column value="{!tor.Status__c}"/>
+                <apex:column value="{!tor.Start_Date__c}"/>
+                <apex:column value="{!tor.End_Date__c}"/>
+                <apex:column value="{!tor.Approve_Reject_Date__c}"/>                   
+            </apex:pageBlockTable>
+            <apex:outputLabel value="No records to display" rendered="{!(ISNULL(torlst))}" styleClass="noRowsHeader"></apex:outputLabel> 
+        </apex:pageblock> -->
+        <apex:pageBlock >
+                <apex:pageBlockSection columns="1">
+                    <apex:pageblocktable value="{!holidaylst}" var="hol">
+                        <apex:column headervalue="Holiday Name" value="{!hol.name}"/>
+                        <apex:column headervalue="Holiday Date" value="{!hol.ActivityDate}"/>
+                    </apex:pageblocktable>
+                </apex:pageBlockSection>
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

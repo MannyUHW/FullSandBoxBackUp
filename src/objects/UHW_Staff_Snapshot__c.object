@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Contains UHW All Staff - data snapshots every month. This is for HR/Triana&apos;s staff dashboard.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Account Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Account Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Age_Group__c</fullName>
+        <externalId>false</externalId>
+        <label>Age Group</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Under 30</fullName>
+                    <color>#0B6FCE</color>
+                    <default>false</default>
+                    <label>Under 30</label>
+                </value>
+                <value>
+                    <fullName>30 to 39</fullName>
+                    <color>#78C953</color>
+                    <default>false</default>
+                    <label>30 to 39</label>
+                </value>
+                <value>
+                    <fullName>40 to 49</fullName>
+                    <color>#E27001</color>
+                    <default>false</default>
+                    <label>40 to 49</label>
+                </value>
+                <value>
+                    <fullName>50 to 59</fullName>
+                    <color>#A53711</color>
+                    <default>false</default>
+                    <label>50 to 59</label>
+                </value>
+                <value>
+                    <fullName>60 to 69</fullName>
+                    <color>#F3D904</color>
+                    <default>false</default>
+                    <label>60 to 69</label>
+                </value>
+                <value>
+                    <fullName>70+</fullName>
+                    <color>#A845DC</color>
+                    <default>false</default>
+                    <label>70+</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Age__c</fullName>
+        <externalId>false</externalId>
+        <label>Age</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Birthdate__c</fullName>
+        <externalId>false</externalId>
+        <label>Birthdate</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Contact Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Department__c</fullName>
+        <externalId>false</externalId>
+        <label>Department</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employee_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Employee Id</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ethnicity__c</fullName>
+        <externalId>false</externalId>
+        <label>Ethnicity</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>American Indian or Alaska Native</fullName>
+                    <color>#0B6FCE</color>
+                    <default>false</default>
+                    <label>American Indian or Alaska Native</label>
+                </value>
+                <value>
+                    <fullName>Asian</fullName>
+                    <color>#78C953</color>
+                    <default>false</default>
+                    <label>Asian</label>
+                </value>
+                <value>
+                    <fullName>Black or African American</fullName>
+                    <color>#E27001</color>
+                    <default>false</default>
+                    <label>Black or African American</label>
+                </value>
+                <value>
+                    <fullName>Hispanic or Latino</fullName>
+                    <color>#A53711</color>
+                    <default>false</default>
+                    <label>Hispanic or Latino</label>
+                </value>
+                <value>
+                    <fullName>Native Hawaiian or Other Pacific Islander</fullName>
+                    <color>#F3D904</color>
+                    <default>false</default>
+                    <label>Native Hawaiian or Other Pacific Islander</label>
+                </value>
+                <value>
+                    <fullName>Two or More Races</fullName>
+                    <color>#A845DC</color>
+                    <default>false</default>
+                    <label>Two or More Races</label>
+                </value>
+                <value>
+                    <fullName>White</fullName>
+                    <color>#66E9BD</color>
+                    <default>false</default>
+                    <label>White</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>FID__c</fullName>
+        <externalId>false</externalId>
+        <label>FID</label>
+        <length>14</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>First_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>First Name</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Full_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Full Name</label>
+        <length>120</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Gender__c</fullName>
+        <externalId>false</externalId>
+        <label>Gender</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Female</fullName>
+                    <color>#F96FB7</color>
+                    <default>false</default>
+                    <label>Female</label>
+                </value>
+                <value>
+                    <fullName>Male</fullName>
+                    <color>#0B6FCE</color>
+                    <default>false</default>
+                    <label>Male</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Hire_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Hire Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Last_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Location__c</fullName>
+        <externalId>false</externalId>
+        <label>Location</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF
+(
+OR(OR(OR(OR( CONTAINS(Title__c , &quot;COORD&quot;),CONTAINS( Title__c, &quot;DIRECTOR&quot;),CONTAINS(Title__c , &quot;MANAGER&quot;),CONTAINS(Title__c , &quot;PRESIDENT&quot;),CONTAINS(Title__c , &quot;CHIEF&quot;)  ))))
+
+,TRUE, FALSE
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Manager?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>OPS_Admin__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF
+(
+OR(OR( CONTAINS(Title__c , &quot;ADMIN&quot;),CONTAINS( Department__c , &quot;OPS&quot;),CONTAINS(Title__c , &quot;AA&quot;) ))
+
+,TRUE, FALSE
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>OPS&amp;Admin</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Primary_Language__c</fullName>
+        <externalId>false</externalId>
+        <label>Primary Language</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Probable_Language__c</fullName>
+        <externalId>false</externalId>
+        <label>Probable Language</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Race__c</fullName>
+        <externalId>false</externalId>
+        <label>Race</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>A/PI</fullName>
+                    <color>#8F6429</color>
+                    <default>false</default>
+                    <label>A/PI</label>
+                </value>
+                <value>
+                    <fullName>American Indian Or Alaska Native</fullName>
+                    <color>#78C953</color>
+                    <default>false</default>
+                    <label>American Indian Or Alaska Native</label>
+                </value>
+                <value>
+                    <fullName>Black Or African American</fullName>
+                    <color>#E27001</color>
+                    <default>false</default>
+                    <label>Black Or African American</label>
+                </value>
+                <value>
+                    <fullName>Latino</fullName>
+                    <color>#A845DC</color>
+                    <default>false</default>
+                    <label>Latino</label>
+                </value>
+                <value>
+                    <fullName>Two Or More Races</fullName>
+                    <color>#F3D904</color>
+                    <default>false</default>
+                    <label>Two Or More Races</label>
+                </value>
+                <value>
+                    <fullName>White</fullName>
+                    <color>#AFCADF</color>
+                    <default>false</default>
+                    <label>White</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Snapshot_Month__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(MONTH( Datevalue(CreatedDate)), 1, &quot;January&quot;, 2, &quot;February&quot;, 3, &quot;March&quot;,  4, &quot;April&quot;,  5, &quot;May&quot;,  6, &quot;June&quot;, 7, &quot;July&quot;, 8, &quot;August&quot;, 9, &quot;September&quot;, 10, &quot;October&quot;, 11, &quot;November&quot;, 12, &quot;December&quot;, &quot;None&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Snapshot Month</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Snapshot_Year__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Year( Datevalue(CreatedDate)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Snapshot Year</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Staff_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Staff Type</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Title__c</fullName>
+        <description>Job Title</description>
+        <externalId>false</externalId>
+        <label>Title</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Years_Of_Service__c</fullName>
+        <externalId>false</externalId>
+        <label>Years Of Service</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Yrs_of_Service__c</fullName>
+        <externalId>false</externalId>
+        <label>Yrs of Service</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Under 3 Yrs</fullName>
+                    <color>#66E9BD</color>
+                    <default>false</default>
+                    <label>Under 3 Yrs</label>
+                </value>
+                <value>
+                    <fullName>3 to 5 Yrs</fullName>
+                    <color>#0B24BE</color>
+                    <default>false</default>
+                    <label>3 to 5 Yrs</label>
+                </value>
+                <value>
+                    <fullName>5 to 10 Yrs</fullName>
+                    <color>#419249</color>
+                    <default>false</default>
+                    <label>5 to 10 Yrs</label>
+                </value>
+                <value>
+                    <fullName>10 to 15 Yrs</fullName>
+                    <color>#F3D904</color>
+                    <default>false</default>
+                    <label>10 to 15 Yrs</label>
+                </value>
+                <value>
+                    <fullName>15+</fullName>
+                    <color>#641CCF</color>
+                    <default>false</default>
+                    <label>15+</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>UHW Staff Snapshot</label>
+    <nameField>
+        <displayFormat>S-{MM}{DD}{YY}-{0}</displayFormat>
+        <label>Snapshot Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>UHW Staff Snapshots</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>Read</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

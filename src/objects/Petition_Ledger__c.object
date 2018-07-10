@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This object covers the transfer of petitions from one person to another.  We&apos;re using Contacts so we have the option of looking at transfers to Member Leaders.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Bad_Signatures__c</fullName>
+        <externalId>false</externalId>
+        <label>Bad Signatures</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Circulator_Alt_Relation__c</fullName>
+        <description>relation of circulator alt to check in (Transferred From) named contact</description>
+        <externalId>false</externalId>
+        <label>Circulator Alt Relation</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Circulator_Alt__c</fullName>
+        <description>Named of circulator signed if different from named circulator leader (for sfdc non-contact circulators)</description>
+        <externalId>false</externalId>
+        <label>Circulator Alt</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>County__c</fullName>
+        <externalId>false</externalId>
+        <label>County</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No County Assigned</fullName>
+                    <default>true</default>
+                    <label>No County Assigned</label>
+                </value>
+                <value>
+                    <fullName>Alameda</fullName>
+                    <default>false</default>
+                    <label>Alameda</label>
+                </value>
+                <value>
+                    <fullName>Alpine</fullName>
+                    <default>false</default>
+                    <label>Alpine</label>
+                </value>
+                <value>
+                    <fullName>Amador</fullName>
+                    <default>false</default>
+                    <label>Amador</label>
+                </value>
+                <value>
+                    <fullName>Butte</fullName>
+                    <default>false</default>
+                    <label>Butte</label>
+                </value>
+                <value>
+                    <fullName>Calaveras</fullName>
+                    <default>false</default>
+                    <label>Calaveras</label>
+                </value>
+                <value>
+                    <fullName>Colusa</fullName>
+                    <default>false</default>
+                    <label>Colusa</label>
+                </value>
+                <value>
+                    <fullName>Contra Costa</fullName>
+                    <default>false</default>
+                    <label>Contra Costa</label>
+                </value>
+                <value>
+                    <fullName>Del Norte</fullName>
+                    <default>false</default>
+                    <label>Del Norte</label>
+                </value>
+                <value>
+                    <fullName>El Dorado</fullName>
+                    <default>false</default>
+                    <label>El Dorado</label>
+                </value>
+                <value>
+                    <fullName>Fresno</fullName>
+                    <default>false</default>
+                    <label>Fresno</label>
+                </value>
+                <value>
+                    <fullName>Glenn</fullName>
+                    <default>false</default>
+                    <label>Glenn</label>
+                </value>
+                <value>
+                    <fullName>Humboldt</fullName>
+                    <default>false</default>
+                    <label>Humboldt</label>
+                </value>
+                <value>
+                    <fullName>Imperial</fullName>
+                    <default>false</default>
+                    <label>Imperial</label>
+                </value>
+                <value>
+                    <fullName>Inyo</fullName>
+                    <default>false</default>
+                    <label>Inyo</label>
+                </value>
+                <value>
+                    <fullName>Kern</fullName>
+                    <default>false</default>
+                    <label>Kern</label>
+                </value>
+                <value>
+                    <fullName>Kings</fullName>
+                    <default>false</default>
+                    <label>Kings</label>
+                </value>
+                <value>
+                    <fullName>Lake</fullName>
+                    <default>false</default>
+                    <label>Lake</label>
+                </value>
+                <value>
+                    <fullName>Lassen</fullName>
+                    <default>false</default>
+                    <label>Lassen</label>
+                </value>
+                <value>
+                    <fullName>Los Angeles</fullName>
+                    <default>false</default>
+                    <label>Los Angeles</label>
+                </value>
+                <value>
+                    <fullName>Madera</fullName>
+                    <default>false</default>
+                    <label>Madera</label>
+                </value>
+                <value>
+                    <fullName>Marin</fullName>
+                    <default>false</default>
+                    <label>Marin</label>
+                </value>
+                <value>
+                    <fullName>Mariposa</fullName>
+                    <default>false</default>
+                    <label>Mariposa</label>
+                </value>
+                <value>
+                    <fullName>Mendocino</fullName>
+                    <default>false</default>
+                    <label>Mendocino</label>
+                </value>
+                <value>
+                    <fullName>Merced</fullName>
+                    <default>false</default>
+                    <label>Merced</label>
+                </value>
+                <value>
+                    <fullName>Modoc</fullName>
+                    <default>false</default>
+                    <label>Modoc</label>
+                </value>
+                <value>
+                    <fullName>Mono</fullName>
+                    <default>false</default>
+                    <label>Mono</label>
+                </value>
+                <value>
+                    <fullName>Monterey</fullName>
+                    <default>false</default>
+                    <label>Monterey</label>
+                </value>
+                <value>
+                    <fullName>Napa</fullName>
+                    <default>false</default>
+                    <label>Napa</label>
+                </value>
+                <value>
+                    <fullName>Nevada</fullName>
+                    <default>false</default>
+                    <label>Nevada</label>
+                </value>
+                <value>
+                    <fullName>Orange</fullName>
+                    <default>false</default>
+                    <label>Orange</label>
+                </value>
+                <value>
+                    <fullName>Placer</fullName>
+                    <default>false</default>
+                    <label>Placer</label>
+                </value>
+                <value>
+                    <fullName>Plumas</fullName>
+                    <default>false</default>
+                    <label>Plumas</label>
+                </value>
+                <value>
+                    <fullName>Riverside</fullName>
+                    <default>false</default>
+                    <label>Riverside</label>
+                </value>
+                <value>
+                    <fullName>Sacramento</fullName>
+                    <default>false</default>
+                    <label>Sacramento</label>
+                </value>
+                <value>
+                    <fullName>San Benito</fullName>
+                    <default>false</default>
+                    <label>San Benito</label>
+                </value>
+                <value>
+                    <fullName>San Bernardino</fullName>
+                    <default>false</default>
+                    <label>San Bernardino</label>
+                </value>
+                <value>
+                    <fullName>San Diego</fullName>
+                    <default>false</default>
+                    <label>San Diego</label>
+                </value>
+                <value>
+                    <fullName>San Francisco</fullName>
+                    <default>false</default>
+                    <label>San Francisco</label>
+                </value>
+                <value>
+                    <fullName>San Joaquin</fullName>
+                    <default>false</default>
+                    <label>San Joaquin</label>
+                </value>
+                <value>
+                    <fullName>San Luis Obispo</fullName>
+                    <default>false</default>
+                    <label>San Luis Obispo</label>
+                </value>
+                <value>
+                    <fullName>San Mateo</fullName>
+                    <default>false</default>
+                    <label>San Mateo</label>
+                </value>
+                <value>
+                    <fullName>Santa Barbara</fullName>
+                    <default>false</default>
+                    <label>Santa Barbara</label>
+                </value>
+                <value>
+                    <fullName>Santa Clara</fullName>
+                    <default>false</default>
+                    <label>Santa Clara</label>
+                </value>
+                <value>
+                    <fullName>Santa Cruz</fullName>
+                    <default>false</default>
+                    <label>Santa Cruz</label>
+                </value>
+                <value>
+                    <fullName>Shasta</fullName>
+                    <default>false</default>
+                    <label>Shasta</label>
+                </value>
+                <value>
+                    <fullName>Sierra</fullName>
+                    <default>false</default>
+                    <label>Sierra</label>
+                </value>
+                <value>
+                    <fullName>Siskiyou</fullName>
+                    <default>false</default>
+                    <label>Siskiyou</label>
+                </value>
+                <value>
+                    <fullName>Solano</fullName>
+                    <default>false</default>
+                    <label>Solano</label>
+                </value>
+                <value>
+                    <fullName>Sonoma</fullName>
+                    <default>false</default>
+                    <label>Sonoma</label>
+                </value>
+                <value>
+                    <fullName>Stanislaus</fullName>
+                    <default>false</default>
+                    <label>Stanislaus</label>
+                </value>
+                <value>
+                    <fullName>Sutter</fullName>
+                    <default>false</default>
+                    <label>Sutter</label>
+                </value>
+                <value>
+                    <fullName>Tehama</fullName>
+                    <default>false</default>
+                    <label>Tehama</label>
+                </value>
+                <value>
+                    <fullName>Trinity</fullName>
+                    <default>false</default>
+                    <label>Trinity</label>
+                </value>
+                <value>
+                    <fullName>Tulare</fullName>
+                    <default>false</default>
+                    <label>Tulare</label>
+                </value>
+                <value>
+                    <fullName>Tuolumne</fullName>
+                    <default>false</default>
+                    <label>Tuolumne</label>
+                </value>
+                <value>
+                    <fullName>Ventura</fullName>
+                    <default>false</default>
+                    <label>Ventura</label>
+                </value>
+                <value>
+                    <fullName>Yolo</fullName>
+                    <default>false</default>
+                    <label>Yolo</label>
+                </value>
+                <value>
+                    <fullName>Yuba</fullName>
+                    <default>false</default>
+                    <label>Yuba</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>From_Coordinator__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>From Coordinator</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Petition_Ledger1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>From_Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (left(text(Transfer_Type__c), 1) = &quot;A&quot;, &quot;CHECK-IN&quot;,
+  if (text(Transferred_From__r.Account.Account_Group__c)=&apos;Staff&apos;,
+    if(left(Transferred_From__r.Department,  3) = &apos;OPS&apos;,
+       UPPER(&apos;Operations&apos;),
+       UPPER(Transferred_From__r.Department)
+    ),
+    UPPER(text(Transferred_From__r.Account.Account_Group__c)))
+)</formula>
+        <label>From Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>From_Regional_Director__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Lookup to regional director for petition circulator</description>
+        <externalId>false</externalId>
+        <label>From Regional Director</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Petition_Ledger</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Quantity__c</fullName>
+        <externalId>false</externalId>
+        <label>Petition Quantity</label>
+        <precision>7</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>To_Coordinator__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>To Coordinator</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Petition_Ledger2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>To_Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (left(text(Transfer_Type__c), 1) = &quot;O&quot;, &quot;CHECK-IN&quot;,
+  if (left(text(Transfer_Type__c), 1) = &quot;A&quot;, &quot;AUDIT&quot;,
+    if (left(text(Transfer_Type__c), 1) = &quot;X&quot;, &quot;BURNED&quot;,
+      if (text(Transferred_To__r.Account.Account_Group__c)=&apos;Staff&apos;,
+          if(left(Transferred_To__r.Department,  3) = &apos;OPS&apos;,
+             UPPER(&apos;Operations&apos;),
+             UPPER(Transferred_To__r.Department)
+          ),
+          UPPER(text(Transferred_To__r.Account.Account_Group__c)))
+      )
+   )
+)</formula>
+        <label>To Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>To_Regional_Director__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>To Regional Director</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Petition_Ledger3</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Transfer_Date__c</fullName>
+        <defaultValue>$System.OriginDateTime</defaultValue>
+        <externalId>false</externalId>
+        <label>Transfer Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Transfer_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Transfer Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>P. Printed Petitions Delivered To</fullName>
+                    <default>false</default>
+                    <label>P. Printed Petitions Delivered To</label>
+                </value>
+                <value>
+                    <fullName>S. Staff Check-Out</fullName>
+                    <default>false</default>
+                    <label>S. Staff Check-Out</label>
+                </value>
+                <value>
+                    <fullName>M. Member Leader Check-Out</fullName>
+                    <default>false</default>
+                    <label>M. Member Leader Check-Out</label>
+                </value>
+                <value>
+                    <fullName>O. Check-In to Operations</fullName>
+                    <default>false</default>
+                    <label>O. Check-In to Operations</label>
+                </value>
+                <value>
+                    <fullName>X. Burned</fullName>
+                    <default>false</default>
+                    <label>X. Burned</label>
+                </value>
+                <value>
+                    <fullName>A. Sent to Audit</fullName>
+                    <default>false</default>
+                    <label>A. Sent to Audit</label>
+                </value>
+                <value>
+                    <fullName>R. Returned Blank to Operations</fullName>
+                    <default>false</default>
+                    <label>R. Returned Blank to Operations</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Transferred_From__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Transferred From</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Petition Ledger</relationshipLabel>
+        <relationshipName>Petition_Ledger</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Transferred_To__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Transferred To</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Petition Ledger (Transferred To)</relationshipLabel>
+        <relationshipName>Petition_Ledger1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Turf_Key__c</fullName>
+        <externalId>false</externalId>
+        <formula>if( Transferred_From__r.Account.Name = &quot;SEIU-UHW&quot;,
+    Transferred_From__r.Department,
+    Transferred_From__r.Account.Turf_Key__c)
+    &amp; &quot; / &quot; &amp;     Transferred_From__r.FirstName &amp; &quot; &quot; &amp; Transferred_From__r.LastName
+
+&amp; &quot; | &quot; &amp;
+
+if( Transferred_To__r.Account.Name = &quot;SEIU-UHW&quot;,
+    Transferred_To__r.Department,
+    Transferred_To__r.Account.Turf_Key__c)
+    &amp; &quot; / &quot; &amp;     Transferred_To__r.FirstName &amp; &quot; &quot; &amp; Transferred_To__r.LastName</formula>
+        <label>Turf Key</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Campaign__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>UHW Campaign</label>
+        <referenceTo>UHW_Campaign__c</referenceTo>
+        <relationshipLabel>Petition Ledger</relationshipLabel>
+        <relationshipName>Petition_Ledger</relationshipName>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Valid_Signatures__c</fullName>
+        <externalId>false</externalId>
+        <label>Valid Signatures</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Petition Ledger</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>UHW_Campaign__c</columns>
+        <columns>From_Division__c</columns>
+        <columns>Transferred_From__c</columns>
+        <columns>To_Division__c</columns>
+        <columns>Transferred_To__c</columns>
+        <columns>Transfer_Type__c</columns>
+        <columns>Quantity__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>County__c</columns>
+        <columns>Valid_Signatures__c</columns>
+        <columns>Bad_Signatures__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Check_Ins</fullName>
+        <columns>NAME</columns>
+        <columns>Bad_Signatures__c</columns>
+        <columns>Valid_Signatures__c</columns>
+        <columns>From_Division__c</columns>
+        <columns>From_Regional_Director__c</columns>
+        <columns>From_Coordinator__c</columns>
+        <columns>Transferred_From__c</columns>
+        <columns>Transfer_Date__c</columns>
+        <columns>Turf_Key__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Transfer_Type__c</field>
+            <operation>contains</operation>
+            <value>O. Check-In to Operations</value>
+        </filters>
+        <label>Check Ins</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>PET-{00000000}</displayFormat>
+        <label>Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Petition Ledger</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>Read</sharingModel>
+    <validationRules>
+        <fullName>County_Assignment</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+  OR(left(text(Transfer_Type__c), 1) = &quot;A&quot;, 
+     left(text(Transfer_Type__c), 1) = &quot;O&quot; 
+  ),
+  text(County__c) = &quot;No County Assigned&quot;
+)</errorConditionFormula>
+        <errorMessage>Check-ins and audit records must have a valid county assigned.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Must_Have_From</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( 
+  left(text(Transfer_Type__c), 1) != &quot;P&quot;, 
+  isblank( Transferred_From__c )
+)</errorConditionFormula>
+        <errorMessage>After printing, all Petition Ledger records must have a To and a From person.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>No_To_For_Burn_and_Audit</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+  OR(left(text(Transfer_Type__c), 1) = &quot;A&quot;,
+     left(text(Transfer_Type__c), 1) = &quot;X&quot;
+  ),
+  NOT(ISBLANK( Transferred_To__c))
+)</errorConditionFormula>
+        <errorMessage>Do not put anyone in Transfer To for audits and burns.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Quantity_Not_Zero</fullName>
+        <active>true</active>
+        <errorConditionFormula>Quantity__c &lt; 1</errorConditionFormula>
+        <errorMessage>Quantity must be 1 petition or greater.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Valid_Signatures_for_CheckIn_and_Audit</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(left(text(Transfer_Type__c), 1) != &quot;A&quot;,
+      left(text(Transfer_Type__c), 1) != &quot;O&quot;,
+       OR(Valid_Signatures__c &gt; 0,
+          Bad_Signatures__c &gt; 0)
+  )</errorConditionFormula>
+        <errorMessage>Valid and bad signature counts should only be on check-ins and audit records.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

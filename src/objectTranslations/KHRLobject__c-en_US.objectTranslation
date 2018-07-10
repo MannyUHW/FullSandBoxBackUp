@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>KHRLobject</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>KHRLobjects</value>
+    </caseValues>
+    <fields>
+        <label><!-- Constituency --></label>
+        <name>Constituency__c</name>
+    </fields>
+    <fields>
+        <label><!-- CoordFlag --></label>
+        <name>CoordFlag__c</name>
+    </fields>
+    <fields>
+        <label><!-- CoordName --></label>
+        <name>CoordName__c</name>
+    </fields>
+    <fields>
+        <label><!-- CoordinatorId --></label>
+        <name>CoordinatorId__c</name>
+    </fields>
+    <fields>
+        <label><!-- CsEmail --></label>
+        <name>CsEmail__c</name>
+    </fields>
+    <fields>
+        <label><!-- CsId --></label>
+        <name>CsId__c</name>
+    </fields>
+    <fields>
+        <label><!-- CsOp --></label>
+        <name>CsOp__c</name>
+    </fields>
+    <fields>
+        <label><!-- CsPhone --></label>
+        <name>CsPhone__c</name>
+    </fields>
+    <fields>
+        <label><!-- CsRecId --></label>
+        <name>CsRecId__c</name>
+    </fields>
+    <fields>
+        <label><!-- DirectorFlag --></label>
+        <name>DirectorFlag__c</name>
+    </fields>
+    <fields>
+        <label><!-- DirectorId --></label>
+        <name>DirectorId__c</name>
+    </fields>
+    <fields>
+        <label><!-- DivisionCode --></label>
+        <name>DivisionCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- EboardId --></label>
+        <name>EboardId__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpAccountId --></label>
+        <name>EmpAccountId__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpId --></label>
+        <name>EmpId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Note --></label>
+        <name>Note__c</name>
+    </fields>
+    <fields>
+        <label><!-- Org1Flag --></label>
+        <name>Org1Flag__c</name>
+    </fields>
+    <fields>
+        <label><!-- Org1Id --></label>
+        <name>Org1Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Org1Name --></label>
+        <name>Org1Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Org2Flag --></label>
+        <name>Org2Flag__c</name>
+    </fields>
+    <fields>
+        <label><!-- Org2Id --></label>
+        <name>Org2Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Org2Name --></label>
+        <name>Org2Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Director Id --></label>
+        <name>RegionalDirectorId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Director Name --></label>
+        <name>Regional_Director_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Director --></label>
+        <name>Regional_Director__c</name>
+        <relationshipLabel><!-- KHRLobjects --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- RepExFlag --></label>
+        <name>RepExFlag__c</name>
+    </fields>
+    <fields>
+        <label><!-- RepExId --></label>
+        <name>RepExId__c</name>
+    </fields>
+    <fields>
+        <label><!-- RepExName --></label>
+        <name>RepExName__c</name>
+    </fields>
+    <fields>
+        <label><!-- ResetCS --></label>
+        <name>ResetCS__c</name>
+    </fields>
+    <fields>
+        <label><!-- ResetCoordinator --></label>
+        <name>ResetCoordinator__c</name>
+    </fields>
+    <fields>
+        <label><!-- ResetOrg1 --></label>
+        <name>ResetOrg1__c</name>
+    </fields>
+    <fields>
+        <label><!-- ResetOrg2 --></label>
+        <name>ResetOrg2__c</name>
+    </fields>
+    <fields>
+        <label><!-- RowPtr --></label>
+        <name>RowPtr__c</name>
+    </fields>
+    <fields>
+        <label><!-- UpdateEboard --></label>
+        <name>UpdateEboard__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

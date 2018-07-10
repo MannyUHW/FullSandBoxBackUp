@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>MCL.Defines a sorting level for an MCL report.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Contact_Field_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Contact Field Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Header__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Whether a header is rendered for this sort level.</description>
+        <externalId>false</externalId>
+        <label>Header</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>MCL_Report__c</fullName>
+        <externalId>false</externalId>
+        <label>MCL Report</label>
+        <referenceTo>MCL_Report__c</referenceTo>
+        <relationshipLabel>MCL Sort Entries</relationshipLabel>
+        <relationshipName>MCL_Sort_Entries</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Page_Break__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Whether report pages are broken on this sort level.</description>
+        <externalId>false</externalId>
+        <label>Page Break</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Sort_Level__c</fullName>
+        <description>The sort level for this entry (1=highest).</description>
+        <externalId>false</externalId>
+        <label>Sort Level</label>
+        <precision>1</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sort_Order__c</fullName>
+        <externalId>false</externalId>
+        <label>Sort Order</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Ascending</fullName>
+                    <default>false</default>
+                    <label>Ascending</label>
+                </value>
+                <value>
+                    <fullName>Descending</fullName>
+                    <default>false</default>
+                    <label>Descending</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Survey_Question__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Survey Question</label>
+        <referenceTo>Survey_Question__c</referenceTo>
+        <relationshipLabel>MCL Sort Entries</relationshipLabel>
+        <relationshipName>MCL_Sort_Entries</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>MCL Sort Entry</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Contact_Field_Name__c</columns>
+        <columns>MCL_Report__c</columns>
+        <columns>Sort_Level__c</columns>
+        <columns>Sort_Order__c</columns>
+        <columns>Header__c</columns>
+        <columns>Page_Break__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>S-{000000}</displayFormat>
+        <label>Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>MCL Sort Entries</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Field_name_or_question_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISNULL(Contact_Field_Name__c) &amp;&amp; ISNULL(Survey_Question__c)</errorConditionFormula>
+        <errorMessage>Field name or survey question must be specified.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,156 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+<script type="text/javascript">
+    var sortingOrder = 'name';
+</script>
+
+
+<script> $("#header").html("Activity Tracker - Summary "); </script>
+<div class="hidden-phone">
+
+
+        <div class="navbar NavbarTop">
+            <div class="navbar-inner">
+
+                <ul class="nav">
+                    <li><a href="#/activitysummary">Activity Summary</a></li>
+                    <li><a href="#/activitylist">Activity Weekly </a></li>
+                    <li><a href="#/activitydaily">Activity Daily</a></li>
+                    <!-- <li class="active"><a href="#/approverlist"> Approver Summary</a></li>
+                    <li><a href="#/approverweekly">Approver Weekly </a></li>
+                    <li  ><a href="#/approversingle">Approver Daily</a></li> -->
+                   <li><a href="/home/home.jsp">Home</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+
+
+    <div class="container" style="">
+        <span class="pull-left">Name: <b>John Sladkus</b>
+        </span>
+
+    </div>
+    <br />
+
+    <div class="clr"></div>
+
+    <div class=" span9 pagination pull-left" style="margin: 0px 0px 0px 0px">
+            <button class="btn btn-success" ng-click="save();">
+                Not Reviewed</button>&nbsp;
+            <input type="text" ng-model="searchTerm" ng-change="search()" class="input-medium search-query" style="padding-right: 14px; padding-right: 4px \9; padding-left: 14px; padding-left: 4px \9; margin-bottom: 0; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;"
+                placeholder="Search" />
+
+
+        &nbsp;&nbsp;&nbsp;
+
+                        <select style="margin-top: 10px; margin-left: -10px;">
+                            <option>Select a Reason</option>
+                            <option>Reason 1</option>
+                            <option>Reason 2</option>
+                            <option>Reason 3</option>
+                            <option>Reason 4</option>
+                            <option>Reason 5</option>
+                            <option>Reason 6</option>
+                            <option>Reason 7</option>
+                        </select>
+        &nbsp;
+                          <button class="btn btn-success" ng-click="navigateto('/approverlist');">
+                              Update Selected</button>&nbsp;
+
+            
+    </div>
+
+    <div class="pagination pull-right" style="margin-bottom: 25px; margin-top: 10px;">
+
+        <button class="btn btn-success" ng-click="save();">
+            Approve</button>&nbsp;
+            <button class="btn btn-success" ng-click="save();">
+                Reject
+            </button>
+    </div>
+
+
+
+
+    <div>
+        <div class="clearfix"></div>
+        <table width="80%" class="table table-striped table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th class="name">Name&nbsp;<a ng-click="sort_by('activitydate')"><i class="icon-sort"></i></a>
+                    </th>
+                    <th class="name">Week&nbsp;<a ng-click="sort_by('activitydate')"><i class="icon-sort"></i></a>
+                    </th>
+                    <th class="description">Total Hours&nbsp;<a ng-click="sort_by('totalhours')"><i class="icon-sort"></i></a>
+                    </th>
+                    <th class="field4">Status&nbsp;<a ng-click="sort_by('reviewed')"><i class="icon-sort"></i></a>
+                    </th>
+                    <th class="field4">
+                        <input type="checkbox" />
+                        Select&nbsp;<a ng-click="sort_by('reviewed')"><i class="icon-sort"></i></a>
+                    </th>
+                    <th class="field4">Reason
+                    </th>
+
+                    <th class="field4">Division
+                    </th>
+                    <th class="field4">Manager
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sortingOrder:reverse">
+                    <td>
+                        <a href="#/approverweekly">{{item.userName}}</a>
+                    </td>
+                    <td>
+                        <a href="#/approverweekly">{{item.WeekRange}}</a>
+                    </td>
+                    <td>{{item.totalwkhours}}
+                    </td>
+                    <td ng-class="{red: item.reviewed == 'Rejected', green: item.reviewed == 'Approved'}">{{item.reviewed}} 
+                    </td>
+                    <td>
+                        <input type="checkbox" />
+                    </td>
+                    <td>
+                        <select>
+                            <option>Select a Reason</option>
+                            <option>Reason 1</option>
+                            <option>Reason 2</option>
+                            <option>Reason 3</option>
+                            <option>Reason 4</option>
+                            <option>Reason 5</option>
+                            <option>Reason 6</option>
+                            <option>Reason 7</option>
+                        </select>
+
+
+                    </td>
+
+                    <td>{{item.division}}
+                    </td>
+
+                    <td>{{item.manager}}
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <td colspan="8">
+                    <div class="pagination pull-right">
+                        <ul>
+                            <li ng-class="{disabled: currentPage == 0}"><a href="" ng-click="prevPage()">Prev</a>
+                            </li>
+                            <li ng-class="{disabled: currentPage == pagedItems.length - 1}"><a href="" ng-click="nextPage()">Next</a> </li>
+                        </ul>
+                    </div>
+                </td>
+            </tfoot>
+
+        </table>
+    </div>
+</div>
+
+</apex:page>

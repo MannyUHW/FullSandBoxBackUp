@@ -1,0 +1,732 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Stretch Dash</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+
+<script src="/soap/ajax/38.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/38.0/apex.js" type="text/javascript"></script>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/gchartloader.js')}"/>
+</head>
+<body>
+<div align="center">
+
+<div align="center" id="mainDiv">
+  <font size="+2"><div id="titleDiv">Stretch Dashboard</div></font>
+  <i>Updated: 
+  <script language="JavaScript">
+    document.write((new Date).toLocaleString());
+  </script>
+  </i>
+  <font color="green">
+  <div align="center" id="filterDiv"></div>
+  </font>
+  <font size="+2"><div align="center" id="progressDiv">0%</div></font>
+  <div id="piechart"></div>
+  <div align="center" id="metricsDiv"></div>
+  <br/>&nbsp;<br/>
+  <div id="toggleSearchDiv">
+  <a href="javascript:openSearch();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </div>
+</div>
+
+<br>&nbsp;</br>
+
+<div align="center" id="searchDiv">
+  <div align="center" id="divisionDiv"></div>
+  <br/>&nbsp;<br/>
+  <font size="+1">Search for Field Staff</font><br/>
+  
+  <input size="40" id="queryBox"></input><br/>
+  <a href="javascript:searchStaff();"><img style="height:50%;" border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  <br/>&nbsp;<br/>
+  <div id="resultsDiv"></div>
+
+</div>
+
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i>
+
+<br>&nbsp;</br>
+
+<div id="debugDiv" align="center"></div>
+
+</div>
+
+<script language="JavaScript">
+
+$("#searchDiv").hide();
+$("#toggleSearchDiv").hide();
+
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+
+var debugString = "";
+
+var lastRecord = null;
+
+var staffSet = [];
+var staffMap = {};
+
+var ALL = "ALL";
+var CODE_REACH = "J02";
+var CODE_STRETCH = "S02";
+
+var LEADER = "LEADER";
+
+
+var DISTRICT = "DISTRICT";
+var SEAT = "SEAT";
+var EMPLOYER = "EMPLOYER";
+var EBOARD = "EBOARD";
+var LEADERS = "LEADERS";
+var SIGNATURES = "SIGNATURES";
+var TURF = "TURF";
+var COORDINATOR = "COORDINATOR";
+var ORGANIZER = "ORGANIZER";
+
+var COPE = "COPE";
+var SHIFT = "SHIFT";
+var AGE_RANGE = "AGE_RANGE";
+
+var REGIONAL_DIRECTOR = "REGIONAL_DIRECTOR";
+var DIVISION = "DIVISION";
+
+var OVERRIDE = "OVERRIDE";
+var GOAL = "GOAL";
+
+var BU = "BU";
+var DEPARTMENT = "DEPARTMENT";
+
+var LDRLDR = "LDRLDR";
+ 
+var LAST_7_DAYS = "LAST_7_DAYS"; 
+ 
+var DIVS = ["HOSPITAL", "KAISER"];
+
+var countMap = {};
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+//
+//  pie chart
+//
+var gvPieData = null;
+var gvOptions = null;
+google.charts.load('current', {'packages':['corechart']});
+function drawChart() {
+  //alert("drawing chart = " + JSON.stringify(gvPieData));
+  var gvDataTable = google.visualization.arrayToDataTable(gvPieData);
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(gvDataTable, gvOptions);
+}
+google.charts.setOnLoadCallback(drawChart);
+
+var Turf = {};
+var divisionSet = [];
+var districtSet = [];
+var seatSet = [];
+var mode = "summary";
+
+var isOrganizer = false;
+var isCoordinator = false;    
+var isRegDirector = false;      
+var isKaiser = false;
+var isHospital = false; 
+
+var kaiserRegions = [];
+var hospitalRegions = [];
+    
+try{  
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var mode = "{!$CurrentPage.parameters.mode}";
+    if (mode == null || mode == "" || mode == "null") {
+      mode = "staff";
+    }
+    var user = sforce.connection.getUserInfo();
+    var userName = "{!$CurrentPage.parameters.user}";
+    if (userName == null || userName == "" || userName == "null") {
+      userName = user.userName;
+    }    
+
+    // query Salesforce using SOQL
+
+    
+
+
+    //alert(userName);
+    
+    var query = "SELECT ID, Name, Division, Title from User WHERE User.username like \'" + userName + "%\' ";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length != 1) throw "unable to find user";
+    var uid = records[0].Id;
+    var userFullName = records[0].Name;
+    title = records[0].Title;
+    division = records[0].Division;
+    var division2 = division.toLowerCase();
+    
+   
+    if (division2.indexOf("kaiser") >= 0 || division2.indexOf("hosp") >= 0) {
+      if (title.toLowerCase().indexOf("organizer") >= 0 || title.toLowerCase().indexOf("rep/org") >= 0) {
+        isOrganizer = true;
+        //alert(" is an organizer!");
+        $("#titleDiv").html($("#titleDiv").html() + " - " + userFullName);
+      }
+      if (title.toLowerCase().indexOf("coordinator") >= 0) {
+        isCoordinator = true;
+        //alert(" is a coordinator!");        
+        $("#titleDiv").html($("#titleDiv").html() + " - " + userFullName);        
+      }
+      if (title.toLowerCase().indexOf("director") >= 0) {
+        isRegDirector = true;
+        var query = "select Id from Account where Regional_Director__c = \'" + uid + "\' ";
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records');       
+        if (records1.length == 0) {
+          isRegDirector = false;
+        } else {
+          $("#titleDiv").html($("#titleDiv").html() + " - " + userFullName);
+        }
+      }      
+      if ($("#titleDiv").html().indexOf("-") < 0) {
+        if (division2.indexOf("kaiser") >= 0) {
+          isKaiser = true;
+          $("#titleDiv").html($("#titleDiv").html() + " - Kaiser");
+        } else {
+          isHospital = true;
+          $("#titleDiv").html($("#titleDiv").html() + " - Hospital");        
+        }
+      }
+    } else {
+        $("#titleDiv").html($("#titleDiv").html() + " - All");      
+    }
+        
+    var query = "select Id, Name, Regional_Director__c, Coordinator__c, Organizer_1__c, Employer_Id__c, Region__c, Account_Group__c, Regional_Director__r.Name, Coordinator__r.Name, Organizer_1__r.Name, District_2017__r.Name, Constituency__r.Name, Hospital_System__c, Regional_Director__r.Username, Coordinator__r.Username, Organizer_1__r.Username  from Account where MO_Active__c = true AND (NOT Name like \'pomona valley%\') AND (NOT Name like \'parkview%\') AND ( Account_Group__c = \'KAISER\' OR Account_Group__c = \'HOSPITAL\' ) ";
+    if (isOrganizer) {
+       //query += " AND (Organizer_1__c = \'" + uid + "\' OR Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       //query += " AND (Coordinator__c = \'" + uid + "\' ) ";    
+    } else if (isRegDirector ) {
+       //query += " AND (Regional_Director__c = \'" + uid + "\' ) ";    
+    }
+    if (isKaiser) {
+      //query += " AND Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account_Group__c like \'HOSPITAL%\' ";
+    } 
+   
+    var emSet = [];
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      var emInclude = true;
+      if (isOrganizer) {
+        emInclude = false;
+        if (uid == records1[i].Organizer_1__c) {
+          emInclude = true;
+        }
+      } else if (isCoordinator ) {
+        emInclude = false;
+        if (uid == records1[i].Coordinator__c) {
+          emInclude = true;
+        }
+      } else if (isRegDirector ) {
+        emInclude = false;
+        if (uid == records1[i].Regional_Director__c) {
+          emInclude = true;
+        }        
+      } else if (isKaiser || isHospital) {
+        emInclude = false;
+        if ((isKaiser && records1[i].Account_Group__c.toLowerCase() == 'kaiser') || (isHospital && records1[i].Account_Group__c.toLowerCase() == 'hospital')) {
+          emInclude = true;
+        }                
+      }
+      //
+      //  add to staff set
+      //
+      if (records1[i].Regional_Director__r != null) {
+        if (staffSet.indexOf(records1[i].Regional_Director__r.Name) < 0) {
+          staffSet.push(records1[i].Regional_Director__r.Name);
+        }
+        staffMap[records1[i].Regional_Director__r.Name] = records1[i].Regional_Director__r.Username;
+      }
+      if (records1[i].Coordinator__r != null) {
+        if (staffSet.indexOf(records1[i].Coordinator__r.Name) < 0) {
+          staffSet.push(records1[i].Coordinator__r.Name);
+        }
+        staffMap[records1[i].Coordinator__r.Name] = records1[i].Coordinator__r.Username;
+      }
+      if (records1[i].Organizer_1__r != null) {
+        if (staffSet.indexOf(records1[i].Organizer_1__r.Name) < 0) {
+          staffSet.push(records1[i].Organizer_1__r.Name);
+        }
+        staffMap[records1[i].Organizer_1__r.Name] = records1[i].Organizer_1__r.Username;
+      }            
+      //
+      // region arrays to determine if user has full Div access
+      //
+      if (records1[i].Account_Group__c.toLowerCase() == 'kaiser' && kaiserRegions.indexOf(records1[i].Region__c) < 0) {
+        kaiserRegions.push(records1[i].Region__c);
+      }
+      if (records1[i].Account_Group__c.toLowerCase() == 'hospital' && hospitalRegions.indexOf(records1[i].Region__c) < 0) {
+        hospitalRegions.push(records1[i].Region__c);
+      }
+      
+      if (emInclude) {
+
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+        Turf[records1[i].Name].RegionalDirector = "Vacant";
+        if (records1[i].Regional_Director__r != null) {    
+          Turf[records1[i].Name].RegionalDirector = records1[i].Regional_Director__r.Name;         
+        } else {
+          Turf[records1[i].Name].RegionalDirector = "Vacant";         
+        }
+        
+
+        if (records1[i].Account_Group__c.trim().toUpperCase() == "HOSPITAL") {
+          Turf[records1[i].Name].RegionalDirector = records1[i].Region__c + " - " + Turf[records1[i].Name].RegionalDirector;         
+        }  
+        Turf[records1[i].Name].RegionalDirector = Turf[records1[i].Name].RegionalDirector.replace("(Kathryn) ", "");
+             
+        Turf[records1[i].Name].Organizer = "Vacant";
+        if (records1[i].Organizer_1__r != null) {         
+          Turf[records1[i].Name].Organizer = records1[i].Organizer_1__r.Name;
+        }
+        Turf[records1[i].Name].Coordinator = "Vacant";
+        if (records1[i].Coordinator__r != null) {         
+          Turf[records1[i].Name].Coordinator = records1[i].Coordinator__r.Name;
+        }
+        
+
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+      
+        if (divisionSet.indexOf(records1[i].Account_Group__c) < 0) {
+          divisionSet.push(records1[i].Account_Group__c);
+        }
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+
+        if (emSet.indexOf(records1[i].Name) < 0) {
+          emSet.push(records1[i].Name);
+        }
+        if (records1[i].District_2017__r != null && districtSet.indexOf(records1[i].District_2017__r.Name) < 0) {
+          districtSet.push(records1[i].District_2017__r.Name);
+        }
+        if (records1[i].Constituency__r != null && seatSet.indexOf(records1[i].Constituency__r.Name) < 0) {
+          seatSet.push(records1[i].Constituency__r.Name);
+        }
+      }
+    }
+    
+    //
+    // populate Division Div for Division filters
+    //
+    var divDivWriter = "";
+    if (kaiserRegions.length > 1 && hospitalRegions.length > 1) {
+      divDivWriter += "<a href=\"javascript:navigateTo(\'/apex/Report_Stretch_Dashboard?user=gpullman\')\">All Divisions</a>";
+    }
+    if (kaiserRegions.length > 1) {
+      divDivWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      divDivWriter += "<a href=\"javascript:navigateTo(\'/apex/Report_Stretch_Dashboard?user=mhatcher\')\">All Kaiser</a>";
+    }
+    if (hospitalRegions.length > 1) {
+      divDivWriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      divDivWriter += "<a href=\"javascript:navigateTo(\'/apex/Report_Stretch_Dashboard?user=cbensaid\')\">All Hospital</a>";
+    }
+    if (divDivWriter != null && divDivWriter != "") {
+      $("#divisionDiv").html(divDivWriter);
+    }
+    
+    var query = "select Account.Name, Count(Id) from Contact where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND (Account.Account_Group__c = \'KAISER\' OR Account.Account_Group__c = \'HOSPITAL\' ) and In_Current_BU__c = true "
+    if (isOrganizer) {
+       query += " AND (Account.Organizer_1__c = \'" + uid + "\' OR Account.Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       query += " AND (Account.Coordinator__c = \'" + uid + "\' ) ";    
+    } else if (isRegDirector ) {
+       query += " AND (Account.Regional_Director__c = \'" + uid + "\' ) ";    
+    } 
+    if (isKaiser) {
+      query += " AND Account.Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      query += " AND Account.Account_Group__c like \'HOSPITAL%\' ";
+    }     
+
+    query += " group by Account.Name";
+    
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      //alert(records1[i].Name + "=" + records1[i].expr0); 
+      
+      if (Turf[records1[i].Name] != null) {
+        
+        Turf[records1[i].Name].BU_Count = records1[i].expr0;
+      
+        var organizer = Turf[records1[i].Name].Organizer;
+        var coordinator = Turf[records1[i].Name].Coordinator;
+        var regionalDirector = Turf[records1[i].Name].RegionalDirector;   
+        var div = Turf[records1[i].Name].Division;
+      
+        incrementCounter([ALL, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([DIVISION, div, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU], parseFloat(records1[i].expr0));           
+        incrementCounter([COORDINATOR, div, regionalDirector, coordinator, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([EMPLOYER, records1[i].Name],  parseFloat(records1[i].expr0));
+      }
+    }    
+    
+    if (isOrganizer || isCoordinator || isRegDirector) {
+      //alert(" employers = " + JSON.stringify(emSet));
+    }
+    //alert("retrieving users");
+    
+
+    var leaderSortSet = new Array();    
+    var turfSortSet = new Array();
+    var coorSortSet = new Array();    
+    var regDirSortSet = new Array();  
+    
+    for (var emName in Turf) {
+        var turfa = Turf[emName];
+        //alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer]);
+        var div = turfa.Division.toLowerCase().trim();
+        if (turfSortSet.indexOf(turfKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          turfSortSet.push(turfKey);
+        }
+        
+        var coorKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator]);
+        if (coorSortSet.indexOf(coorKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant" && turfa.Coordinator.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            coorSortSet.push(coorKey);
+          }
+        }    
+        
+        var regDirKey = JSON.stringify([turfa.Division, turfa.RegionalDirector]);
+        if (regDirSortSet.indexOf(regDirKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            regDirSortSet.push(regDirKey);
+          }
+        }   
+        
+    }
+    
+    turfSortSet.sort();
+    coorSortSet.sort();
+    regDirSortSet.sort();
+    
+    //alert("got Account Team");
+
+ 
+    var ccSet = [];
+    var ccMap = {};    
+
+    var ldrRoleMap = {};
+
+    //
+    //  get Survey Responses for Jan 2017 Leader Test and Reach
+    //
+    var leaderAssessMap = {};
+    
+    var divArray = ["HOSPITAL", "KAISER"];
+    
+    for (var d = 0; d < divArray.length; d++) {
+      if ((isHospital && divArray[d] == "HOSPITAL") || (isKaiser && divArray[d] == "KAISER") || (!isHospital && !isKaiser)) {
+      for (a = 0; a < 10; a++) {  
+        document.getElementById("progressDiv").innerHTML = "" + ((50 * d) + (a * 5)) + "%";
+  
+        var query = "select Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, Contact__r.Worksite__c, Department__c, Contact__r.Shift__c, Contact__r.Age_Range__c, Question_Name__c, Survey_Code__c, Response_Value__c, Add_Info_Numeric__c, Collected_By__c, Collected_By_Name__c, Collected_By_Employer_Name__c, Contact__r.Ethnicity__c, Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, Contact__r.COPE_Pledge__c, Add_Info__c, Collected_By__r.Worksite__c, Collected_By__r.Department, Contact__r.In_Current_BU__c, Collected_By__r.Age_Range__c, Collected_By__r.Shift__c, Collected_By__r.In_Current_BU__c, Survey_How_Old__c, Report_Group__c from Survey_Response__c where CreatedDate >= 2016-12-18T14:04:00Z AND (";
+        if (a ==0) {
+          query += " FID__c = null OR ";
+        }
+        query += " FID__c like \'%" + a + "\' ) ";
+        query += " AND Contact__r.Tier_Staff__c != null  ";
+        query += " AND Division__c = \'" + divArray[d] + "\' ";            
+        query += " AND (NOT Employer_Name__c like \'pomona valley%\') AND (NOT Employer_Name__c like \'parkview%\') ";
+        query += " AND (Survey_Code__c = \'" + CODE_STRETCH + "\' )  ";
+        query += " AND Collected_Datetime__c >= 2017-04-18T00:00:00.545-07:00 ";
+        
+        if (isCoordinator || isOrganizer || isRegDirector) {
+          query += " AND ( ";
+          for (var j = 0; j < emSet.length; j++) {
+            if (j > 0) {
+              query += " OR ";
+            }
+            query += " Employer_Name__c = \'" + emSet[j] + "\' ";
+          }        
+          query += " ) ";
+        }      
+        //query += " AND (Response_Value__c like \'y%\' or Response_Value__c like \'a%\')";      
+
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+
+        debugString += query + " - " + records1.length + "<br/>";
+
+        for(var i=0;i < records1.length; i++){ 
+          //alert(JSON.stringify(records1[i]));
+          
+
+          
+          lastRecord = records1[i];
+          var organizer = "Vacant";
+          var coordinator = "Vacant";
+          var regionalDirector = "Vacant"; 
+          var div = records1[i].Division__c;           
+          if (records1[i].Collected_By_Employer_Name__c != null && records1[i].Collected_By_Employer_Name__c != "" && Turf[records1[i].Collected_By_Employer_Name__c ] != null) {
+              organizer = Turf[records1[i].Collected_By_Employer_Name__c ].Organizer;
+              coordinator = Turf[records1[i].Collected_By_Employer_Name__c ].Coordinator;
+              regionalDirector = Turf[records1[i].Collected_By_Employer_Name__c ].RegionalDirector;                      
+          } else if (Turf[records1[i].Employer_Name__c] != null) {
+              organizer = Turf[records1[i].Employer_Name__c].Organizer;
+              coordinator = Turf[records1[i].Employer_Name__c].Coordinator;
+              regionalDirector = Turf[records1[i].Employer_Name__c].RegionalDirector;              
+          } 
+        
+          var response = records1[i].Response_Value__c.toLowerCase().trim().substring(0, 1);
+          ccMap[records1[i].Contact__c] = records1[i];   
+          var reportGroup = records1[i].Report_Group__c;
+          if (reportGroup != null) {
+            reportGroup = reportGroup.toLowerCase();
+          }  else {
+            reportGroup = "";
+          }
+          if (reportGroup.indexOf("reach") < 0 && records1[i].Survey_Code__c == CODE_STRETCH &&  response == "y") {
+              incrementCounter([ALL, CODE_STRETCH, response], 1.0);          
+              incrementCounter([DIVISION, div, CODE_STRETCH, response], 1.0);          
+              incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_STRETCH, response], 1.0);          
+              incrementCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_STRETCH, response], 1.0);          
+              incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_STRETCH, response], 1.0);          
+              incrementCounter([LEADER, div, regionalDirector, coordinator, organizer, records1[i].Collected_By__c, CODE_STRETCH, response], 1.0);
+              incrementCounter([EMPLOYER, CODE_STRETCH, records1[i].Employer_Name__c], 1.0);   
+              if (records1[i].Collected_By__c != null) {
+                if (ccSet.indexOf(records1[i].Collected_By__c) < 0) {
+                  ccSet.push(records1[i].Collected_By__c);
+                }
+              }
+              if (parseFloat(records1[i].Survey_How_Old__c) <= 7.0) {
+                incrementCounter([ALL, CODE_STRETCH, response, LAST_7_DAYS], 1.0);          
+                incrementCounter([DIVISION, div, CODE_STRETCH, response, LAST_7_DAYS], 1.0);          
+                incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_STRETCH, response, LAST_7_DAYS], 1.0);          
+                incrementCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_STRETCH, response, LAST_7_DAYS], 1.0);          
+                incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_STRETCH, response, LAST_7_DAYS], 1.0);                    
+                incrementCounter([LEADER, div, regionalDirector, coordinator, organizer, records1[i].Collected_By__c, CODE_STRETCH, response, LAST_7_DAYS], 1.0);
+                incrementCounter([EMPLOYER, records1[i].Employer_Name__c, CODE_STRETCH, response, LAST_7_DAYS], 1.0);            
+              }                       
+          }
+        }
+      }
+      }
+    }
+
+
+
+    //
+    //  Metrics Writer
+    //
+    var countWriter = "<font size=\"+1\">";
+    
+    var buCount = getCounter([ALL, BU]);
+    var stretchCount = getCounter([ALL, CODE_STRETCH, "y"]);       
+    var last7Days = getCounter([ALL, CODE_STRETCH, "y", LAST_7_DAYS]);  
+    var stretchGoal =  Math.floor(buCount*0.2);
+    /*
+    last7Days = 432;
+    stretchCount = 1321;
+    if (isOrganizer) {
+      stretchCount = 81;
+    } else if (isCoordinator) {
+      stretchCount = 242; 
+    } else if (isRegDirector) {
+      stretchCount = 543;
+    }
+    */
+    
+    countWriter += "Stretch Count = " + stretchCount + "<br/>\n";
+    countWriter += "Stretch Goal = " + stretchGoal + "<br/>\n";
+    countWriter += "Stretch Percent to Goal = " + (100.0 * stretchCount / stretchGoal).toFixed(1) + "%<br/>\n";        
+    countWriter += "Last 7 Days Count = " + last7Days + "<br/>\n";
+    //countWriter += "Last 7 Days Percent = " + (100.0 * last7Days / stretchGoal).toFixed(1) + "%<br/>\n";        
+    countWriter += "</font>";
+
+    document.getElementById("metricsDiv").innerHTML  = countWriter;
+    
+    gvPieData =
+        [
+          ['Universe', 'Count'],
+          ['Stretch Reach',  stretchCount  ],
+          ['Universe Not Reached',  stretchGoal - stretchCount]
+        ];
+
+        gvOptions = {
+          slices: {
+            0: { color: '#481C60' },
+            1: { color: '#E8C910' }
+          }
+        };
+
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+
+  document.getElementById("progressDiv").innerHTML = ""; 
+  
+//});
+
+
+  //document.getElementById("debugDiv").innerHTML = debugString; 
+
+
+   $("#mainDiv").show();
+   $("#searchDiv").hide();
+   if (staffSet.length > 3) {
+     $("#toggleSearchDiv").show();   
+   }
+   
+function openSearch() {
+   //alert("toggling...");
+   $("#mainDiv").hide();
+   $("#searchDiv").show();
+}  
+
+//
+//  temp
+//
+/*
+var resultsWriter = "Staff: <br/>";
+  for (var rs = 0; rs < staffSet.length; rs++) {
+    resultsWriter += staffSet[rs];
+    resultsWriter += "<br/>";
+  }
+  $("#resultsDiv").html(resultsWriter + "<br/>________________________________________________________");
+*/
+
+function searchStaff() {
+  var resultsWriter = "";
+  var resultsSet = [];
+  var queryTerms = $("#queryBox").val();
+  if (queryTerms == null || queryTerms == "") {
+    $("#resultsDiv").html("Please enter the name of the person you are searching for.");    
+    return;
+  }
+  queryTerms = queryTerms.trim().toLowerCase();
+  var queryArray = queryTerms.trim().toLowerCase().split(" ");
+  //exact matches
+  for (var sp = 0; sp < staffSet.length; sp++) {
+    if (queryTerms == staffSet[sp].trim().toLowerCase()) {
+      resultsSet.push(staffSet[sp]);
+    }
+  }
+  //one name match
+  for (var sp = 0; sp < staffSet.length; sp++) {
+    for (var qt = 0; qt < queryArray.length; qt++) {
+      if (staffSet[sp].trim().toLowerCase().indexOf(queryArray[qt]) >= 0 && resultsSet.indexOf(staffSet[sp]) < 0) {
+        resultsSet.push(staffSet[sp]);
+      }
+    }
+  }
+  //partial 4
+  for (var sp = 0; sp < staffSet.length; sp++) {
+   for (var qt = 0; qt < queryArray.length; qt++) {
+      if (queryTerms[qt].length >= 4 && staffSet[sp].trim().toLowerCase().indexOf(queryArray[qt].substring(0, 4)) >= 0 && resultsSet.indexOf(staffSet[sp]) < 0) {
+        resultsSet.push(staffSet[sp]);
+      }
+    }
+  }    
+  //partial 3
+  for (var sp = 0; sp < staffSet.length; sp++) {
+   for (var qt = 0; qt < queryArray.length; qt++) {
+      if (queryTerms[qt].length >= 3 && staffSet[sp].trim().toLowerCase().indexOf(queryArray[qt].substring(0, 3)) >= 0 && resultsSet.indexOf(staffSet[sp]) < 0) {
+        resultsSet.push(staffSet[sp]);
+      }
+    }    
+  }   
+  if (resultsSet.length == 0) {
+    $("#resultsDiv").html("No field staff found matching those terms.");    
+    return;
+  }     
+  for (var rs = 0; rs < resultsSet.length; rs++) {
+    resultsWriter += "<a href=\"javascript:navigateTo(\'/apex/Report_Stretch_Dashboard?user=" + staffMap[resultsSet[rs]].replace("@seiu-uhw.org", "") + "\')\">";
+    resultsWriter += resultsSet[rs];
+    resultsWriter += "</a><br/>";
+    resultsWriter += "&nbsp;<br/>";    
+  }
+  $("#resultsDiv").html(resultsWriter);
+  return;
+} 
+
+document.getElementById("queryBox").addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+        searchStaff();
+    }
+});
+
+
+
+
+</script> 
+
+</body>
+</html>  
+</apex:page>

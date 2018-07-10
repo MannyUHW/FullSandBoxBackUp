@@ -1,0 +1,979 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false"
+  controller="ResponseMobileContoller">
+  <html>
+
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui"></meta>
+    <meta name="apple-mobile-web-app-capable" content="yes"></meta>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"></meta>
+    <meta name="theme-color" content="#2196f3"></meta>
+    <title>Response M 1.00</title>
+    <apex:stylesheet value="{!URLFOR($Resource.Framework7zip206, 'framework7.ios.min.css')}" /> 
+
+    <style>
+      @font-face {
+        font-family: 'Framework7 Icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url("{!URLFOR($Resource.Framework7IconsZip, 'Framework7Icons-Regular.eot')}");
+        src: local('Framework7 Icons'),
+        local('Framework7Icons-Regular'),
+        url("{!URLFOR($Resource.Framework7IconsZip, 'Framework7Icons-Regular.woff2')}") format('woff2'),
+        url("{!URLFOR($Resource.Framework7IconsZip, 'Framework7Icons-Regular.woff')}") format('woff'),
+        url("{!URLFOR($Resource.Framework7IconsZip, 'Framework7Icons-Regular.ttf')}") format('truetype');
+      }
+
+      .f7-icons,
+      .framework7-icons {
+        font-family: 'Framework7 Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 25px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-font-feature-settings: "liga";
+        -moz-font-feature-settings: "liga=1";
+        -moz-font-feature-settings: "liga";
+        font-feature-settings: "liga";
+      }
+
+      .tabbar a.active {
+        color: white;
+      }
+
+      .navbar-inner,
+      .toolbar-inner {
+        background-color: blueviolet;
+        color: white;
+      }
+
+      .item-inner {
+        padding-right: 9px !important;
+      }
+
+      .contact-card {
+        width: 100%;
+        margin: 0px;
+      }
+
+      .account-card {
+        margin-top: 80px !important;
+        padding-top: 8px;
+      }
+
+      .account-card-header,
+      .account-card-footer {
+        text-align: center !important;
+        justify-content: center;
+      }
+
+      .contact-card-header {
+        color: green;
+        padding: 0px;
+        margin-left: 5px;
+      }
+
+      .contact-item-title-row {
+        white-space: normal;
+      }
+
+      .contact {
+        font-size: 14px;
+      }
+
+      .contact-name {
+        color: rebeccapurple !important;
+        font-weight: bold !important;
+        width: auto !important;
+        opacity: 1 !important;
+      }
+
+      .Phone {
+        padding-right: 6px;
+        font-style: italic;
+      }
+
+      #picker-kaiser,
+      #picker-dignity {
+        text-align: center;
+      }
+
+      #debug1 {
+        margin-left: 4px;
+        border: 1px solid red;
+        color: red;
+      }
+
+      .bg-purple {
+        background-color: rebeccapurple;
+      }
+
+      .CallLbl {
+        margin-right: 3px;
+        margin-left: 1px;
+      }
+
+      ul,li {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .page-content {
+        padding-top: 0px !important;
+      }
+
+      .contact-subnavbar {
+        width: 98%;
+        margin-left: 10px;
+      }
+
+      .contact-searchbar {
+        margin-left: 4px;
+      }
+
+      .contact-searchbar-inner {
+        margin-left: 4px;
+      }
+
+      .contact-search {
+        visibility: hidden;
+      }
+
+      .no-padding {
+        padding: 0px;
+      }
+
+      .view-fix {
+        height: 90% !important;
+      }
+
+      .page {
+        background-color: aqua;
+      }
+
+      .options-radio {
+        color: red !important;
+        padding-left: 8px;
+        padding-right: 9px;
+      }
+
+      .loading {
+        background-color: aqua;
+        width: 50%;
+        margin-left: 30%;
+      }
+
+      .no-disp {
+        display: none;
+      }
+
+      .yes-disp {
+        display: block;
+      }
+
+      .hide {
+        visibility: hidden;
+      }
+
+      .show {
+        visibility: visible;
+      }
+
+      .bg-purple {
+        background-color: rebeccapurple !important;
+      }
+
+      #PhoneNum {
+        color: white;
+        margin-left: 2px;
+      }
+
+      .chip-counts {
+        display: flex;
+        justify-content: center;
+        margin-top: 5px;
+        margin-bottom: 7px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="title">Mobile Responder 1.00</div>
+          </div>
+        </div>
+        <div class="toolbar tabbar tabbar-labels">
+          <div class="toolbar-inner">
+            <a href="#tab-1" class="tab-link tab-link-active">
+              <i class="icon f7-icons">world</i>
+              <span class="tabbar-label">Accounts</span>
+            </a>
+            <a href="#tab-2" class="tab-link">
+              <i class="icon f7-icons">chats</i>
+              <span class="tabbar-label">Contacts</span>
+            </a>
+<!--            
+            <a href="#tab-3" class="tab-link">
+              <i class="icon f7-icons">data</i>
+              <span class="tabbar-label">Debug</span>
+            </a>
+-->
+
+          </div>
+        </div>
+        <div class="tabs">
+          <div id="tab-1" class="tab tab-active view-main">
+            <div class="page-content">
+              <div class="block">
+
+                <div class="card account-card">
+                  <div class="card-header account-card-header padding-bottom">Accounts:
+                    <label class="radio options-radio">
+                      <input type="radio" id="options-radio-kaiser" name="options-radio" checked="true">
+                      <i class="icon-radio"></i>
+                      </input>
+                    </label>Kaiser
+                    <label class="radio options-radio">
+                      <input type="radio" id="options-radio-dignity" name="options-radio">
+                      <i class="icon-radio"></i>
+                      </input>
+                    </label>Dignity
+                  </div>
+                  <div id="loading-bar" class="progressbar-infinite loading hide">
+                    <span class="progressbar-infinite"></span>
+                  </div>
+                  <div class="card-content card-content-padding">
+
+                    <div id="kaiser-list" class="list yes-disp">
+                      <ul>
+                        <li>
+                          <div class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-input-wrap">
+                                <input placeholder="Select Kaiser Account" readonly="readonly" id="picker-kaiser" class="input-with-value" type="text"></input>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div id="dignity-list" class="list no-disp">
+                      <ul>
+                        <li>
+                          <div class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-input-wrap">
+                                <input placeholder="Select Dignity Account" readonly="readonly" id="picker-dignity" class="input-with-value" type="text"></input>
+                              </div>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div class="chip-counts">
+                      <div id="count-chip" class="chip hide">Counts Chip</div>
+                    </div>
+
+                    <div class="item-input">
+                      <a href="#" id="DownloadBtn" class="button button-round">Download</a>
+                    </div>
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-footer account-card-footer">Select an Account to download Contacts</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div id="tab-2" class="page-content tab view">
+
+            <div class="navbar">
+              <div class="navbar-inner">
+                <div class="title">Search Bar</div>
+                <div class="subnavbar">
+                  <form class="searchbar">
+                    <div class="searchbar-inner">
+                      <div class="searchbar-input-wrap">
+                        <input type="search" placeholder="Search"></input>
+                        <i class="searchbar-icon"></i>
+                        <span class="input-clear-button"></span>
+                      </div>
+                      <span class="searchbar-disable-button">Cancel</span>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="page-content">
+              <div class="content-block">
+                <div class="list-block cards-list">
+                  <div class="searchbar-backdrop"></div>
+                  <div class="list search-list searchbar-found">
+                    <div id="contact-container"></div>
+                  </div>
+                  <div class="block searchbar-not-found">
+                    <div class="block-inner">Nothing found</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+<!--          
+          <div id="tab-3" class="page-content tab">
+            <div class="page-content">
+              <div class="block">
+                <div class="card">
+                  <div class="card-header account-card-header padding-bottom">Debug</div>
+                  <div class="card-content card-content-padding">
+                    <h2>Errors</h2>
+                  </div>
+                  <div class="card-footer">
+                    <div class="card-footer account-card-footer">Debug footer</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+-->
+
+        </div>
+      </div>
+    </div>
+    <script id="contact-template" type="text/template7">
+    <div class="contact">
+      <ul>
+        {{#each Contacts}}
+          <li>
+            <div class="contact-search">{{Name}}</div>
+            <div class="item-inner no-padding">
+              <div class="card contact-card">        
+                  <form id="{{Id}}">
+                      <div class="card-header contact-card-header">
+                        <input name="contact_name" class="contact-name" type="text" disabled="true" value="{{Name}}"></input>
+                      </div>
+                      <div class="card-content">
+
+                        <div class="item-content">
+                          <div class="chip bg-purple">
+                            {{PhoneLbl}}
+                            {{#js_if "this.PhoneLbl != 'Do not call' && this.PhoneLbl != 'Missing'"}}
+                              <div class="chip-label" id="PhoneLbl"><a id="PhoneNum" href="#" onClick="formCall('{{Phone}}')">{{Phone}}</a></div>
+                            {{/js_if}}
+                          </div>
+                        </div>                        
+
+                        <div class="item-content">
+                          <div>
+                            {{#js_if "this.Department != 'Unknown'"}}
+                              <span class="Department">{{Department}}</span>
+                            {{/js_if}}                               
+                            {{#js_if "this.Shift != 'Unknown'"}}
+                              <span class="Shift">({{Shift}})</span>
+                            {{/js_if}}                                                           
+                          </div>
+                        </div> 
+
+                        <div class="item-content">
+                          <div class="item-inner">
+
+
+                              <label class="item-checkbox item-content">
+                                <!-- Checkbox input -->
+                                {{#js_if "this.Attended"}}
+                                  <input name="attend_checkbox" type="checkbox" checked="true"></input>
+                                {{else}}  
+                                  <input name="attend_checkbox" type="checkbox"></input>
+                                {{/js_if}}                         
+                                <!-- Checkbox icon -->
+                                <i class="icon icon-checkbox"></i>
+                                <!-- <div class="item-inner"> -->
+                                  <!-- Checkbox Title -->
+                                  <div class="item-title">Attended</div>
+                                  <!-- </div> -->
+                              </label>
+
+                              <a href="#" onClick="formSave('#{{Id}}')" class="button button-round save">Save</a>
+
+                          </div>
+                        </div>
+
+<!--                        <div class="item-content">
+                          <div class="item-inner"> -->
+
+                      <div class="list">
+                      <ul>
+                        <!-- Smart select item -->
+                        <!-- Default Setup smart-select-init -->
+                        <li>
+                          <a class="item-link smart-select smart-select-init"> 
+                            <select name="fruits">
+                              <option value="apple" selected>Apple</option>
+                              <option value="pineapple">Pineapple</option>
+                              <option value="pear">Pear</option>
+                              <option value="orange">Orange</option>
+                              <option value="melon">Melon</option>
+                              <option value="peach">Peach</option>
+                              <option value="banana">Banana</option>
+                            </select>
+                            <div class="item-content">
+                              <div class="item-inner">
+                                <div class="item-title">Fruit</div>
+                              </div>
+                            </div>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+
+<!--                      </div>
+                    </div> -->
+
+                        <input name="response_id" class="hide" type="text" disabled="true" value="{{ResponseId}}"></input>
+
+                        <div class="item-content">
+                          <div class="item-inner">
+                          </div>
+                        </div> 
+                                  
+                    </div>
+                  </div>
+                </form> 
+              </div>
+            </div>
+          </li>  
+        {{/each}}
+      </ul>
+    </div>
+  </script>
+
+  <script type="text/javascript">
+      'use strict';
+
+      var formSave = function (formId) {
+        let attended = false;
+        const id       = formId.substr(1, 15);
+        const formData = myApp.form.convertToData(formId)
+        const respId   = formData.response_id || '';
+        if (formData.attend_checkbox.length > 0) {
+          attended = true;
+        }
+        updateSalesforce(userId,id,surveyQuestionId,attended,respId);
+      }
+
+      var formCall = function (numToCall) {
+        if (numToCall != 'Do not call' && numToCall != 'Missing') {
+          if (phoneEnabled) {
+            sforce.one.navigateToURL(`tel:${numToCall}`);
+          }
+          else {
+            notificationPhoneOnly.open();
+          }
+        }
+      }
+
+      function clean(s) {
+        let s1, s2, s3, s4, s5, s6, s7, s8, s9 = '';
+        if (s) {
+          s1 = s.replace(r1, "&");
+          s2 = s1.replace(r2, "'");
+          s3 = s2.replace(r3, "&");
+          s4 = s3.replace(r4, "'");
+          s5 = s4.replace(r5, "'");
+          s6 = s5.replace(r6, ">");
+          s7 = s6.replace(r7, ">");
+          s8 = s6.replace(r8, "<");
+          s9 = s6.replace(r8, "<");
+        }
+        return s9;
+      }
+
+      function toProperCase(s) {
+        // My version - handles hyphenated names correctly :)
+        let s1, s2;
+        if (s == null)
+          s2 = '';
+        else {
+          s1 = s.trim().toLowerCase();
+          s2 = clean(s1);
+          s2 = s2.replace(/\b[a-zA-Z]/g, function ($1) { return $1.toUpperCase(); });
+        }
+        return s2;
+      }
+
+      function getQuestionData(pCode) {
+        // Controller:
+        // Id,Description__c,Allowed_Responses__c FROM Survey_Question__c WHERE Survey_Code__c = :code AND IsDeleted = false
+        return new Promise(function (resolve, reject) {
+          ResponseMobileContoller.getSurveyQuestion(pCode, (result, event) => {
+            if (event.status) {
+              console.log('Retrieved Survey Question data');
+              resolve(result);
+            }
+            else {
+              errorAlert(event, 'Error retrieving Survey Question data');
+              reject(event);
+            }
+          });
+        });
+      }
+
+      function processQuestionData(results) {
+        return new Promise(function (resolve, reject) {
+          let rec, code, desc, allowedResponses, srAllowed, allowed, emptyArrayItem = [' '];
+          if (results.length > 0) {
+            rec = results[0];
+            surveyQuestionId = rec.Id;
+            code = rec.Survey_Code__c;
+            desc = toProperCase(rec.Description__c);
+            allowedResponses = rec.Allowed_Responses__c;
+            srAllowed = allowedResponses.split('\r\n');
+            allowed = emptyArrayItem.concat(srAllowed);
+            allowedResponsesArray = emptyArrayItem.concat(srAllowed);
+            allowedResponsesMap[code] = { Code: code, Description: desc, Allowed: allowed };
+            console.log(' -------- Allowed Responses   -------- ');
+            console.log(allowedResponsesMap);
+            console.log(' -------- Allowed Responses   -------- ');
+            resolve('ok');
+          }
+          else {
+            errorAlert(event, 'Error retrieving Survey Question data');
+            reject(event);
+          }
+        });
+      }
+
+      function getAccountData() {
+        // Controller:
+        // SELECT Id, Name, Account_Group__c FROM Account WHERE Type = 'Employer' AND Active__c = 'Yes' AND (Hospital_System__c = 'DIGNITY HEALTH' OR Account_Group__c = 'Kaiser') ORDER BY Account_Group__c ASC NULLS LAST, Name ASC NULLS LAST
+        return new Promise(function (resolve, reject) {
+          ResponseMobileContoller.getAccountData((result, event) => {
+            if (event.status) {
+              console.log('Retrieved Account data');
+              resolve(result);
+            }
+            else {
+              errorAlert(event, 'Error retrieving Account data');
+              reject(event);
+            }
+          });
+        });
+      }
+
+      function processAccountData(results) {
+        return new Promise(function (resolve, reject) {
+          let i, rec, len, accountId, name, accountGroup;
+          accountMap = {};
+          kaiserPickerValues = [];
+          kaiserPickerDisplay = [];
+          dignityPickerValues = [];
+          dignityPickerDisplay = [];
+          len = results.length;
+          if (len > 0) {
+            for (i = 0; i < len; i++) {
+              rec = results[i];
+              accountId = rec.Id;
+              name = toProperCase(rec.Name);
+              accountGroup = toProperCase(rec.Account_Group__c);
+              if (!accountMap[accountId]) {
+                accountMap[accountId] = {};
+              }
+              accountMap[accountId] = { AccountId: accountId, Name: name, AccountGroup: accountGroup };
+
+              if (accountGroup == 'Kaiser') {
+                kaiserPickerValues.push(accountId);
+                kaiserPickerDisplay.push(name);
+              } else {
+                dignityPickerValues.push(accountId);
+                dignityPickerDisplay.push(name);
+              }
+            }
+            console.log(accountMap);
+            resolve('ok');
+          }
+        });
+      }
+
+      function updateSalesforce(pUserId, pId, pSurveyQuestionId, pAttend, pRespId) {
+        return new Promise(function (resolve, reject) {
+          ResponseMobileContoller.updateResponse(pUserId,pId,pSurveyQuestionId,pAttend,pRespId, (result, event) => {  
+            if (event.status) {
+              notificationUpdate.open();
+              resolve(result);
+            }
+            else {
+              errorAlert(event, 'Error updating Salesforce');
+              reject(event);
+            }
+          })
+        });
+      }
+
+      function errorAlert(e, src) {
+        let eType = e.type;
+        let eMsg = e.message;
+        let eWhere = e.where;
+        alert(`{$src}, ${eMsg}`);
+        console.log(eType);
+        console.log(eMsg);
+        if (eWhere != undefined) console.log(eWhere);
+      }
+
+      function displayList(code) {
+        if (code == 'K') {
+          $$('#kaiser-list').addClass('yes-disp');
+          $$('#kaiser-list').removeClass('no-disp');
+          $$('#dignity-list').addClass('no-disp');
+          $$('#dignity-list').removeClass('yes-disp');
+        } else {
+          $$('#kaiser-list').addClass('no-disp');
+          $$('#kaiser-list').removeClass('yes-disp');
+          $$('#dignity-list').addClass('yes-disp');
+          $$('#dignity-list').removeClass('no-disp');
+        }
+      }
+
+      function getContactsForAccount(accountId, code) {
+        $$('#loading-bar').addClass('show');
+        $$('#loading-bar').removeClass('hide');
+        getContactData(accountId, code).then(contactData => {
+          processContacts(contactData);
+        }).then(function () {
+          $$('#loading-bar').addClass('hide');
+          $$('#loading-bar').removeClass('show');
+          $$('#count-chip').addClass('show');
+          $$('#count-chip').removeClass('hide');
+          $$('#count-chip').html(`Downloaded ${contactCount}`);
+          console.log('All good');
+          $$('#contact-container').html(compiledContactTemplate(mainContactData));
+          myApp.tab.show('#tab-2');
+        }).catch(error => {
+          console.log('Error' + error);
+        });
+      }
+
+      function getContactData(id, code) {
+        /*
+         controller code - getContactData(Id):
+        SELECT  Id, AccountId, LastName, FirstName, MobilePhone, HomePhone, Phone, DoNotCall, Shift__c, Department,';
+          (SELECT Response_Value__c FROM Survey_Response__c WHERE Survey_Question__r.Survey_Code__c = code) 
+        FROM Contact 
+        WHERE AccountId = Id ORDER BY LastName,FirstName 
+         */
+        return new Promise(function (resolve, reject) {
+          ResponseMobileContoller.getContactData(id, code, (result, event) => {
+            if (event.status) {
+              console.log('Contact data downloaded successfully');
+              resolve(result);
+            }
+            else {
+              console.log();
+              errorAlert(event, 'Error downloading Contact data');
+              reject(event);
+            }
+          });
+        });
+      }
+
+      function processContacts(results) {
+        return new Promise(function (resolve, reject) {
+          let i, len, rec;
+          let id, accountId, name, lastName, firstName, cellPhone, homePhone, phone, phoneLbl, doNotCall, usePhone, department, shift, response, responseId, attended;
+          mainContactData = { Contacts: [] };
+          formData = [];
+          contactMap = {};
+          contactCount = 0;
+          len = results.length;
+          debugger;
+          for (i = 0; i < len; i++) {
+            id = accountId = name = lastName = firstName = cellPhone = homePhone = phone = phoneLbl = usePhone = doNotCall = department = shift = response = responseId = '';
+            attended = false;
+            rec = results[i];
+            if (rec) {
+              contactCount++;
+              id = rec.Id;
+              accountId = rec.AccountId,
+              firstName = toProperCase(rec.FirstName);
+              lastName = toProperCase(rec.LastName);
+              cellPhone = phoneFormat(rec.MobilePhone);
+              homePhone = phoneFormat(rec.HomePhone);
+              phone = phoneFormat(rec.Phone);
+              shift = toProperCase(rec.Shift__c);
+              department = toProperCase(rec.Department);
+              doNotCall = rec.DoNotCall || '';
+              name = lastName + ', ' + firstName;
+
+              if ('Survey_Responses__r' in rec) {
+                if (rec.Survey_Responses__r) {
+                  response = toProperCase(rec.Survey_Responses__r[0].Response_Value__c);
+                  responseId = rec.Survey_Responses__r[0].Id;
+                  attended = true; // Since 6B4 can only have 'yes' as possible response, presence = true.
+                }
+              }
+
+              phoneLbl = 'Missing';
+              usePhone = 'Missing';
+              if (doNotCall) {
+                usePhone = 'Do not call';
+                phoneLbl = 'Do not call';
+              }
+              else {
+                if (cellPhone) {
+                  usePhone = cellPhone;
+                  phoneLbl = 'Call ';
+                }
+                else if (homePhone) {
+                  usePhone = homePhone;
+                  phoneLbl = 'Call ';
+                }
+                else if (phone) {
+                  usePhone = phone;
+                  phoneLbl = 'Call ';
+                }
+              }
+
+              mainContactData.Contacts.push({
+                Id: id,
+                AccountId: accountId,
+                Name: name,
+                FirstName: firstName,
+                LastName: lastName,
+                Department: department,
+                Phone: usePhone,
+                PhoneLbl: phoneLbl,
+                Shift: shift,
+                Response: response,
+                ResponseId: responseId,
+                Attended: attended
+              });
+
+            }
+            else {
+              console.log('record error');
+            }
+          }
+          console.log(mainContactData);
+          resolve('ok');
+        });
+      }
+
+      function phoneFormat(s) {
+        let s1;
+        if (s == null || s.trim().length < 10)
+          s1 = '';
+        else {
+          s1 = s.trim().replace(/[^0-9]/g, '');
+          s1 = '(' + s1.substr(0, 3) + ') ' + s1.substr(3, 3) + '-' + s1.substr(6);
+        }
+        return s1;
+      }
+
+      function log(pStr) {
+        $$('#debug-textarea').append(pStr + '\n');
+      }
+
+      async function getData() {
+        questionData = await getQuestionData('6B4');
+        let status1 = await processQuestionData(questionData);
+        accountData = await getAccountData();
+        let status = await processAccountData(accountData);
+        return status;
+      }
+
+      var selectedAccountId, selectedAccountName, selectedResponse;
+      var mainContactData = { Contacts: [] };
+      var accountMap = {}, accountData, questionData;
+      var contactMap = {}, contactData, contactCount, formData = [];
+      var allowedResponsesMap = {};
+      var allowedResponsesArray = [];
+      var kaiserPickerValues = [];
+      var kaiserPickerDisplay = [];
+      var dignityPickerValues = [];
+      var dignityPickerDisplay = [];
+
+      var selectedId, selectedDv;
+
+      const r1 = new RegExp(/&amp/, 'gm');
+      const r2 = new RegExp(/&#39/, 'gm');
+      const r3 = new RegExp(/&;/, 'gm');
+      const r4 = new RegExp(/&quot/, 'gm');
+      const r5 = new RegExp(/';/, 'gm');
+      const r6 = new RegExp(/&gt/, 'gm');
+      const r7 = new RegExp(/>;/, 'gm');
+      const r8 = new RegExp(/&lt/, 'gm');
+      const r9 = new RegExp(/<;/, 'gm');
+      const removeCntRegEx = new RegExp(/([(0-9)])/, 'gm');
+
+      // ***************** Main Program Entry *****************
+      var kaiserPicker, dignityPicker, searchbar, surveyQuestionId;
+
+      const userId = '{!$User.Id}';
+
+      var $$ = Dom7;
+      var contactTemplate = $$('#contact-template').html();
+      var compiledContactTemplate = Template7.compile(contactTemplate);
+
+      var myApp = new Framework7({
+        id: 'response-m',
+        root: '#app',
+        theme: 'ios',
+        modalTitle: 'Response M',
+        fastClicks: true
+      });
+
+      var mainView = myApp.views.create('.view-main');
+
+      var notificationPhoneOnly = myApp.notification.create({
+        title: 'Sorry',
+        subtitle: 'Only available on iPhone',
+        closeTimeout: 4000
+      });
+
+      var notificationUpdate = myApp.notification.create({
+        title: 'Success',
+        subtitle: 'Salesforce updated',
+        closeTimeout: 4000
+      });
+
+      if (typeof sforce != 'undefined') {
+        console.log('Debug:', sforce);
+      } else {
+        console.log('not on a mobile device');
+      }
+
+      var phoneEnabled = false, device, deviceOs, osVersion;
+      deviceOs = myApp.device.os;
+      osVersion = myApp.device.osVersion;
+      if (deviceOs == 'ios') {
+        if (myApp.device.ipad) {
+          device = 'iPad';
+        }
+        if (myApp.device.iphone) {
+          device = 'iPhone';
+        }
+        if (typeof sforce == 'undefined') {
+          console.log('not using sforce mobile');
+          $$('#PhoneLbl').html('Not Mobile');
+        }
+        else {
+          if (sforce) {
+            if (sforce.one) {
+              phoneEnabled = true;
+              $$('#PhoneLbl').html('Mobile');
+            }
+            else {
+              //            console.log('failed 2');
+            }
+          }
+          else {
+            //          console.log('failed 1');
+          }
+        }
+      }
+
+      $$('#DownloadBtn').on('click', function (e) {
+        if (selectedAccountId) {
+          console.log('Downloading Contacts for Account ', selectedAccountName);
+          getContactsForAccount(selectedAccountId, '6B4')
+        }
+      });
+
+      $$('input[id="options-radio-kaiser"]').on('change', function () {
+        $$('#count-chip').addClass('hide');
+        $$('#count-chip').removeClass('show');
+        displayList('K');
+      });
+
+      $$('input[id="options-radio-dignity"]').on('change', function () {
+        $$('#count-chip').addClass('hide');
+        $$('#count-chip').removeClass('show');
+        displayList('D');
+      });
+
+      getData().then(v => {
+        kaiserPicker = myApp.picker.create({
+          rotateEffect: true,
+          formatValue: function (values, displayValues) {
+            return displayValues[0];
+          },
+          inputEl: '#picker-kaiser',
+          toolbarCloseText: 'Select',
+          cols: [
+            {
+              textAlign: 'center',
+              values: kaiserPickerValues,
+              displayValues: kaiserPickerDisplay,
+              onChange: function (picker, id) {
+                $$('#count-chip').addClass('hide');
+                $$('#count-chip').removeClass('show');
+                selectedAccountId = id;
+                selectedAccountName = accountMap[id].Name;
+                console.log('Selected:->', selectedAccountName, selectedAccountId);
+              }
+            }
+          ]
+        }),
+          dignityPicker = myApp.picker.create({
+            rotateEffect: true,
+            formatValue: function (values, displayValues) {
+              return displayValues[0];
+            },
+            inputEl: '#picker-dignity',
+            toolbarCloseText: 'Select',
+            cols: [
+              {
+                textAlign: 'center',
+                values: dignityPickerValues,
+                displayValues: dignityPickerDisplay,
+                onChange: function (picker, id) {
+                  $$('#count-chip').addClass('hide');
+                  $$('#count-chip').removeClass('show');
+                  selectedAccountId = id;
+                  selectedAccountName = accountMap[id].Name;
+                  console.log('Selected:->', selectedAccountName, selectedAccountId);
+                }
+              }
+            ]
+          }), // Note: searchIn has to be a child of li element.  .contact-name doesn't work.
+          searchbar = myApp.searchbar.create({
+            el: '.searchbar',
+            customSearch: false,
+            searchContainer: '.search-list',
+            searchIn: '.contact-search',
+            on: {
+              enable: function () {
+                console.log('Searchbar enabled');
+              },
+              search(sb, query, previousQuery) {
+                console.log(query, previousQuery);
+              }
+            }
+          });
+      });
+
+    </script>
+
+    <script>        
+      <apex:includeScript value="{!URLFOR($Resource.Framework7zip206,'framework7.min.js')}"/> 
+    </script>
+  </body>
+
+  </html>
+</apex:page>

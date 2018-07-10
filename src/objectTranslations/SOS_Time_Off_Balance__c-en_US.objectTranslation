@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Time Off Balance</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Time Off Balance</value>
+    </caseValues>
+    <fields>
+        <label><!-- Bereavement Time --></label>
+        <name>Bereavement_Time_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bereavement Time Approved --></label>
+        <name>Bereavement_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bereavement Time Pending --></label>
+        <name>Bereavement_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bereavement Time Rem --></label>
+        <name>Bereavement_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bereavement Time --></label>
+        <name>Bereavement_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bereavement --></label>
+        <name>Bereavement_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Birthday Time --></label>
+        <name>Birthday_Time_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Birthday Time Approved --></label>
+        <name>Birthday_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Birthday Time Pending --></label>
+        <name>Birthday_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Birthday Time Rem --></label>
+        <name>Birthday_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Birthday Time --></label>
+        <name>Birthday_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Birthday --></label>
+        <name>Birthday_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employee Name --></label>
+        <name>Employee_Name__c</name>
+        <relationshipLabel><!-- Time Off Balance --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Float Time --></label>
+        <name>Float_TimeAlloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Float Time Approved --></label>
+        <name>Float_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Float Time Pending --></label>
+        <name>Float_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Float Time Rem --></label>
+        <name>Float_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Float Time --></label>
+        <name>Float_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Float --></label>
+        <name>Float_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Holiday work days Time --></label>
+        <name>Holiday_work_days_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Holiday work days Time Approved --></label>
+        <name>Holiday_work_days_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Holiday work days Time Pending --></label>
+        <name>Holiday_work_days_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Holiday work days Time Rem --></label>
+        <name>Holiday_work_days_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Holiday work days Time --></label>
+        <name>Holiday_work_days_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Holiday work days --></label>
+        <name>Holiday_work_days_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Jury Duty Time --></label>
+        <name>Jury_Duty_Time_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Jury Duty Time Approved --></label>
+        <name>Jury_Duty_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Jury Duty Time Pending --></label>
+        <name>Jury_Duty_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Jury Duty Time Rem --></label>
+        <name>Jury_Duty_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Jury Duty Time --></label>
+        <name>Jury_Duty_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Jury Duty --></label>
+        <name>Jury_Duty_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager --></label>
+        <name>Manager__c</name>
+    </fields>
+    <fields>
+        <label><!-- Relief Time --></label>
+        <name>Relieve_Time_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Relief Time Approved --></label>
+        <name>Relieve_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Relief Time Pending --></label>
+        <name>Relieve_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Relieve Time Rem --></label>
+        <name>Relieve_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Relief Time --></label>
+        <name>Relieve_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Relief --></label>
+        <name>Relieve_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Religious (OPEIU Only) Time --></label>
+        <name>Religious_OPEIU_Only_Time_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Religious (OPEIU Only) Time --></label>
+        <name>Religious_OPEIU_Only_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Religious (OPEIU Only) Time Pending --></label>
+        <name>Religious_OPEIU_Only_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Religious OPEIU Only Time Rem --></label>
+        <name>Religious_OPEIU_Only_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Religious (OPEIU Only) Time --></label>
+        <name>Religious_OPEIU_Only_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Religious (OPEIU Only) --></label>
+        <name>Religious_OPEIU_Only_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Show In Days --></label>
+        <name>Show_In_Days__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sick Time Alloted --></label>
+        <name>Sick_Time_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sick Time Approved --></label>
+        <name>Sick_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sick Time Pending --></label>
+        <name>Sick_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sick Time Rem --></label>
+        <name>Sick_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sick Time Remaining --></label>
+        <name>Sick_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sick bal --></label>
+        <name>Sick_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unpaid Time --></label>
+        <name>Unpaid_Time_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unpaid Time Approved --></label>
+        <name>Unpaid_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unpaid Time Pending --></label>
+        <name>Unpaid_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unpaid Time Rem --></label>
+        <name>Unpaid_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unpaid Time Remaining --></label>
+        <name>Unpaid_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unpaid bal --></label>
+        <name>Unpaid_bal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Vacation Time --></label>
+        <name>Vacation_Time_Alloted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Vacation Time Approved --></label>
+        <name>Vacation_Time_Approved__c</name>
+    </fields>
+    <fields>
+        <label><!-- Vacation Time Pending --></label>
+        <name>Vacation_Time_Pending__c</name>
+    </fields>
+    <fields>
+        <label><!-- Vacation Time Rem --></label>
+        <name>Vacation_Time_Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Vacation Time --></label>
+        <name>Vacation_Time_Remaining__c</name>
+    </fields>
+    <fields>
+        <label><!-- Year --></label>
+        <name>Year__c</name>
+    </fields>
+    <fields>
+        <label><!-- vacation --></label>
+        <name>vacation_bal__c</name>
+    </fields>
+    <layouts>
+        <layout>SOS Time Off Balance Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Employee Information --></label>
+            <section>Employee Information</section>
+        </sections>
+        <sections>
+            <label><!-- Holidays --></label>
+            <section>Holidays</section>
+        </sections>
+        <sections>
+            <label><!-- Time Off Balance --></label>
+            <section>Time Off Balance</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Please Enter a valid year. --></errorMessage>
+        <name>Year_validation</name>
+    </validationRules>
+</CustomObjectTranslation>

@@ -1,0 +1,898 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="MclDuplicationController">
+    <html>
+        <head>
+            <meta charset="utf-8"></meta>
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+    
+            <style>
+    
+                #options-label {
+                    font-weight: normal;
+                    color:blue;
+                    margin-left: 15px;
+                    margin-right: 10px;
+                }
+    
+                .input-group {
+                    display: inline-block;
+                }
+    
+                .input-options {
+                    display: inline-block;
+                    background-color: white;
+                    border: 1px solid blue;
+                    border-radius: 10px;
+                    margin-left: 10px;                
+                }
+    
+               .hide {
+                    display:none;
+                }
+    
+                .show {
+                    display:block;
+                }
+    
+                .modalDialog {
+                    position: fixed;
+                    font-family: Arial, Helvetica, sans-serif;
+                    top: 100px;
+                    left: 50px;
+                    width: 80%;
+                    height: 80%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 99999;
+                    opacity: 0.8;
+                    pointer-events: none;
+                }
+    
+                .modalDialog > div {
+                    width: 400px;
+                    position: relative;
+                    margin: 10% auto;
+                    padding: 5px 20px 13px 20px;
+                    border-radius: 10px;
+                    background: #fff;
+                    background: -moz-linear-gradient(#fff, #999);
+                    background: -webkit-linear-gradient(#fff, #999);
+                    background: -o-linear-gradient(#fff, #999);
+                }
+    
+                body {
+                    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+                    font-size: 14px;
+                    padding : 10px ;
+                }
+    
+                .SelectList {
+                    margin-left: 10px;
+                }
+    
+                #MclSelectList {
+                    width: 490px;
+                    background-color: white;
+                }
+
+                #CorpSelectList {
+                    color:green;
+                    margin-top: 10px;
+                    height: 34px;
+                    background-color: white;
+                    text-align: left !important;
+                } 
+
+               .hdr {
+                    display: inline-block;
+                    width: 100px;
+                    color: #e1c1ff;
+                    margin-left: 5px;
+                    margin-top: 10px;
+                    height: 25px;
+                    padding-left: 6px;
+                    padding-top: 2px;
+                    font-weight: 600;
+                }
+    
+                #EmployerLbl  {
+                    display: inline-block;
+                    width: 80px;
+                    background-color: white;
+                    margin-left: 1px;
+                    padding-left: 1px;
+                    font-weight: 600;
+                }
+    
+                .MinLbl {
+                    font-size: 10px;
+                    color:#e1c1ff;
+                    margin-left: 2px;
+                    padding-left: 2px;
+                    padding-right: 215px;
+                }
+    
+                .disp {
+                    display: inline-block;
+                    color: #e1c1ff;
+                    margin-left: 1px;
+                    padding-left: 1px;
+                    font-weight: normal;
+                    font-size: 10px;
+                }
+    
+                .chksDiv {
+                    display: inline-block;
+                    color:#e1c1ff;
+                    width: 370px;
+                }
+    
+                .chks {
+                    font-size: 80%;
+                    padding-right: 20px;
+                }
+      
+                #CheckboxDiv {
+                    display: none;
+                    margin-left: 10px;
+                    margin-right: 10px;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    max-height: 500px;
+                    overflow-y: scroll;
+                    padding-left: 10px;
+                    padding-top: 10px;
+                    
+                    margin-bottom: 20px;
+                    background-color: white;
+                    border: 1px solid #e3e3e3;
+                    border-radius: 4px;
+                    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+                    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);                
+                }
+    
+                #ResultsDiv {
+                    display: none;
+                    margin-left: 10px;
+                    margin-right: 10px;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                    max-height: 500px;
+                    overflow-y: scroll;
+                    padding-left: 10px;
+                    padding-top: 10px;
+                    
+                    margin-bottom: 20px;
+                    background-color: white;
+                    border: 1px solid #e3e3e3;
+                    border-radius: 4px;
+                    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.05);
+                    box-shadow: inset 0 1px 1px rgba(0,0,0,.05);                
+                }
+    
+                #section1 {
+                    height: 70px;
+                    background-color: #723881;
+                }
+    
+                #section2 {
+                    height: 40px;
+                    background-color: #723881;
+                    margin-bottom: 1px;
+                    margin-top: 1px;
+                }
+    
+                #section3 {
+                    background-color: #723881;
+                    padding-bottom: 13px;
+                }
+    
+                #section4 {
+                    height: 300px;
+                    background-color: #723881;
+                }
+    
+                #PrefixInput {
+                    width:200px;
+                }
+    
+                /* removes outline dots from button when it gets focus */
+                :focus {outline:none;}
+                ::-moz-focus-inner {border:0;}
+    
+                #ResultsBtn {
+                    background-color: white;
+                    color:blue;
+                    margin-left: 10px;
+                    margin-top: 10px;
+                }
+    
+                #ResultsBtn:hover {
+                    background-color: rgba(0,0,255,0.2);
+                    color:white;
+                }
+    
+                #DuplicateBtn {
+                    width:175px;
+                    background-color: white;
+                    color:blue;
+                    margin-left: 10px;
+                    margin-top: 10px;
+                }
+    
+                #DuplicateBtn:hover {
+                    background-color: rgba(0,0,255,0.2);
+                    color:white;
+                }
+    
+                #ResetBtn {
+                    text-align: right;
+                    margin-top: 10px;
+                    margin-right: 20px;
+                    float: right;
+                    color: indianred;
+                    background-color: white;
+                }
+    
+                #ResetBtn:hover {
+                    background-color: rgba(205,92,92,0.6);
+                    color:white;
+                }
+    
+                #CheckAllBtn {
+                    width:110px;
+                    background-color: white;
+                    color:green;
+                    margin-left: 19%;
+                    margin-top: 10px;
+                }
+    
+                #CheckAllBtn:hover {
+                    background-color: rgba(0,255,0,0.2);
+                    color:white;
+                }
+    
+               .EmpCheckBoxLabel {
+                    padding-left: 5px;
+                    font-weight:normal;
+                    font-size: 12px;
+                    color: blue;
+                }
+    
+                .EmpCheckboxDiv {
+                    padding-top: 2px;
+                    margin-bottom: 2px;
+                    float: left;
+                    width: 260px;
+                    height: 23px;
+                    background-color: white;
+                    display: inline-block;
+                }
+    
+                .Seperator {
+                    height: 1px;
+                    border: 1px solid #a49d9d;
+                    width: 80%;
+                    margin-left: 12px;
+                    margin-right: 12px;
+                }
+    
+            </style>
+    
+            <apex:includeScript value="{!$Resource.MomentJs}"/>
+    
+            <apex:includeScript value="{!$Resource.jquery311slimmin}"/>
+            <apex:includeScript value="{!URLFOR($Resource.Bootstrap337Zip,'bootstrap.min.js')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.Bootstrap337Zip,'bootstrap.min.css')}"/>
+            <apex:stylesheet value="https://fonts.googleapis.com/css?family=Roboto+Condensed|Roboto+Mono"/>
+    
+        </head>
+        <body>
+    
+        <div class="container-fluid box-main">
+            <div class="container center-block">
+                <div class="row">
+                    <div class="col-form col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+    
+                                <div id="section1">
+    
+                                    <div class="hdr">
+                                        Select Mcl
+                                    </div>
+                                    <div class="chksDiv">
+                                        <input id="KaiserCheckBox"    type="checkbox" checked="true"></input>
+                                        <label id="KaiserCheckBoxLbl" for="KaiserCheckBox" class="chks">Kaiser</label>
+    
+                                        <input id="HospitalCheckBox"    type="checkbox" checked="true"></input>
+                                        <label id="HospitalCheckBoxLbl" for="HospitalCheckBox" class="chks">Hospital</label>
+    
+                                        <input id="NewOrganizingCheckBox"   type="checkbox"></input>
+                                        <label id="NewOrganizingCheckBoxLbl" for="NewOrganizingCheckBox" class="chks">New Organizing</label>
+                                    </div>
+    
+                                    <div class="SelectList">
+                                        <select id="MclSelectList"></select>
+                                        <label id="EmployerDisp"  class="disp"></label>
+                                        <label id="LMBDisp"       class="disp"></label>
+                                        <label id="LMDDisp"       class="disp"></label>
+                                    </div>
+
+                                </div>
+    
+                                <div id="section2">
+                                    <div class="input-group">
+                                        <div class="hdr">Enter Prefix</div> 
+                                        <input id="PrefixInput" type="text" placeholder="e.g. GOTV 2/12/17"></input>
+                                        <label id="TestDisp" class="MinLbl"></label>
+                                    </div>
+                                    <div class="input-options">
+                                            <label id="options-label">options</label>
+                                            <input id="SRCheckBox"         type="checkbox" checked="true"></input>
+                                            <label id="SRCheckBoxLbl"      for="SRCheckBox" class="chks">SR Codes</label>
+                                            <input id="FiltersCheckBox"    type="checkbox"></input>
+                                            <label id="FiltersCheckBoxLbl" for="FiltersCheckBox" class="chks">Filters</label>
+                                            <input id="SortCheckBox"       type="checkbox" checked="true"></input>
+                                            <label id="SortCheckBoxLbl"    for="SortCheckBox" class="chks">Sort</label>
+                                    </div>
+                                </div>
+                                <div id="section3">
+                                    <button id="DuplicateBtn"   class="btn" type="button">Create duplicates (0)</button>
+                                    <label  id="SaveDisp"       class="hide"></label>
+                                    <button id="CheckAllBtn"    class="btn" type="button" disabled="true">Select All</button>
+                                    <select id="CorpSelectList" class="btn"></select>
+                                    <button id="ResetBtn"       class="btn" type="button">Reset</button>
+                                    <div id="CheckboxDiv" ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div id="ModalLoadingDiv" class="modalDialog hide">
+            <div>
+                <h2>Loading data...</h2>
+            </div>
+        </div>
+    
+        </body>
+    
+        <script type="text/javascript">
+            'use strict';
+    
+            function reset() {
+                selectedEmpCount  = 0;
+                selectedLength    = 0;
+                prefixInput.value = '';
+                            
+                selectedMclId             = '0';
+                employerDisp.innerHTML    = '';
+                lMbDisp.innerHTML         = ''; 
+                lMdDisp.innerHTML         = '';
+                TestDisp.innerHTML        = `(min. length:${MIN_LENGTH} - chars:${selectedLength})`;
+                checkboxDiv.classList.add('hide');
+                checkboxDiv.classList.remove('show');
+                shownBefore               = false;
+                duplicateButton.innerHTML = 'Create duplicates (0)'; 
+                duplicateButton.disabled  = true;
+                checkAllButton.disabled   = true;
+                corpDropdown.disabled     = true;
+            }
+            
+            function resetHandler(e) {
+                reset();
+                mclDropdown.selectedIndex = 0;
+            }
+    
+            function checkAllHandler(e) {
+                toggleAllChecks = !toggleAllChecks;
+                if(toggleAllChecks) 
+                    setAllChecks();
+                else
+                    resetChecks();
+            }
+    
+            function validateInputs() {
+                if(selectedLength >= MIN_LENGTH && selectedMclId != '0') {
+                    checkboxDiv.classList.add('show');
+                    checkboxDiv.classList.remove('hide');
+                    duplicateButton.disabled = false;
+                    checkAllButton.disabled  = false;
+                    corpDropdown.disabled    = false;
+                }
+                else {  
+                    checkboxDiv.classList.add('hide');
+                    checkboxDiv.classList.remove('show');
+                    duplicateButton.disabled = true;
+                    checkAllButton.disabled  = true;
+                    corpDropdown.disabled    = true;
+                }
+            }
+    
+            function checkboxHandler(e) {
+                if(e.target.checked) 
+                    selectedEmpCount++;
+                else
+                    selectedEmpCount--;
+    
+                if(selectedEmpCount > 0) {
+                    duplicateButton.disabled = false;
+                }
+                else { 
+                    duplicateButton.disabled = true;
+                }
+                duplicateButton.innerHTML = 'Create duplicates (' + selectedEmpCount + ')'; 
+            }
+    
+            function prefixHandler(e) {
+                selectedLength = e.target.value.length;
+                TestDisp.innerHTML = `(min. length:${MIN_LENGTH} - chars:${selectedLength})`;
+                validateInputs();
+                if(!shownBefore) {
+                   shownBefore = true;
+                   populateDivs();
+                }
+            }
+    
+            function mclHandler(e) {
+                reset();
+                selectedMclId = e.target.value;
+                if(selectedMclId != '0') {
+                    selectedMcl            = mclMap[selectedMclId];
+                    employerDisp.innerHTML = selectedMcl.Employer;
+                    lMbDisp.innerHTML      = ' - ' + selectedMcl.LMB + ' - ';
+                    lMdDisp.innerHTML      = selectedMcl.LMD;
+                }
+                else {
+                    selectedMcl = {};
+                }
+                validateInputs();
+                shownBefore = true;
+                populateDivs();
+            }
+
+            function corpHandler(e) {
+                let i,corp,chkCorp,mapKey,rec,checks;
+                checks = checkboxDiv.getElementsByTagName('input');
+                selectedEmpCount = 0;
+                selectedCorp     = e.target.value;
+                if(selectedCorp != '0') {
+                    corp = corpMap[selectedCorp];
+                    for(i=0;i<checks.length;i++) {
+                        chkCorp = checks[i].getAttribute("data-corp");
+                        if(chkCorp == selectedCorp) {
+                            selectedEmpCount++;
+                            checks[i].checked = true;
+                        }
+                        else {
+                            checks[i].checked = false;
+                        }
+                    }
+                    if(selectedEmpCount > 0) {
+                        duplicateButton.disabled = false;
+                    }
+                    else { 
+                        duplicateButton.disabled = true;
+                    }
+                    duplicateButton.innerHTML = 'Create duplicates (' + selectedEmpCount + ')'; 
+                }
+            }
+
+            function init() {
+                employerDisp          = document.getElementById('EmployerDisp'); 
+                lMbDisp               = document.getElementById('LMBDisp');
+                lMdDisp               = document.getElementById('LMDDisp');
+                checkboxDiv           = document.getElementById('CheckboxDiv');
+                resultsDiv            = document.getElementById('ResultsDiv');
+                modalLoadingDiv       = document.getElementById('ModalLoadingDiv');
+                kaiserCheckBox        = document.getElementById('KaiserCheckBox');
+                hospitalCheckBox      = document.getElementById('HospitalCheckBox');
+                newOrganizingCheckBox = document.getElementById('NewOrganizingCheckBox');
+                mclDropdown           = document.getElementById('MclSelectList');
+                corpDropdown          = document.getElementById('CorpSelectList');
+                prefixInput           = document.getElementById('PrefixInput');
+                srChk                 = document.getElementById('SRCheckBox');
+                filterChk             = document.getElementById('FiltersCheckBox');
+                sortChk               = document.getElementById('SortCheckBox');
+    
+                prefixInput.addEventListener("input",prefixHandler,false);
+                kaiserCheckBox.addEventListener("click",divClickHandler,false);
+                hospitalCheckBox.addEventListener("click",divClickHandler,false);
+                newOrganizingCheckBox.addEventListener("click",divClickHandler,false);
+                mclDropdown.addEventListener("change",mclHandler,false);
+                corpDropdown.addEventListener("change",corpHandler,false);
+                addOption(mclDropdown,'MCLs',0);
+                addOption(corpDropdown,'Select via Parent Corp','0');
+                corpDropdown.disabled = true;
+    
+                sessionId         = "{!$Api.Session_ID}";
+                userId            = "{!$User.Id}";
+                userFirstName     = "{!$User.FirstName}";
+                userLastName      = "{!$User.LastName}";
+                divParam          = "{!$CurrentPage.parameters.div}"   || '';
+                langParam         = "{!$CurrentPage.parameters.lang}"  || '';
+                debugParam        = "{!$CurrentPage.parameters.debug}" || '';
+                shownBefore       = false;
+                updateTxArray     = [];
+                mclDataArray      = [];
+                mclMap            = {};
+                accountMap        = {};
+                corpMap           = {};
+                idArray           = [];
+                idList            = '';
+                selectedEmpCount  = 0;
+                selectedMclId     = '0';            
+                selectedMcl       = '';
+                prefixInput.value = '';
+                ampTerm           = '&' + 'amp;'; // > broswer weirdness!
+                aptTerm           = '&' + '#39;';
+                duplicateButton   = document.getElementById('DuplicateBtn');
+                duplicateButton.addEventListener("click",updateSalesforce,false);
+                duplicateButton.disabled = true;
+                checkAllButton = document.getElementById('CheckAllBtn');
+                resetButton    = document.getElementById('ResetBtn');
+                resetButton.addEventListener("click",resetHandler,false);
+                checkAllButton.addEventListener("click",checkAllHandler,false);
+            }
+    
+            function clean(s) {
+                let i,ampPos,aptPos,sB,sA,s1,s2;
+                s1 = s;
+                ampPos = s.indexOf(ampTerm);
+                if(ampPos != -1) {
+                    sB  = s.substr(0,ampPos);
+                    sA  = s.substr(ampPos+5);
+                    s1  = sB + '&' + sA;
+                }
+                s2 = s1;
+                aptPos = s1.indexOf(aptTerm);
+                if(aptPos != -1) {
+                    sB  = s1.substr(0,aptPos);
+                    sA  = s1.substr(aptPos+5);
+                    s2  = sB + "'" + sA;
+                }
+                return s2;
+            }
+    
+            function toProperCase(s) {
+                // My version - handles hyphenated names correctly :)
+                let s1,s2;
+                if(s == null)
+                    s2 = '';
+                else {
+                    s1 = s.trim().toLowerCase();
+                    s2 = clean(s1);
+                    s2 = s2.replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+                }
+                return s2;
+            }
+    
+            function populateMclDropdown() {
+                let mapKey,rec,mclName,mclId;
+    
+                reset();
+                mclDropdown.selectedIndex = 0;
+               
+                while (mclDropdown.hasChildNodes()) {
+                    mclDropdown.removeChild(mclDropdown.childNodes[0]);
+                }
+    
+                if(!kaiserCheckBox.checked && !hospitalCheckBox.checked && !newOrganizingCheckBox.checked) {
+                    addOption(mclDropdown,'Choose at least 1 Division',mclId);
+                    duplicateButton.disabled = true;
+                }
+                else {
+                    addOption(mclDropdown,'MCLs',0);
+                    for(mapKey in mclMap) {
+                        rec     = mclMap[mapKey];
+                        mclName = rec.Name;
+                        mclId   = rec.Id;
+    
+                        if(kaiserCheckBox.checked        && rec.Division == 'Kaiser')
+                            addOption(mclDropdown,mclName,mclId);
+    
+                        if(hospitalCheckBox.checked      && rec.Division == 'Hospital')
+                                addOption(mclDropdown,mclName,mclId);
+    
+                        if(newOrganizingCheckBox.checked && rec.Division == 'New Organizing')
+                            addOption(mclDropdown,mclName,mclId);
+                    }
+                }
+            }
+    
+            function addOption(dropDown,name,id) {
+                let opt = document.createElement("option");
+                opt.text  = name;
+                opt.value = id;
+                dropDown.add(opt, null);
+            }
+    
+            function processAccountData(results) {
+                return new Promise(function (resolve, reject) {
+                    let len, rec, i;
+                    let id, name, region, division, corp;
+                    len = results.length;
+                    if(len > 0) {
+                        for (i = 0; i < len; i++) {
+                            id = name = division = region = '';
+                            rec      = results[i];
+                            id       = rec.Id;
+                            name     = toProperCase(rec.Name);
+                            division = rec.Account_Group__c   || '';
+                            region   = rec.Region__c          || '';
+                            corp     = toProperCase(rec.Hospital_System__c);
+console.log('Corp: ', corp);
+                            accountMap[id] = {Id:id, Name:name, Division:division, Region:region, Corp:corp};
+                            if(corp) {
+                                if(!corpMap[corp]) {
+                                    corpMap[corp] = corp;
+                                    addOption(corpDropdown,corp,corp);
+                                }
+                            }
+                        }
+                    }
+                    sortCorpDropdown();
+                    resolve('ok');
+                });            
+            }
+    
+            function sortCorpDropdown() { 
+                // https://stackoverflow.com/questions/3467514/how-to-show-select-in-sorted-order
+                let i,j, arrTexts = [], arrValues = [], arrOldTexts = [];
+                for(i=1; i<corpDropdown.length-1; i++) { 
+                    arrTexts[i]    = corpDropdown.options[i].text; 
+                    arrValues[i]   = corpDropdown.options[i].value; 
+                    arrOldTexts[i] = corpDropdown.options[i].text; 
+                } 
+            
+                arrTexts.sort(); 
+            
+                for(i=1; i<corpDropdown.length-1; i++) { 
+                    corpDropdown.options[i].text = arrTexts[i]; 
+                    for(j=1; j<corpDropdown.length-1; j++) { 
+                        if (arrTexts[i] == arrOldTexts[j]) { 
+                            corpDropdown.options[i].value = arrValues[j]; 
+                            j = corpDropdown.length-1; 
+                        } 
+                    } 
+                } 
+            }
+
+            function processMclData(results) {
+                return new Promise(function (resolve, reject) {
+                    let len, rec, i;
+                    let mclId, empId, mclName, empName, region, division, empNameA,empNameB,lastModifiedDate,lastModifiedBy;
+                    len = results.length;
+                    if(len > 0) {
+                        for (i = 0; i < len; i++) {
+                            empId    = empName = region = division = '';
+                            rec      = results[i];
+                            mclId    = rec.Id;
+                            mclName  = toProperCase(rec.Name);
+                            lastModifiedDate = moment(rec.LastModifiedDate).format('MM/DD/YYYY');
+                            lastModifiedBy   = rec.LastModifiedBy.Name;
+                            if ('Employer__r' in rec) {
+                                if (rec.Employer__r) {
+                                    empName  = toProperCase(rec.Employer__r.Name);
+                                    division = rec.Employer__r.Account_Group__c;
+                                    empId    = rec.Employer__r.Id;
+                                    region   = rec.Employer__r.Region__c;
+                                    empName  = toProperCase(empName);
+                                    division = toProperCase(division);
+    
+                                }
+                            }
+                            mclMap[mclId] = {Id:mclId, Name:mclName, LMD:lastModifiedDate, LMB:lastModifiedBy, Employer:empName, Division:division, Region:region};
+                        }
+                    }
+                    populateMclDropdown();
+                    showLoadingMsg(false);
+                    resolve('ok');
+                });
+            }
+    
+            function getAccountData() {
+                //   Controller:
+                //      Select Id,Account_Group__c,Region__c,Name,Hospital_System__c
+                //      From Account
+                //      Where Account_Group__c In ('New Organizing','Kaiser','Hospital') and Type In ('Prospect','Employer') 
+                return new Promise(function (resolve, reject) {
+                    MclDuplicationController.getAccountData( (result, event) => {
+                        if (event.status) {
+                            console.log('Retrieved Account data');
+//                            alert("DEBUG!");debugger;
+                            resolve(result);
+                        }
+                        else
+                        {
+                            console.log('Error retrieving Account data');
+                            reject(event);
+                        }
+                    });
+                });
+            }
+    
+            function getMclData() {
+               //   Controller:            
+               //     SELECT Employer__c,Id,Name,LastModifiedDate,LastModifiedBy.Name,Employer__r.Id,Employer__r.Region__c,Employer__r.Account_Group__c, Employer__r.Name
+               //     FROM MCL_Report__c ORDER BY LastModifiedDate DESC
+                return new Promise(function (resolve, reject) {
+                    MclDuplicationController.getMclData( (result, event) => {
+                        if (event.status) {
+                            console.log('Retrieved Mcl data');
+                            resolve(result);
+                        }
+                        else
+                        {
+                            console.log('Error retrieving Mcl data');
+                            reject(event);
+                        }
+                    });
+                });
+            }
+    
+            function spawn(generatorFunc) {
+                function continuer(verb, arg) {
+                    var result;
+                    try {
+                        result = generator[verb](arg);
+                    } catch (err) {
+                        return Promise.reject(err);
+                    }
+                    if (result.done) {
+                        return result.value;
+                    } else {
+                        return Promise.resolve(result.value).then(onFulfilled, onRejected);
+                    }
+                }
+                var generator = generatorFunc();
+                var onFulfilled = continuer.bind(continuer, "next");
+                var onRejected = continuer.bind(continuer, "throw");
+                return onFulfilled();
+            }
+    
+            function showLoadingMsg(show) {
+                if(show) // modal window fake
+                    modalLoadingDiv.setAttribute('class', 'modalDialog');
+                else
+                    modalLoadingDiv.setAttribute('class', 'hide');
+            }
+    
+            function getChecks() {
+                let i,id,checks;
+                checks = checkboxDiv.getElementsByTagName('input');
+                for(i=0;i<checks.length;i++) {
+                    if(checks[i].checked) {
+                        id = checks[i].value;
+                        idArray.push(id);
+                    }
+                }
+                idList    = idArray.join(',');
+                srOpt     = srChk.checked;
+                filterOpt = filterChk.checked;
+                sortOpt   = sortChk.checked;
+            }
+
+            function setAllChecks() {
+                let i,id,checks;
+                checks = checkboxDiv.getElementsByTagName('input');
+                for(i=0;i<checks.length;i++) {
+                    checks[i].checked = true;
+                }
+                selectedEmpCount = checks.length;
+                duplicateButton.disabled = false;
+                checkAllButton.innerHTML = 'Select None';
+                duplicateButton.innerHTML = 'Create duplicates (' + selectedEmpCount + ')'; 
+            }
+    
+            function resetChecks() {
+                let i,id,checks;
+                checks = checkboxDiv.getElementsByTagName('input');
+                for(i=0;i<checks.length;i++) {
+                    checks[i].checked = false;
+                }
+                selectedEmpCount = 0;
+                duplicateButton.disabled = true;
+                checkAllButton.innerHTML = 'Select All';
+                duplicateButton.innerHTML = 'Create duplicates (' + selectedEmpCount + ')'; 
+            }
+    
+            function makeCheckBox(pLabel,pId,pCorp) {
+                let newDiv,newCheckBox,checkBoxLabel;
+    
+                newDiv            = document.createElement('div');
+                checkBoxLabel     = document.createElement("label");
+                newCheckBox       = document.createElement('input');
+                newCheckBox.type  = 'checkbox';
+                newCheckBox.id    = pId;
+                newCheckBox.value = pId;
+                newCheckBox.setAttribute("data-corp",pCorp)
+                newCheckBox.addEventListener("click",checkboxHandler,false);
+    
+                checkBoxLabel.setAttribute("for", pId);
+                checkBoxLabel.innerHTML = pLabel.substr(0,39);
+                checkBoxLabel.classList.add('EmpCheckBoxLabel');
+    
+                newDiv.appendChild(newCheckBox);
+                newDiv.appendChild(checkBoxLabel);
+                newDiv.classList.add('EmpCheckboxDiv');
+    
+                return newDiv;
+            }
+    
+            function populateDivs() {
+                let mapKey,rec;
+    
+                while (checkboxDiv.firstChild) {
+                    checkboxDiv.removeChild(checkboxDiv.firstChild);
+                }
+    
+                for (mapKey in accountMap) {
+                    rec = accountMap[mapKey];
+                    if(rec.Division == selectedMcl.Division) {
+                        let newCB    = makeCheckBox(rec.Name,rec.Id,rec.Corp);
+           //             rec.CheckBox = newCB;
+                        checkboxDiv.appendChild(newCB);
+                    }
+                }
+               
+            }
+    
+            function divClickHandler(e) {
+                populateMclDropdown();
+            }
+    
+            function updateSalesforce() {
+                let i;
+                getChecks();
+                return new Promise(function(resolve, reject) {
+                    MclDuplicationController.createDuplicates(selectedMclId, prefixInput.value, idList, srOpt, filterOpt, sortOpt, (result, event) => {
+                        if (event.status) {
+                            alert('Salesforce updated');
+                            if(selectedEmpCount == 1)
+                                SaveDisp.innerHTML  = '1 Mcl duplicated';
+                            else
+                                SaveDisp.innerHTML  = selectedEmpCount + ' Mcls duplicated';
+                            resolve(result);
+                        }
+                        else {
+                            let eType  = event.type;
+                            let eMsg   = event.message;
+                            let eWhere = event.where;
+                            alert('Salesforce update error');
+                            console.log(eType);
+                            console.log(eMsg);
+                            if(eWhere != undefined) console.log(eWhere);
+                            reject(event);
+                        }
+                    });
+                });
+            }
+    
+            var toggleAllChecks = false;
+            var idArray,idList,srOpt,filterOpt,sortOpt,srChk,filterChk,sortChk;
+            var accountMap,mclMap,corpMap,ampTerm,aptTerm;
+            var selectedMclId,selectedMcl,selectedEmpCount,selectedCorp,prefixInput,selectedLength,duplicateButton,resetButton,checkAllButton,updateTxArray;
+            var accountData,mclData,mclDataArray;
+            var mclDropdown,corpDropdown,modalLoadingDiv,checkboxDiv,resultsDiv;
+            var sessionId,userId,userFirstName,userLastName,divParam,langParam,debugParam;
+            var employerDisp,lMbDisp,lMdDisp,duplicateButton,resultsButton;
+            var kaiserCheckBox,hospitalCheckBox,newOrganizingCheckBox,shownBefore;
+    
+            const MIN_LENGTH = 6;
+    
+            // ***************** Main Program Entry *****************
+            init();
+            showLoadingMsg(true);
+    
+            spawn(function *() {
+                accountData = yield getAccountData();
+                mclData     = yield getMclData();
+                yield processAccountData(accountData);
+                yield processMclData(mclData);
+            });
+    
+        </script>
+        </html>
+    </apex:page>

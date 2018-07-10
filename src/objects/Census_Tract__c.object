@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>African_American_Count__c</fullName>
+        <description>The number of African Americans in the Census Tract.</description>
+        <externalId>false</externalId>
+        <label>African American Count</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>African_American_Pct__c</fullName>
+        <externalId>false</externalId>
+        <formula>African_American_Count__c /  Total_Population__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>African American Pct</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>All_Home_Care_Mbrs__c</fullName>
+        <externalId>false</externalId>
+        <label>All Home Care Mbrs</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Asian_Pacific_Count__c</fullName>
+        <description>The number of asian and pacific islanders in the Census Tract.</description>
+        <externalId>false</externalId>
+        <label>Asian Pacific Count</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Asian_Pacific_Pct__c</fullName>
+        <externalId>false</externalId>
+        <formula>Asian_Pacific_Count__c /  Total_Population__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Asian Pacific Pct</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>County__c</fullName>
+        <externalId>false</externalId>
+        <label>County</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enrll_Ldrs_LT_2_Miles__c</fullName>
+        <description>Enrollment Leaders from the previous year who live less than 2 miles from the Census Tract.</description>
+        <externalId>false</externalId>
+        <label>Enrll Ldrs LT 2 Miles</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enrll_Ldrs_LT_5_Miles__c</fullName>
+        <description>Enrollment Leaders who live less than 5 miles from the Census Tract.</description>
+        <externalId>false</externalId>
+        <label>Enrll Ldrs LT 5 Miles</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enrll_Ldrs_in_Tract__c</fullName>
+        <description>Enrollment Leaders from the previous year in the Census Tract.</description>
+        <externalId>false</externalId>
+        <label>Enrll Ldrs in Tract</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enrollment_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(County__c,
+&apos;Orange&apos;, &apos;3. Orange&apos;,
+&apos;Kern&apos;, &apos;4. Central Valley South&apos;,
+&apos;Fresno&apos;, &apos;4. Central Valley South&apos;,
+&apos;Alameda&apos;, &apos;5. Bay Area&apos;,
+&apos;Contra Costa&apos;, &apos;5. Bay Area&apos;,
+&apos;Santa Clara&apos;, &apos;6. South Bay&apos;,
+&apos;Riverside&apos;, &apos;7. Inland Empire&apos;,
+&apos;San Bernardino&apos;, &apos;7. Inland Empire&apos;,
+&apos;Sacramento&apos;, &apos;8. Central Valley North&apos;,
+&apos;San Joaquin&apos;, &apos;8. Central Valley North&apos;,
+&apos;Yolo&apos;, &apos;8. Central Valley North&apos;,
+&apos;Stanislaus&apos;, &apos;8. Central Valley North&apos;,
+&apos;Los Angeles&apos;,
+if(Geolocation__Latitude__s &gt; 34.333099, &apos;1. San Fernando Valley&apos;,
+if (Geolocation__Latitude__s &gt; 34.134678 &amp;&amp; Geolocation__Longitude__s &lt; -118.241562 &amp;&amp;  Nearest_City__c != &apos;Glendale&apos;,
+&apos;1. San Fernando Valley&apos;,
+&apos;2. LA Metro&apos;
+)
+),
+&apos;&apos;
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Enrollment Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enrollment_Targeting_Score__c</fullName>
+        <description>The score is based on the following drivers: poverty, underserved minorites, uninsured count, uninsured rate, Members nearby, Enrollment Leaders nearby.</description>
+        <externalId>false</externalId>
+        <label>Enrollment Targeting Score</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Family_Income_LT_30K_Count__c</fullName>
+        <description>Count of people who live in families who earn less than 138% of the poverty line, about $30K.</description>
+        <externalId>false</externalId>
+        <label>Family Income LT 30K Count</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Family_Income_LT_30K_Pct__c</fullName>
+        <externalId>false</externalId>
+        <formula>Family_Income_LT_30K_Count__c /  Total_Population__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Family Income LT 30K Pct</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Family_Income_LT_48K_Count__c</fullName>
+        <description>Count of people who live in families who earn less than 200% of the poverty line, about $48K.</description>
+        <externalId>false</externalId>
+        <label>Family Income LT 48K Count</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Family_Income_LT_48K_Pct__c</fullName>
+        <externalId>false</externalId>
+        <formula>Family_Income_LT_48K_Count__c /  Total_Population__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Family Income LT 48K Pct</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Geolocation__c</fullName>
+        <displayLocationInDecimal>true</displayLocationInDecimal>
+        <externalId>false</externalId>
+        <label>Geolocation</label>
+        <required>true</required>
+        <scale>6</scale>
+        <trackTrending>false</trackTrending>
+        <type>Location</type>
+    </fields>
+    <fields>
+        <fullName>Google_Maps_URL__c</fullName>
+        <externalId>false</externalId>
+        <formula>&apos;https://www.google.com/maps/place/&apos; &amp; text(Geolocation__Latitude__s) &amp; &apos;,&apos; &amp; text(Geolocation__Longitude__s)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Google Maps URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Home_Care_Owner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Home Care Owner</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Census_Tracts</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Home_Care_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(County__c,
+&apos;Fresno&apos;, &apos;Fresno&apos;,
+&apos;Kings&apos;, &apos;Fresno&apos;,
+&apos;Madera&apos;, &apos;Fresno&apos;,
+&apos;Merced&apos;, &apos;Fresno&apos;,
+&apos;Mariposa&apos;, &apos;Fresno&apos;,
+&apos;Tulare&apos;, &apos;Fresno&apos;,
+&apos;Alameda&apos;, &apos;Oakland&apos;,
+&apos;Contra Costa&apos;, &apos;Oakland&apos;,
+&apos;Santa Clara&apos;, &apos;Oakland&apos;,
+&apos;Solano&apos;, &apos;Oakland&apos;,
+&apos;Napa&apos;, &apos;Santa Rosa&apos;,
+&apos;Sonoma&apos;, &apos;Santa Rosa&apos;,
+&apos;Marin&apos;, &apos;Santa Rosa&apos;,
+&apos;Lake&apos;, &apos;Santa Rosa&apos;,
+&apos;San Joaquin&apos;, &apos;Stockton&apos;,
+&apos;Stanislaus&apos;, &apos;Stockton&apos;,
+&apos;Yolo&apos;, &apos;Sacramento&apos;,
+&apos;Calaveras&apos;, &apos;Sacramento&apos;,
+&apos;Sutter&apos;, &apos;Sacramento&apos;,
+&apos;Yuba&apos;, &apos;Sacramento&apos;,
+&apos;Amador&apos;, &apos;Sacramento&apos;,
+&apos;El Dorado&apos;, &apos;Sacramento&apos;,
+&apos;Placer&apos;, &apos;Sacramento&apos;,
+&apos;Nevada&apos;, &apos;Sacramento&apos;,
+&apos;Colusa&apos;, &apos;Sacramento&apos;,
+&apos;Sacramento&apos;, &apos;Sacramento&apos;,
+&apos;San Francisco&apos;, &apos;San Francisco&apos;,
+&apos;San Mateo&apos;, &apos;San Francisco&apos;,
+&apos;Out of Regions&apos;
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Home Care Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Latino_Count__c</fullName>
+        <description>The number of latinos in the Census Tract.</description>
+        <externalId>false</externalId>
+        <label>Latino Count</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Latino_Pct__c</fullName>
+        <externalId>false</externalId>
+        <formula>Latino_Count__c /  Total_Population__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Latino Pct</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Nearby_Members__c</fullName>
+        <externalId>false</externalId>
+        <formula>&apos;https://uhw--c.na15.visual.force.com/apex/Report_NearbyMbrContactsPage?latitude=&apos; &amp;  text(Geolocation__Latitude__s)
+&amp; &apos;&amp;&apos; &amp;
+&apos;longitude=&apos; &amp;  text(Geolocation__Longitude__s)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Nearby Members</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Nearby_Tracts_and_Scores__c</fullName>
+        <externalId>false</externalId>
+        <label>Nearby Tracts and Scores</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Nearest_City__c</fullName>
+        <externalId>false</externalId>
+        <label>Nearest City</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Nearest_Zip__c</fullName>
+        <description>The nearest Zip Code for the Census Tract.</description>
+        <externalId>false</externalId>
+        <label>Nearest Zip</label>
+        <length>5</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Numeric_Name__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>The numeric version of the name used by the US Census.</description>
+        <externalId>true</externalId>
+        <label>Numeric Name</label>
+        <length>11</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Static_Map__c</fullName>
+        <externalId>false</externalId>
+        <label>Static Map</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Total_Population__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Population</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Trgt_Short_Hours__c</fullName>
+        <description>unsigned Home Care Members who did not meet minimum hours the previous month.</description>
+        <externalId>false</externalId>
+        <label>Trgt Short Hours</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Trgt_Unsgnd_Home_Care_Chn_Cnt__c</fullName>
+        <externalId>false</externalId>
+        <label>Trgt Chinese</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Trgt_Unsgnd_Home_Care_Eng_Cnt__c</fullName>
+        <externalId>false</externalId>
+        <label>Trgt English</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Trgt_Unsgnd_Home_Care_Esp_Cnt__c</fullName>
+        <externalId>false</externalId>
+        <label>Trgt Spanish</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Trgt_Unsgnd_Home_Care_Hmg_Cnt__c</fullName>
+        <externalId>false</externalId>
+        <label>Trgt Hmong</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Trgt_Unsgnd_Home_Care_Rus_Cnt__c</fullName>
+        <externalId>false</externalId>
+        <label>Trgt Russian</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Mbrs_LT_2_Miles__c</fullName>
+        <description>Count of UHW Members less than 2 miles from Census Tract</description>
+        <externalId>false</externalId>
+        <label>UHW Mbrs LT 2 Miles</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Mbrs_LT_5_Miles__c</fullName>
+        <description>UHW Members who live less than 5 miles from the Census Tract.</description>
+        <externalId>false</externalId>
+        <label>UHW Mbrs LT 5 Miles</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Members_in_Tract__c</fullName>
+        <externalId>false</externalId>
+        <label>UHW Members in Tract</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Uninsured_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>Uninsured Count</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Uninsured_Pct__c</fullName>
+        <externalId>false</externalId>
+        <formula>Uninsured_Count__c /  Total_Population__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Uninsured Pct</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Unsigned_Home_Care_Mbrs__c</fullName>
+        <externalId>false</externalId>
+        <label>Trgt Unsigned Home Care Mbrs</label>
+        <precision>6</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Census Tract</label>
+    <nameField>
+        <label>Census Tract Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Census Tracts</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

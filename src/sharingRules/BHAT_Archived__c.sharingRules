@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>View_Access</fullName>
+        <accessLevel>Read</accessLevel>
+        <label>View Access</label>
+        <sharedTo>
+            <group>BHAT_Archived_Group</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Name</field>
+            <operation>startsWith</operation>
+            <value>BHAT</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+</SharingRules>

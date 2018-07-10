@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Common Settings</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Common Settings</value>
+    </caseValues>
+    <fields>
+        <label><!-- BHAT Update End Date --></label>
+        <name>BHAT_Update_End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Update Start Date --></label>
+        <name>BHAT_Update_Start_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Exclude Login for BAR --></label>
+        <name>Exclude_Login_for_BAR__c</name>
+    </fields>
+    <fields>
+        <label><!-- HospitalCode --></label>
+        <name>HospitalCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- KaiserCode --></label>
+        <name>KaiserCode__c</name>
+    </fields>
+    <fields>
+        <label><!-- KrlEboardExceptions --></label>
+        <name>KrlEboardExceptions__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,339 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <apex:includeScript value="{!$Resource.agGridEnterpriseMin429}"/>
+
+        <style>
+
+            .SaveAs {
+                float: right;
+                margin-right: 9px;
+                font-size: 1.4em !important;
+                font-family: "Helvetica Neue",Helvetica,Arial,sans-serif !important;
+            }
+
+            #Content {
+                width: 463px;
+            }
+
+            .right-align {
+                text-align: right;
+                padding-right:5px !important;
+            }
+
+            #MinimalGrid {
+                width:  360px;
+                height: 840px;
+            }
+
+            #Title {
+                text-align: center;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+    <div id="Content">
+
+        <div id="Title">
+            <h2>Dignity Strike, Photo and Picket Activity</h2>
+        </div>
+        <hr/>
+        <div id="MinimalGrid" class="ag-fresh"></div>
+        <input id="SaveAsCsvButton" class="SaveAs" type="Button" value="Export"></input>
+    </div>
+
+    <script type="text/javascript">
+
+        function toProperCase(s) {
+            // My version - handles hyphenated names correctly :)
+            var s1;
+            if(s == null)
+                s1 = 'Missing';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function loadAccounts(){
+            var queryResults;
+            var query = "SELECT Id, Name, BU_Count__c FROM Account WHERE Hospital_System__c LIKE 'Dignity%' And Active__c = 'Yes' ORDER BY Name ASC NULLS FIRST";
+
+            try {
+                queryResults = sforce.connection.query(query);
+                processAccounts(queryResults);
+            }
+            catch(e) {alert('An error occurred retrieving Accounts: ' + e.faultstring);}
+        }
+
+        function processAccounts(accountResults) {
+            var accountRec,accountRecords,accountName,accountId,buCnt,len,i;
+
+            accountsDataArray = [];
+            accountsIdArray   = [];
+            accountsMap       = {};
+
+            accountRecords  = accountResults.getArray('records');
+            len = accountRecords.length-1;
+            for (i = 0; i <= len; i++) {
+                accountRec  = accountRecords[i];
+                accountId   = accountRec.Id;
+                accountName = toProperCase(accountRec.Name);
+                buCnt       = parseInt(accountRec.BU_Count__c)   ||  0;
+                accountsDataArray.push({AccountId: accountId, AccountName: accountName, BuCnt: buCnt, StrikePC: 0.0, PhotoPC: 0.0, CommitPC: 0.0, AttendPC: 0.0, ResponseCnt: 0, CommitCnt: 0, ConfirmCnt: 0, RemindCnt: 0, AttendCnt: 0});
+                accountsIdArray.push("'" + accountId + "'");
+            }
+            dignityAccounts = accountsIdArray.join();
+        }
+
+        function loadStrikeResponses() {
+            var accounts;
+            var strikeResults;
+            var strikeQuery;
+
+            strikeQuery = "SELECT Contact__r.Account.Id,Contact__r.Account.Name, Response_Value__c,Count(id) " +
+                    "FROM Survey_Response__c " +
+                    "WHERE Survey_Code__c = 'DIG' And " +
+                    "      Contact__r.Account.Id  In (" + dignityAccounts + ") " +
+                    "GROUP BY Contact__r.Account.Id,Contact__r.Account.Name, Response_Value__c " +
+                    "ORDER BY Contact__r.Account.Name, Response_Value__c";
+
+            try {
+                strikeResults = sforce.connection.query(strikeQuery);
+                processStrikeResponses(strikeResults);
+            }
+            catch (e) {alert('An error occurred retrieving Survey DIG Responses ' + e.faultstring);}
+        }
+
+        function processStrikeResponses(results) {
+            // Allowed Responses for DIG survey question:
+            //   yes
+            //   no
+
+            var i, l, rec, empId, empName, responseValue, response, cntStr, cnt;
+            var records;
+            records = results.getArray('records');
+            strikeResponseMap = {};
+            for (i = 0; i < records.length; i++) {
+                rec           = records[i];
+                empId         = rec.Id;
+                responseValue = rec.Response_Value__c || '';
+                cntStr        = rec.expr0 || '';
+                response      = responseValue.substr(responseValue.indexOf('.') + 1).trim().toLowerCase();
+                cnt           = parseInt(cntStr);
+
+                if (response == 'yes')
+                    strikeResponseMap[empId] = {YesCnt: cnt};
+            }
+        }
+
+        function loadPhotoResponses() {
+            var accounts;
+            var photoResults;
+            var responseQuery;
+
+            responseQuery = "SELECT Contact__r.Account.Id,Contact__r.Account.Name, Response_Value__c,Count(id) " +
+                    "FROM Survey_Response__c " +
+                    "WHERE Survey_Code__c = 'NQH' And " +
+                    "      Contact__r.Account.Id  In (" + dignityAccounts + ") " +
+                    "GROUP BY Contact__r.Account.Id,Contact__r.Account.Name, Response_Value__c " +
+                    "ORDER BY Contact__r.Account.Name, Response_Value__c";
+
+            try {
+                photoResults = sforce.connection.query(responseQuery);
+                processPhotoResponses(photoResults);
+            }
+            catch (e) {alert('An error occurred retrieving Survey NQH Responses ' + e.faultstring);}
+        }
+
+        function processPhotoResponses(results) {
+            // Allowed Responses for NQH survey question:
+            //   yes
+            //   no
+
+            var i, l, rec, empId, empName, responseValue, response, cntStr, cnt;
+            var records;
+            records = results.getArray('records');
+            photoResponseMap = {};
+            for (i = 0; i < records.length; i++) {
+                rec           = records[i];
+                empId         = rec.Id;
+                responseValue = rec.Response_Value__c || '';
+                cntStr        = rec.expr0 || '';
+                response      = responseValue.substr(responseValue.indexOf('.') + 1).trim().toLowerCase();
+                cnt           = parseInt(cntStr);
+
+                if (response == 'yes')
+                    photoResponseMap[empId] = {YesCnt: cnt};
+            }
+        }
+
+        function loadResponses() {
+            var accounts;
+            var responseQuery;
+
+            responseQuery = "SELECT Contact__r.Account.Id,Contact__r.Account.Name, Response_Value__c,Count(id) " +
+                    "FROM Survey_Response__c " +
+                    "WHERE Survey_Code__c = 'OUT' And " +
+                    "      Contact__r.Account.Id  In (" + dignityAccounts + ") " +
+                    "GROUP BY Contact__r.Account.Id,Contact__r.Account.Name, Response_Value__c " +
+                    "ORDER BY Contact__r.Account.Name, Response_Value__c";
+
+            try {
+                var responseResults = sforce.connection.query(responseQuery);
+                processResponses(responseResults);
+            }
+            catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processResponses(results) {
+            // Allowed Responses for OUT survey question:
+            //   M. Commit
+            //   B. Confirm
+            //   D. Remind
+            //   A. Attended
+
+            var i,l,rec,empId,empName,responseValue,response,cntStr,cnt,buCnt,photoCnt,photoPcStr,photoPC,commitPC,attendPC, strikeCnt, strikePC;
+            var records;
+            records = results.getArray('records');
+
+            responseMap = {};
+            for (i = 0; i < records.length; i++) {
+                rec           = records[i];
+                empId         = rec.Id;
+                responseValue = rec.Response_Value__c || '';
+                cntStr        = rec.expr0             || '';
+                response      = responseValue.substr(responseValue.indexOf('.') + 1).trim();
+                cnt           = parseInt(cntStr);
+                if(!responseMap[empId])
+                    responseMap[empId] = {};
+
+                if(!responseMap[empId][response])
+                    responseMap[empId][response] = {Cnt:cnt};
+            }
+
+            for(i=0,l=accountsDataArray.length;i<l;i++) {
+                rec     = accountsDataArray[i];
+                empName = rec.AccountName;
+                empId   = rec.AccountId;
+                buCnt   = rec.BuCnt;
+
+                if(responseMap[empId]) {
+                    if (responseMap[empId]['Commit']) {
+                        rec.CommitCnt = responseMap[empId]['Commit'].Cnt;
+                        if(rec.CommitCnt > 0 && buCnt > 0) {
+                            commitPC     = Math.round((rec.CommitCnt / buCnt) * 100);
+                            rec.CommitPC = commitPC;
+                        }
+                    }
+
+                    if (responseMap[empId]['Attended']) {
+                        rec.AttendCnt = responseMap[empId]['Attended'].Cnt;
+                        if(rec.AttendCnt > 0 && buCnt > 0) {
+                            attendPC     = Math.round((rec.AttendCnt / buCnt) * 100);
+                            rec.AttendPC = attendPC;
+                        }
+
+                    }
+
+                    /*  These not used:
+                     if (responseMap[empId]['Confirm'])
+                     rec.ConfirmCnt = responseMap[empId]['Confirm'].Cnt;
+                     if (responseMap[empId]['Remind'])
+                     rec.RemindCnt = responseMap[empId]['Remind'].Cnt;
+                     rec.ResponseCnt = rec.CommitCnt + rec.ConfirmCnt + rec.RemindCnt + rec.AttendCnt;
+                     */
+
+                }
+                else
+                    console.log('No responses for ' + empName + ' - ' + empId);
+
+                if(photoResponseMap[empId]) {
+                    photoCnt = photoResponseMap[empId].YesCnt;
+                    if(photoCnt > 0 && buCnt > 0) {
+                        photoPC     = Math.round((photoCnt / buCnt) * 100);
+                        rec.PhotoPC = photoPC;
+                    }
+                }
+                if(strikeResponseMap[empId]) {
+                    strikeCnt = strikeResponseMap[empId].YesCnt;
+                    if(strikeCnt > 0 && buCnt > 0) {
+                        strikePC     = Math.round((strikeCnt / buCnt) * 100);
+                        rec.StrikePC = strikePC;
+                    }
+                }
+
+                console.log(rec.AccountName + '  BU: ' + rec.BuCnt + '  Photo: ' + rec.PhotoPC + '  Commit: ' + rec.CommitCnt + '  Attend: ' + rec.AttendCnt +  rec.StrikePC);
+
+            }
+            console.log('Finished responses added to array');
+        }
+
+        function initAgGrid() {
+
+            saveAsCsvButton = document.getElementById("SaveAsCsvButton");
+            saveAsCsvButton.addEventListener("click", saveAsCsv, false);
+
+            agGrid.LicenseManager.setLicenseKey("United_Healthcare_Workers_West_10-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+            minimalColumnDefs = [
+                {headerName: 'Name',             field: 'AccountName', width: 210},
+                {headerName: 'BU #',             field: 'BuCnt',       width: 50, cellClass: 'right-align',suppressMenu: true},
+                {headerName: 'S %',              field: 'StrikePC',    width: 50, cellClass: 'right-align',suppressMenu: true},
+                {headerName: 'P %',              field: 'PhotoPC',     width: 50, cellClass: 'right-align',suppressMenu: true},
+                {headerName: 'C %',              field: 'CommitPC',    width: 50, cellClass: 'right-align',suppressMenu: true},
+                {headerName: 'A %',              field: 'AttendPC',    width: 50, cellClass: 'right-align',suppressMenu: true}
+            ];
+        }
+
+        function saveAsCsv() {
+            minimalGridOptions.api.exportDataAsCsv({fileName: 'DignityStrikeData.csv'});
+        }
+
+        function displayGrids() {
+
+            minimalGridOptions = {
+                columnDefs: minimalColumnDefs,
+                rowData: accountsDataArray,
+                enableSorting: true,
+                forPrint: true
+            };
+
+            minimalGridDiv = document.querySelector('#MinimalGrid');
+            new agGrid.Grid(minimalGridDiv, minimalGridOptions);
+
+        }
+
+        var accountsMap;
+        var photoResponseMap;
+        var strikeResponseMap;
+        var accountsDataArray;
+        var accountIdArray;
+        var accountsColumnDefs;
+        var minimalGridOptions;
+        var minimalGridDiv;
+        var dignityAccounts;
+
+
+        // ***************** Main Program Entry *****************
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            initAgGrid();
+            loadAccounts();
+            loadPhotoResponses();
+            loadStrikeResponses();
+            loadResponses();
+            displayGrids();
+
+        });
+
+    </script>
+    </body>
+</apex:page>

@@ -1,0 +1,2844 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>true</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Tell your Medi-Cal Story Interview Form</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Alt_City__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt City</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Employer_Name__c</fullName>
+        <description>Facility on form</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Facility on form</inlineHelpText>
+        <label>Alt Employer Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_First_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt First Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Last_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Last Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Street__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Street</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alt_Zip_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Zip Code</label>
+        <length>5</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Any_Question_True__c</fullName>
+        <description>See if any of the questions are answered True.</description>
+        <externalId>false</externalId>
+        <formula>OR(Question_Unable_To_Get_Appt__c, Question_Turned_Away__c, Question_Wait_More_Than_Month__c, Question_Travel_Far__c, Question_Health_Suffered__c)</formula>
+        <inlineHelpText>See if any of the questions are answered True.</inlineHelpText>
+        <label>Any Question True</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Attorney_Story_Lead_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Lead Story Notes</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>11</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Atty_Assmnt_Connection__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Assmnt Connection</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Connected</fullName>
+                    <default>false</default>
+                    <label>Connected</label>
+                </value>
+                <value>
+                    <fullName>Needs Connection</fullName>
+                    <default>false</default>
+                    <label>Needs Connection</label>
+                </value>
+                <value>
+                    <fullName>No Connection Needed</fullName>
+                    <default>false</default>
+                    <label>No Connection Needed</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Assmnt_Content__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Assmnt Content</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Likely Plaintiff</fullName>
+                    <default>false</default>
+                    <label>Likely Plaintiff</label>
+                </value>
+                <value>
+                    <fullName>Possible Paintiff</fullName>
+                    <default>false</default>
+                    <label>Possible Paintiff</label>
+                </value>
+                <value>
+                    <fullName>Story Corps Plus</fullName>
+                    <default>false</default>
+                    <label>Story Corps Plus</label>
+                </value>
+                <value>
+                    <fullName>Story Corps</fullName>
+                    <default>false</default>
+                    <label>Story Corps</label>
+                </value>
+                <value>
+                    <fullName>Neutral</fullName>
+                    <default>false</default>
+                    <label>Neutral</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Assmnt_First_Meeting__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Assmnt First Meeting</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Assmnt_Med_Recs_Release__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Assmnt Med Recs Release</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>On File</fullName>
+                    <default>false</default>
+                    <label>On File</label>
+                </value>
+                <value>
+                    <fullName>Need Release</fullName>
+                    <default>false</default>
+                    <label>Need Release</label>
+                </value>
+                <value>
+                    <fullName>Do Not Need</fullName>
+                    <default>false</default>
+                    <label>Do Not Need</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Assmnt_Performance__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Assmnt Performance</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Strong</fullName>
+                    <default>false</default>
+                    <label>Strong</label>
+                </value>
+                <value>
+                    <fullName>Medium</fullName>
+                    <default>false</default>
+                    <label>Medium</label>
+                </value>
+                <value>
+                    <fullName>Weak</fullName>
+                    <default>false</default>
+                    <label>Weak</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Assmnt_Primary_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The attorney who is the primary contact for this Medi-Cal Story.</description>
+        <externalId>false</externalId>
+        <label>Atty Assmnt Primary Contact</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Medi_Cal_Stories1</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Assmnt_Retainer__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Assmnt Retainer</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>On File</fullName>
+                    <default>false</default>
+                    <label>On File</label>
+                </value>
+                <value>
+                    <fullName>Needs Retainer</fullName>
+                    <default>false</default>
+                    <label>Needs Retainer</label>
+                </value>
+                <value>
+                    <fullName>Need Update</fullName>
+                    <default>false</default>
+                    <label>Need Update</label>
+                </value>
+                <value>
+                    <fullName>Don&apos;t Need</fullName>
+                    <default>false</default>
+                    <label>Don&apos;t Need</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Assmnt_Want_Contact_with_Doc__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Assmnt Want Contact with Doc</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>In Contact</fullName>
+                    <default>false</default>
+                    <label>In Contact</label>
+                </value>
+                <value>
+                    <fullName>TBD</fullName>
+                    <default>false</default>
+                    <label>TBD</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Intake_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Intake Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Intake_Grade_Content__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Intake Grade Content</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>A Plus</fullName>
+                    <default>false</default>
+                    <label>A Plus</label>
+                </value>
+                <value>
+                    <fullName>A</fullName>
+                    <default>false</default>
+                    <label>A</label>
+                </value>
+                <value>
+                    <fullName>A Minus</fullName>
+                    <default>false</default>
+                    <label>A Minus</label>
+                </value>
+                <value>
+                    <fullName>B Plus</fullName>
+                    <default>false</default>
+                    <label>B Plus</label>
+                </value>
+                <value>
+                    <fullName>B</fullName>
+                    <default>false</default>
+                    <label>B</label>
+                </value>
+                <value>
+                    <fullName>B Minus</fullName>
+                    <default>false</default>
+                    <label>B Minus</label>
+                </value>
+                <value>
+                    <fullName>C Plus</fullName>
+                    <default>false</default>
+                    <label>C Plus</label>
+                </value>
+                <value>
+                    <fullName>C</fullName>
+                    <default>false</default>
+                    <label>C</label>
+                </value>
+                <value>
+                    <fullName>C Minus</fullName>
+                    <default>false</default>
+                    <label>C Minus</label>
+                </value>
+                <value>
+                    <fullName>D</fullName>
+                    <default>false</default>
+                    <label>D</label>
+                </value>
+                <value>
+                    <fullName>F</fullName>
+                    <default>false</default>
+                    <label>F</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Intake_Grade_Performance__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Intake Grade Performance</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>A Plus</fullName>
+                    <default>false</default>
+                    <label>A Plus</label>
+                </value>
+                <value>
+                    <fullName>A</fullName>
+                    <default>false</default>
+                    <label>A</label>
+                </value>
+                <value>
+                    <fullName>A Minus</fullName>
+                    <default>false</default>
+                    <label>A Minus</label>
+                </value>
+                <value>
+                    <fullName>B Plus</fullName>
+                    <default>false</default>
+                    <label>B Plus</label>
+                </value>
+                <value>
+                    <fullName>B</fullName>
+                    <default>false</default>
+                    <label>B</label>
+                </value>
+                <value>
+                    <fullName>B Minus</fullName>
+                    <default>false</default>
+                    <label>B Minus</label>
+                </value>
+                <value>
+                    <fullName>C Plus</fullName>
+                    <default>false</default>
+                    <label>C Plus</label>
+                </value>
+                <value>
+                    <fullName>C</fullName>
+                    <default>false</default>
+                    <label>C</label>
+                </value>
+                <value>
+                    <fullName>C Minus</fullName>
+                    <default>false</default>
+                    <label>C Minus</label>
+                </value>
+                <value>
+                    <fullName>D</fullName>
+                    <default>false</default>
+                    <label>D</label>
+                </value>
+                <value>
+                    <fullName>F</fullName>
+                    <default>false</default>
+                    <label>F</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Intake_In_Person_Meeting_Request__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Intake In-Person Meeting Request</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>High Priority</fullName>
+                    <default>false</default>
+                    <label>High Priority</label>
+                </value>
+                <value>
+                    <fullName>Medium Priority</fullName>
+                    <default>false</default>
+                    <label>Medium Priority</label>
+                </value>
+                <value>
+                    <fullName>Low Priority</fullName>
+                    <default>false</default>
+                    <label>Low Priority</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Intake_Meeting_Req_Jan_2017__c</fullName>
+        <description>Atty Intake Meeting Request Jan 2017</description>
+        <externalId>false</externalId>
+        <label>Atty Intake Meeting Req Jan 2017</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>yes</fullName>
+                    <default>false</default>
+                    <label>yes</label>
+                </value>
+                <value>
+                    <fullName>no</fullName>
+                    <default>false</default>
+                    <label>no</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Intake_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Intake Notes</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Atty_Intake_User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The User record for the Attorney modifiyng the Medi-Cal Story.</description>
+        <externalId>false</externalId>
+        <label>Atty Intake User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Medi_Cal_Stories</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Lead_Follow_Up_Appt_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Lead Follow-Up Appt Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Lead_Follow_Up_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Atty Lead Follow-Up Contact</label>
+        <lookupFilter>
+            <active>true</active>
+            <booleanFilter>1 OR 2</booleanFilter>
+            <filterItems>
+                <field>Contact.In_Current_BU__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <filterItems>
+                <field>Contact.Account.Name</field>
+                <operation>startsWith</operation>
+                <value>SEIU</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Medi-Cal Stories (Atty Lead Follow-Up Contact)</relationshipLabel>
+        <relationshipName>Medi_Cal_Stories2</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Lead_Follow_Up_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Lead Follow-Up Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Lead_Follow_Up_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Lead Follow-Up Notes</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>11</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Atty_Lead_Follow_Up_Result__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Lead Follow-Up Result</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Not Home</fullName>
+                    <default>false</default>
+                    <label>Not Home</label>
+                </value>
+                <value>
+                    <fullName>Bad Number</fullName>
+                    <default>false</default>
+                    <label>Bad Number</label>
+                </value>
+                <value>
+                    <fullName>Refused</fullName>
+                    <default>false</default>
+                    <label>Refused</label>
+                </value>
+                <value>
+                    <fullName>Not a Story</fullName>
+                    <default>false</default>
+                    <label>Not a Story</label>
+                </value>
+                <value>
+                    <fullName>Scheduled to Talk</fullName>
+                    <default>false</default>
+                    <label>Scheduled to Talk</label>
+                </value>
+                <value>
+                    <fullName>Appointment Set</fullName>
+                    <default>false</default>
+                    <label>Appointment Set</label>
+                </value>
+                <value>
+                    <fullName>House Visit</fullName>
+                    <default>false</default>
+                    <label>House Visit</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Lead_Follow_Up_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Lead Follow-Up Status</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No Show</fullName>
+                    <default>false</default>
+                    <label>No Show</label>
+                </value>
+                <value>
+                    <fullName>Re-Scheduled</fullName>
+                    <default>false</default>
+                    <label>Re-Scheduled</label>
+                </value>
+                <value>
+                    <fullName>Completed Appointment</fullName>
+                    <default>false</default>
+                    <label>Completed Appointment</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Atty_Lead_Print_Date__c</fullName>
+        <description>What date was the call sheet printed?</description>
+        <externalId>false</externalId>
+        <label>Atty Lead Print Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Lead_Request_Date__c</fullName>
+        <description>For recording when a call sheet was asked to be printed.</description>
+        <externalId>false</externalId>
+        <label>Atty Lead Request Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Atty_Priority__c</fullName>
+        <externalId>false</externalId>
+        <label>Atty Lead Priority</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1A</fullName>
+                    <default>false</default>
+                    <label>1A</label>
+                </value>
+                <value>
+                    <fullName>1st</fullName>
+                    <default>false</default>
+                    <label>1st</label>
+                </value>
+                <value>
+                    <fullName>2nd</fullName>
+                    <default>false</default>
+                    <label>2nd</label>
+                </value>
+                <value>
+                    <fullName>3rd</fullName>
+                    <default>false</default>
+                    <label>3rd</label>
+                </value>
+                <value>
+                    <fullName>Resubmit</fullName>
+                    <default>false</default>
+                    <label>Resubmit</label>
+                </value>
+                <value>
+                    <fullName>Reject</fullName>
+                    <default>false</default>
+                    <label>Reject</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Community_Organizer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Community Organizer</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Medi-Cal Stories (Community Organizer)</relationshipLabel>
+        <relationshipName>Medi_Cal_Stories1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Contact_FID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.FID__c</formula>
+        <label>Contact FID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact_Home_Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.HomePhone</formula>
+        <label>Contact Home Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact_Mobile_Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.MobilePhone</formula>
+        <label>Contact Mobile Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact_Name__c</fullName>
+        <description>Check if contact blank then use Alt Names otherwise use Contact Names</description>
+        <externalId>false</externalId>
+        <formula>if ( or(isnull(Contact__c),isblank(Contact__c)), 
+  Alt_Last_Name__c &amp; &quot;, &quot; &amp; Alt_First_Name__c,
+  Contact__r.LastName &amp; &quot;, &quot; &amp; Contact__r.FirstName)</formula>
+        <inlineHelpText>Check if contact blank then use Alt Names otherwise use Contact Names</inlineHelpText>
+        <label>Interviewee Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Interviewee Contact</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Interviewee Contact</inlineHelpText>
+        <label>Interviewee</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Medi-Cal Stories (Contact)</relationshipLabel>
+        <relationshipName>Medi_Cal_Stories</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Coordinator_Accepted__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(text(Coordinator_Reviewed__c) = &quot;Yes - Accepted&quot;, true, false)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Accepted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Coordinator_Reviewed__c</fullName>
+        <description>Check if reviewed and accepted by coordinator</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if reviewed and accepted by coordinator</inlineHelpText>
+        <label>Coordinator Reviewed</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Not Reviewed</fullName>
+                    <default>true</default>
+                    <label>Not Reviewed</label>
+                </value>
+                <value>
+                    <fullName>Yes - Accepted</fullName>
+                    <default>false</default>
+                    <label>Yes - Accepted</label>
+                </value>
+                <value>
+                    <fullName>Yes - Not Accepted</fullName>
+                    <default>false</default>
+                    <label>Yes - Not Accepted</label>
+                </value>
+                <value>
+                    <fullName>Do Not Review</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Do Not Review</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Coordinator__c</fullName>
+        <description>Check if Interviewer blank default to Coordinator Names</description>
+        <externalId>false</externalId>
+        <formula>if( OR(Interviewer__r.Account.Name  = &apos;SEIU-UHW&apos;, Interviewer__r.Account.Name  = &apos;GOOD HEALTH, GOOD JOBS FOR CALIFORNIA&apos;),
+IF (Organizer__c=&apos;Chante Barnes-Warner&apos;,&apos;Chante Barnes-Warner&apos;,if(isblank(Owner:User.Acting_Manager__c),
+     Owner:User.Manager.FirstName &amp; &apos; &apos; &amp; Owner:User.Manager.LastName,
+     Owner:User.Acting_Manager__r.FirstName &amp; &apos; &apos; &amp; Owner:User.Acting_Manager__r.LastName)),
+  if(AND(Interviewer__r.Account.Name&lt;&gt;&apos;SEIU-UHW&apos;,Division__c=&apos;HOSPITAL&apos;),Owner:User.Acting_Manager__r.FirstName &amp; &apos; &apos; &amp; Owner:User.Acting_Manager__r.LastName,
+  IF ( Owner:User.LastName =&apos;Barnes-Warner&apos;,&apos;Chante Barnes-Warner&apos;,
+	Interviewer__r.Account.Coordinator__r.FirstName &amp; &apos; &apos; &amp; Interviewer__r.Account.Coordinator__r.LastName)
+)
+)</formula>
+        <inlineHelpText>Check if Interviewer blank default to Coordinator Names</inlineHelpText>
+        <label>Coordinator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Count_Me_In__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Yes! Count me in. I want to help fix Medi-Cal</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Yes! Count me in. I want to help fix Medi-Cal</inlineHelpText>
+        <label>Count Me In</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>County__c</fullName>
+        <externalId>false</externalId>
+        <label>County</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Alameda</fullName>
+                    <default>false</default>
+                    <label>Alameda</label>
+                </value>
+                <value>
+                    <fullName>Alpine</fullName>
+                    <default>false</default>
+                    <label>Alpine</label>
+                </value>
+                <value>
+                    <fullName>Amador</fullName>
+                    <default>false</default>
+                    <label>Amador</label>
+                </value>
+                <value>
+                    <fullName>Butte</fullName>
+                    <default>false</default>
+                    <label>Butte</label>
+                </value>
+                <value>
+                    <fullName>Calaveras</fullName>
+                    <default>false</default>
+                    <label>Calaveras</label>
+                </value>
+                <value>
+                    <fullName>Colusa</fullName>
+                    <default>false</default>
+                    <label>Colusa</label>
+                </value>
+                <value>
+                    <fullName>Contra Costa</fullName>
+                    <default>false</default>
+                    <label>Contra Costa</label>
+                </value>
+                <value>
+                    <fullName>Del Norte</fullName>
+                    <default>false</default>
+                    <label>Del Norte</label>
+                </value>
+                <value>
+                    <fullName>El Dorado</fullName>
+                    <default>false</default>
+                    <label>El Dorado</label>
+                </value>
+                <value>
+                    <fullName>Fresno</fullName>
+                    <default>false</default>
+                    <label>Fresno</label>
+                </value>
+                <value>
+                    <fullName>Glenn</fullName>
+                    <default>false</default>
+                    <label>Glenn</label>
+                </value>
+                <value>
+                    <fullName>Humboldt</fullName>
+                    <default>false</default>
+                    <label>Humboldt</label>
+                </value>
+                <value>
+                    <fullName>Imperial</fullName>
+                    <default>false</default>
+                    <label>Imperial</label>
+                </value>
+                <value>
+                    <fullName>Inyo</fullName>
+                    <default>false</default>
+                    <label>Inyo</label>
+                </value>
+                <value>
+                    <fullName>Kern</fullName>
+                    <default>false</default>
+                    <label>Kern</label>
+                </value>
+                <value>
+                    <fullName>Kings</fullName>
+                    <default>false</default>
+                    <label>Kings</label>
+                </value>
+                <value>
+                    <fullName>Lake</fullName>
+                    <default>false</default>
+                    <label>Lake</label>
+                </value>
+                <value>
+                    <fullName>Lassen</fullName>
+                    <default>false</default>
+                    <label>Lassen</label>
+                </value>
+                <value>
+                    <fullName>Los Angeles</fullName>
+                    <default>false</default>
+                    <label>Los Angeles</label>
+                </value>
+                <value>
+                    <fullName>Madera</fullName>
+                    <default>false</default>
+                    <label>Madera</label>
+                </value>
+                <value>
+                    <fullName>Marin</fullName>
+                    <default>false</default>
+                    <label>Marin</label>
+                </value>
+                <value>
+                    <fullName>Mariposa</fullName>
+                    <default>false</default>
+                    <label>Mariposa</label>
+                </value>
+                <value>
+                    <fullName>Mendocino</fullName>
+                    <default>false</default>
+                    <label>Mendocino</label>
+                </value>
+                <value>
+                    <fullName>Merced</fullName>
+                    <default>false</default>
+                    <label>Merced</label>
+                </value>
+                <value>
+                    <fullName>Modoc</fullName>
+                    <default>false</default>
+                    <label>Modoc</label>
+                </value>
+                <value>
+                    <fullName>Mono</fullName>
+                    <default>false</default>
+                    <label>Mono</label>
+                </value>
+                <value>
+                    <fullName>Monterey</fullName>
+                    <default>false</default>
+                    <label>Monterey</label>
+                </value>
+                <value>
+                    <fullName>Napa</fullName>
+                    <default>false</default>
+                    <label>Napa</label>
+                </value>
+                <value>
+                    <fullName>Nevada</fullName>
+                    <default>false</default>
+                    <label>Nevada</label>
+                </value>
+                <value>
+                    <fullName>Orange</fullName>
+                    <default>false</default>
+                    <label>Orange</label>
+                </value>
+                <value>
+                    <fullName>Placer</fullName>
+                    <default>false</default>
+                    <label>Placer</label>
+                </value>
+                <value>
+                    <fullName>Plumas</fullName>
+                    <default>false</default>
+                    <label>Plumas</label>
+                </value>
+                <value>
+                    <fullName>Riverside</fullName>
+                    <default>false</default>
+                    <label>Riverside</label>
+                </value>
+                <value>
+                    <fullName>Sacramento</fullName>
+                    <default>false</default>
+                    <label>Sacramento</label>
+                </value>
+                <value>
+                    <fullName>San Benito</fullName>
+                    <default>false</default>
+                    <label>San Benito</label>
+                </value>
+                <value>
+                    <fullName>San Bernardino</fullName>
+                    <default>false</default>
+                    <label>San Bernardino</label>
+                </value>
+                <value>
+                    <fullName>San Diego</fullName>
+                    <default>false</default>
+                    <label>San Diego</label>
+                </value>
+                <value>
+                    <fullName>San Francisco</fullName>
+                    <default>false</default>
+                    <label>San Francisco</label>
+                </value>
+                <value>
+                    <fullName>San Joaquin</fullName>
+                    <default>false</default>
+                    <label>San Joaquin</label>
+                </value>
+                <value>
+                    <fullName>San Luis Obispo</fullName>
+                    <default>false</default>
+                    <label>San Luis Obispo</label>
+                </value>
+                <value>
+                    <fullName>San Mateo</fullName>
+                    <default>false</default>
+                    <label>San Mateo</label>
+                </value>
+                <value>
+                    <fullName>Santa Barbara</fullName>
+                    <default>false</default>
+                    <label>Santa Barbara</label>
+                </value>
+                <value>
+                    <fullName>Santa Clara</fullName>
+                    <default>false</default>
+                    <label>Santa Clara</label>
+                </value>
+                <value>
+                    <fullName>Santa Cruz</fullName>
+                    <default>false</default>
+                    <label>Santa Cruz</label>
+                </value>
+                <value>
+                    <fullName>Shasta</fullName>
+                    <default>false</default>
+                    <label>Shasta</label>
+                </value>
+                <value>
+                    <fullName>Sierra</fullName>
+                    <default>false</default>
+                    <label>Sierra</label>
+                </value>
+                <value>
+                    <fullName>Siskiyou</fullName>
+                    <default>false</default>
+                    <label>Siskiyou</label>
+                </value>
+                <value>
+                    <fullName>Solano</fullName>
+                    <default>false</default>
+                    <label>Solano</label>
+                </value>
+                <value>
+                    <fullName>Sonoma</fullName>
+                    <default>false</default>
+                    <label>Sonoma</label>
+                </value>
+                <value>
+                    <fullName>Stanislaus</fullName>
+                    <default>false</default>
+                    <label>Stanislaus</label>
+                </value>
+                <value>
+                    <fullName>Sutter</fullName>
+                    <default>false</default>
+                    <label>Sutter</label>
+                </value>
+                <value>
+                    <fullName>Tehama</fullName>
+                    <default>false</default>
+                    <label>Tehama</label>
+                </value>
+                <value>
+                    <fullName>Trinity</fullName>
+                    <default>false</default>
+                    <label>Trinity</label>
+                </value>
+                <value>
+                    <fullName>Tulare</fullName>
+                    <default>false</default>
+                    <label>Tulare</label>
+                </value>
+                <value>
+                    <fullName>Tuolumne</fullName>
+                    <default>false</default>
+                    <label>Tuolumne</label>
+                </value>
+                <value>
+                    <fullName>Ventura</fullName>
+                    <default>false</default>
+                    <label>Ventura</label>
+                </value>
+                <value>
+                    <fullName>Yolo</fullName>
+                    <default>false</default>
+                    <label>Yolo</label>
+                </value>
+                <value>
+                    <fullName>Yuba</fullName>
+                    <default>false</default>
+                    <label>Yuba</label>
+                </value>
+                <value>
+                    <fullName>Out of State</fullName>
+                    <default>false</default>
+                    <label>Out of State</label>
+                </value>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                    <label>Unknown</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Division_Goal__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>CASE( Division__c, &quot;KAISER&quot;, 609, &quot;HOSPITAL&quot;, 379,&quot;COMMUNITY&quot;,630,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Division Goal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF
+(TEXT(Interviewer__r.Division_Type__c)=&quot;Staff&quot;,
+ CASE(UPPER(Interviewer__r.Department), &quot;COMMUNITY OUTREACH&quot;, &quot;COMMUNITY&quot;, 
+    &quot;KAISER&quot;, UPPER(Interviewer__r.Department),
+	&quot;HOSPITAL&quot;,UPPER(Interviewer__r.Department), &quot;OTHER&quot;),  
+if (CONTAINS(Interviewer__r.Account.Name, &quot;KAISER&quot;), &quot;KAISER&quot;,
+UPPER(TEXT(Interviewer__r.Division_Type__c)
+)
+)
+)</formula>
+        <label>Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Dummy_Story__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This is use for organizer without stories;use for report;</description>
+        <externalId>false</externalId>
+        <label>Dummy Story</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Employer_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Interviewer__r.Account.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Interviewer Facility</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Goal_Current__c</fullName>
+        <description>needed for report;</description>
+        <externalId>false</externalId>
+        <label>Goal-Current</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Goal_Pevious__c</fullName>
+        <description>needed for report;</description>
+        <externalId>false</externalId>
+        <label>Goal-Pevious</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Google_Map__c</fullName>
+        <externalId>false</externalId>
+        <formula>IMAGE(&quot;https://maps.googleapis.com/maps/api/staticmap?center=&quot; +  Alt_Street__c + &quot;,&quot; +  Alt_City__c + &quot;,CA,&quot; +  Alt_Zip_Code__c + &quot;&amp;zoom=13&amp;size=450x450&amp;markers=color:purple|&quot; + Alt_Street__c + &quot;,&quot; + Alt_City__c  + &quot;,&quot; + Alt_City__c + &quot;,CA,&quot; +  Alt_Zip_Code__c + &quot;&amp;sensor=false&quot;
+, &quot;No map available&quot;, 450, 450)</formula>
+        <label>Google Map</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Have_Kidney_Disease__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF(CONTAINS(TEXT(Kidney_Disease__c),&quot;Yes&quot;), TRUE, FALSE)</formula>
+        <label>Dialysis</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Home_Phone__c</fullName>
+        <description>Phone is for home?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Phone is for home?</inlineHelpText>
+        <label>Home Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Hospital_Goal__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AND( Division__c =&quot;HOSPITAL&quot;, New_Goal__c &gt; 0), New_Goal__c , 21)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Hospital Goal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Hospital_Team__c</fullName>
+        <description>This is auto updates by workflow.</description>
+        <externalId>false</externalId>
+        <label>Hospital Coordinator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>South - John&apos;s Team</fullName>
+                    <default>false</default>
+                    <label>South - John&apos;s Team</label>
+                </value>
+                <value>
+                    <fullName>South - Mali&apos;s Team</fullName>
+                    <default>false</default>
+                    <label>South - Mali&apos;s Team</label>
+                </value>
+                <value>
+                    <fullName>North - Salvador&apos;s Team</fullName>
+                    <default>false</default>
+                    <label>North - Salvador&apos;s Team</label>
+                </value>
+                <value>
+                    <fullName>North - Jackie&apos;s Team</fullName>
+                    <default>false</default>
+                    <label>North - Jackie&apos;s Team</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Interviewee_City__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Alt_City__c) ,
+    if(isblank( Contact__r.MailingCity ),
+       if (isblank( Contact__r.Account.ShippingCity),  Contact__r.Account.BillingCity, Contact__r.Account.ShippingCity),
+    Contact__r.MailingCity),
+Alt_City__c)</formula>
+        <label>Interviewee City</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interviewee_Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( IsMember__c=TRUE,  Text(Contact__r.Division_Type__c), &quot;None&quot;)</formula>
+        <label>Interviewee Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interviewee_Facility__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( IsMember__c=TRUE,   Contact__r.Account.Name ,  Alt_Employer_Name__c )</formula>
+        <label>Interviewee Facility</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interviewee_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( IsMember__c=TRUE, &quot;Member&quot;, &quot;Non-Member&quot;)</formula>
+        <label>Interviewee Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interviewer_FID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Interviewer__r.FID__c</formula>
+        <label>Interviewer FID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interviewer_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Interviewer__r.Contact_Name__c</formula>
+        <label>Interviewer Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interviewer__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>Contact information for interviewer</description>
+        <externalId>false</externalId>
+        <label>Interviewer</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Medi-Cal Stories</relationshipLabel>
+        <relationshipName>MediCAL_Stories</relationshipName>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>IsMember__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR(TEXT(Contact__r.Division_Type__c)=&apos;Kaiser&apos;,TEXT(Contact__r.Division_Type__c)=&apos;Hospital&apos;), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>IsMember</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Kidney_Disease__c</fullName>
+        <description>Do you have kidney disease and/or need dialysis?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Do you have kidney disease and/or need dialysis?</inlineHelpText>
+        <label>Kidney Disease</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>Yes - Family</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>Yes - Family</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Language_Other__c</fullName>
+        <externalId>false</externalId>
+        <label>Language Other</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Languages__c</fullName>
+        <description>Languages Spoken</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Languages Spoken</inlineHelpText>
+        <label>Languages</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>English</fullName>
+                    <default>false</default>
+                    <label>English</label>
+                </value>
+                <value>
+                    <fullName>Spanish</fullName>
+                    <default>false</default>
+                    <label>Spanish</label>
+                </value>
+                <value>
+                    <fullName>Chinese</fullName>
+                    <default>false</default>
+                    <label>Chinese</label>
+                </value>
+                <value>
+                    <fullName>Russian</fullName>
+                    <default>false</default>
+                    <label>Russian</label>
+                </value>
+                <value>
+                    <fullName>Hmong</fullName>
+                    <default>false</default>
+                    <label>Hmong</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Leader_Role__c</fullName>
+        <externalId>false</externalId>
+        <label>Leader Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Community Team Leader</fullName>
+                    <default>false</default>
+                    <label>Community Team Leader</label>
+                </value>
+                <value>
+                    <fullName>Community Leader</fullName>
+                    <default>false</default>
+                    <label>Community Leader</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>MC_Last_5_Ys__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>MediCal_Last_5_Years__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>MC Last 5 Ys.</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>MediCal_Last_5_Years__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Have you or a family member had Medi-Cal in the last 5 years?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Have you or a family member had Medi-Cal in the last 5 years?</inlineHelpText>
+        <label>Medi-Cal Last 5 Years</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Medi_Cal_Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(County__c, 
+&apos;Orange&apos;, &apos;South&apos;, 
+&apos;Kern&apos;, &apos;Central&apos;, 
+&apos;Fresno&apos;, &apos;Central&apos;, 
+&apos;Alameda&apos;, &apos;Bay Area&apos;, 
+&apos;Contra Costa&apos;, &apos;Bay Area&apos;, 
+&apos;Santa Clara&apos;, &apos;Bay Area&apos;, 
+&apos;Sonoma&apos;, &apos;Bay Area&apos;, 
+&apos;San Francisco&apos;, &apos;Bay Area&apos;, 
+&apos;San Mateo&apos;, &apos;Bay Area&apos;, 
+&apos;Napa&apos;, &apos;Bay Area&apos;, 
+&apos;Solano&apos;, &apos;Bay Area&apos;, 
+&apos;Monterey&apos;, &apos;Bay Area&apos;, 
+&apos;Santa Cruz&apos;, &apos;Bay Area&apos;, 
+&apos;Marin&apos;, &apos;Bay Area&apos;, 
+&apos;Sutter&apos;, &apos;Sacramento&apos;,
+&apos;Butte&apos;, &apos;Sacramento&apos;,
+&apos;Placer&apos;, &apos;Sacramento&apos;,
+&apos;Riverside&apos;, &apos;South&apos;, 
+&apos;San Bernardino&apos;, &apos;South&apos;, 
+&apos;Sacramento&apos;, &apos;Sacramento&apos;, 
+&apos;El Dorado&apos;, &apos;Sacramento&apos;,
+&apos;San Joaquin&apos;, &apos;Sacramento&apos;, 
+&apos;Yolo&apos;, &apos;Sacramento&apos;, 
+&apos;Amador&apos;, &apos;Sacramento&apos;, 
+&apos;Stanislaus&apos;, &apos;Sacramento&apos;, 
+&apos;Los Angeles&apos;, &apos;South&apos;,
+&apos;San Diego&apos;, &apos;South&apos;,
+&apos;San Luis Obispo&apos;, &apos;South&apos;,
+&apos;Santa Barbara&apos;, &apos;South&apos;,
+&apos;Imperial&apos;, &apos;South&apos;,
+&apos;Ventura&apos;, &apos;South&apos;,
+&apos;San Benito&apos;, &apos;Central&apos;,
+&apos;Kings&apos;, &apos;Central&apos;,
+&apos;Tulare&apos;, &apos;Central&apos;,
+&apos;Merced&apos;, &apos;Central&apos;,
+&apos;Tuolumne&apos;, &apos;Central&apos;,
+&apos;Mariposa&apos;, &apos;Central&apos;,
+&apos;Madera&apos;, &apos;Central&apos;,
+&apos;Lake&apos;, &apos;North&apos;,
+&apos;Mendocino&apos;, &apos;North&apos;,
+&apos;Siskiyou&apos;, &apos;North&apos;,
+&apos;Tehama&apos;, &apos;North&apos;,
+&apos;Shasta&apos;, &apos;North&apos;,
+&apos;Humboldt&apos;, &apos;North&apos;,
+&apos;Trinity&apos;, &apos;North&apos;,
+&apos;Glenn&apos;, &apos;North&apos;,
+&apos;Plumas&apos;, &apos;North&apos;,
+&apos;Sierra&apos;, &apos;North&apos;,
+&apos;Nevada&apos;, &apos;North&apos;,
+&apos;Other&apos;
+)</formula>
+        <label>Medi-Cal Region</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Missed_Data_Entry__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Missed Data Entry field for the team that is auditing the paper forms.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Missed Data Entry field for the team that is auditing the paper forms.</inlineHelpText>
+        <label>Missed Data Entry</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Mobile_Phone__c</fullName>
+        <description>Phone is a cell?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Phone is a cell?</inlineHelpText>
+        <label>Mobile Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>New_Goal__c</fullName>
+        <externalId>false</externalId>
+        <label>New Goal</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Not_Accepted__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(Coordinator_Reviewed__c) = &quot;Yes - Not Accepted&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Not Accptd</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Not_Reviewed__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF(AND(TEXT(Coordinator_Reviewed__c) = &quot;Not Reviewed&quot;, Dummy_Story__c =FALSE), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>To Review</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Number_Questions_True__c</fullName>
+        <description>Number of Questions answered as True</description>
+        <externalId>false</externalId>
+        <formula>IF( Question_Unable_To_Get_Appt__c , 1, 0) 
++ IF( Question_Turned_Away__c, 1, 0) 
++ IF( Question_Wait_More_Than_Month__c, 1, 0)
++ IF( Question_Travel_Far__c, 1, 0)
++ IF( Question_Health_Suffered__c, 1, 0)</formula>
+        <inlineHelpText>Number of Questions answered as True</inlineHelpText>
+        <label>Number Questions True</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Org_Goal__c</fullName>
+        <description>workaround needed for reporting;</description>
+        <externalId>false</externalId>
+        <label>Org Goal</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Organizer__c</fullName>
+        <description>Check if Interviewer is blank otherwise default to Organizer names</description>
+        <externalId>false</externalId>
+        <formula>if( OR(Interviewer__r.Account.Name = &apos;SEIU-UHW&apos;, Interviewer__r.Account.Name = &apos;GOOD HEALTH, GOOD JOBS FOR CALIFORNIA&apos;,Interviewer__r.Account.Name = &apos;KAISER-SOUTH BAY&apos;),
+  Owner:User.FirstName &amp; &apos; &apos; &amp;  Owner:User.LastName,
+  if( Division__c = &apos;COMMUNITY&apos;,  Community_Organizer__r.FirstName &amp; &apos; &apos; &amp; Community_Organizer__r.LastName  ,
+    Interviewer__r.Account.Organizer_1__r.FirstName &amp; &apos; &apos; &amp; Interviewer__r.Account.Organizer_1__r.LastName
+  )
+)</formula>
+        <inlineHelpText>Check if Interviewer is blank otherwise default to Organizer names</inlineHelpText>
+        <label>Organizer</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Program_Review_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Program Review Comments</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>11</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Question_Health_Suffered__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Has your health or a family member’s health suffered because you were unable to get the care you needed through Medi-Cal?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Has your health or a family member’s health suffered because you were unable to get the care you needed through Medi-Cal?</inlineHelpText>
+        <label>Health Suffered</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Question_Travel_Far__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Have you or your family member with Medi-Cal ever had to leave the U.S. or travel more than 30 minutes/10 miles to get care?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Have you or your family member with Medi-Cal ever had to leave the U.S. or travel more than 30 minutes/10 miles to get care?</inlineHelpText>
+        <label>Travel Far</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Question_Turned_Away__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Have you or a family member ever been turned away by a hospital or clinic because you were a Medi-Cal beneficiary?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Have you or a family member ever been turned away by a hospital or clinic because you were a Medi-Cal beneficiary?</inlineHelpText>
+        <label>Turned Away</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Question_Unable_To_Get_Appt__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Have you or a family member with Medi-Cal ever been unable to get an appointment to see a doctor or specialist?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Have you or a family member with Medi-Cal ever been unable to get an appointment to see a doctor or specialist?</inlineHelpText>
+        <label>Unable To Get Appt</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Question_Wait_More_Than_Month__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Have you or a family member with Medi-Cal ever waited more than a month to get care for a medical need?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Have you or a family member with Medi-Cal ever waited more than a month to get care for a medical need?</inlineHelpText>
+        <label>Wait More Than Month</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Regional_Director__c</fullName>
+        <externalId>false</externalId>
+        <formula>If( Interviewer__r.Account.Name = &apos;SEIU-UHW&apos;,
+Owner:User.Field_Director_Name__c,
+Interviewer__r.Account.Regional_Director__r.FirstName &amp; &quot; &quot; &amp; Interviewer__r.Account.Regional_Director__r.LastName)</formula>
+        <label>Regional Director</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Reject__c</fullName>
+        <description>Attorney Priority</description>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(Atty_Priority__c)=&quot;Reject&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Reject</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Resubmit__c</fullName>
+        <description>Attorney Priority</description>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(Atty_Priority__c)=&quot;Resubmit&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Resubmit</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Story_Best_Time_To_Contact__c</fullName>
+        <description>Your story may help expose the Medi-Cal crisis and save lives.
+When are the best days and times to reach you to learn more?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Your story may help expose the Medi-Cal crisis and save lives.
+When are the best days and times to reach you to learn more?</inlineHelpText>
+        <label>Best Time To Contact</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Story_Hope_To_Achieve__c</fullName>
+        <description>What do you hope to achieve by sharing your story?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>What do you hope to achieve by sharing your story?</inlineHelpText>
+        <label>Hope To Achieve</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Story_Original_Health_Problem__c</fullName>
+        <description>What was the original health problem you were seeking treatment for under Medi-Cal?</description>
+        <externalId>false</externalId>
+        <inlineHelpText>What was the original health problem you were seeking treatment for under Medi-Cal?</inlineHelpText>
+        <label>Original Health Problem</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Story_Problems_From_No_Care__c</fullName>
+        <description>What problems did you have as a result of not getting care when you needed it?
+(How did it negatively affect your health, pain, sleep, family, work, etc.?)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>What problems did you have as a result of not getting care when you needed it?
+(How did it negatively affect your health, pain, sleep, family, work, etc.?)</inlineHelpText>
+        <label>Problems From No Care</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Story_Tried_To_Get_Care__c</fullName>
+        <description>What happened when you tried to get care through Medi-Cal? (How long did you wait for an appointment? Which clinics, doctors or hospitals did you go to? How far did you travel?)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>What happened when you tried to get care through Medi-Cal? (How long did you wait for an appointment? Which clinics, doctors or hospitals did you go to? How far did you travel?)</inlineHelpText>
+        <label>Tried To Get Care</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Unduplicated_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unduplicated Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wk1_Div_Goal__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>CASE( Division__c, &quot;KAISER&quot;, 56, &quot;HOSPITAL&quot;, 28,&quot;COMMUNITY&quot;,60,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk1 Div Goal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wk2_Accepted__c</fullName>
+        <description>accepted stories for week 2;use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF( AND(AND(DATEVALUE(CreatedDate) &gt;= DATE(2016,7,25),DATEVALUE(CreatedDate) &lt;= DATE(2016,7,31)), Coordinator_Accepted__c =TRUE), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk2 Accepted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Wk2_Div_Goal__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>CASE( Division__c, &quot;KAISER&quot;, 140, &quot;HOSPITAL&quot;, 94,&quot;COMMUNITY&quot;,150,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk2 Div Goal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wk3_Accepted__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF( AND(AND(DATEVALUE(CreatedDate) &gt;= DATE(2016,8,1),DATEVALUE(CreatedDate) &lt;= DATE(2016,8,7)), Coordinator_Accepted__c =TRUE), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk3 Accepted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Wk3_Div_Goal__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>CASE( Division__c, &quot;KAISER&quot;, 252, &quot;HOSPITAL&quot;, 100,&quot;COMMUNITY&quot;,270,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk3 Div Goal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wk4_Accepted__c</fullName>
+        <description>accepted stories for week 4; use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF( AND(AND(DATEVALUE(CreatedDate) &gt;= DATE(2016,8,8),DATEVALUE(CreatedDate) &lt;= DATE(2016,8,14)), Coordinator_Accepted__c =TRUE), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk4 Accepted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Wk4_Div_Goal__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>CASE( Division__c, &quot;KAISER&quot;, 390, &quot;HOSPITAL&quot;, 206,&quot;COMMUNITY&quot;,390,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk4 Div Goal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wk5_Accepted__c</fullName>
+        <description>accepted stories for week 5; use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF( AND(AND(DATEVALUE(CreatedDate) &gt;= DATE(2016,8,15),DATEVALUE(CreatedDate) &lt;= DATE(2016,8,21)), Coordinator_Accepted__c =TRUE), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk5 Accepted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Wk5_Div_Goal__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>CASE( Division__c, &quot;KAISER&quot;, 510, &quot;HOSPITAL&quot;, 286,&quot;COMMUNITY&quot;,510,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk5 Div Goal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wk6_Accepted__c</fullName>
+        <description>accepted stories for week 6; use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF( AND(AND(DATEVALUE(CreatedDate) &gt;= DATE(2016,8,22),DATEVALUE(CreatedDate) &lt;= DATE(2016,8,28)), Coordinator_Accepted__c =TRUE), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk6 Accepted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Wk6_Div_Goal__c</fullName>
+        <description>use for report;</description>
+        <externalId>false</externalId>
+        <formula>CASE( Division__c, &quot;KAISER&quot;, 609, &quot;HOSPITAL&quot;, 379,&quot;COMMUNITY&quot;,630,0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk6 Div Goal</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>X1A__c</fullName>
+        <description>Atty Priority</description>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(Atty_Priority__c)=&quot;1A&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>1A</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>X1st__c</fullName>
+        <description>Atty Priority</description>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(Atty_Priority__c)=&quot;1st&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>1st</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>X2nd__c</fullName>
+        <description>Atty Priority</description>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(Atty_Priority__c)=&quot;2nd&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>2nd</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>X3rd__c</fullName>
+        <description>Atty Priority</description>
+        <externalId>false</externalId>
+        <formula>IF(TEXT(Atty_Priority__c)=&quot;3rd&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>3rd</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>wk1_Accepted__c</fullName>
+        <description>accepted stories for week 1;use for report;</description>
+        <externalId>false</externalId>
+        <formula>IF( AND(AND(DATEVALUE(CreatedDate) &gt;= DATE(2016,7,18),DATEVALUE(CreatedDate) &lt;= DATE(2016,7,24)), Coordinator_Accepted__c =TRUE), TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Wk1 Accepted</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Medi-Cal Story</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>MediCal_Last_5_Years__c</columns>
+        <columns>Kidney_Disease__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Interviewer_Name__c</columns>
+        <columns>Division__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>Program_Review_Comments__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>FCH_View</fullName>
+        <columns>NAME</columns>
+        <columns>Medi_Cal_Region__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Interviewer_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Atty_Lead_Follow_Up_Contact__c</columns>
+        <columns>Atty_Lead_Follow_Up_Result__c</columns>
+        <columns>Atty_Lead_Follow_Up_Appt_Date__c</columns>
+        <columns>Atty_Lead_Follow_Up_Status__c</columns>
+        <columns>Atty_Intake_Date__c</columns>
+        <columns>Atty_Intake_Grade_Content__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>notEqual</operation>
+            <value>community</value>
+        </filters>
+        <filters>
+            <field>Atty_Priority__c</field>
+            <operation>contains</operation>
+            <value>1A,1st</value>
+        </filters>
+        <filters>
+            <field>Medi_Cal_Region__c</field>
+            <operation>equals</operation>
+            <value>sacramento</value>
+        </filters>
+        <label>FCH View</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_Atty</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>FCH_View1</fullName>
+        <columns>NAME</columns>
+        <columns>MediCal_Last_5_Years__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Interviewer_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Division__c</columns>
+        <columns>Coordinator_Reviewed__c</columns>
+        <columns>Story_Original_Health_Problem__c</columns>
+        <columns>Story_Problems_From_No_Care__c</columns>
+        <columns>Story_Tried_To_Get_Care__c</columns>
+        <columns>Program_Review_Comments__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Attorney_Story_Lead_Notes__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Coordinator_Reviewed__c</field>
+            <operation>contains</operation>
+            <value>Yes - Accepted</value>
+        </filters>
+        <filters>
+            <field>MediCal_Last_5_Years__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Catha View</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_Atty</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>FCH_View2</fullName>
+        <columns>NAME</columns>
+        <columns>Division__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Interviewer_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Medi_Cal_Region__c</columns>
+        <columns>Atty_Intake_In_Person_Meeting_Request__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Atty_Intake_In_Person_Meeting_Request__c</field>
+            <operation>contains</operation>
+            <value>High Priority,Medium Priority,Low Priority</value>
+        </filters>
+        <label>Tokaji</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Hospital_Reviewers_10_16</fullName>
+        <columns>NAME</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Story_Original_Health_Problem__c</columns>
+        <columns>Story_Tried_To_Get_Care__c</columns>
+        <columns>Story_Problems_From_No_Care__c</columns>
+        <columns>Coordinator_Reviewed__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Atty_Lead_Print_Date__c</columns>
+        <columns>Alt_Zip_Code__c</columns>
+        <columns>Program_Review_Comments__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>contains</operation>
+            <value>hospital</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>9/19/2016 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Coordinator_Accepted__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Hospital Oct. Nov. 2016</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Julie_view</fullName>
+        <columns>NAME</columns>
+        <columns>Division__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Alt_Zip_Code__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Story_Problems_From_No_Care__c</columns>
+        <columns>Atty_Intake_Date__c</columns>
+        <columns>Organizer__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Atty_Priority__c</field>
+            <operation>contains</operation>
+            <value>1A,1st</value>
+        </filters>
+        <filters>
+            <field>Atty_Intake_Grade_Content__c</field>
+            <operation>notContain</operation>
+            <value>A Plus,A,A Minus,B Plus,B,B Minus,C Plus,C,C Minus,D,F</value>
+        </filters>
+        <filters>
+            <field>Coordinator_Reviewed__c</field>
+            <operation>equals</operation>
+            <value>Yes - Accepted</value>
+        </filters>
+        <label>Julie view</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_Atty</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>L_A_meeting_11_2016</fullName>
+        <columns>Contact_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>Alt_City__c</columns>
+        <columns>Alt_Zip_Code__c</columns>
+        <columns>Atty_Assmnt_First_Meeting__c</columns>
+        <columns>Atty_Assmnt_Content__c</columns>
+        <columns>Atty_Intake_In_Person_Meeting_Request__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Atty_Intake_In_Person_Meeting_Request__c</field>
+            <operation>equals</operation>
+            <value>High Priority,Medium Priority,Low Priority</value>
+        </filters>
+        <label>L.A. meeting 11-2016</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_Medi_Cal_Stories</fullName>
+        <columns>NAME</columns>
+        <columns>MediCal_Last_5_Years__c</columns>
+        <columns>Kidney_Disease__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Interviewer_Name__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>Coordinator_Reviewed__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Organizer__c</field>
+            <operation>contains</operation>
+            <value>luisa</value>
+        </filters>
+        <label>My Medi-Cal Stories</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>New_stories_for_Legal_review_JH</fullName>
+        <columns>NAME</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Alt_City__c</columns>
+        <columns>Division__c</columns>
+        <columns>Story_Problems_From_No_Care__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Coordinator_Reviewed__c</field>
+            <operation>equals</operation>
+            <value>Yes - Accepted</value>
+        </filters>
+        <label>New stories for Legal review (JH)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Non_Community_1st_1A_Before_9_19_16</fullName>
+        <columns>NAME</columns>
+        <columns>Medi_Cal_Region__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Interviewer__c</columns>
+        <columns>Division__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Attorney_Story_Lead_Notes__c</columns>
+        <columns>Atty_Lead_Print_Date__c</columns>
+        <columns>Atty_Intake_In_Person_Meeting_Request__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>notEqual</operation>
+            <value>community</value>
+        </filters>
+        <filters>
+            <field>Atty_Priority__c</field>
+            <operation>equals</operation>
+            <value>1A,1st</value>
+        </filters>
+        <filters>
+            <field>Medi_Cal_Region__c</field>
+            <operation>contains</operation>
+            <value>sacramento</value>
+        </filters>
+        <label>Non-Community 1st &amp;1A SACRAMENTO</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_All_Fields_Read</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Non_Community_1st_1A_FRESNO</fullName>
+        <columns>NAME</columns>
+        <columns>Medi_Cal_Region__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Interviewer__c</columns>
+        <columns>Division__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Attorney_Story_Lead_Notes__c</columns>
+        <columns>Atty_Lead_Print_Date__c</columns>
+        <columns>Atty_Lead_Follow_Up_Date__c</columns>
+        <columns>Atty_Lead_Follow_Up_Status__c</columns>
+        <columns>Atty_Intake_In_Person_Meeting_Request__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>notEqual</operation>
+            <value>community</value>
+        </filters>
+        <filters>
+            <field>Atty_Priority__c</field>
+            <operation>equals</operation>
+            <value>1A,1st</value>
+        </filters>
+        <filters>
+            <field>Medi_Cal_Region__c</field>
+            <operation>contains</operation>
+            <value>Central</value>
+        </filters>
+        <label>Non-Community 1st &amp;1A FRESNO</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_All_Fields_Read</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Non_Community_1st_1A_FRESNO1</fullName>
+        <columns>NAME</columns>
+        <columns>Medi_Cal_Region__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Interviewer__c</columns>
+        <columns>Division__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Attorney_Story_Lead_Notes__c</columns>
+        <columns>Atty_Lead_Print_Date__c</columns>
+        <columns>Atty_Lead_Follow_Up_Date__c</columns>
+        <columns>Atty_Lead_Follow_Up_Status__c</columns>
+        <columns>Atty_Intake_In_Person_Meeting_Request__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>notEqual</operation>
+            <value>community</value>
+        </filters>
+        <filters>
+            <field>Atty_Intake_In_Person_Meeting_Request__c</field>
+            <operation>equals</operation>
+            <value>High Priority,Medium Priority,Low Priority</value>
+        </filters>
+        <filters>
+            <field>Medi_Cal_Region__c</field>
+            <operation>contains</operation>
+            <value>Central</value>
+        </filters>
+        <label>Non-Community high &amp; med priority FRESNO</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_All_Fields_Read</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Non_Community_1st_1A_SACRAMENTO</fullName>
+        <columns>NAME</columns>
+        <columns>Medi_Cal_Region__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Interviewer__c</columns>
+        <columns>Division__c</columns>
+        <columns>Attorney_Story_Lead_Notes__c</columns>
+        <columns>Atty_Lead_Print_Date__c</columns>
+        <columns>Atty_Intake_In_Person_Meeting_Request__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>notEqual</operation>
+            <value>community</value>
+        </filters>
+        <filters>
+            <field>Atty_Intake_In_Person_Meeting_Request__c</field>
+            <operation>equals</operation>
+            <value>High Priority,Medium Priority</value>
+        </filters>
+        <filters>
+            <field>Medi_Cal_Region__c</field>
+            <operation>contains</operation>
+            <value>sacramento</value>
+        </filters>
+        <label>Non-Community High and Med Priority SAC</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_All_Fields_Read</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Non_Community_Re_Submits_Before_9_19_16</fullName>
+        <columns>NAME</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Attorney_Story_Lead_Notes__c</columns>
+        <columns>Division__c</columns>
+        <columns>Atty_Lead_Print_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>notEqual</operation>
+            <value>community</value>
+        </filters>
+        <filters>
+            <field>Atty_Priority__c</field>
+            <operation>equals</operation>
+            <value>Resubmit</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>lessThan</operation>
+            <value>9/19/2016 12:00 AM</value>
+        </filters>
+        <label>Non-Community Re-Submits Before 9.19.16</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_All_Fields_Read</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Non_Community_Re_Submits_Before_9_19_161</fullName>
+        <columns>NAME</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Interviewer__c</columns>
+        <columns>Division__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Attorney_Story_Lead_Notes__c</columns>
+        <columns>Atty_Lead_Print_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Division__c</field>
+            <operation>notEqual</operation>
+            <value>community</value>
+        </filters>
+        <filters>
+            <field>Atty_Priority__c</field>
+            <operation>equals</operation>
+            <value>1A,1st</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>lessThan</operation>
+            <value>9/19/2016 12:00 AM</value>
+        </filters>
+        <label>Non-Community 1st &amp;1A Before 9/19/16</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Medi_Cal_Stories_All_Fields_Read</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Potential_Plaintiffs_Already_Met</fullName>
+        <columns>NAME</columns>
+        <columns>Contact__c</columns>
+        <columns>Alt_First_Name__c</columns>
+        <columns>Alt_Last_Name__c</columns>
+        <columns>Atty_Assmnt_Content__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Medi_Cal_Region__c</columns>
+        <columns>Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Atty_Assmnt_Content__c</field>
+            <operation>equals</operation>
+            <value>Likely Plaintiff,Possible Paintiff,Story Corps Plus,Story Corps,Neutral</value>
+        </filters>
+        <label>Potential Plaintiffs Already Met</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>VIP_1As_not_yet_spoken_to</fullName>
+        <columns>NAME</columns>
+        <columns>Division__c</columns>
+        <columns>Regional_Director__c</columns>
+        <columns>Coordinator__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Interviewer__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Alt_Zip_Code__c</columns>
+        <columns>Atty_Priority__c</columns>
+        <columns>Atty_Intake_Meeting_Req_Jan_2017__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Atty_Priority__c</field>
+            <operation>equals</operation>
+            <value>1A</value>
+        </filters>
+        <filters>
+            <field>Atty_Intake_Grade_Content__c</field>
+            <operation>notContain</operation>
+            <value>A Plus,A,A Minus,B Plus,B,B Minus,C Plus,C,C Minus,D,F</value>
+        </filters>
+        <filters>
+            <field>Atty_Intake_Meeting_Req_Jan_2017__c</field>
+            <operation>equals</operation>
+            <value>yes</value>
+        </filters>
+        <label>VIP 1As - No Atty Convo. as of 1.11.17</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>high_med_priority_for_mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Division__c</columns>
+        <columns>Regional_Director__c</columns>
+        <columns>Coordinator__c</columns>
+        <columns>Organizer__c</columns>
+        <columns>Interviewer__c</columns>
+        <columns>Contact_Name__c</columns>
+        <columns>Interviewee_City__c</columns>
+        <columns>Alt_Zip_Code__c</columns>
+        <columns>Atty_Intake_In_Person_Meeting_Request__c</columns>
+        <columns>Atty_Intake_Grade_Content__c</columns>
+        <columns>Atty_Assmnt_First_Meeting__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Atty_Intake_In_Person_Meeting_Request__c</field>
+            <operation>equals</operation>
+            <value>High Priority</value>
+        </filters>
+        <filters>
+            <field>Atty_Assmnt_Content__c</field>
+            <operation>notContain</operation>
+            <value>Likely Plaintiff,Possible Paintiff,Story Corps Plus,Story Corps,Neutral</value>
+        </filters>
+        <label>High Priority for Mtg (no Medium or Low)</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>MS-{000000}</displayFormat>
+        <label>Medi-Cal Story Number</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Medi-Cal Stories</pluralLabel>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Contact_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Interviewee_City__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Employer_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Mobile_Phone__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Home_Phone__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+    <validationRules>
+        <fullName>Must_Enter_Community_Org</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(Division__c  = &quot;COMMUNITY&quot;, ISBLANK( Community_Organizer__c ) )</errorConditionFormula>
+        <errorDisplayField>Community_Organizer__c</errorDisplayField>
+        <errorMessage>Please enter Community Organizer</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Must_Have_Phone</fullName>
+        <active>true</active>
+        <description>Must have cell phone or home phone. Cannot leave blank</description>
+        <errorConditionFormula>OR(ISNULL(Home_Phone__c), ISBLANK( Home_Phone__c )) &amp;&amp; OR(ISNULL(Mobile_Phone__c), ISBLANK( Mobile_Phone__c ))</errorConditionFormula>
+        <errorMessage>Must have Home Phone or Mobile Phone</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_City</fullName>
+        <active>true</active>
+        <description>Make sure there there is non-blank Contact or non-blank Alt City</description>
+        <errorConditionFormula>AND( OR(ISBLANK( Contact__c ) , ISNULL( Contact__c )), 
+OR( ISBLANK( Alt_City__c ) , ISNULL( Alt_City__c )))</errorConditionFormula>
+        <errorMessage>Make sure there there is non-blank Contact or non-blank Alt City</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_Either_Contact_Or_Alt</fullName>
+        <active>true</active>
+        <description>You can have contact/interviewee information or alt information for names and city but not both</description>
+        <errorConditionFormula>NOT( ISBLANK( Contact__c )) 
+&amp;&amp; NOT(ISBLANK( Alt_First_Name__c ))
+||
+NOT( ISBLANK( Contact__c )) 
+&amp;&amp; NOT(ISBLANK( Alt_Last_Name__c ) )</errorConditionFormula>
+        <errorMessage>You can have contact/interviewee information or alt information for names and city but not both</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_First_Name</fullName>
+        <active>true</active>
+        <description>Must have a non-blank Contact or non-blank Alt First Name</description>
+        <errorConditionFormula>OR( ISBLANK( Contact__c ) , ISNULL(Contact__c)) &amp;&amp;  
+OR( ISBLANK( Alt_First_Name__c ) , ISNULL( Alt_First_Name__c ) )</errorConditionFormula>
+        <errorMessage>Must have a non-blank Contact or non-blank Alt First Name</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_Last_Name</fullName>
+        <active>true</active>
+        <description>Make sure there is a non-blank Contact or non-blank Alt Last Name</description>
+        <errorConditionFormula>OR( ISBLANK( Contact__c ) , ISNULL(Contact__c)) &amp;&amp;  
+OR( ISBLANK( Alt_Last_Name__c ) , ISNULL( Alt_Last_Name__c ) )</errorConditionFormula>
+        <errorMessage>Make sure there is a non-blank Contact or non-blank Alt Last Name</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_Story_A</fullName>
+        <active>true</active>
+        <description>Make sure there is something filled out for Story A.</description>
+        <errorConditionFormula>OR( ISBLANK( Story_Original_Health_Problem__c ), ISNULL( Story_Original_Health_Problem__c ))</errorConditionFormula>
+        <errorMessage>Must fill out an answer for Story A</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_Story_B</fullName>
+        <active>true</active>
+        <description>Make sure there is something written down for Story B</description>
+        <errorConditionFormula>OR( ISBLANK(  Story_Tried_To_Get_Care__c  ), ISNULL( Story_Tried_To_Get_Care__c ))</errorConditionFormula>
+        <errorMessage>Must fill out an answer for Story B.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_Story_C</fullName>
+        <active>true</active>
+        <description>Make sure there is an answer put down for Story C</description>
+        <errorConditionFormula>OR( ISBLANK(   Story_Problems_From_No_Care__c   ), ISNULL( Story_Problems_From_No_Care__c ))</errorConditionFormula>
+        <errorMessage>Must fill out an answer for Story C</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_Story_D</fullName>
+        <active>true</active>
+        <description>Make sure there is an answer put down for Story D</description>
+        <errorConditionFormula>OR( ISBLANK( Story_Hope_To_Achieve__c ),   ISNULL(Story_Hope_To_Achieve__c) )</errorConditionFormula>
+        <errorMessage>Must fill out an answer for Story D</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_Story_E</fullName>
+        <active>true</active>
+        <description>Must fill out an answer for Story E</description>
+        <errorConditionFormula>OR( ISBLANK( Story_Best_Time_To_Contact__c ) , ISNULL( Story_Best_Time_To_Contact__c ) )</errorConditionFormula>
+        <errorMessage>Must fill out an answer for Story E</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Validate_Zip_Range</fullName>
+        <active>true</active>
+        <description>Make sure Zip is number between 90001 and 96700</description>
+        <errorConditionFormula>IF (NOT( OR( ISBLANK( Alt_Zip_Code__c ), ISNULL( Alt_Zip_Code__c )) ), 
+IF( ISNUMBER( Alt_Zip_Code__c ) , 
+IF(VALUE( Alt_Zip_Code__c ) &lt; 90001 ||  
+VALUE( Alt_Zip_Code__c ) &gt; 96700, TRUE, FALSE)
+, TRUE), FALSE)</errorConditionFormula>
+        <errorMessage>Make sure Zip is number between 90001 and 96700</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

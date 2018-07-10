@@ -1,0 +1,416 @@
+<apex:page sidebar="false" showHeader="false">
+<apex:includeScript value="{!URLFOR($Resource.June2ndBusList)}"/>
+<div align="center">
+  <font size="+2">June 2nd Buses Report</font>
+
+<script language="JavaScript">
+document.write("<div align=\"center\"><i>Generated " + (new Date()) + "</i></div>");
+</script>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<br>&nbsp;</br>
+<div id="warningDiv"></div>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+var i = 0;
+var LINEBREAKER = "; ";
+var CAPITOL = [38.576787,-121.494982];
+var debugRecord = null;
+try{ 
+
+    var nameAdaMap = new Array();
+
+    var busCaptMap = new Array();    
+
+    var records1 = new Array();
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var query = "select Contact_Name__c, Employer_Name__c, Response_Value__c from Survey_Response__c where Survey_Code__c='J2S' and Employer_Name__c != null";
+    var records = sforce.connection.query(query);
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+      nameAdaMap[(records1[i].Contact_Name__c.trim() + records1[i].Employer_Name__c.trim()).toLowerCase()] = records1[i].Response_Value__c;
+    }
+     
+    
+    
+    var emGeoMap = new Array();
+    var query = "select Name, BillingLatitude, BillingLongitude from Account where Employer_ID__c != null and BillingLatitude!=null";
+    var records = sforce.connection.query(query);
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+        emGeoMap[records1[i].Name] = [records1[i].BillingLatitude, records1[i].BillingLongitude];
+    }
+    
+    var records1 = new Array();
+    var willAttends = 0;
+    for (var i = 0; i < 10; i++) {
+      var query = "select Id, Name, Contact__r.Id, Contact_Name__c, Employer_Name__c, Alt_Person_Type__c, Contact__c, Contact__r.COPE_Pledge__c, Region__c, Response_Value__c, Division__c, Add_Info__c    from Survey_Response__c where ";
+      //query += " (Division__c = \'Hospital\' OR Division__c = \'Kaiser\' OR Division__c = \'Nursing Home\' OR Division__c = \'Home Care\') and ";
+      //query += " Survey_Code__c=\'J2A\' and (Response_Value__c like \'M%\' OR Response_Value__c like \'B%\' OR Response_Value__c like \'R%\'  OR Response_Value__c like \'D%\') and";
+      query += " Survey_Code__c=\'J2A\' and ";
+      query += " (Name like \'%" + i + "\' ";
+      query += " )";
+      query += " limit 2000";
+      
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records'); 
+    
+      //alert("query(" + i + ")=" + query + "\nlength=" +records0.length);
+    
+
+    
+    
+      if (records0.length >= 2000) {
+        alert("Over 2000 records were found in partition " + i + " and these results have been cutoff.  Please contact the Data Group to get resolved.");
+      }
+      records1 = records1.concat(records0);
+    } 
+
+    
+    var busCountMap = new Array();
+    var busAdaCountMap = new Array();
+
+    
+    for(var i=0;i < records1.length; i++){ 
+      debugRecord =records1[i];
+      
+      var responseCode = records1[i].Response_Value__c;
+      if (responseCode != null) { 
+        responseCode = responseCode.trim().toUpperCase().substring(0,1);
+        if (responseCode == "M" || responseCode == "B" || responseCode == "R" || responseCode == "D" || responseCode == "S") {
+          willAttends++;
+        }
+      }
+      
+      
+      if (records1[i].Add_Info__c == null) {
+        records1[i].Add_Info__c = "";
+      }
+      
+      var lat = 0.0;
+      var long = 0.0;
+      if (records1[i].Employer_Name__c != null && records1[i].Employer_Name__c.toLowerCase().indexOf("ihss") > 0 && records1[i].Contact__c != null && records1[i].Contact__r.MailingLatitude != null && records1[i].Contact__r.MailingLongitude != null) {
+        lat = records1[i].Contact__r.MailingLatitude;
+        lon = records1[i].Contact__r.MailingLongitude;
+      } else if (records1[i].Employer_Name__c != null) {
+        if (emGeoMap[records1[i].Employer_Name__c] != null) {
+          lat = emGeoMap[records1[i].Employer_Name__c][0];
+          lon = emGeoMap[records1[i].Employer_Name__c][1];
+        } else {
+          lat = 36.808774;
+          lon = -119.777926;
+          emGeoMap[records1[i].Employer_Name__c] = [lat, lon];
+        }
+      }
+      if (lat != 0.0 && lon != 0.0) {
+        //var nearestBus = getNearestBusStop(records1[i].Employer_Name__c, lat, lon);        
+        //var busId = nearestBus[0];
+        var busId = -1;
+        var isCaptain = false;
+        
+        if (records1[i].Add_Info__c != null && records1[i].Add_Info__c.trim() != "" && records1[i].Add_Info__c != "null") {
+          if (records1[i].Add_Info__c.indexOf("*") >= 0) {
+            isCaptain = true;
+            //alert("Found captain : " + JSON.stringify(records1[i]));
+          }
+          
+          
+          
+          records1[i].Add_Info__c = records1[i].Add_Info__c.replace(/\*/g, "");        
+          busId = parseInt(records1[i].Add_Info__c.trim().substring(0,3));
+
+          if (isCaptain) {
+            if (busCaptMap["bus" + busId] == null) {
+              busCaptMap["bus" + busId] = "";
+            } else {
+              busCaptMap["bus" + busId] = busCaptMap["bus" + busId] + "; ";
+            }
+            busCaptMap["bus" + busId] = busCaptMap["bus" + busId]  + toProperCase(records1[i].Contact_Name__c.trim()) + " (" + toProperCase(records1[i].Employer_Name__c.trim()) + ")";
+          }
+          
+        }
+        
+
+        
+        var rvalue = (records1[i].Response_Value__c.trim().toLowerCase()).substring(0, 1);
+        var bcount = 0;
+        if (busCountMap["bid" + busId + rvalue] != null) {
+          bcount = busCountMap["bid" + busId + rvalue];
+        } 
+        bcount++;
+        busCountMap["bid" + busId  + rvalue] = bcount;
+        
+        
+        var adaCount = 0;
+        if (busAdaCountMap["bid" + busId] != null) {
+          adaCount = busAdaCountMap["bid" + busId];
+        } 
+        var adaKey = (records1[i].Contact_Name__c.trim() + records1[i].Employer_Name__c.trim()).toLowerCase();
+        if (nameAdaMap[adaKey] != null) {
+          adaCount++;
+        }
+        busAdaCountMap["bid" + busId] = adaCount;
+        
+      }
+    }  
+    
+    document.getElementById("warningDiv").innerHTML = "Total Will Attends = " + willAttends;
+    
+    document.write("<table border=\"0\" cellpadding=\"10\">\n");
+    document.write("<tr valign=\"bottom\">\n");  
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Bus Location Number</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">UHW Office</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Distance<br/>from UHW</font></td>\n");            
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Distance<br/>from Capitol</font></td>\n");                
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"25%\"><font size=\"-1\" color=\"white\">Location</font></td>\n");            
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Estimated<br/>Arrival Time</font></td>\n");                
+    //document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"25%\"><font color=\"white\">Other Buses Nearby</font></td>\n");          
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Allocated Spaces</font></td>\n");            
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Affirmative Count</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Reconfirm/<br/>Remind<br/>Count</font></td>\n");     
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Cancel Count</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Wait List<br/>Slotted<br/>Count</font></td>\n");            
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Open Spaces Count</font></td>\n");                
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">Wait List Count</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"5%\"><font size=\"-1\" color=\"white\">ADA Count</font></td>\n");        
+    document.write("<td align=\"center\" bgcolor=\"#481C60\" width=\"10%\"><font size=\"-1\" color=\"white\">Bus Captains</font></td>\n");            
+    document.write("</tr>\n"); 
+
+    document.write("<tr valign=\"top\">\n");  
+    document.write("<td align=\"center\">Unassigned</td>\n");        
+    document.write("<td align=\"center\" >&nbsp;</td>\n");  
+    document.write("<td align=\"center\" >&nbsp;</td>\n");              
+    document.write("<td align=\"center\" >&nbsp;</td>\n");      
+    document.write("<td align=\"left\" >Unassigned to Bus Location<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;</td>\n");            
+    document.write("<td align=\"center\" >&nbsp;</td>\n");     
+        
+    //document.write("<td align=\"center\" >&nbsp;</td>\n");
+     
+    var affCount = 0;
+      if (busCountMap["bid-1a"] != null) {
+        affCount = affCount + busCountMap["bid-1a"];
+      }
+      if (busCountMap["bid-1r"] != null) {
+        affCount = affCount + busCountMap["bid-1r"];
+      }
+      if (busCountMap["bid-1d"] != null) {
+        affCount = affCount + busCountMap["bid-1d"];
+      }
+      if (busCountMap["bid-1m"] != null) {
+        affCount = affCount + busCountMap["bid-1m"];
+      }
+      if (busCountMap["bid-1b"] != null) {
+        affCount = affCount + busCountMap["bid-1b"];
+      } 
+                    
+    document.write("<td align=\"center\">" + "" + "</td>\n");                                            
+    document.write("<td align=\"center\">" + affCount + "</td>\n");        
+    document.write("<td align=\"center\">" + "" + "</td>\n");        
+    document.write("<td align=\"center\">" + "" + "</td>\n");           
+    document.write("<td align=\"center\">" + "" + "</td>\n");        
+    document.write("<td align=\"center\">" + "" + "</td>\n");                    
+    document.write("<td align=\"center\">" + "" + "</td>\n");        
+    document.write("<td align=\"center\">" + "" + "</td>\n");                        
+    document.write("<td align=\"center\">" + "" + "</td>\n");                            
+    document.write("</tr>\n"); 
+
+    document.write("<tr valign=\"top\">\n");  
+    document.write("<td align=\"center\" >0</td>\n");        
+    document.write("<td align=\"center\" >&nbsp;</td>\n");        
+    document.write("<td align=\"center\" >&nbsp;</td>\n");   
+    document.write("<td align=\"center\" >&nbsp;</td>\n");       
+    document.write("<td align=\"left\" >Providing Their Own Transport<br/>&nbsp;<br/>&nbsp;<br/>&nbsp;</td>\n");            
+    document.write("<td align=\"center\" >&nbsp;</td>\n");         
+    //document.write("<td align=\"center\" >&nbsp;</td>\n");
+    
+    var reCount = 0;
+    var affCount = 0;
+      if (busCountMap["bid0a"] != null) {
+        affCount = affCount + busCountMap["bid0a"];
+      }
+      if (busCountMap["bid0r"] != null) {
+        affCount = affCount + busCountMap["bid0r"];
+        reCount = reCount + busCountMap["bid0r"];
+      }
+      if (busCountMap["bid0d"] != null) {
+        affCount = affCount + busCountMap["bid0d"];
+        reCount = reCount + busCountMap["bid0d"];       
+      }
+      if (busCountMap["bid0m"] != null) {
+        affCount = affCount + busCountMap["bid0m"];
+      }
+      if (busCountMap["bid0b"] != null) {
+        affCount = affCount + busCountMap["bid0b"];
+      } 
+
+    document.write("<td align=\"center\">" + "" + "</td>\n");                              
+                    
+    document.write("<td align=\"center\">" + affCount + "</td>\n");        
+    document.write("<td align=\"center\">" + reCount + "</td>\n");      
+    document.write("<td align=\"center\">" + "" + "</td>\n");        
+    document.write("<td align=\"center\">" + "" + "</td>\n");        
+    document.write("<td align=\"center\">" + "" + "</td>\n");        
+    document.write("<td align=\"center\">" + "" + "</td>\n");                    
+    document.write("<td align=\"center\">" + "" + "</td>\n");                        
+    document.write("<td align=\"center\">" + "" + "</td>\n");                            
+    document.write("</tr>\n"); 
+
+    for (var i = 0; i < june2ndBusList.length; i++) {
+      var s = "<tr valign=\"top\">";
+      s+="<td align=\"center\">" + june2ndBusList[i][0] + "</td>";
+      s+="<td>" + toProperCase(june2ndBusList[i][3]) + "</td>";
+      
+      var office2 = june2ndBusList[i][3].trim().toLowerCase();
+      var odist = -1.0;
+      if (office2 == "los angeles") {
+        odist = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], numberBusMap[28][6], numberBusMap[28][7]);
+      } else if (office2 == "fresno") {
+        odist = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], numberBusMap[7][6], numberBusMap[7][7]);
+      } else if (office2 == "sacramento") {
+        odist = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], numberBusMap[62][6], numberBusMap[62][7]);
+      } else if (office2 == "san jose") {
+        odist = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], 37.316338,-121.946655);
+      } else if (office2 == "san francisco") {
+        odist = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], numberBusMap[75][6], numberBusMap[75][7]);
+      } else if (office2 == "stockton") {
+        odist = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], numberBusMap[78][6], numberBusMap[78][7]);
+      } else {
+        //default to Oakland
+        odist = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], numberBusMap[57][6], numberBusMap[57][7]);
+      }
+      
+      s+="<td align=\"center\">" + odist.toFixed(1) + "</td>";
+      
+      
+      var capDist = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], CAPITOL[0], CAPITOL[1]);
+      s+="<td align=\"center\">" + capDist.toFixed(1) + "</td>";
+      
+      s += "<td><a target=\"_BLANK\" href=\"http://maps.apple.com/?ll=" + june2ndBusList[i][6] + "," + june2ndBusList[i][7] + "\">" + june2ndBusList[i][0] + ". " + june2ndBusList[i][1] + LINEBREAKER;
+      s += june2ndBusList[i][4] + LINEBREAKER;            
+      s += june2ndBusList[i][5] + "</a>" + LINEBREAKER;                  
+      s += june2ndBusList[i][8] + LINEBREAKER;         
+      s += "</td>";   
+      
+      var travelTime = (capDist / 48.0) + 0.5;
+      var startTime = parseFloat(june2ndBusList[i][8].substring(0,4).replace(":30", ":50").replace(":","."));
+
+      var arrivalHour = Math.floor(startTime + travelTime);
+      var arrivalMinutes =  Math.floor(((startTime + travelTime) - (arrivalHour)) * 60.0);      
+      var amPm = "am";
+      if (arrivalHour >= 13) {
+        arrivalHour = arrivalHour - 12;
+        amPm = "pm";
+      } else if (arrivalHour >= 12) {
+        amPm = "pm";      
+      }
+      var arrival = arrivalHour + ":" + arrivalMinutes + " " + amPm;
+      if (arrivalMinutes < 10) {
+        arrival = arrivalHour + ":0" + arrivalMinutes + " " + amPm;
+      }
+                                      
+      s+="<td align=\"center\">" + arrival   + "</td>";
+      
+      
+      var allocCount = getAllocatedSpaces(june2ndBusList[i][0]);
+
+      
+      
+      
+      var distanceList = new Array();
+      var distanceMap = new Array();
+      for (var j = 0; j < june2ndBusList.length; j++) {
+        var otherBus = june2ndBusList[j];
+        var distance = distanceInMilesFrom(june2ndBusList[i][6], june2ndBusList[i][7], otherBus[6], otherBus[7]);
+        if (i != j) {
+          while (distanceList.indexOf(distance) >= 0) {
+            distance = distance + 0.0001;
+          }
+          if (distance < 10.0) {
+            distanceList.push(distance);
+            distanceMap[distance] = otherBus;
+          }
+        }
+      }
+      distanceList.sort();
+      var nearby = "";
+      for (var j = 0; j < distanceList.length; j++) {
+        var distance = distanceList[j];
+        var otherBus = distanceMap[distance];
+        if (j > 0) {
+         nearby += "; ";
+        }
+        nearby += "#" + otherBus[0] + ".  " + otherBus[1] + " - " + distance.toFixed(1) + " miles";
+        if (j > 5) {
+          break;
+        }
+      }
+      //s+="<td align=\"left\"><font size=\"-2\">" + nearby  + "</font></td>";
+      s+="<td align=\"center\">" + allocCount + "</td>"; 
+          
+      var affCount = 0;
+      var reCount = 0;
+      if (busCountMap["bid" + june2ndBusList[i][0] + "a"] != null) {
+        affCount = affCount + busCountMap["bid" + june2ndBusList[i][0] + "a"];
+      }
+      if (busCountMap["bid" + june2ndBusList[i][0] + "r"] != null) {
+        affCount = affCount + busCountMap["bid" + june2ndBusList[i][0] + "r"];
+        reCount = reCount + busCountMap["bid" + june2ndBusList[i][0] + "r"];
+      }
+      if (busCountMap["bid" + june2ndBusList[i][0] + "d"] != null) {
+        affCount = affCount + busCountMap["bid" + june2ndBusList[i][0] + "d"];
+        reCount = reCount + busCountMap["bid" + june2ndBusList[i][0] + "d"];        
+      }
+      if (busCountMap["bid" + june2ndBusList[i][0] + "m"] != null) {
+        affCount = affCount + busCountMap["bid" + june2ndBusList[i][0] + "m"];
+      }
+      if (busCountMap["bid" + june2ndBusList[i][0] + "b"] != null) {
+        affCount = affCount + busCountMap["bid" + june2ndBusList[i][0] + "b"];
+      } 
+      var wslottedCount = 0;
+      if (busCountMap["bid" + june2ndBusList[i][0] + "s"] != null) {
+        wslottedCount = wslottedCount + busCountMap["bid" + june2ndBusList[i][0] + "s"];
+      }
+      var waitCount = 0;
+      if (busCountMap["bid" + june2ndBusList[i][0] + "w"] != null) {
+        waitCount = waitCount  + busCountMap["bid" + june2ndBusList[i][0] + "w"];
+      }
+   
+      s+="<td align=\"center\">" + affCount + "</td>";   
+      s+="<td align=\"center\">" + reCount + "</td>";     
+      s+="<td align=\"center\">" + (allocCount - affCount) + "</td>";          
+      s+="<td align=\"center\">" + wslottedCount + "</td>";         
+      s+="<td align=\"center\">" + (allocCount - (affCount + wslottedCount)) + "</td>";               
+      
+      s+="<td align=\"center\">" + waitCount + "</td>";    
+      
+      var adaCount = 0;
+      if (busAdaCountMap["bid" + june2ndBusList[i][0]] != null) {
+        //alert("ADA count for " + june2ndBusList[i][0] + " = " + busAdaCountMap["bid" + june2ndBusList[i][0]]);
+        adaCount = busAdaCountMap["bid" + june2ndBusList[i][0]];
+      }
+      s+="<td align=\"center\">" + adaCount + "</td>";    
+      
+      if (busCaptMap["bus" + june2ndBusList[i][0]] == null) {
+        s+="<td align=\"center\">" + "&nbsp;" + "</td>";    
+      }  else {
+        s+="<td align=\"left\"><font size=\"-2\">" + busCaptMap["bus" + june2ndBusList[i][0]] + "</font></td>"; 
+      }
+      s+="</tr>";
+      document.write(s);
+    }    
+    document.write("</table>\n"); 
+
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(debugRecord)); 
+}
+
+</script>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+</apex:page>

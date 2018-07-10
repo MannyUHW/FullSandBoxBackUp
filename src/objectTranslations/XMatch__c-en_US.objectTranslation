@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>XMatch</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Xmatches</value>
+    </caseValues>
+    <fields>
+        <label><!-- AccountId --></label>
+        <name>AccountId__c</name>
+    </fields>
+    <fields>
+        <label><!-- JobId --></label>
+        <name>JobId__c</name>
+    </fields>
+    <fields>
+        <label><!-- JobQuery --></label>
+        <name>JobQuery__c</name>
+    </fields>
+    <fields>
+        <label><!-- JobStart --></label>
+        <name>JobStart__c</name>
+    </fields>
+    <fields>
+        <label><!-- JobStatus --></label>
+        <name>JobStatus__c</name>
+    </fields>
+    <fields>
+        <label><!-- MatchTarget --></label>
+        <name>MatchTarget__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

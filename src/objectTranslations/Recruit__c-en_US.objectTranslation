@@ -1,0 +1,679 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Recruit</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Recruits</value>
+    </caseValues>
+    <fields>
+        <label><!-- Agent --></label>
+        <name>Agent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Email --></label>
+        <name>Alt_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Employer --></label>
+        <name>Alt_Employer__c</name>
+        <relationshipLabel><!-- Recruits --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Alt First Name --></label>
+        <name>Alt_First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Language --></label>
+        <name>Alt_Language__c</name>
+        <picklistValues>
+            <masterLabel>CANTONESE</masterLabel>
+            <translation><!-- CANTONESE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>CHINESE</masterLabel>
+            <translation><!-- CHINESE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>HMONG</masterLabel>
+            <translation><!-- HMONG --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>MANDARIN</masterLabel>
+            <translation><!-- MANDARIN --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>RUSSIAN</masterLabel>
+            <translation><!-- RUSSIAN --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SPANISH</masterLabel>
+            <translation><!-- SPANISH --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>VIETNAMESE</masterLabel>
+            <translation><!-- VIETNAMESE --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Alt Last Name --></label>
+        <name>Alt_Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Middle Name --></label>
+        <name>Alt_Middle_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Person Type --></label>
+        <name>Alt_Person_Type__c</name>
+        <picklistValues>
+            <masterLabel>Allies</masterLabel>
+            <translation><!-- Allies --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Friends/Family</masterLabel>
+            <translation><!-- Friends/Family --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Yet Union</masterLabel>
+            <translation><!-- Not Yet Union --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pre-member Community</masterLabel>
+            <translation><!-- Pre-member Community --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Pre-member Hospital/Kaiser</masterLabel>
+            <translation><!-- Pre-member Hospital/Kaiser --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Alt Phone --></label>
+        <name>Alt_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Attended --></label>
+        <name>Attended_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Attended Old --></label>
+        <name>Attended__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE Pledge --></label>
+        <name>COPE_Pledge__c</name>
+    </fields>
+    <fields>
+        <label><!-- CS Recruited By --></label>
+        <name>CS_Recruited_By__c</name>
+    </fields>
+    <fields>
+        <label><!-- CS Volunteer --></label>
+        <name>CS_Volunteer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Commit Date --></label>
+        <name>Commit_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Commit --></label>
+        <name>Commit__c</name>
+    </fields>
+    <fields>
+        <help><!-- For Community Only. --></help>
+        <label><!-- Community Organizer --></label>
+        <name>Community_Organizer_Recruited_By__c</name>
+        <relationshipLabel><!-- Recruits (Recruited By Organizer) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- This is a confirmed datetime field short name use for list view. --></help>
+        <label><!-- ConfDt --></label>
+        <name>ConfDt__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is a confirmed field short name use for list view. --></help>
+        <label><!-- Conf --></label>
+        <name>Conf__c</name>
+    </fields>
+    <fields>
+        <label><!-- Confirm Response --></label>
+        <name>Confirm_Response__c</name>
+    </fields>
+    <fields>
+        <label><!-- Confirmed Time --></label>
+        <name>Confirmed_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Confirmed --></label>
+        <name>Confirmed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact Id --></label>
+        <name>Contact_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- The Coordinator or Acting Manager of the UNION REP/ORG. --></help>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+    </fields>
+    <fields>
+        <label><!-- CreditShift --></label>
+        <name>CreditShift__c</name>
+    </fields>
+    <fields>
+        <label><!-- Credit --></label>
+        <name>Credit__c</name>
+        <picklistValues>
+            <masterLabel>Full</masterLabel>
+            <translation><!-- Full --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Half</masterLabel>
+            <translation><!-- Half --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>None</masterLabel>
+            <translation><!-- None --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Department --></label>
+        <name>Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard --></label>
+        <name>Eboard__c</name>
+    </fields>
+    <fields>
+        <label><!-- ElapsedMins --></label>
+        <name>ElapsedMins__c</name>
+    </fields>
+    <fields>
+        <label><!-- ElapsedTime --></label>
+        <name>ElapsedTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer ID --></label>
+        <name>Employer_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer Name --></label>
+        <name>Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer Region --></label>
+        <name>Employer_Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Exempt Staff --></label>
+        <name>Exempt_Staff__c</name>
+    </fields>
+    <fields>
+        <label><!-- FID --></label>
+        <name>FID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Goal --></label>
+        <name>Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Has Contact Record --></label>
+        <name>Has_Contact_Record__c</name>
+    </fields>
+    <fields>
+        <label><!-- Language --></label>
+        <name>Language__c</name>
+    </fields>
+    <fields>
+        <label><!-- Last COPE Payment --></label>
+        <name>Last_COPE_Payment__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is a location field short name use for list view. --></help>
+        <label><!-- Loc --></label>
+        <name>Loc__c</name>
+    </fields>
+    <fields>
+        <label><!-- Location Region --></label>
+        <name>Location_Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Location --></label>
+        <name>Location__c</name>
+        <picklistValues>
+            <masterLabel>Arroyo Grande</masterLabel>
+            <translation><!-- Arroyo Grande --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Bakersfield</masterLabel>
+            <translation><!-- Bakersfield --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Chico</masterLabel>
+            <translation><!-- Chico --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fresno</masterLabel>
+            <translation><!-- Fresno --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fresno GOTV AM</masterLabel>
+            <translation><!-- Fresno GOTV AM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fresno GOTV PM</masterLabel>
+            <translation><!-- Fresno GOTV PM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lancaster</masterLabel>
+            <translation><!-- Lancaster --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lancaster GOTV AM</masterLabel>
+            <translation><!-- Lancaster GOTV AM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lancaster GOTV PM</masterLabel>
+            <translation><!-- Lancaster GOTV PM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Los Angeles</masterLabel>
+            <translation><!-- Los Angeles --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Los Angeles GOTV AM</masterLabel>
+            <translation><!-- Los Angeles GOTV AM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Los Angeles GOTV PM</masterLabel>
+            <translation><!-- Los Angeles GOTV PM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>NONE</masterLabel>
+            <translation><!-- NONE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Oakland</masterLabel>
+            <translation><!-- Oakland --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Oakland GOTV AM</masterLabel>
+            <translation><!-- Oakland GOTV AM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Oakland GOTV PM</masterLabel>
+            <translation><!-- Oakland GOTV PM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Oceanside</masterLabel>
+            <translation><!-- Oceanside --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Orange County</masterLabel>
+            <translation><!-- Orange County --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Redding</masterLabel>
+            <translation><!-- Redding --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Riverside</masterLabel>
+            <translation><!-- Riverside --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sacramento</masterLabel>
+            <translation><!-- Sacramento --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sacramento GOTV AM</masterLabel>
+            <translation><!-- Sacramento GOTV AM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sacramento GOTV PM</masterLabel>
+            <translation><!-- Sacramento GOTV PM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Fernando</masterLabel>
+            <translation><!-- San Fernando --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Francisco</masterLabel>
+            <translation><!-- San Francisco --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Jose</masterLabel>
+            <translation><!-- San Jose --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Jose GOTV AM</masterLabel>
+            <translation><!-- San Jose GOTV AM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Jose GOTV PM</masterLabel>
+            <translation><!-- San Jose GOTV PM --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Santa Rosa</masterLabel>
+            <translation><!-- Santa Rosa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Stockton</masterLabel>
+            <translation><!-- Stockton --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Vallejo</masterLabel>
+            <translation><!-- Vallejo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Ventura</masterLabel>
+            <translation><!-- Ventura --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Name --></label>
+        <name>Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Notes --></label>
+        <name>Notes__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the UNION REP/ORG of Kaiser, Hospital and Community division. --></help>
+        <label><!-- Organizer --></label>
+        <name>Organizer__c</name>
+    </fields>
+    <fields>
+        <help><!-- When the Organizer in the Recruited by (who gets the credit) is not the current Organizer, check this box;This is for Kaiser/Hospital/Community; --></help>
+        <label><!-- Override Organizer --></label>
+        <name>Override_Organizer__c</name>
+    </fields>
+    <fields>
+        <label><!-- PB Date --></label>
+        <name>PB_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- PDI Id --></help>
+        <label><!-- PDI --></label>
+        <name>PDI__c</name>
+    </fields>
+    <fields>
+        <label><!-- Partner Organization --></label>
+        <name>Partner_Organization__c</name>
+    </fields>
+    <fields>
+        <label><!-- Partner --></label>
+        <name>Partner__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone --></label>
+        <name>Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- R-Name --></label>
+        <name>R_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is a field short name use for list view. --></help>
+        <label><!-- RecID --></label>
+        <name>RecID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Record Count --></label>
+        <name>Record_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- RecruitDay --></label>
+        <name>RecruitDay__c</name>
+    </fields>
+    <fields>
+        <label><!-- AgentId --></label>
+        <name>Recruit_Agent__c</name>
+        <relationshipLabel><!-- Recruits --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Recruit Name 2 --></label>
+        <name>Recruit_Name_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Recruit Name --></label>
+        <name>Recruit_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Recruit Status --></label>
+        <name>Recruit_Status__c</name>
+        <picklistValues>
+            <masterLabel>Canceled</masterLabel>
+            <translation><!-- Canceled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Signed Up</masterLabel>
+            <translation><!-- Signed Up --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- If the recruit is not a member or a community, leave this blank. Enter the recruit on the Family/Friends section. --></help>
+        <label><!-- Recruit --></label>
+        <name>Recruit__c</name>
+        <relationshipLabel><!-- Recruits --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Recruited By Eboard --></label>
+        <name>Recruited_By_Eboard__c</name>
+    </fields>
+    <fields>
+        <label><!-- Recruited By FID --></label>
+        <name>Recruited_By_FID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Recruited By Title --></label>
+        <name>Recruited_By_Title__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the person getting the credit. --></help>
+        <label><!-- Recruited By --></label>
+        <name>Recruited_By__c</name>
+        <relationshipLabel><!-- Recruits (Recruited By) --></relationshipLabel>
+    </fields>
+    <fields>
+        <help><!-- Field director of the UNION REP/ORG. --></help>
+        <label><!-- Regional Director --></label>
+        <name>Regional_Director__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is a reminded datetime field short name use for list view. --></help>
+        <label><!-- RemDt --></label>
+        <name>RemDt__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is a reminded field short name use for list view. --></help>
+        <label><!-- Rem --></label>
+        <name>Rem__c</name>
+    </fields>
+    <fields>
+        <label><!-- Remind Response --></label>
+        <name>Remind_Response__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reminded Time --></label>
+        <name>Reminded_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reminded --></label>
+        <name>Reminded__c</name>
+    </fields>
+    <fields>
+        <label><!-- Rep/Org --></label>
+        <name>Rep_Org__c</name>
+    </fields>
+    <fields>
+        <label><!-- Report Tags --></label>
+        <name>Report_Tags__c</name>
+    </fields>
+    <fields>
+        <label><!-- SatTotShift --></label>
+        <name>SatTotShift__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift End --></label>
+        <name>Shift_End__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Start --></label>
+        <name>Shift_Start__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Status --></label>
+        <name>Shift_Status__c</name>
+        <picklistValues>
+            <masterLabel>Completed</masterLabel>
+            <translation><!-- Completed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Show</masterLabel>
+            <translation><!-- No Show --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Partial</masterLabel>
+            <translation><!-- Partial --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Shift --></label>
+        <name>Shift__c</name>
+        <picklistValues>
+            <masterLabel>Afternoon</masterLabel>
+            <translation><!-- Afternoon --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Evening</masterLabel>
+            <translation><!-- Evening --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Morning</masterLabel>
+            <translation><!-- Morning --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Signed In Time --></label>
+        <name>Signed_In_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Signed In --></label>
+        <name>Signed_In__c</name>
+    </fields>
+    <fields>
+        <label><!-- Signed Out Time --></label>
+        <name>Signed_Out_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Signed Out --></label>
+        <name>Signed_Out__c</name>
+    </fields>
+    <fields>
+        <label><!-- No Show --></label>
+        <name>Signed_Up_But_No_Show__c</name>
+    </fields>
+    <fields>
+        <label><!-- Signed-Up --></label>
+        <name>Signed_Up_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Show-No Credit --></label>
+        <name>Signed_Up_Showed_Up_Zero_Credit__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Completed --></label>
+        <name>Total_Shift__c</name>
+    </fields>
+    <fields>
+        <label><!-- TueTotShift --></label>
+        <name>TueTotShift__c</name>
+    </fields>
+    <fields>
+        <help><!-- Do not touch this; System Generated --></help>
+        <label><!-- UniqueId --></label>
+        <name>UniqueId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Volunteer Date --></label>
+        <name>Volunteer_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Volunteer Type --></label>
+        <name>Volunteer_Type__c</name>
+        <picklistValues>
+            <masterLabel>Phone Banking</masterLabel>
+            <translation><!-- Phone Banking --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Precinct Walking</masterLabel>
+            <translation><!-- Precinct Walking --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- WedTotShift --></label>
+        <name>WedTotShift__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wkly Goal --></label>
+        <name>Wkly_Goal__c</name>
+    </fields>
+    <layouts>
+        <layout>Recruit Layout</layout>
+        <sections>
+            <label><!-- Confirmed/Reminded --></label>
+            <section>Confirmed/Reminded</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Family/Friends/Allies/Pre-Member --></label>
+            <section>Family/Friends/Allies/Pre-Member</section>
+        </sections>
+        <sections>
+            <label><!-- Other Info --></label>
+            <section>Other Info</section>
+        </sections>
+        <sections>
+            <label><!-- Recruit --></label>
+            <section>Recruit</section>
+        </sections>
+        <sections>
+            <label><!-- Shift --></label>
+            <section>Shift</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Please use Outlying North or South. --></errorMessage>
+        <name>Val1</name>
+    </validationRules>
+    <webLinks>
+        <label><!-- FRS_Agents --></label>
+        <name>FRS_Agents</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- PB_Confirm --></label>
+        <name>PB_Confirm</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- PB_Remind --></label>
+        <name>PB_Remind</name>
+    </webLinks>
+</CustomObjectTranslation>

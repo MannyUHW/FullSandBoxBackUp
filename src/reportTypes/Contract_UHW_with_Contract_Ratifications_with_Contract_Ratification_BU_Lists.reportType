@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <baseObject>Contract_Ratification__c</baseObject>
+    <category>other</category>
+    <deployed>true</deployed>
+    <description>Contract UHW with Contract Ratifications with Contract Ratification BU Lists</description>
+    <label>Contract UHW with Contract Ratifications with Contract Ratification BU Lists</label>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Id</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>true</checkedByDefault>
+            <field>Name</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CreatedDate</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CreatedBy</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastModifiedDate</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastModifiedBy</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastActivityDate</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Account_Name__c</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Contract_Start_Date__c</field>
+            <table>Contract_Ratification__c</table>
+        </columns>
+        <masterLabel>Contract UHW</masterLabel>
+    </sections>
+</ReportType>

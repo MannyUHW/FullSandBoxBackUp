@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Survey Response Archived</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Survey Responses Archived</value>
+    </caseValues>
+    <fields>
+        <label><!-- Additional Information --></label>
+        <name>Add_Info__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Email --></label>
+        <name>Alt_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Employer --></label>
+        <name>Alt_Employer__c</name>
+        <relationshipLabel><!-- Survey Responses Archived --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Alt First Name --></label>
+        <name>Alt_First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Last Name --></label>
+        <name>Alt_Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Middle Name --></label>
+        <name>Alt_Middle_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Person Type --></label>
+        <name>Alt_Person_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Phone 2 --></label>
+        <name>Alt_Phone_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Phone --></label>
+        <name>Alt_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Related Member --></label>
+        <name>Alt_Related_Member__c</name>
+        <relationshipLabel><!-- Survey Responses Archived --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Alt Source --></label>
+        <name>Alt_Source__c</name>
+    </fields>
+    <fields>
+        <label><!-- Collected By --></label>
+        <name>Collected_By__c</name>
+        <relationshipLabel><!-- Survey Responses Archived (Collected By) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Collected Datetime --></label>
+        <name>Collected_Datetime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Comments --></label>
+        <name>Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Survey Responses Archived (Contact) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Coordinator Original --></label>
+        <name>Coordinator_Original__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 1 Original --></label>
+        <name>Organizer_1_Original__c</name>
+    </fields>
+    <fields>
+        <label><!-- Previous Responses --></label>
+        <name>Previous_Responses__c</name>
+    </fields>
+    <fields>
+        <label><!-- Report Group --></label>
+        <name>Report_Group__c</name>
+    </fields>
+    <fields>
+        <label><!-- Response Value --></label>
+        <name>Response_Value__c</name>
+    </fields>
+    <fields>
+        <label><!-- Survey Question --></label>
+        <name>Survey_Question__c</name>
+        <relationshipLabel><!-- Survey Responses Archived --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

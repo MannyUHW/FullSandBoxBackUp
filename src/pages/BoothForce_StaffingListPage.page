@@ -1,0 +1,29 @@
+<apex:page controller="BoothForce_StaffingList">
+	<div class="zoneMatrix" id="{!zone.id}">
+	<apex:form styleClass="shiftZone">
+	  <div class="menu">
+	    <apex:commandButton value="Save/Update" id="saveSubmitButton" onClick="submitNewVals('{!zoneId}')" oncomplete="return false();" styleClass="btn btnPrimary"/>
+	    <a href="/{!boothKey}/e?retURL=%2Fapex%2FBoothForce_SetupShifts%3Fsfdc.tabName%3D01r50000000ADmp" class="btn btnPrimary">Create Booth</a>
+	    <a href="/{!shiftKey}/e?retURL=%2Fapex%2FBoothForce_SetupShifts%3Fsfdc.tabName%3D01r50000000ADmp" class="btn btnPrimary">Create Shift Time</a>
+	  </div>
+	  <div class="detail" >
+	   <div class="shiftTimes">
+	     <apex:repeat var="shiftTime" value="{!zoneShifts.shiftTimeStrings}">
+	        <div class="{!shiftTime.classDate} times" data-setupDay="{!shiftTime.classDate}">{!shiftTime.niceDate}</div>
+	     </apex:repeat>
+	     <br style="clear: both;" />
+	    </div>
+	    <apex:repeat var="bAndS" value="{!zoneShifts.boothsAndShifts}">
+	      <div class="booth">
+	        <div class="boothTitle" >{!bAndS.boothName}</div>
+	        <apex:repeat var="info" value="{!bAndS.shiftInfo}">
+	          <div data-id="{!info.bsId}" class="{!info.day} dateinput" data-setupDay="{!info.day}"><input type="text" value="{!info.total}" data-id ="d{!info.day}" size="4" ></div>  
+	        </apex:repeat>
+	      </div>
+	     </apex:repeat>
+	    <br style="clear: both;" />
+	  </div>
+	  </apex:form>
+	</div>
+  
+</apex:page>

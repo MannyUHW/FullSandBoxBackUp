@@ -1,0 +1,48 @@
+<apex:page controller="SOS_BhatActivityReminderReportController" docType="html-5.0">
+<apex:messages />
+<apex:form >
+    <apex:pageBlock title="" mode="edit">
+        <apex:pageMessages />
+        <apex:pageBlockButtons >
+            <apex:commandButton action="{!search}" value="Search"/>
+        </apex:pageBlockButtons>
+
+        <apex:pageBlockSection title="BHAT Activity Reminders" columns="1">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Start Date" for="enddate"/>
+                <apex:inputField value="{!startDateObj.ActivityDate}" label="Start Date"  /> 
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="End Date" for="enddate"/>
+                <apex:inputField value="{!endDateObj.ActivityDate}" label="End Date"  />
+            </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+        <apex:pageBlockTable value="{!reminderLog}" var="item">
+
+            <apex:column value="{!item.User__r.Name}">
+                <apex:facet name="header">User</apex:facet>
+            </apex:column> 
+
+            <apex:column value="{!item.User__r.Email}">
+                <apex:facet name="header">Email</apex:facet>
+            </apex:column> 
+
+
+            <apex:column value="{!item.Email_For_90_Day_Sent_On__c }">
+                <apex:facet name="header">90 Day Reminder Sent On</apex:facet>
+            </apex:column> 
+
+
+            <apex:column value="{!item.Email_For_60_Day_Sent_On__c }">
+                <apex:facet name="header">60 Day Reminder Sent On</apex:facet>
+            </apex:column> 
+
+
+            <apex:column value="{!item.Email_For_30_Day_Sent_On__c }">
+                <apex:facet name="header">30 Day Reminder Sent On</apex:facet>
+            </apex:column> 
+
+        </apex:pageBlockTable> 
+    </apex:pageBlock>
+</apex:form>
+</apex:page>

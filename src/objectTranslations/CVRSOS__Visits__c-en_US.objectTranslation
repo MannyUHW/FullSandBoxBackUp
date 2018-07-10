@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <label><!-- COPE Date --></label>
+        <name>COPE_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Packet Contact --></label>
+        <name>Packet_Contact__c</name>
+        <relationshipLabel><!-- Visits --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Packet --></label>
+        <name>Packet__c</name>
+    </fields>
+    <fields>
+        <label><!-- Region --></label>
+        <name>Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Signed COPE --></label>
+        <name>Signed_COPE__c</name>
+    </fields>
+</CustomObjectTranslation>

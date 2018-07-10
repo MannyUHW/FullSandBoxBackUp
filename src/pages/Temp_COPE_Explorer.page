@@ -1,0 +1,133 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/35.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+var COPE_BLITZ_2016 = "CB6";
+var LEADER_CODE = "L16";
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+sessionStorage.setItem("mo_last_page", "MO_COPE_Explorer");
+
+</script>
+
+<div align="center">
+
+  <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MO_Search_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+
+<br>&nbsp;</br>
+  <h1 id="h1Title">COPE Explorer</h1>
+<br>&nbsp;</br>
+
+
+<br>&nbsp;</br>
+<div id="warningDiv"></div>
+<br>&nbsp;</br>
+<script language="JavaScript">
+
+var DIGITS = "0123456789";
+
+var qpopulated = false;
+
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emids = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnames = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").split(",");
+var cams = localStorage.getItem("mo_sync_cams").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+var newCopeMap = {};
+
+var sortList = new Array();
+
+try{ 
+
+    var qrMap = new Array();
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    for (var p = 0; p < 10; p++) {
+      var query = "SELECT Contact__c, Survey_Code__c, Response_Value__c FROM Survey_Response__c where FID__c like \'%" + p + "\' AND (Survey_Code__c = \'" + COPE_BLITZ_2016 + "\' or Survey_Code__c = \'" + LEADER_CODE + "\')";
+      query += " AND (";
+      for (var emdex = 0; emdex < emnames.length; emdex++) {
+        if (emdex  > 0) {
+          query += " OR "
+        }
+        query += " Employer_Name__c = \'" + emnames[emdex].replace(/'/g, '\\\'') + "\' ";
+      }
+      query += ")";
+      //alert(query);
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      for(var i=0;i<records1.length;i++){ 
+        var response = records1[i].Response_Value__c;
+        if (response != null && response != "") {
+          response = response.substring(0, 1);
+        }
+        if (records1[i].Survey_Code__c.toUpperCase() == COPE_BLITZ_2016.toUpperCase()) {
+          newCopeMap[records1[i].Contact__c] = response;
+        } else if (records1[i].Survey_Code__c.toUpperCase() == LEADER_CODE.toUpperCase()) {
+          leaderMap[records1[i].Contact__c] = response;
+        }
+      }
+      var query = "SELECT Id, LastName, FirstName, MiddleName, Account.Name, Department, Title, Job_Group__c, HomePhone, MobilePhone, COPE_Pledge__c, CopePledgeDate__c, Age__c, Shift__c from Contact where  (In_Current_BU__c = true OR (In_Current_BU_Override__c  != null AND In_Current_BU_Override__c < NEXT_N_DAYS:180))  AND";
+      for (var emdex = 0; emdex < emnames.length; emdex++) {
+        if (emdex  > 0) {
+          query += " OR "
+        }
+        query += " Employer_Name__c = \'" + emnames[emdex].replace(/'/g, '\\\'') + "\' ";
+      }
+      query += ")";      
+      
+    }
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<a href="javascript:navigateTo('{! $Page.MO_Main_Page}'"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+
+
+</div>
+</apex:page>

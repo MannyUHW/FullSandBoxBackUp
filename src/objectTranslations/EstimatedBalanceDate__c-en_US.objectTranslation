@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Estimated Balance Date</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Estimated Balance Date</value>
+    </caseValues>
+    <fields>
+        <label><!-- Data Load Date --></label>
+        <name>Data_Load_Date__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

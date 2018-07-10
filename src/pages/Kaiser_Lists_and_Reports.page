@@ -1,0 +1,52 @@
+<apex:page >
+<dl>
+<dt></dt>
+<dd>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  <h1>Kaiser List and Reports</h1>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  &nbsp;<br></br>
+  <ul>
+<li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}">Kaiser June 2nd Commits/Confirms</apex:outputLink></li>
+  &nbsp;<br></br>    
+  <ul>
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=ana%20guardado">Ana Guardado</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=carlos%20hernandez">Carlos Hernandez</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=gurpreet%20dhoot">Gurpreet Dhoot</apex:outputLink></li>    
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=noemi%20beas">Noemi Beas</apex:outputLink></li>      
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=robin%20blake">Robin Blake</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=vacant">Vacant</apex:outputLink></li>        
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=kim%20martin">Kim Martin</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=mary%20corson">Mary Corson</apex:outputLink></li>  
+    &nbsp;<br></br>        
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_Kaiser_June2nd_Commits}?coordinator=sandra%20jimenez">Sandra Jimenez</apex:outputLink></li>      
+  </ul>            
+    &nbsp;<br></br>  
+    &nbsp;<br></br>  
+    <li><apex:outputLink target="_blank" value="{!$Page.Report_All_June2nd}">All Divs June 2nd Commits/Confirms</apex:outputLink></li>
+    &nbsp;<br></br>
+
+
+  <li><apex:outputLink value="/00Oi0000006BzGR">CAT Leaders List By Coordinator</apex:outputLink></li>  
+    &nbsp;<br></br>
+  <li><apex:outputLink value="/00Oi0000006C2RF">Total CAT Leaders and Members</apex:outputLink></li>  
+    &nbsp;<br></br>
+  <li><apex:outputLink value="{!$Page.Kaiser_Activity_Lists_2015}">Kaiser Bargaining Activity Volunteer Lists</apex:outputLink></li>
+    &nbsp;<br></br>    
+    &nbsp;<br></br>
+    &nbsp;<br></br>
+    &nbsp;<br></br>
+  <li><apex:outputLink target="_blank" value="https://docs.google.com/spreadsheet/ccc?key=0AiP6yziElNTqdEF1R3pHYmRrNUxfU3FQeldKNHhVZUE">Kaiser Route List</apex:outputLink></li>  
+  </ul>
+</dd>
+</dl>
+</apex:page>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BHAT Activity Weekly</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BHAT Activity Weekly</value>
+    </caseValues>
+    <fields>
+        <label><!-- BHAT Week Name --></label>
+        <name>BHAT_Week_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date Reviewed --></label>
+        <name>Date_Reviewed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hourly_Employee --></label>
+        <name>Hourly_Employee__c</name>
+    </fields>
+    <fields>
+        <label><!-- Location --></label>
+        <name>Location__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager --></label>
+        <name>Manager__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name EEID --></label>
+        <name>Name_EEID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Non_Exempt_Employee --></label>
+        <name>Non_Exempt_Employee__c</name>
+    </fields>
+    <fields>
+        <label><!-- OwnerIdWithStartDate --></label>
+        <name>OwnerIdWithStartDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- Review Notes --></label>
+        <name>Review_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Review Status --></label>
+        <name>Review_Status__c</name>
+        <picklistValues>
+            <masterLabel>Approved</masterLabel>
+            <translation><!-- Approved --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Reviewed</masterLabel>
+            <translation><!-- Not Reviewed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Rejected</masterLabel>
+            <translation><!-- Rejected --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Reviewed By --></label>
+        <name>Reviewed_By__c</name>
+        <relationshipLabel><!-- BHAT Activity Weekly --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Reviewed --></label>
+        <name>Reviewed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Complete</masterLabel>
+            <translation><!-- Complete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Incomplete</masterLabel>
+            <translation><!-- Incomplete --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Entry</masterLabel>
+            <translation><!-- No Entry --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Overtime</masterLabel>
+            <translation><!-- Overtime --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Total Time Off Hours --></label>
+        <name>Total_Time_Off_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- User City --></label>
+        <name>User_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Week End Date --></label>
+        <name>WeekEndDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- Week Start Date --></label>
+        <name>WeekStartDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- WeeklyPaidBreakHours --></label>
+        <name>WeeklyPaidBreakHours__c</name>
+    </fields>
+    <fields>
+        <label><!-- WeeklyTotalHours --></label>
+        <name>WeeklyTotalHours__c</name>
+    </fields>
+    <fields>
+        <label><!-- WeeklyUnpaidLunchHours --></label>
+        <name>WeeklyUnpaidLunchHours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Weekly Hours Total --></label>
+        <name>Weekly_Hours_Total__c</name>
+    </fields>
+    <fields>
+        <label><!-- owner division --></label>
+        <name>owner_division__c</name>
+    </fields>
+    <layouts>
+        <layout>BHAT Activity Weekly Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Review --></label>
+            <section>Review</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

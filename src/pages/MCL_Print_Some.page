@@ -1,0 +1,412 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false" standardController="MCL_Report__c">
+    <html>
+    <head>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.JQuery}"/>
+
+        <style>
+            /* removes outline dots from button when it gets focus */
+            :focus {outline:none;}
+            ::-moz-focus-inner {border:0;}
+
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                background-color: #44B0FF;
+            }
+
+            #CountDiv {
+                border: 1px solid black;
+            }
+
+            #FoundDiv {
+                padding: 5px;
+                background-color: yellow;
+                margin-top: 8px;
+                visibility: hidden;
+                overflow: auto;
+            }
+
+            #NotFoundDiv {
+                padding: 5px;
+                background-color: indianred;
+                margin-top: 8px;
+                visibility: hidden;
+                overflow: auto;
+            }
+
+            #ButtonsDiv {
+                background-color: #yellow;
+                margin-top:8px;
+            }
+
+            #InputsDiv {
+                clear: both;
+                width: 500px;
+                min-height: 115px;
+                background-color: #397FB2;
+                padding: 5px;
+                margin-left: 13px;
+            }
+
+            #IdText {
+                resize:none;
+                width: 494px;
+            }
+
+            #ClearButton {
+                padding-top: 3px;
+                padding-bottom: 3px;
+                font-size: 0.9em;
+                margin-left: 118px;
+            }
+
+            #VerifyButton {
+                padding-top: 3px;
+                padding-bottom: 3px;
+                font-size: 0.9em;
+                margin-left: 24px;
+            }
+
+            #CloseButton {
+                padding-top: 3px;
+                padding-bottom: 3px;
+                font-size: 0.9em;
+                float: right;
+                margin-right: 143px;
+            }
+
+            #Title {
+                clear: both;
+                font-weight: bold;
+                font-size: 1.8em;
+                margin-top: 20px;
+                margin-bottom: 3px;
+                margin-left: 113px;
+            }
+
+        </style>
+    </head>
+    <body>
+    <script type="text/javascript">
+
+        // ***************** Functions *******************
+
+        function verifyButtonHandler() {
+            var inputText;
+            var trimmedText;
+            var textArray;
+            var textItem;
+
+            idArray       = [];
+            idArrayClean  = [];
+            fidArray      = [];
+            fidArrayClean = [];
+            badArray      = [];
+
+debugger;
+
+            inputText = idText.value;
+            if(inputText) {
+                trimmedText = inputText.trim().replace(/\n/g, ",");
+                textArray   = trimmedText.split(',');
+                for(i=0;i<textArray.length;i++) {
+                    textItem = textArray[i];
+                    if(textItem.indexOf('-') == -1) {
+                        if(textItem.length == 15 || textItem.length == 18) {
+                            idArray.push("'" + textItem + "'");
+                            idArrayClean.push(textItem);
+                        }
+                        else // Any other length for an Id and Salesforce returns invalid query error!
+                            if(textItem)
+                                badArray.push(textItem);
+                    }
+                    else {
+                        fidArray.push("'" + textItem + "'");
+                        fidArrayClean.push(textItem);
+                    }
+                }
+            }
+
+            if(fidArray.length > 0)
+                addIdsFromFids();
+
+            getNamesFromIds();
+
+        }
+
+        function addIdsFromFids(){
+            var fidRecords;
+            var fidString = fidArray.join();
+
+            var query = "SELECT Id FROM Contact WHERE FID__c In (" + fidString + ") ";
+            try {
+                var queryResults = sforce.connection.query(query);
+                fidRecords = queryResults.getArray('records');
+                for(i=0;i<fidRecords.length;i++) {
+                    idArray.push("'" + fidRecords[i].Id + "'");
+                }
+            }
+            catch(e) {alert('An error occurred retrieving Ids using FIDs : ' + e.faultstring);}
+        }
+
+        function getNamesFromIds() {
+            var nameRecords;
+            var nameList;
+            var id;
+            var fid;
+            var i;
+            var firstName;
+            var lastName;
+            var middleName;
+            var idList;
+            var idCount;
+            var notFoundList;
+            var idString     = idArray.join();
+            var foundMap     = {};
+            var idFoundMap   = {};
+            var fidFoundMap  = {};
+            var query;
+            var queryResults;
+
+            if(idArray.length > 0) {
+                query = "SELECT Id,FID__c,FirstName,LastName,MiddleName FROM Contact WHERE Id In (" + idString + ") ORDER BY LastName,FirstName,MiddleName ";
+                queryResults = sforce.connection.query(query);
+                nameRecords  = queryResults.getArray('records');
+                idCount      = nameRecords.length;
+            }
+
+            if(idCount) {
+                nameList = '';
+                idList   = "(";
+
+                for (i = 0; i < nameRecords.length; i++) {
+                    // restricting id to 15 chars, so map find works
+                    id  = nameRecords[i].Id.substr(0,15);
+                    fid = nameRecords[i].FID__c;
+                    firstName        = toProperCase(nameRecords[i].FirstName);
+                    lastName         = toProperCase(nameRecords[i].LastName);
+                    middleName       = toProperCase(nameRecords[i].MiddleName);
+                    foundMap[id]     = {FirstName: firstName, LastName: lastName};
+                    idFoundMap[id]   = {FirstName: firstName, LastName: lastName};
+                    fidFoundMap[fid] = {FirstName: firstName, LastName: lastName};
+
+                    if (i > 0) {
+                        nameList += ',';
+                        idList += ',';
+                    }
+
+                    if (middleName)
+                        nameList += firstName + ' ' + middleName + ' ' + lastName;
+                    else
+                        nameList += firstName + ' ' + lastName;
+
+                    idList += "'" + id + "'";
+                }
+
+                idList += ")";
+
+                foundDiv.setAttribute("style", 'visibility:visible');
+                foundDiv.innerHTML = nameRecords.length + ' Found: ' + nameList;
+
+                if (nameRecords.length > 0) {
+                    docCookies.setItem('MclPrintSomeCount',idCount.toString());
+                    docCookies.setItem('MclPrintSomeIds', idList);
+                }
+            }
+
+            notFoundArray = [];
+            for(i=0; i < idArrayClean.length; i++) {
+                id = idArrayClean[i];
+                if(!idFoundMap[id])
+                    notFoundArray.push(id);
+            }
+
+            for(i=0; i < fidArrayClean.length; i++) {
+                fid = fidArrayClean[i];
+                if(!fidFoundMap[fid])
+                    notFoundArray.push(fid);
+            }
+
+            for(i=0; i < badArray.length; i++) {
+                id = badArray[i];
+                if(!idFoundMap[id])
+                    notFoundArray.push(id);
+            }
+
+            if(notFoundArray.length > 0) {
+                notFound     = notFoundArray.length;
+                notFoundList = notFoundArray.join(',');
+                notFoundDiv.setAttribute("style", 'visibility:visible');
+                notFoundDiv.innerHTML = notFound + ' Not Found: ' + notFoundList;
+            }
+            else {
+                notFoundDiv.innerHTML = '';
+                notFoundDiv.setAttribute("style",'visibility:hidden');
+            }
+        }
+
+        function clearButtonHandler() {
+            idText.value          = '';
+            foundDiv.innerHTML    = '';
+            notFoundDiv.innerHTML = '';
+            foundDiv.setAttribute("style",'visibility:hidden');
+            notFoundDiv.setAttribute("style",'visibility:hidden');
+            docCookies.removeItem('MclPrintSomeCount');
+            docCookies.removeItem('MclPrintSomeIds');
+        }
+
+        function closeButtonHandler() {
+            window.close();
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1 = '';
+            if(s != null)
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        // *****************  Globals ********************
+
+        /*\
+         |*|
+         |*|  :: cookies.js ::
+         |*|
+         |*|  A complete cookies reader/writer framework with full unicode support.
+         |*|
+         |*|  Revision #1 - September 4, 2014
+         |*|
+         |*|  https://developer.mozilla.org/en-US/docs/Web/API/document.cookie
+         |*|  https://developer.mozilla.org/User:fusionchess
+         |*|
+         |*|  This framework is released under the GNU Public License, version 3 or later.
+         |*|  http://www.gnu.org/licenses/gpl-3.0-standalone.html
+         |*|
+         |*|  Syntaxes:
+         |*|
+         |*|  * docCookies.setItem(name, value[, end[, path[, domain[, secure]]]])
+         |*|  * docCookies.getItem(name)
+         |*|  * docCookies.removeItem(name[, path[, domain]])
+         |*|  * docCookies.hasItem(name)
+         |*|  * docCookies.keys()
+         |*|
+         \*/
+
+        var docCookies = {
+            getItem: function (sKey) {
+                if (!sKey) { return null; }
+                return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+            },
+            setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+                if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+                var sExpires = "";
+                if (vEnd) {
+                    switch (vEnd.constructor) {
+                        case Number:
+                            sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+                            break;
+                        case String:
+                            sExpires = "; expires=" + vEnd;
+                            break;
+                        case Date:
+                            sExpires = "; expires=" + vEnd.toUTCString();
+                            break;
+                    }
+                }
+                document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+                return true;
+            },
+            removeItem: function (sKey, sPath, sDomain) {
+                if (!this.hasItem(sKey)) { return false; }
+                document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+                return true;
+            },
+            hasItem: function (sKey) {
+                if (!sKey) { return false; }
+                return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+            },
+            keys: function () {
+                var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+                for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+                return aKeys;
+            }
+        };
+
+        var idArray;
+        var fidArray;
+        var badArray;
+        var idArrayClean;
+        var fidArrayClean;
+        var notFoundArray;
+
+        var clearButton;
+        var closeButton;
+        var verifyButton;
+
+        var idText;
+        var found;
+
+        // ************* Main Program Entry **************
+        $(function() {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            if(sforce.connection.sessionId == null) {
+                alert('Error connecting to Salesforce - Please refresh page');
+                return;
+            }
+
+            window.resizeTo(650, 450);
+
+            clearButton  = document.getElementById("ClearButton");
+            verifyButton = document.getElementById("VerifyButton");
+            closeButton  = document.getElementById("CloseButton");
+
+            idText  = document.getElementById("IdText");
+
+            clearButton.addEventListener("click", clearButtonHandler, false);
+            verifyButton.addEventListener("click", verifyButtonHandler, false);
+            closeButton.addEventListener("click", closeButtonHandler, false);
+
+            foundDiv    = document.getElementById("FoundDiv");
+            notFoundDiv = document.getElementById("NotFoundDiv");
+
+            idArray       = [];
+            fidArray      = [];
+            idArrayClean  = [];
+            fidArrayClean = [];
+            badArray      = [];
+
+            var printSomeCount = parseInt(docCookies.getItem('MclPrintSomeCount'));
+            var printSomeIds   = docCookies.getItem('MclPrintSomeIds');
+            if(printSomeCount > 0) {
+                var cleanIds = printSomeIds.replace(/\(/g,'');
+                cleanIds = cleanIds.replace(/\)/g,'');
+                cleanIds = cleanIds.replace(/'/g,'');
+                idText.innerHTML = cleanIds;
+            }
+
+        });
+    </script>
+
+    <div id="Title">MCL Print for selected people</div>
+    <div id="InputsDiv">
+        <textarea id="IdText" placeholder="Enter Ids..." rows="4" cols="50"></textarea>
+        <div id="ButtonsDiv">
+            <input id="ClearButton"  type="Button" value="Clear"></input>
+            <input id="VerifyButton" type="Button" value="Verify IDs"></input>
+            <input id="CloseButton"  type="Button" value="Close"></input>
+        </div>
+
+        <div id="FoundDiv"></div>
+        <div id="NotFoundDiv"></div>
+
+    </div>
+
+    </body>
+    </html>
+</apex:page>

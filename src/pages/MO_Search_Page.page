@@ -1,0 +1,316 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>MO: Search</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+sessionStorage.setItem("mo_last_page", "MO_Search_Page");
+
+</script>
+
+</head>
+
+  <body>
+  <div align="center">
+  <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  
+  <table border="0"> 
+  <tr valign="top">
+  <td align="center">
+  <div align="center">
+    <br></br>
+  <h4 id="h4Header">Search</h4>
+  <br>&nbsp;</br>
+
+  <div id="cantFindDiv"><a href="javascript:navigateTo('{! $Page.MO_Manual_Contact_Page}');"><br>Can&#39;t find the person or person is a non-member?  Click here to enter manually.</br><br>&nbsp;</br></a></div>
+
+  <div id="recentCollectorDiv">Recent Collectors:<br>&nbsp;</br><i>No recent collectors</i></div>
+
+
+  <input size="40" id="searchterms"></input>
+  <br>&nbsp;</br>
+
+  <button class="btn btn-primary" type="submit" onclick="search();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_small.png')}"></img>
+  &nbsp;&nbsp;
+  Search
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+    
+  </div>
+  <div id="searchResultsDiv"><i>Enter Name to Search</i><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br></div>
+  <br>&nbsp;</br>
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <div align="center">
+<a href="MO_Main_Page"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+</div>
+</td>
+</tr>
+  </table>
+  <br>&nbsp;</br>
+        &copy; 2015 SEIU-UHW. All rights reserved.
+  </div>
+  
+<script language="JavaScript">
+
+var emids =  localStorage.getItem("mo_sync_emids");
+
+var emidArray = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnameArray = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+var emNameIdMap = new Array();
+for (var i = 0; i < emidArray.length; i++ ) { 
+  //alert("em - " + emidArray[i] + ": " + emnameArray[i]);
+  emNameIdMap[emnameArray[i].toLowerCase().trim()] = emidArray[i];
+} 
+
+
+document.getElementById("cantFindDiv").style.display = "none";
+document.getElementById("recentCollectorDiv").style.display = "none";
+
+var mode = "{!$CurrentPage.parameters.mode}";
+
+localStorage.setItem("mo_search_mode", mode);
+
+if (mode == "collector" || mode == "shifts2") {
+  document.getElementById("h4Header").innerHTML = "Enter Survey: Search for Collector";
+  document.getElementById("recentCollectorDiv").style.display = "block";  
+  sforce.connection.sessionId = "{!$Api.Session_ID}";
+  var emArray = emids.split(",");  
+  var query = "SELECT Collected_By_Name__c,Collected_By__r.FID__C, Collected_By__r.Department FROM Survey_Response__c ";
+  query += " where Collected_By__c != null AND (";
+  for (var emdex = 0; emdex < emArray.length; emdex++) {
+          if (emdex > 0) {
+            query = query + " OR ";
+          }
+          query = query + " Collected_By__r.account.employer_id__c='" + emArray[emdex] + "' ";         
+  }
+  query += ") order by createddate desc limit 500";
+  var records = sforce.connection.query(query); 
+  var records1 = records.getArray('records'); 
+  var s = "Recent Collectors:<br>&nbsp;</br>";
+  var dcount = 0;
+  var alreadyMap = new Array(); 
+  
+  if (mode == "shifts2") {
+    s += "<br><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Shifts}?fid2=0)\');\">No Collector</a></br>";  
+  } else {
+    s += "<br><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Survey_Page}?fid2=0)\');\">No Collector</a></br>";
+  }
+  for(var i=0;i<records1.length;i++){ 
+    //alert(records1[i].Collected_By__r.FID__c);  
+    if (dcount < 20 && (alreadyMap[records1[i].Collected_By__r.FID__c] == null || alreadyMap[records1[i].Collected_By__r.FID__c] != true)) {
+      if (mode == "shifts2") {
+        s += "<br><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Shifts}?fid2=" + records1[i].Collected_By__r.FID__c + "\');\">" + toProperCase(records1[i].Collected_By_Name__c) + " - " +  toProperCase(records1[i].Collected_By__r.Department) + "</a></br>";      
+      } else {
+        s += "<br><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Survey_Page}?fid2=" + records1[i].Collected_By__r.FID__c + "\');\">" + toProperCase(records1[i].Collected_By_Name__c) + " - " +  toProperCase(records1[i].Collected_By__r.Department) + "</a></br>";
+      }
+      alreadyMap[records1[i].Collected_By__r.FID__c] = true;      
+      dcount++;
+    } else if (dcount >= 20) {
+      break;
+    }
+  }  
+  s+="<br>&nbsp;</br>";
+  document.getElementById("recentCollectorDiv").innerHTML = s;
+} else if (mode == "contact" || mode == "shifts")  {
+  document.getElementById("h4Header").innerHTML = "Enter Survey: Search for Member Contact";
+  document.getElementById("cantFindDiv").style.display = "block";
+} else if (mode == "related" || mode == "related2")  {
+  document.getElementById("h4Header").innerHTML = "Enter Survey: Search for Related Member Contact";
+  document.getElementById("cantFindDiv").style.display = "block";
+}
+  
+document.getElementById("searchterms").addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+        search();
+    }
+});
+  
+  
+function search() {  
+  var terms = document.getElementById("searchterms").value.toLowerCase().trim();
+  
+  if (terms == "") {
+    return;
+  }
+  
+  
+  var tarray = terms.split(" ");
+  var sortKeyList = new Array();
+  var resultsKeyMap = new Array();
+  
+  var tempc = 0;
+  
+  for (var rr = 0; rr < localStorage.length; rr++) {
+    if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+      //var crecord = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+      var compressedContactArray = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+      var crecord = uncompressContact(compressedContactArray);
+      
+      var srcrecord = (JSON.stringify(compressedContactArray)).toLowerCase();
+
+      var lastname = crecord.LastName;
+      var firstname = crecord.FirstName;
+      var middlename = crecord.MiddleName;       
+      if (middlename == null || middlename == "null") {
+        middlename = "";
+      }     
+      var fullname1 = (lastname + ", " + firstname + " " + middlename).toLowerCase().trim();
+      var fullname2 = (firstname + " " + lastname).toLowerCase().trim();      
+      var dept = crecord.Department;
+      var emname = crecord.Account.Name;
+      var title = crecord.Title; 
+      
+      var score = 0.0;
+      if (fullname1.toLowerCase() == terms.toLowerCase() || fullname2.toLowerCase() == terms.toLowerCase() ) {
+        score = 1.0;
+      } else {    
+        for (var g = 0; g < tarray.length; g++) {
+          if (srcrecord.indexOf(tarray[g].toLowerCase()) >= 0) {
+            score = score + 1.0;
+          } else if (tarray[g] == "evs" && srcrecord.indexOf("environ") >= 0) {
+            score = score + 1.0;
+          }
+        }
+        score = (0.9 * score) / tarray.length;
+        if (score > 0) {        
+          var score2 = 0.0;
+        
+          var nameMap2 = new Array();
+          nameMap2[CONSTANT_LASTNAME] = lastname;
+          nameMap2[CONSTANT_FIRSTNAME] = firstname;
+          nameMap2[CONSTANT_MIDDLENAME] = middlename;
+        
+          if (tarray.length == 2) {
+            var nameMap = new Array();
+            nameMap[CONSTANT_LASTNAME] = tarray[1];
+            nameMap[CONSTANT_FIRSTNAME] = tarray[0];
+            nameMap[CONSTANT_MIDDLENAME] = "";
+            score2 = nameMatch(nameMap, nameMap2);
+          } else if (tarray.length == 3) {
+            var nameMap = new Array();
+            nameMap[CONSTANT_LASTNAME] = tarray[2];
+            nameMap[CONSTANT_FIRSTNAME] = tarray[0];
+            nameMap[CONSTANT_MIDDLENAME] = tarray[1];
+            score2 = nameMatch(nameMap, nameMap2);          
+          }
+          if (score2 > 0.0 && score2 > score) {
+            score = score2;
+          }
+        
+        
+
+        }    
+      }  
+      if (score > 0.7) {
+            var sortKey = (1.0 - score).toFixed(3) +  crecord.FID__c;
+            sortKeyList.push(sortKey);
+            resultsKeyMap[sortKey] = crecord;
+      }             
+    }
+  }
+  //alert("results count = " + sortKeyList.length);
+  if (sortKeyList.length == 0) {
+      document.getElementById("searchResultsDiv").innerHTML = "<i>No Results Found</i><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br>";
+  } else if (sortKeyList.length > 10000) {
+      document.getElementById("searchResultsDiv").innerHTML = "<i>Too many results.  Please narrow your search terms.</i><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br>";
+  } else {
+      sortKeyList.sort();
+      var s = "<table cellpadding=\"10\">\n";
+      s += "<tr valign=\"top\">\n"; 
+      s += "<th>Full Name</th><th>Dept &amp; Job</th><th>COPE</th>";       
+      s += "</tr>\n\n";         
+      for (var i = 0; i < sortKeyList.length; i++) {
+        var sortKey = sortKeyList[i];
+        var crecord = resultsKeyMap[sortKey];     
+        var lastname = crecord.LastName;
+        var firstname = crecord.FirstName;
+        var middlename = crecord.MiddleName;       
+        if (middlename == null || middlename == "null") {
+          middlename = "";
+        }     
+        var fullname1 = toProperCase(lastname + ", " + firstname + " " + middlename).trim();
+                 
+        s += "<tr valign=\"top\">\n";  
+        if (mode == "collector") {
+          s += "<td><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Survey_Page}?fid2=" + crecord.FID__c + "\');\">" +       fullname1  + "</a></td>";   
+        } else if (mode == "contact")  { 
+          s += "<td><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Survey_Page}?fid1=" + crecord.FID__c + "\');\">" +       fullname1  + "</a></td>";           
+        } else if (mode == "related")  { 
+          s += "<td><a href=\"javascript:navigateTo(\'{! $Page.MO_Manual_Contact_Page}?fid3=" + crecord.FID__c + "\');\">" +       fullname1  + "</a></td>";                     
+        } else if (mode == "related2")  { 
+          s += "<td><a href=\"javascript:navigateTo(\'{! $Page.MO_Edit_Manual_Page}?fid3=" + crecord.FID__c + "\');\">" +       fullname1  + "</a></td>";                               
+        } else if (mode == "shifts")  { 
+          s += "<td><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Shifts}?fid=" + crecord.FID__c + "\');\">" +       fullname1  + "</a></td>";                                         
+        } else if (mode == "shifts2")  { 
+          s += "<td><a href=\"javascript:navigateTo(\'{! $Page.MO_Enter_Shifts}?fid2=" + crecord.FID__c + "\');\">" +       fullname1  + "</a></td>";                                         
+        } else {
+          s += "<td><a href=\"javascript:navigateTo(\'{! $Page.MO_Contact_Page}?fid=" + crecord.FID__c + "\');\">" +       fullname1  + "</a></td>";   
+        }
+        var emid = emNameIdMap[crecord.Account.Name.trim().toLowerCase()];
+        s += "<td><a href=\"javascript:navigateTo(\'{! $Page.MO_List_Page}?emid=" + emid + "&dept=" + encodeURIComponent(crecord.Department) + "\');\">"  +       toProperCase(crecord.Account.Name) + "<br/>" + toProperCase(crecord.Department) + "</a><br/>" + toProperCase(crecord.Title) + "</td>";
+        
+        if (crecord.COPE_Pledge__c == null || crecord.COPE_Pledge__c.toLowerCase().trim() == "null" || crecord.COPE_Pledge__c.trim() == "") {
+          crecord.COPE_Pledge__c = "";
+        } else if (crecord.COPE_Pledge__c.trim().indexOf("0.") == 0) {
+          crecord.COPE_Pledge__c = "";        
+        } else {
+          crecord.COPE_Pledge__c = "$" + crecord.COPE_Pledge__c ;
+        }
+ 
+        s += "<td>" + crecord.COPE_Pledge__c + "</td>";                
+        s += "</tr>\n\n";
+      }
+      s += "</table><br>&nbsp;</br><br>&nbsp;</br>"
+      document.getElementById("searchResultsDiv").innerHTML = s;
+    }
+  
+}
+  
+  
+</script>
+  
+    </body>
+</html>
+
+
+</apex:page>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>TLS Warning Message (by profile)</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>TLS Warning Message (by profile)</value>
+    </caseValues>
+    <fields>
+        <help><!-- Text used for the link at the end of the message for more instructions.
+Leave blank if you want no link --></help>
+        <label><!-- Help URL Link Text --></label>
+        <name>tls_help_url_text_profile__c</name>
+    </fields>
+    <fields>
+        <label><!-- Warning Message (by Profile) --></label>
+        <name>tls_message_profile__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

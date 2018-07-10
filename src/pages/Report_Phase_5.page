@@ -1,0 +1,2019 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/38.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/38.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+<link rel="stylesheet" href="{!URLFOR($Resource.mo_assets, '/mo_assets/css/tablesorter/tablesorter_blue_style.css')}" type="text/css" id="" media="print, projection, screen" />
+<style type="text/css" media="screen,print">
+   .page-breaker {
+     display: block;
+     page-break-after: always;
+     border :1px solid black
+   }
+</style>
+<div align="center">
+<font size="+2"><div id="titleDiv">Phase 5 Report</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+
+<div id="mainDiv" style="display: none;">
+
+<br>&nbsp;</br>
+
+<font color="green">
+<div align="center" id="filterDiv"></div>
+</font> 
+
+<font size="+2"><div align="center" id="progressDiv">0%</div></font>
+
+<div id="jumpDiv">
+<a href="#regionAnchor">Jump to Regional Directors</a><br/>
+<a href="#coordinatorAnchor">Jump to Coordinators</a><br/>
+<a href="#organizerAnchor">Jump to Organizers</a><br/>
+<a href="#employerAnchor">Jump to Employers</a><br/>
+<!--
+<a href="#leaderAnchor">Jump to Leaders</a><br/>
+-->
+&nbsp;<br/>
+</div>
+
+
+<a name="divAnchor"></a>
+
+<div align="center" id="countDiv">
+<div id="divTitle"><font size="+1">Divisions</font></div>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Division</font></td>
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Ldrs</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Compl Pct</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Supporters<br/>of Existing<br/>Ldrs</font></td>                         
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Total New Ldrs<br/>(3+ Noms)</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Working<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New<br/>Ldrs<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New<br/>Supporters<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Ldr<br/>Completed<br/>Pct</font></td>                         
+    <td bgcolor="#481C60" width="1%" align="center" class="goalCols"><font size="-2" color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Starting<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Increase</font></td>                                 
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Goal</font></td>                                     
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Progress<br/>To Goal</font></td>                                         
+</tr>
+<tbody class="divisionRowTemplate" >
+<tr valign="top">
+    <td align="center">{{divLink}}</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([DIVISION, div, EXISTING, LEADERS])}}</td>
+    <td align="center">{{getCounter([DIVISION, div, EXISTING, SUPPORTERS])}}</td>
+    <td align="center">{{getCounter([DIVISION, div, EXISTING, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center" bgcolor="#E4FFE4">{{(100.0 * getCounter([DIVISION, div, EXISTING, SUPPORTERS, WORKING, COMPLETED]) / (0.0001 + getCounter([DIVISION, div, EXISTING, SUPPORTERS]))).toFixed(0)}}%</td>        
+    <td align="center">{{getCounter([DIVISION, div, EXISTING, NEW, ADJUSTMENT])}}</td>        
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([DIVISION, div, NEW, LEADERS])}}</td>
+    <td align="center">{{getCounter([DIVISION, div, NEW, LEADERS, WORKING])}}</td>
+    <td align="center">{{getCounter([DIVISION, div, NEW, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([DIVISION, div, NEW, LEADERS, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([DIVISION, div, NEW, SUPPORTERS, COMPLETED, COMPLETED])}}</td>        
+    <td align="center" bgcolor="#E4FFE4">{{ (100.0 * getCounter([DIVISION, div, NEW, LEADERS, COMPLETED]) / (0.0001 + (getCounter([DIVISION, div, NEW, LEADERS, WORKING])))).toFixed(0)  }}%</td>        
+    <td class="goalCols"  bgcolor="#481C60" ></td>
+    <td class="goalCols" align="center">{{fmtPct(startCoverPct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(currentCoverPct)}}</td> 
+    <td class="goalCols" align="center" bgcolor="#E4FFE4">{{fmtPct(coverIncreasePct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(goalPct)}}</td>
+    <td class="goalCols" align="center" bgcolor="#E4FFE4"><b>{{fmtPct(progressPct)}}</b></td>            
+</tr>                
+</tbody>
+</table>
+<br/>&nbsp;<br/>
+</div>
+
+<a name="regionAnchor"></a>
+<div align="center" id="regionDiv">
+<div id="regionDivTitle"><font size="+1">Regions</font></div>
+
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Division</font></td>
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Reg Director</font></td>    
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Ldrs</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Compl Pct</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Supporters<br/>of Existing<br/>Ldrs</font></td>                             
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Total New Ldrs<br/>(3+ Noms)</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Working<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New<br/>Ldrs<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New<br/>Supporters<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Ldr<br/>Completed<br/>Pct</font></td>                         
+    <td bgcolor="#481C60" width="1%" align="center" class="goalCols"><font size="-2" color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Starting<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Increase</font></td>                                 
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Goal</font></td>                                     
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Progress<br/>To Goal</font></td>                                         
+</tr>
+<tbody class="regionalRowTemplate" >
+<tr valign="top">
+    <td align="center">{{divLink}}</td>
+    <td align="center">{{regionalDirectorLink}}</td>  
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, EXISTING, LEADERS])}}</td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, EXISTING, SUPPORTERS])}}</td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, EXISTING, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center" bgcolor="#E4FFE4">{{(100.0 * getCounter([REGIONAL_DIRECTOR, div, regionalDirector, EXISTING, SUPPORTERS, WORKING, COMPLETED]) / (0.0001 + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, EXISTING, SUPPORTERS]))).toFixed(0)}}%</td>        
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, EXISTING, NEW, ADJUSTMENT])}}</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, LEADERS])}}</td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, LEADERS, WORKING])}}</td>
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, LEADERS, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, SUPPORTERS, COMPLETED, COMPLETED])}}</td>        
+    <td align="center" bgcolor="#E4FFE4">{{ (100.0 * getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, LEADERS, COMPLETED]) / (0.0001 + (getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, LEADERS, WORKING])))).toFixed(0)  }}%</td>        
+    <td class="goalCols"  bgcolor="#481C60" ></td>
+        <td class="goalCols" align="center">{{fmtPct(startCoverPct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(currentCoverPct)}}</td> 
+    <td class="goalCols" align="center" bgcolor="#E4FFE4">{{fmtPct(coverIncreasePct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(goalPct)}}</td>
+    <td class="goalCols" align="center" bgcolor="#E4FFE4"><b>{{fmtPct(progressPct)}}</b></td>         
+</tr>                
+</tbody>
+</table>
+
+<br/>&nbsp;<br/>
+</div>
+
+<a name="coordinatorAnchor"></a>
+
+<div align="center" id="coordinatorDiv">
+<div id="coordinatorDivTitle"><font size="+1">Coordinators</font></div>
+
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Division</font></td>
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Reg Director</font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Coordinator</font></td>        
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Ldrs</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Compl Pct</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Supporters<br/>of Existing<br/>Ldrs</font></td>                                 
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Total New Ldrs<br/>(3+ Noms)</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Working<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New<br/>Ldrs<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New<br/>Supporters<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Ldr<br/>Completed<br/>Pct</font></td>                         
+    <td bgcolor="#481C60" width="1%" align="center" class="goalCols"><font size="-2" color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Starting<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Increase</font></td>                                 
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Goal</font></td>                                     
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Progress<br/>To Goal</font></td>                                         
+</tr>
+<tbody class="coordinatorRowTemplate" >
+<tr valign="top">
+    <td align="center">{{divLink}}</td>
+    <td align="center">{{regionalDirectorLink}}</td>  
+    <td align="center">{{coordinatorLink}}</td>      
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, EXISTING, LEADERS])}}</td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator,EXISTING, SUPPORTERS])}}</td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, EXISTING, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center" bgcolor="#E4FFE4">{{(100.0 * getCounter([COORDINATOR, div, regionalDirector, coordinator, EXISTING, SUPPORTERS, WORKING, COMPLETED]) / (0.0001 + getCounter([COORDINATOR, div, regionalDirector, coordinator, EXISTING, SUPPORTERS]))).toFixed(0)}}%</td>        
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, EXISTING, NEW, ADJUSTMENT])}}</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, NEW, LEADERS])}}</td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, NEW, LEADERS, WORKING])}}</td>
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, NEW, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, NEW, LEADERS, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([COORDINATOR, div, regionalDirector, coordinator, NEW, SUPPORTERS, COMPLETED, COMPLETED])}}</td>        
+    <td align="center" bgcolor="#E4FFE4">{{ (100.0 * getCounter([COORDINATOR, div, regionalDirector, coordinator, NEW, LEADERS, COMPLETED]) / (0.0001 + (getCounter([COORDINATOR, div, regionalDirector, coordinator, NEW, LEADERS, WORKING])))).toFixed(0)  }}%</td>        
+    <td class="goalCols"  bgcolor="#481C60" ></td>
+        <td class="goalCols" align="center">{{fmtPct(startCoverPct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(currentCoverPct)}}</td> 
+    <td class="goalCols" align="center" bgcolor="#E4FFE4">{{fmtPct(coverIncreasePct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(goalPct)}}</td>
+    <td class="goalCols" align="center" bgcolor="#E4FFE4"><b>{{fmtPct(progressPct)}}</b></td>         
+</tr>                
+</tbody>
+</table>
+
+<br/>&nbsp;<br/>
+</div>
+
+
+<a name="organizerAnchor"></a>
+
+<div align="center" id="organizerDiv">
+<div id="organizerDivTitle"><font size="+1">Organizers</font></div>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Division</font></td>
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Reg Director</font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Coordinator</font></td>        
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Organizer</font></td>     
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Ldrs</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Compl Pct</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Supporters<br/>of Existing<br/>Ldrs</font></td>                             
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Total New Ldrs<br/>(3+ Noms)</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Working<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New<br/>Ldrs<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New<br/>Supporters<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">New Ldr<br/>Completed<br/>Pct</font></td>                         
+    <td bgcolor="#481C60" width="1%" align="center" class="goalCols"><font size="-2" color="white"></font></td> 
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Starting<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Increase</font></td>                                 
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Goal</font></td>                                     
+    <td bgcolor="#481C60" width="6%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Progress<br/>To Goal</font></td>                                         
+</tr>
+<tbody class="organizerRowTemplate" >
+<tr valign="top">
+    <td align="center"><font size="-1">{{divLink}}</font></td>
+    <td align="center"><font size="-1">{{regionalDirectorLink}}</font></td>  
+    <td align="center"><font size="-1">{{coordinatorLink}}</font></td>      
+    <td align="center"><font size="-1">{{organizerLink}}</font></td>     
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, EXISTING, LEADERS])}}</td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,EXISTING, SUPPORTERS])}}</td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, EXISTING, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center" bgcolor="#E4FFE4">{{(100.0 * getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, EXISTING, SUPPORTERS, WORKING, COMPLETED]) / (0.0001 + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, EXISTING, SUPPORTERS]))).toFixed(0)}}%</td>        
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, EXISTING, NEW, ADJUSTMENT])}}</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, NEW, LEADERS])}}</td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, NEW, LEADERS, WORKING])}}</td>
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, NEW, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, NEW, LEADERS, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, NEW, SUPPORTERS, COMPLETED, COMPLETED])}}</td>        
+    <td align="center" bgcolor="#E4FFE4">{{ (100.0 * getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, NEW, LEADERS, COMPLETED]) / (0.0001 + (getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, NEW, LEADERS, WORKING])))).toFixed(0)  }}%</td>        
+    <td class="goalCols"  bgcolor="#481C60" ></td>
+        <td class="goalCols" align="center">{{fmtPct(startCoverPct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(currentCoverPct)}}</td> 
+    <td class="goalCols" align="center" bgcolor="#E4FFE4">{{fmtPct(coverIncreasePct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(goalPct)}}</td>
+    <td class="goalCols" align="center" bgcolor="#E4FFE4"><b>{{fmtPct(progressPct)}}</b></td>      
+</tr>                
+</tbody>
+</table>
+
+
+<br/>&nbsp;<br/>
+</div>
+
+
+
+<a name="employerAnchor"></a>
+
+<div align="center" id="employerDiv">
+<div id="employerDivTitle"><font size="+1">Employers</font></div>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Division</font></td>
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Reg Director</font></td>    
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Coordinator</font></td>        
+    <td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Organizer</font></td>     
+    <td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">Employer</font></td>     
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>    
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Existing<br/>Ldrs</font></td>             
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Existing<br/>Supporters</font></td>             
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Existing<br/>Supporters<br/>Compl Pct</font></td>                     
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New Supporters<br/>of Existing<br/>Ldrs</font></td>                             
+    <td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td> 
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Total New Ldrs<br/>(3+ Noms)</font></td>             
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New Ldrs<br/>Working</font></td>             
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Working<br/>Supporters<br/>Completed</font></td>                 
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New<br/>Ldrs<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New<br/>Supporters<br/>Completed</font></td>                     
+    <td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New Ldr<br/>Completed<br/>Pct</font></td>                         
+    <td bgcolor="#481C60" width="1%" align="center" class="goalCols"><font size="-2" color="white"></font></td> 
+    <td bgcolor="#481C60" width="5%" align="center" class="goalCols"><font size="-2" color="white">Starting<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="5%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>BU Pct</font></td>                             
+    <td bgcolor="#481C60" width="5%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Increase</font></td>                                 
+    <td bgcolor="#481C60" width="5%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Cover<br/>Pct Goal</font></td>                                     
+    <td bgcolor="#481C60" width="5%" align="center" class="goalCols"><font size="-2" color="white">Current<br/>Progress<br/>To Goal</font></td>                                         
+</tr>
+<tbody class="employerRowTemplate" >
+<tr valign="top">
+    <td align="center"><font size="-2">{{divLink}}</font></td>
+    <td align="center"><font size="-2">{{regionalDirectorLink}}</font></td>  
+    <td align="center"><font size="-2">{{coordinatorLink}}</font></td>      
+    <td align="center"><font size="-2">{{organizerLink}}</font></td>     
+    <td align="center"><font size="-1">{{employer}}</font></td>         
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([EMPLOYER, employer, EXISTING, LEADERS])}}</td>
+    <td align="center">{{getCounter([EMPLOYER, employer,EXISTING, SUPPORTERS])}}</td>
+    <td align="center">{{getCounter([EMPLOYER, employer, EXISTING, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center" bgcolor="#E4FFE4">{{(100.0 * getCounter([EMPLOYER, employer, EXISTING, SUPPORTERS, WORKING, COMPLETED]) / (0.0001 + getCounter([EMPLOYER, employer, EXISTING, SUPPORTERS]))).toFixed(0)}}%</td>        
+    <td align="center">{{getCounter([EMPLOYER, employer, EXISTING, NEW, ADJUSTMENT])}}</td>
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{getCounter([EMPLOYER, employer, NEW, LEADERS])}}</td>
+    <td align="center">{{getCounter([EMPLOYER, employer, NEW, LEADERS, WORKING])}}</td>
+    <td align="center">{{getCounter([EMPLOYER, employer, NEW, SUPPORTERS, WORKING, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([EMPLOYER, employer, NEW, LEADERS, COMPLETED])}}</td>    
+    <td align="center">{{getCounter([EMPLOYER, employer, NEW, SUPPORTERS, COMPLETED, COMPLETED])}}</td>        
+    <td align="center" bgcolor="#E4FFE4">{{ (100.0 * getCounter([EMPLOYER, employer, NEW, LEADERS, COMPLETED]) / (0.0001 + (getCounter([EMPLOYER, employer, NEW, LEADERS, WORKING])))).toFixed(0)  }}%</td>        
+    <td class="goalCols"  bgcolor="#481C60" ></td>
+        <td class="goalCols" align="center">{{fmtPct(startCoverPct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(currentCoverPct)}}</td> 
+    <td class="goalCols" align="center" bgcolor="#E4FFE4">{{fmtPct(coverIncreasePct)}}</td>
+    <td class="goalCols" align="center">{{fmtPct(goalPct)}}</td>
+    <td class="goalCols" align="center" bgcolor="#E4FFE4"><b>{{fmtPct(progressPct)}}</b></td>      
+</tr>                
+</tbody>
+</table>
+
+<br/>&nbsp;<br/>
+</div>
+
+
+<a name="leaderAnchor"></a>
+
+<div align="center" id="leaderDiv">
+<div id="leaderDivTitle"><font size="+1">Leaders</font></div>
+<div id="leaderCountDiv"></div>
+<br/>
+<table cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">Division</font></td>
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Reg<br/>Director</font></td>
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Coordinator</font></td>
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Organizer</font></td>
+    <td bgcolor="#481C60" width="8%" align="center"><font color="white">Employer</font></td>               
+    <td bgcolor="#481C60" width="1%" align="center"><font color="white"></font></td>    
+    <td bgcolor="#481C60" width="12%" align="center"><font color="white">Ldr<br/>Name</font></td>              
+    <td bgcolor="#481C60" width="6%" align="center"><font color="white">New?</font></td>     
+    <td bgcolor="#481C60" width="12%" align="center"><font color="white">Dept</font></td>                  
+    <td bgcolor="#481C60" width="15%" align="center"><font color="white">Leader<br/>Status</font></td>                                      
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Followr<br/>Count</font></td>                                                  
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Follower<br/>Compltd<br/>Count</font></td>                                                  
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Uncovered<br/>Compltd<br/>Count</font></td>                                                      
+</tr>
+<tbody class="leaderRowTemplate" >
+<tr valign="top">
+    <td align="center"><font size="-2">{{sr.Division__c}}</font></td>
+    <td align="left"><font size="-2">{{regionalDirectorLink}}</font></td>
+    <td align="center"><font size="-2">{{coordinatorLink}}</font></td>
+    <td align="center"><font size="-2">{{organizerLink}}</font></td>
+    <td align="center"><font size="-2">{{toProperCase(sr.Employer_Name__c)}}</font></td>                
+    <td bgcolor="#481C60" ></td>
+    <td align="center">{{sr.Contact_Name__c}}</td>
+    <td align="center">{{newLeader}}</td>    
+    <td align="center">{{toProperCase(sr.Department__c)}}</td>
+    <td align="center">{{responseLink}}{{overrideInfo}}</td>
+    <td align="center">{{followerCount}}</td>
+    <td align="center">{{petitionCount}}{{errorText}}</td>
+    <td align="center">{{uncoveredCount}}</td>    
+</tr>                
+</tbody>
+</table>
+<br/>&nbsp;<br/>
+
+</div>
+
+<!--
+<table>
+<tr valign="top">
+<td>
+<div align="center" id="ecommDiv">
+<table width="100%" cellpadding="5" cellspacing="0">
+  <tr valign="bottom">
+
+    <td bgcolor="#481C60" width="25%" align="center"><font color="white">EBoard</font></td>              
+    <td bgcolor="#481C60" width="25%" align="center"><font color="white">Employer</font></td>  
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Leaders<br/>Running</font></td>                  
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">EBoard<br/>Followers</font></td>                                      
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Compltd<br/>Count</font></td>                                                  
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">Compltd<br/>Pct</font></td>                                                      
+    <td bgcolor="#481C60" width="10%" align="center"><font color="white">New Card<br/>Count</font></td>                                                  
+</tr>
+<tbody class="ecommRowTemplate" >
+<tr valign="top">
+    <td align="center">{{eboardName}}</td>
+    <td align="left">{{toProperCase(employer)}}</td>
+    <td align="center">{{leaderCount}}</td>
+    <td align="center">{{followerCount}}</td>
+    <td align="center">{{petitionCount}}</td>
+    <td align="center">{{(100.0 * petitionCount / followerCount).toFixed(0)}}%</td>
+    <td align="center">{{cardCount}}</td>
+</tr>                
+</tbody>
+</table>
+<br/>&nbsp;<br/>
+
+</div>
+</td>
+</tr>
+</table>
+
+<a name="deptAnchor"></a>
+<div id="deptDivTitle"><font size="+1"></font></div>
+<div align="center" id="deptDiv"></div>
+
+<a name="empAnchor"></a>
+<div id="empDivTitle"><font size="+1"></font></div>
+<div align="center" id="empDiv"></div>
+-->
+
+</div>
+
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+
+<script language="JavaScript">
+
+
+var BASE_DATE = moment("2017-10-23", "YYYY-MM-DD").toDate();
+
+$("#mainDiv").hide();
+$("#ecommDiv").hide(); 
+
+
+
+
+
+var debugString = "";
+var debugWriter = "";
+
+
+
+var lastRecord = null;
+
+var ALL = "ALL";
+
+
+var CODE_ALL_LDRS = "501";
+var CODE_COMPLETION = "502";
+var CODE_DEPT_LDRS = "504";
+
+var COMPLETED = CODE_COMPLETION;
+var COMPLETION = CODE_COMPLETION;
+
+
+var NEW_LDR = "NEW_LDR";
+var NEW = "NEW";
+
+var LEADER = "LEADER";
+
+var overSubscribedSet = [];
+
+var DISTRICT = "DISTRICT";
+var SEAT = "SEAT";
+var EMPLOYER = "EMPLOYER";
+var EBOARD = "EBOARD";
+var LEADERS = "LEADERS";
+
+var EXISTING = "EXISTING";
+var SUPPORTERS = "SUPPORTERS";
+var WORKING = "WORKING";
+var ADJUSTMENT = "ADJUSTMENT";
+
+var TURF = "TURF";
+var COORDINATOR = "COORDINATOR";
+var ORGANIZER = "ORGANIZER";
+
+var COPE = "COPE";
+var SHIFT = "SHIFT";
+var AGE_RANGE = "AGE_RANGE";
+
+var REGIONAL_DIRECTOR = "REGIONAL_DIRECTOR";
+var DIVISION = "DIVISION";
+
+var OVERRIDE = "OVERRIDE";
+var GOAL = "GOAL";
+var COVERAGE = "COVERAGE";
+var COVER = COVERAGE;
+var UNCOVERED = "UNCOVERED";
+
+var STARTING = "STARTING";
+var START = STARTING ;
+
+var BU = "BU";
+var DEPARTMENT = "DEPARTMENT";
+
+var LDRLDR = "LDRLDR";
+var LAST_7_DAYS = "LAST_7_DAYS"; 
+ 
+var DIVS = ["HOSPITAL", "KAISER"];
+
+var TEST = "TEST";
+
+var countMap = {};
+
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+function fmtPct(pDecimal) {
+  return "" + (100.0 * pDecimal).toFixed(0) + "%";
+}
+
+function processTemplate(pTemplate) {
+var templateVars = pTemplate.match(/{{([^{}]+)}}/g);
+var newWriter = pTemplate;
+for (var q = 0; q < templateVars.length; q++) {  
+   //alert("processing: _" + templateVars[q] + "_"); 
+   var evalCode = templateVars[q].substring(2, templateVars[q].length -2);
+   var evalValue = eval(evalCode);
+   newWriter = newWriter.replace(templateVars[q], evalValue);
+}
+return newWriter;
+}
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              pWorksite = pWorksite.replace(/\./g,'');
+              pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return toProperCase(dept);
+}
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == null || mode == "null" || mode == "") {
+  mode = "summary"; 
+}
+mode = mode.toLowerCase();
+
+  $("#filterDiv").html("Mode = " + toProperCase(mode));
+
+
+var filter = "{!$CurrentPage.parameters.filter}";
+
+//$(function() {
+
+if (filter == null || filter == "null" || filter == "") {
+  filter = null;
+} else {
+  filter = filter.toLowerCase();
+  $("#filterDiv").html($("#filterDiv").html() + "<br/>Filter = " + toProperCase(filter) );
+}
+$("#filterDiv").html($("#filterDiv").html() +  "<br/>&nbsp;<br/>");
+
+
+var corporation = "{!$CurrentPage.parameters.corporation}";
+if (corporation == null || corporation == "null" || corporation == "") {
+  corporation = null;
+}
+if (corporation != null) {
+  $("#filterDiv").html("Mode = " + toProperCase(mode) + "<br/>" + "Corporation = " + toProperCase(corporation) +  "<br/>&nbsp;<br/>");
+}
+
+var Turf = {};
+
+function getEmployers(pStaff) {
+  var emWriter = "";
+  for (var emName in Turf) {
+     var turfa = Turf[emName];
+     if (turfa.Organizer.toLowerCase()  == pStaff.toLowerCase()  || turfa.Coordinator.toLowerCase() == pStaff.toLowerCase() || turfa.RegionalDirector.toLowerCase()  == pStaff.toLowerCase() )   {
+       if (emWriter != "") {
+         emWriter += "; ";
+       }
+       emWriter += toProperCase(emName);
+     }
+   }
+   return emWriter;
+}
+
+
+//
+// multiplier for testing purposes.  This should be set to 1.0 for production reports
+//
+var MULTIPLIER = 1.0;
+if (MULTIPLIER > 1.0) {
+  alert("Warning multiplier for testing is greater than 1.0.  If this is a production report please contact Data Group.");
+}
+
+var uid = null;
+var title = null;
+var userFullName = null;
+
+var divisionSet = new Array();
+var districtSet = new Array();
+var seatSet = new Array();
+
+var commentsMap = {};
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var user = sforce.connection.getUserInfo();
+    var userName = user.userName;
+    var query = "SELECT ID, Name, Division, Title from User WHERE User.username=\'" + userName + "\'";
+    //debugWriter += query + "<br/>\n";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length != 1) throw "unable to find user";
+    uid = records[0].Id;
+    userFullName = records[0].Name;
+    title = records[0].Title;
+    division = records[0].Division;
+    var division2 = division.toLowerCase();
+    
+    var isOrganizer = false;
+    var isCoordinator = false;    
+    var isOrganizer2 = false;
+    var isCoordinator2 = false;    
+    var isKaiser = false;
+    var isHospital = false;    
+    if (division2.indexOf("kaiser") >= 0 || division2.indexOf("hosp") >= 0) {
+      if (title.toLowerCase().indexOf("organizer") >= 0 || title.toLowerCase().indexOf("rep/org") >= 0) {
+        //alert(" is an organizer!");
+        if (userFullName.toLowerCase().indexOf("manuel hernandez") >= 0) {
+          isOrganizer = true;
+        } else {
+          isOrganizer = true;
+        }
+      }
+      if (title.toLowerCase().indexOf("coordinator") >= 0) {
+        if (userFullName.toLowerCase().indexOf("corson") < 0 && userFullName.toLowerCase().indexOf("guardado") < 0 && userFullName.toLowerCase().indexOf("carlos hernandez") < 0 && userFullName.toLowerCase().indexOf("chante barnes") < 0) {
+          isCoordinator = true;
+        }
+        //alert(" is a coordinator!");        
+      }
+      if (division2.indexOf("kaiser") >= 0) {
+        isKaiser = true;
+        if (isCoordinator == false && isOrganizer == false) {
+          //filter = "kaiser";
+        }
+      } else {
+        isHospital = true;
+        if (isCoordinator == false && isOrganizer == false) {
+          //filter = "hospital";
+        }        
+      }
+    }
+  
+    //
+    //  get department counts
+    //  partitioned by Division and Employer ID to avoid hitting governor limits.
+    //  
+    var deptSet = new Array();
+    var deptSet2 = new Array();    
+    
+    var shiftSet = new Array();
+    var ageRangeSet = new Array();
+    
+    var universeSet = [];
+    var statusMap = {};
+    var completedSet = [];    
+    var newCardSet = [];       
+    var last7Set = [];        
+    var ldrSet = [];
+    var ldrMap = {};
+    
+    var ecommSortSet = [];
+    var eboardEcommMap = {};
+eboardMap = {};
+    var districtEcommMap = {};
+    
+    if (1 == 1) {
+       
+    }
+
+    var emCorpMap = {};
+        
+    var query = "select Id, Name, Employer_Id__c, Region__c, Account_Group__c, Regional_Director__r.Name, Coordinator__r.Name, Organizer_1__r.Name, District_2017__r.Name, Constituency__r.Name, Hospital_System__c  from Account where MO_Active__c = true AND (NOT Name like \'pomona valley%\') AND (NOT Name like \'parkview%\') AND ( Account_Group__c = \'KAISER\' OR Account_Group__c = \'HOSPITAL\' ) AND Regional_Director__c != null AND Regional_Director__r.Name != \'jason capell\' ";
+    if (isOrganizer) {
+       query += " AND (Organizer_1__c = \'" + uid + "\' OR Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       query += " AND (Coordinator__c = \'" + uid + "\' ) ";    
+    }
+    if (isKaiser) {
+      //query += " AND Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account_Group__c like \'HOSPITAL%\' ";
+    } 
+    if (corporation != null) {
+      query += " AND Hospital_System__c like \'" + corporation + "%\' ";
+    }    
+    var emSet = [];
+    //debugWriter += query + "<br/>\n";
+    //alert("account query =  " + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      
+      if (1 == 1) {
+
+        emCorpMap[records1[i].Name.toLowerCase()] = records1[i].Hospital_System__c;
+      
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+        Turf[records1[i].Name].RegionalDirector = "Vacant";
+        if (records1[i].Regional_Director__r != null) {    
+          Turf[records1[i].Name].RegionalDirector = records1[i].Regional_Director__r.Name;         
+        } else {
+          Turf[records1[i].Name].RegionalDirector = "Vacant";         
+        }
+        
+
+        if (records1[i].Account_Group__c.trim().toUpperCase() == "HOSPITAL") {
+          //Turf[records1[i].Name].RegionalDirector = records1[i].Region__c + " - " + Turf[records1[i].Name].RegionalDirector;         
+        }  
+        //Turf[records1[i].Name].RegionalDirector = Turf[records1[i].Name].RegionalDirector.replace("(Kathryn) ", "");
+             
+        Turf[records1[i].Name].Organizer = "Vacant";
+        if (records1[i].Organizer_1__r != null) {         
+          Turf[records1[i].Name].Organizer = records1[i].Organizer_1__r.Name;
+        }
+        Turf[records1[i].Name].Coordinator = "Vacant";
+        if (records1[i].Coordinator__r != null) {         
+          Turf[records1[i].Name].Coordinator = records1[i].Coordinator__r.Name;
+        }
+        
+        if (filter != null) {
+          if (!isCoordinator && Turf[records1[i].Name].Organizer.toLowerCase() == filter) {
+            isOrganizer2 = true;
+          } else if (Turf[records1[i].Name].Coordinator.toLowerCase() == filter) {
+            isCoordinator2 = true;
+          }
+        }
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+      
+        if (divisionSet.indexOf(records1[i].Account_Group__c) < 0) {
+          divisionSet.push(records1[i].Account_Group__c);
+        }
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+
+        if (emSet.indexOf(records1[i].Name) < 0) {
+          emSet.push(records1[i].Name);
+        }
+        if (records1[i].District_2017__r != null && districtSet.indexOf(records1[i].District_2017__r.Name) < 0) {
+          districtSet.push(records1[i].District_2017__r.Name);
+          Turf[records1[i].Name].District = records1[i].District_2017__r.Name;
+        }
+        if (records1[i].Constituency__r != null && seatSet.indexOf(records1[i].Constituency__r.Name) < 0) {
+          seatSet.push(records1[i].Constituency__r.Name);
+          Turf[records1[i].Name].Seat = records1[i].Constituency__r.Name;          
+        }
+          
+      }
+    }
+    
+    var query = "select Account.Name, Count(Id) from Contact where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND (Account.Account_Group__c = \'KAISER\' OR Account.Account_Group__c = \'HOSPITAL\' ) and In_Current_BU__c = true "
+    if (isOrganizer) {
+       query += " AND (Account.Organizer_1__c = \'" + uid + "\' OR Account.Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       query += " AND (Account.Coordinator__c = \'" + uid + "\' ) ";    
+    }
+    if (isKaiser) {
+      //query += " AND Account.Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account.Account_Group__c like \'HOSPITAL%\' ";
+    }     
+    if (corporation != null) {
+      query += " AND Account.Hospital_System__c like \'" + corporation + "%\' ";
+    }
+    query += " AND Account.Regional_Director__r.Name != \'Jason Capell\' ";    
+    query += " group by Account.Name";
+    //debugWriter += query + "<br/>\n";   
+    //alert("bu query = " + query);
+     
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0; i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      //alert(records1[i].Name + "=" + records1[i].expr0); 
+      
+      if (Turf[records1[i].Name] != null) {
+        
+        Turf[records1[i].Name].BU_Count = records1[i].expr0;
+      
+        var organizer = Turf[records1[i].Name].Organizer;
+        var coordinator = Turf[records1[i].Name].Coordinator;
+        var regionalDirector = Turf[records1[i].Name].RegionalDirector;   
+        var div = Turf[records1[i].Name].Division;
+     
+        incrementCounter([ALL, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([DIVISION, div, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([DIVISION, "ALL", BU], parseFloat(records1[i].expr0));           
+        incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU], parseFloat(records1[i].expr0));           
+        incrementCounter([COORDINATOR, div, regionalDirector, coordinator, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU], parseFloat(records1[i].expr0));                 
+        incrementCounter([EMPLOYER, records1[i].Name, BU],  parseFloat(records1[i].expr0));
+      }
+    }    
+    
+    if (isOrganizer || isCoordinator) {
+      //alert(" employers = " + JSON.stringify(emSet));
+    }
+    //alert("retrieving users");
+    
+    //debugWriter += "<br/>&nbsp;<br/> Creating Turf Sort Set... <br/>&nbsp;<br/>\n";
+
+        
+    var turfSortSet = new Array();
+    var coorSortSet = new Array();    
+    var regDirSortSet = new Array();  
+    
+    for (var emName in Turf) {
+        var turfa = Turf[emName];
+        //alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer]);
+        var div = turfa.Division.toLowerCase().trim();
+        if (turfSortSet.indexOf(turfKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          incrementCounter([DIVISION, div, TURF], 1.0);
+          incrementCounter([DIVISION, "ALL", TURF], 1.0);          
+          incrementCounter([REGIONAL_DIRECTOR, div, turfa.RegionalDirector, TURF], 1.0);
+          incrementCounter([COORDINATOR, div, turfa.RegionalDirector, turfa.Coordinator, TURF], 1.0);
+          incrementCounter([ORGANIZER, div, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer, TURF], 1.0);                    
+          turfSortSet.push(turfKey);
+        }
+        
+        var coorKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator]);
+        if (coorSortSet.indexOf(coorKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant" && turfa.Coordinator.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            coorSortSet.push(coorKey);
+          }
+        }    
+        
+        var regDirKey = JSON.stringify([turfa.Division, turfa.RegionalDirector]);
+        if (regDirSortSet.indexOf(regDirKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            regDirSortSet.push(regDirKey);
+          }
+        }   
+        
+    }
+    
+    turfSortSet.sort();
+    coorSortSet.sort();
+    regDirSortSet.sort();
+    
+    //alert("got Account Team");
+
+    var ccSet = [];
+    var ccMap = {};    
+
+    var ldrRoleMap = {};
+
+    //
+    //  get Survey Responses for Consolidated Leaders
+    //
+    var leaderAssessMap = {};
+    
+    var ggg = 0;
+    
+    var divArray = ["HOSPITAL", "KAISER"];
+    
+    var completionSet = [];
+    var petitionCountMap = {};
+    var petitionCidMap = {};    
+    var petitionWorkingMap = {};    
+    var leaderMap = {};
+    var reachSet = [];
+
+    var newIntakeSet = [];
+    var newIntakeMap = {};    
+    var countedCompSet = [];
+
+    var signerLeaderMap = {};
+
+    var completedLeaderSet = [];
+
+    //alert("reading survey responses....");
+    
+    
+    var query = "select FID__c, Account.District_2017__r.ConstituencyName__c from Contact where Executive_Body_Title__c = \'Executive Committee\' ";
+    //alert("district ecomm query = " + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records');         
+    //alert("found ecomms = " + records1.length); 
+    for ( var i=0; i < records1.length; i++) {     
+      districtEcommMap[records1[i].Account.District_2017__r.ConstituencyName__c] = records1[i].FID__c;
+    }
+    
+      
+      //alert("completed set = " + completedSet.length);
+
+      //debugWriter += "<br/>________________________________________________________________________________________<br/>\n";
+       
+
+   
+      //
+      //   START SURVEY RESPONSE QUERY
+      //
+      var query = "select Id, Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, Contact__r.Worksite__c, ";
+      query += "      Department__c, Contact__r.Shift__c, Contact__r.Age_Range__c, Question_Name__c, Survey_Code__c, Response_Value__c, ";
+      query += "      Add_Info_Numeric__c, Collected_By__c, Collected_By_Name__c, Collected_By_Employer_Name__c,  ";
+      query += "      Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, ";
+      query += "      Contact__r.COPE_Pledge__c, Contact__r.COPE_Baseline_Pledge__c  , Add_Info__c, Collected_By__r.Worksite__c, ";
+      query += "      Collected_By__r.Department, Contact__r.In_Current_BU__c, Collected_By__r.Age_Range__c, Collected_By__r.Shift__c, ";
+      query += "      Collected_By__r.In_Current_BU__c, Survey_How_Old__c, Report_Group__c, Contact__r.Tier_Staff__c, ";
+      query += "      Collected_By__r.Tier_Staff__c, Collected_By__r.FID__c, LastModifiedBy.Name, ";
+      query += "      Contact__r.Stretch_Leader__r.FID__c, ";      
+      query += "      Contact__r.Stretch_EBoard_Team__c, Contact__r.Tier_1_Leader__r.FID__c,";
+      query += "      Contact__r.Stretch_Team_Intake_Phase__c ";
+      query += "   from Survey_Response__c where CreatedDate >= 2017-10-23T04:04:00Z AND (";
+      query += " (NOT Employer_Name__c like \'pomona valley%\') AND (NOT Employer_Name__c like \'parkview%\')  ";
+      query += " ) ";       
+        query += " AND (Survey_Code__c = \'" + CODE_COMPLETION + "\' OR Survey_Code__c = \'" + CODE_ALL_LDRS + "\' OR Survey_Code__c = \'" + CODE_DEPT_LDRS + "\')  ";
+        if (filter != null) {
+          query += " AND (Collected_By__r.Account.Account_Group__c = \'" + filter + "\' OR ";
+          query += " Contact__r.Account.Account_Group__c = \'" + filter + "\' OR ";          
+          query += " Collected_By__r.Account.Regional_Director__r.Name=\'" + filter + "\' OR ";
+          query += " Regional_Director__c =\'" + filter + "\' OR ";
+          if (filter.indexOf("vacant") == 0) {
+            query += " Collected_By__r.Account.Coordinator__c.Name=null OR ";
+            query += " Coordinator__c = null OR ";
+            query += " Collected_By__r.Account.Organizer_1__c.Name=null OR ";
+            query += " Organizer_1__c.Name=null OR ";                    
+          } else {
+            query += " Collected_By__r.Account.Coordinator__r.Name =\'" + filter + "\' OR ";
+            query += " Coordinator__c =\'" + filter + "\' OR ";
+            query += " Collected_By__r.Account.Organizer_1__r.Name =\'" + filter + "\' OR ";
+            query += " Organizer_1__c =\'" + filter + "\' OR ";                    
+          }
+          query += " Collected_By__r.Account.Name =\'" + filter + "\'  OR ";
+          query += " Employer_Name__c =\'" + filter + "\'  ";        
+          query += ") ";
+        }
+
+        if (isCoordinator || isOrganizer) {
+          query += " AND ( ";
+          for (var j = 0; j < emSet.length; j++) {
+            if (j > 0) {
+              query += " OR ";
+            }
+            query += " Employer_Name__c = \'" + emSet[j] + "\' ";
+          }        
+          query += " ) ";
+        }    
+        if (corporation != null) {
+          query += " AND Contact__r.Account.Hospital_System__c like \'" + corporation + "%\' ";
+        }        
+          
+        //alert("" + p + " = " + query);
+        
+        //debugWriter += query + "<br/>\n";
+        //alert("sr query = "+ query);
+        var result = sforce.connection.query(query); 
+
+        var queryMore = true; 
+        debugString += query + " - " + records1.length + "<br/>";
+
+        
+        while (queryMore) {
+
+          var records1 = result.getArray('records'); 
+          for(var i=0;i < records1.length; i++) {   
+            //alert(JSON.stringify(records1[i]));
+  
+            lastRecord = records1[i];
+            var a = records1[i];
+            var organizer = "Vacant";
+            var coordinator = "Vacant";
+            var regionalDirector = "Vacant"; 
+            var div = records1[i].Division__c;    
+            var emName =   records1[i].Employer_Name__c;
+            var district = "";
+            var seat = ""; 
+            records1[i].DebugStep = "0";
+            records1[i].LeaderFID = "0000-000000000";
+            if (records1[i].FID__c != null) {         
+              records1[i].LeaderFID = records1[i].FID__c;            
+            }
+            records1[i].DebugStep = "1";
+            if (records1[i].Collected_By_Employer_Name__c != null && records1[i].Collected_By_Employer_Name__c != "" && Turf[records1[i].Collected_By_Employer_Name__c ] != null) {
+                organizer = Turf[records1[i].Collected_By_Employer_Name__c ].Organizer;
+                coordinator = Turf[records1[i].Collected_By_Employer_Name__c ].Coordinator;
+                regionalDirector = Turf[records1[i].Collected_By_Employer_Name__c ].RegionalDirector;                      
+                emName =  records1[i].Collected_By_Employer_Name__c;              
+                district = Turf[records1[i].Collected_By_Employer_Name__c ].District;
+                seat = Turf[records1[i].Collected_By_Employer_Name__c ].Seat;   
+                records1[i].DebugStep = "1b";
+                if (records1[i].Collected_By__r != null && records1[i].Collected_By__r.FID__c != null) {
+                  records1[i].LeaderFID = records1[i].Collected_By__r.FID__c;
+                }
+            } else if (Turf[records1[i].Employer_Name__c] != null) {
+                organizer = Turf[records1[i].Employer_Name__c].Organizer;
+                coordinator = Turf[records1[i].Employer_Name__c].Coordinator;
+                regionalDirector = Turf[records1[i].Employer_Name__c].RegionalDirector;              
+                district = Turf[records1[i].Employer_Name__c].District;
+                seat = Turf[records1[i].Employer_Name__c].Seat;   
+            }  
+            records1[i].DebugStep = "3";
+            if (records1[i].Contact__r != null && records1[i].Contact__r.Stretch_Leader__r != null && records1[i].Contact__r.Stretch_Leader__r.FID__c != null) {
+              records1[i].LeaderFID = records1[i].Contact__r.Stretch_Leader__r.FID__c;                           
+            }
+                     
+            var employer = emName;
+               
+            var response = records1[i].Response_Value__c.trim().substring(0,1).toLowerCase();
+            var srCode = records1[i].Survey_Code__c;
+            var reportGroup = records1[i].Report_Group__c;
+
+            
+
+            records1[i].Employer = emName ;
+            records1[i].Organizer = organizer;
+            records1[i].Coordinator = coordinator;
+            records1[i].RegionalDirector = regionalDirector;
+            records1[i].Division = div; 
+            records1[i].CID = records1[i].Contact__c;
+
+            records1[i].DebugStep = "7";
+            if (records1[i].Contact__r != null && records1[i].Contact__r.Stretch_Leader__r != null && records1[i].Contact__r.Stretch_Leader__r.FID__c != null) {
+              records1[i].LeaderFID = records1[i].Contact__r.Stretch_Leader__r.FID__c; 
+            }            
+            
+            if (srCode == CODE_ALL_LDRS) {
+              records1[i].DebugStep = "11";
+              records1[i].LeaderName = records1[i].Contact_Name__c;              
+              leaderMap[records1[i].FID__c] = records1[i];
+              ldrSet.push(records1[i].FID__c);
+              statusMap[records1[i].FID__c] = response;      
+            } else if (srCode == CODE_COMPLETION) {
+              records1[i].DebugStep = "21";
+              completedSet.push(records1[i].FID__c);
+              if (records1[i].Collected_By__r != null && records1[i].Collected_By__r.FID__c != null) {
+                signerLeaderMap[records1[i].FID__c] = records1[i].Collected_By__r.FID__c;
+              }
+              if (records1[i].Contact__r != null) {
+                var intake = records1[i].Contact__r.Stretch_Team_Intake_Phase__c;
+                if (intake != null && (intake.toLowerCase().indexOf("phase 4") >= 0 || intake.toLowerCase().indexOf("phase 5") >= 0)) {
+                  newIntakeSet.push(records1[i].FID__c);
+                  newIntakeMap[records1[i].FID__c] = records1[i];
+                  incrementCounter([LEADER, SUPPORTERS, NEW, records1[i].LeaderFID], 1.0);
+                }
+              }
+            }
+          }
+        if (result.getBoolean("done")) {
+            queryMore = false;
+        } else {
+            result = sforce.connection.queryMore(result.queryLocator);
+        }          
+      }     
+      //alert("completed set = " + completedSet.length);
+      // 
+      //   END SURVEY RESPONSE QUERY
+      //    
+
+    //
+    // START NEW LEADER QUERY
+    //
+    var newLeaderSet = [];
+    var query = "select FID__c from Contact where Stretch_Ldr_Promotion_Status__c like \'%phase 4%\' or Stretch_Ldr_Promotion_Status__c like \'%phase 5%\' ";
+        var result = sforce.connection.query(query); 
+
+        var queryMore = true;
+        
+        while (queryMore) {  
+          var records1 = result.getArray('records');          
+          for (var i = 0; i < records1.length; i++) {
+            newLeaderSet.push(records1[i].FID__c);
+          }
+        
+          if (result.getBoolean("done")) {
+            queryMore = false;
+          } else {
+            result = sforce.connection.queryMore(result.queryLocator);
+          }        
+        }
+        
+        //alert("new leader set size = " + newLeaderSet.length);
+    //
+    // END NEW LEADER QUERY
+    //
+
+ 
+    
+    
+
+    //
+    // START CONTACTS QUERY AND COUNTS
+    //
+    var missingLeaderSet = [];
+    var allContactsMap = {};
+        var query = "select Id, Account.District_2017__r.ConstituencyName__c, Stretch_Leader__r.Account.Account_Group__c, Stretch_Leader__r.Account.Regional_Director__r.Name, Stretch_Leader__r.Account.Coordinator__r.Name, Stretch_Leader__r.Account.Organizer_1__r.Name, Stretch_Leader__r.Account.Name, FID__c, Account.name, Worksite__c, Department, Shift__c, Age_Range__c, COPE_Pledge__c, Stretch_Leader__r.FID__c, Account.Account_Group__c, Account.Regional_Director__r.Name, Account.Coordinator__r.Name, Account.Organizer_1__r.Name, Stretch_Member_Card_Signed__c, Stretch_Member_Card_Upload_Date__c, Stretch_EBoard_Team__c, Tier_1_Leader__r.FID__c, Executive_Body_Title__c, Name, Stretch_Team_Intake_Phase__c ";
+        query += " from Contact ";
+        query += " where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND  (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6 ) AND ";
+        query += " Account.Regional_Director__c != null  " ;
+        //query += " AND Account.District_2017__c != null ";
+        //query += " AND ((Stretch_Same_Facility__c = true AND Stretch_Leader__c != null AND (NOT Stretch_Team_Intake_Phase__c like \'%phase 4%\')) OR Stretch_Ldr_Promotion_Status__c = \'Promoted\' OR Executive_Body_Title__c = \'Executive Board\' OR Executive_Body_Title__c = \'Executive Committee\' OR Stretch_EBoard_Team__c = TRUE ) ";
+        //query += " AND (Stretch_Leader__c = null OR Stretch_Leader__r.Account.Regional_Director__c != null) AND Account.Regional_Director__c != null ";
+        if (filter != null) {
+          query += " AND (Stretch_Leader__r.Account.Account_Group__c = \'" + filter + "\' OR ";
+          query += " Account.Account_Group__c = \'" + filter + "\' OR ";          
+          query += " Stretch_Leader__r.Account.Regional_Director__r.Name=\'" + filter + "\' OR ";
+          query += " Account.Regional_Director__r.Name=\'" + filter + "\' OR ";
+          if (filter.indexOf("vacant") == 0) {
+            query += " Stretch_Leader__r.Account.Coordinator__r.Name=null OR ";
+            query += " Account.Coordinator.Name=null OR ";
+            query += " Stretch_Leader__r.Account.Organizer_1__r.Name=null OR ";
+            query += " Account.Organizer_1__r.Name=null OR ";                    
+          } else {
+            query += " Stretch_Leader__r.Account.Coordinator__r.Name=\'" + filter + "\' OR ";
+            query += " Account.Coordinator__r.Name=\'" + filter + "\' OR ";
+            query += " Stretch_Leader__r.Account.Organizer_1__r.Name=\'" + filter + "\' OR ";
+            query += " Account.Organizer_1__r.Name=\'" + filter + "\' OR ";                    
+          }
+          query += " Stretch_Leader__r.Account.Name =\'" + filter + "\'  OR ";
+          query += " Account.Name =\'" + filter + "\'  ";        
+          query += ") ";       
+        }      
+        if (corporation != null) {
+          query += " AND Account.Hospital_System__c like \'" + corporation + "%\' ";
+        }   
+        
+        
+        //debugWriter += query + "<br/>\n";        
+        //alert ("contact query = " + query);
+        var result = sforce.connection.query(query); 
+
+        var queryMore = true;
+        var cqmDex = 0;        
+        
+        var alreadyCountedLeaderSet = [];
+        var leaderHasWorkingSupporterSet = [];
+                
+        while (queryMore) {  
+          //alert("contacts (" + cqmDex +") = " + records1.length);                
+          var records1 = result.getArray('records');
+          for(var j = 0 ; j < records1.length; j++){
+
+
+            var a = records1[j];
+            lastRecord = a;
+
+            var division = a.Account.Account_Group__c;
+            var div = division;
+            
+
+
+
+            var regDirector = a.Account.Regional_Director__r.Name;
+            var coordinator = "Vacant";
+            if (a.Account.Coordinator__r != null) {
+              coordinator = a.Account.Coordinator__r.Name;
+            }
+            var organizer = "Vacant";          
+            if (a.Account.Organizer_1__r != null) {
+              organizer = a.Account.Organizer_1__r.Name;
+            }
+            var fid = a.FID__c;     
+            var ldrFid =  null;               
+            
+            var followerCategory = "N";
+            var district = "Unknown District";
+            var seat = "Unknown Seat";
+            if (Turf[a.Account.Name] != null) {
+              district = Turf[a.Account.Name].District;
+              seat = Turf[a.Account.Name].Seat;
+            }
+          
+            if (a.Account.District_2017__r != null && a.Account.District_2017__r.ConstituencyName__c != null) {
+              district = a.Account.District_2017__r.ConstituencyName__c;
+            }
+          
+            if (a.Executive_Body_Title__c == "Executive Board" || a.Executive_Body_Title__c == "Executive Committee") {
+              eboardMap[a.FID__c] = a;
+              if (a.Executive_Body_Title__c == "Executive Board") {
+                var ecommFid = districtEcommMap[district];
+                var ecSortKey = JSON.stringify([district, seat, a.Account.Name, a.FID__c, ecommFid]);
+                ecommSortSet.push(ecSortKey);
+              }
+            }
+          
+            var employer = a.Account.Name;
+
+
+
+            var supporterType = NEW;
+            var leaderType = null;
+            var fid = a.FID__c;
+            
+            
+            
+            if (newLeaderSet.indexOf(fid) >= 0 && (statusMap[fid] == null || statusMap[fid].toUpperCase() != "X")) {
+              leaderType = NEW;
+            } else if (newLeaderSet.indexOf(fid) < 0 && ldrSet.indexOf(fid) >= 0 && statusMap[fid].toUpperCase() != "N" && statusMap[fid].toUpperCase() != "X") {
+              leaderType = EXISTING;            
+            }
+            if (leaderType != null) {
+              //alert("found leader = " + fid);
+              if (ldrSet.indexOf(fid) < 0) {
+                ldrSet.push(fid);  
+                
+                a.LeaderName = a.Name;
+                a.CID = a.Id;
+                leaderMap[fid] = a;           
+              }
+              incrementCounter([DIVISION, ALL, leaderType, LEADERS], 1.0);              
+              incrementCounter([DIVISION, div, leaderType, LEADERS], 1.0);    
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, leaderType, LEADERS], 1.0);  
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, leaderType, LEADERS], 1.0);  
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, leaderType, LEADERS], 1.0);  
+              incrementCounter([EMPLOYER, employer, leaderType, LEADERS], 1.0);                                                          
+              alreadyCountedLeaderSet.push(fid);          
+            }
+
+            
+            if (a.Stretch_Leader__r != null && a.Stretch_Leader__r.Account.Regional_Director__r != null) {
+                employer = a.Stretch_Leader__r.Account.Name;
+                division = a.Stretch_Leader__r.Account.Account_Group__c;
+                regDirector = a.Stretch_Leader__r.Account.Regional_Director__r.Name;
+                coordinator = "Vacant";
+                if (a.Stretch_Leader__r.Account.Coordinator__r != null) {
+                  coordinator = a.Stretch_Leader__r.Account.Coordinator__r.Name;
+                }
+                organizer = "Vacant";          
+                if (a.Stretch_Leader__r.Account.Organizer_1__r != null) {
+                  organizer = a.Stretch_Leader__r.Account.Organizer_1__r.Name;
+                }
+                ldrFid = a.Stretch_Leader__r.FID__c;
+                if (statusMap[ldrFid] != null && statusMap[ldrFid].toUpperCase() != "N" && statusMap[ldrFid].toUpperCase() != "X") {
+                  followerCategory = "W";  
+                }
+                incrementCounter([LEADER, ldrFid], 1.0);
+                
+                if (alreadyCountedLeaderSet.indexOf(ldrFid) < 0 && (statusMap[ldrFid] == null || (statusMap[ldrFid].toUpperCase() != "N" && statusMap[ldrFid].toUpperCase() != "X"))) {
+                  leaderType = EXISTING;
+                  incrementCounter([DIVISION, ALL, leaderType, LEADERS], 1.0);              
+                  incrementCounter([DIVISION, div, leaderType, LEADERS], 1.0); 
+                  incrementCounter([REGIONAL_DIRECTOR, div, regDirector, leaderType, LEADERS], 1.0);  
+                  incrementCounter([COORDINATOR, div, regDirector, coordinator, leaderType, LEADERS], 1.0);  
+                  incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, leaderType, LEADERS], 1.0);  
+                  incrementCounter([EMPLOYER, employer, leaderType, LEADERS], 1.0);                       
+                  alreadyCountedLeaderSet.push(ldrFid);                                
+                }
+                
+                if (newLeaderSet.indexOf(ldrFid) < 0) {
+                  supporterType = EXISTING;
+                }
+                incrementCounter([DIVISION, ALL, supporterType, SUPPORTERS], 1.0);
+                incrementCounter([DIVISION, div, supporterType, SUPPORTERS], 1.0);                
+                incrementCounter([REGIONAL_DIRECTOR, div, regDirector, supporterType, SUPPORTERS], 1.0);
+                incrementCounter([COORDINATOR, div, regDirector, coordinator, supporterType, SUPPORTERS], 1.0);
+                incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, supporterType, SUPPORTERS], 1.0);
+                incrementCounter([EMPLOYER, employer, supporterType, SUPPORTERS], 1.0);                                                
+            }
+            
+            a.Division = div;
+            a.RegionalDirector = regDirector;
+            a.Coordinator = coordinator;
+            a.Organizer = organizer;
+            a.Employer = employer;
+            allContactsMap[fid] = a;
+            if (ldrFid != null && leaderMap[ldrFid] == null) {
+              missingLeaderSet.push(ldrFid);
+            }
+            
+            incrementCounter([DIVISION, ALL, TEST], 1.0);              
+            incrementCounter([DIVISION, div, TEST], 1.0);  
+            incrementCounter([REGIONAL_DIRECTOR, div, regDirector, TEST], 1.0);  
+            incrementCounter([COORDINATOR, div, regDirector, coordinator, TEST], 1.0);  
+            incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, TEST], 1.0);  
+            incrementCounter([EMPLOYER, employer, TEST], 1.0);  
+            
+          
+            if (completedSet.indexOf(fid) >= 0) {
+              if (ldrFid != null) {
+                incrementCounter([DIVISION, ALL, supporterType, SUPPORTERS, WORKING, COMPLETED], 1.0);
+                incrementCounter([DIVISION, div, supporterType, SUPPORTERS, WORKING, COMPLETED], 1.0);              
+                incrementCounter([REGIONAL_DIRECTOR, div, regDirector, supporterType, SUPPORTERS, WORKING, COMPLETED], 1.0);              
+                incrementCounter([COORDINATOR, div, regDirector, coordinator, supporterType, SUPPORTERS, WORKING, COMPLETED], 1.0);              
+                incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, supporterType, SUPPORTERS, WORKING, COMPLETED], 1.0);              
+                incrementCounter([EMPLOYER, employer, supporterType, SUPPORTERS, WORKING, COMPLETED], 1.0);              
+              } else {
+                var collectorFid = null;
+                if (signerLeaderMap[fid] != null) {
+                  collectorFid = signerLeaderMap[fid];
+                  incrementCounter([LEADER, UNCOVERED, COMPLETED, collectorFid], 1.0);
+                  incrementCounter([DIVISION, ALL, supporterType, UNCOVERED, COMPLETED], 1.0);
+                  incrementCounter([DIVISION, div, supporterType, UNCOVERED, COMPLETED], 1.0);              
+                  incrementCounter([REGIONAL_DIRECTOR, div, regDirector, supporterType, UNCOVERED, COMPLETED], 1.0);              
+                  incrementCounter([COORDINATOR, div, regDirector, coordinator, supporterType, UNCOVERED, COMPLETED], 1.0);              
+                  incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, supporterType, UNCOVERED, COMPLETED], 1.0);              
+                  incrementCounter([EMPLOYER, employer, supporterType, UNCOVERED, COMPLETED], 1.0);                    
+                }
+              }                                                                   
+              if (ldrFid != null) {
+                incrementCounter([LEADER, COMPLETED, ldrFid], 1.0);
+                if (leaderHasWorkingSupporterSet.indexOf(ldrFid) < 0) {
+                  leaderHasWorkingSupporterSet.push(ldrFid);
+                  incrementCounter([DIVISION, ALL, supporterType, LEADERS, WORKING], 1.0);
+                  incrementCounter([DIVISION, div, supporterType, LEADERS, WORKING], 1.0);
+                  incrementCounter([REGIONAL_DIRECTOR, div, regDirector, supporterType, LEADERS, WORKING], 1.0);
+                  incrementCounter([COORDINATOR, div, regDirector, coordinator, supporterType, LEADERS, WORKING], 1.0);                  
+                  incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, supporterType, LEADERS, WORKING], 1.0);
+                  incrementCounter([EMPLOYER, employer, supporterType, LEADERS, WORKING], 1.0);                                    
+                }
+              }
+            }
+            
+            //
+            // leader map add if not there
+            //
+            if (ldrFid != null && leaderMap[ldrFid] == null) {
+              a.Employer = employer;
+              a.Organizer = organizer;
+              a.Coordinator = coordinator;
+              a.RegionalDirector = regDirector;
+              a.Division = div;   
+              leaderMap[ldrFid] = a;
+              if (statusMap[ldrFid] == null) {
+                statusMap[ldrFid] = "M";
+              }
+            }
+                                 
+                            
+        }      
+        
+        if (result.getBoolean("done")) {
+          queryMore = false;
+        } else {
+          result = sforce.connection.queryMore(result.queryLocator);
+        }
+        cqmDex++
+      }  
+      for (var i = 0; i < missingLeaderSet; i++) {
+        alert("found missing leader = " + missingLeaderSet[i]);
+        leaderMap[missingLeaderSet[i]] = allContactsMap[missingLeaderSet[i]];
+      } 
+      var allContactsMap = null;  
+      
+      //mark leaders that have been coversation-ed by field staff as working
+      for (var i = 0; i < ldrSet.length; i++) {
+        var ldrFid = ldrSet[i];
+        if (leaderHasWorkingSupporterSet.indexOf(ldrFid) < 0 && statusMap[ldrFid] != null && statusMap[ldrFid].toUpperCase().substring(0, 1) == "W") {
+          leaderHasWorkingSupporterSet.push(ldrFid);
+          var a = leaderMap[ldrFid];
+          var div = a.Division;
+          var regDirector = a.RegionalDirector;
+          var coordinator = a.Coordinator;
+          var organizer = a.Organizer;
+          var employer = a.Employer;
+          var supporterType = EXISTING;
+          if (newLeaderSet.indexOf(ldrFid) >= 0) {
+            supporterType = NEW;
+          }
+          incrementCounter([DIVISION, ALL, supporterType, LEADERS, WORKING], 1.0);
+          incrementCounter([DIVISION, div, supporterType, LEADERS, WORKING], 1.0);
+          incrementCounter([REGIONAL_DIRECTOR, div, regDirector, supporterType, LEADERS, WORKING], 1.0);
+          incrementCounter([COORDINATOR, div, regDirector, coordinator, supporterType, LEADERS, WORKING], 1.0);                  
+          incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, supporterType, LEADERS, WORKING], 1.0);
+          incrementCounter([EMPLOYER, employer, supporterType, LEADERS, WORKING], 1.0);          
+        }      
+      }
+         
+      //
+      //   END CONTACTS QUERY
+      //  
+    
+    //
+    // START GOALS QUERY
+    //
+    var query = "select Name, Phase_5_Total_Cover_Goal_Pct__c, Phase_5_Starting_Cover_Pct__c from Account where "
+    query += " ( Account.Account_Group__c like \'KAISER%\' ";
+    query += " OR Account.Account_Group__c like \'HOSPITAL%\' ";
+    query += " ) ";
+    query += " AND Account.Regional_Director__r.Name != \'Jason Capell\' ";      
+    var result = sforce.connection.query(query); 
+    var queryMore = true;     
+    while (queryMore) {  
+          var records1 = result.getArray('records'); 
+          for (var i = 0; i < records1.length; i++) {
+            var goalPct = 0.5;
+            var startPct = 0.0;
+            if (Turf[records1[i].Name] != null) {
+            
+              var organizer = Turf[records1[i].Name].Organizer;
+              var coordinator = Turf[records1[i].Name].Coordinator;
+              var regionalDirector = Turf[records1[i].Name].RegionalDirector;   
+              var regDirector = regionalDirector;
+              var div = Turf[records1[i].Name].Division;
+              var buCount = parseFloat(Turf[records1[i].Name].BU_Count);
+              var employer = records1[i].Name;
+              if (records1[i].Phase_5_Total_Cover_Goal_Pct__c != null) {
+                goalPct = parseFloat(records1[i].Phase_5_Total_Cover_Goal_Pct__c);
+              }
+              if (records1[i].Phase_5_Starting_Cover_Pct__c != null) {
+                startPct = parseFloat(records1[i].Phase_5_Starting_Cover_Pct__c );              
+              }
+              var goalCount = buCount * (goalPct / 100.0) ;
+              incrementCounter([DIVISION, "ALL", GOAL, COVER], goalCount );
+              incrementCounter([DIVISION, div, GOAL, COVER], goalCount );
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, GOAL, COVER], goalCount );
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, GOAL, COVER], goalCount );
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, GOAL, COVER], goalCount );
+              incrementCounter([EMPLOYER, employer, GOAL, COVER], goalCount );   
+              
+              var startCount = buCount * (startPct / 100.0);
+              incrementCounter([DIVISION, "ALL", START, COVER], startCount );
+              incrementCounter([DIVISION, div, START, COVER], startCount );
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, START, COVER], startCount );
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, START, COVER], startCount );
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, START, COVER], startCount );
+              incrementCounter([EMPLOYER, employer, START, COVER], startCount );  
+                                     
+            }
+          }
+          if (result.getBoolean("done")) {
+            queryMore = false;
+          } else {
+            result = sforce.connection.queryMore(result.queryLocator);
+          }                  
+    }
+    //
+    // END GOALS QUERY
+    //
+    
+    
+    
+    
+    
+    //alert("Building division summary....");
+    
+    //debugWriter += "\n<br/>&nbsp;<br/>\nBuilding Division Summary...<br/>\n";
+    
+    var divTemplate = $(".divisionRowTemplate").html();
+    
+    //debugWriter += "\n<br/>div template = " + divTemplate; 
+    
+    //var templateVars = divTemplate.match(/{{([^{}]+)}}/g);
+    //debugWriter += "\n<br/>&nbsp;<br/>\nTemplate Vars = " + JSON.stringify(templateVars) + "<br/>\n";
+    
+    var rowCounter = 0;
+    
+    
+
+
+    //
+    //  Leaders Counts
+    //
+    var newWriter = "";
+    var leaderSortSet = new Array();
+    for (var i = 0; i < ldrSet.length; i++) {
+       var a = leaderMap[ldrSet[i]];
+       if (a == null) {
+         //alert("can't find leader " + ldrSet[i]);
+       } else {
+         var sortKey = JSON.stringify([a.Division, a.RegionalDirector, a.Coordinator, a.Organizer, a.Employer, a.LeaderName, a.CID, a.FID__c ]);
+         leaderSortSet.push(sortKey);
+       }
+    }
+    
+    leaderSortSet.sort();
+    //debugWriter += "\n<br/>leader sort set length = " + leaderSortSet.length;
+    
+    var writeCount = 0;
+    var totalExistingNewCount = 0;
+    //debugWriter = "";
+    
+    for (var ldex = 0; ldex < leaderSortSet.length; ldex++) {
+        var larray = JSON.parse(leaderSortSet[ldex]);
+        var cid = larray[6];
+        var fid = larray[7];
+        var sr = leaderMap[fid];
+        sr.FID__c = fid;
+        //alert("leader section fid = _" + fid + "_");
+        //debugWriter += "\n<br/>cid = " + cid + ", " + larray[5] + " - " + larray[4] + "; response = " + sr.Response_Value__c;
+        var petitionCount = 0;
+        petitionCount = getCounter([LEADER, COMPLETED, fid]);
+        if (petitionCount > 0) {
+            //alert("found collector with more than zero = " + fid);
+        }
+        
+        var followerCount = getCounter([LEADER, sr.FID__c]);
+        if (petitionCount > followerCount) {
+          petitionCount = followerCount;
+        }
+        
+        if (sr.Employer != null && Turf[sr.Employer] != null) {
+          var errorText = "";
+          var overrideInfo = "";
+          var organizer = sr.Organizer;
+          var coordinator = sr.Coordinator;
+          var employer = sr.Employer;
+          var regionalDirector = sr.RegionalDirector;
+          var regDirector = regionalDirector;
+          var division = sr.Division;
+          var div = division;          
+          var doOutput = false;
+
+          var turfFiltered = false;          
+          
+          if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0 || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) { 
+            doOutput = true;
+            if (filter != null && filter != "" && filter != "hospital" && filter != "kaiser") {
+              turfFiltered = true;          
+            }
+          } else if (isOrganizer && (organizer.toLowerCase().trim() == userFullName.toLowerCase().trim() || organizer.toLowerCase() == filter.toLowerCase())) {
+            doOutput = true; 
+            turfFiltered = true;         
+          } else if (isCoordinator && (coordinator.toLowerCase().trim() == userFullName.toLowerCase().trim() || coordinator.toLowerCase() == filter.toLowerCase())) {
+            doOutput = true;          
+            turfFiltered = true;            
+          }
+          
+          
+          //alert("isOrganizer = " + isOrganizer + ", _" + organizer + "_ = _" + userFullName + "_ filter = _" + filter + "_, doOutput = " + doOutput);
+          
+          if (1 == 1) {
+            var response = "N";
+            if (sr.Response_Value__c != null) {
+              response = sr.Response_Value__c.toLowerCase().substring(0, 1);
+            } else {
+              sr.Response_Value__c = "N. Not Engaged";
+            }
+            var responseLink = "<a target=\"_BLANK\" href=\"/apex/Enter_Survey_Response?qcode=501&cid=" + cid + "\">" + sr.Response_Value__c + "</a>";
+            if (response == "w" || response == "a" || response == "o" || response == "m"  || (response.toUpperCase() == "N" && petitionCount > 0)) {
+              
+              
+                           
+              if (1 == 1) {
+                var comment = "";
+                if (commentsMap[sr.Id] != null && commentsMap[sr.Id].length > 0) {
+                  comment = commentsMap[sr.Id];
+                }
+                if (mode.indexOf("override") >= 0) {
+                  overrideInfo ="<br/><font size=\"-2\">" + sr.LastModifiedBy.Name + "<br/>" + comment + "</font>";
+                }              
+                ldrTemplate = $(".leaderRowTemplate").html();  
+                
+               
+
+                var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+                var regionalDirectorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+                var coordinatorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+                var organizerLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer ) + "\">" + organizer + "</a>";          
+                
+                var uncoveredCount = getCounter([LEADER, UNCOVERED, COMPLETED, fid]);
+
+                var newLeader = "";
+                var leaderType = EXISTING;
+                if (newLeaderSet.indexOf(fid) >= 0) {
+                  newLeader = "<font size=\"+1\">&#x2714;</font>";
+                  leaderType = NEW;
+                }
+                if (1 == 1 && (followerCount < (25 + uncoveredCount) || newLeaderSet.indexOf(fid) >= 0)) { 
+                  var previousPetitionCount =   petitionCount ;               
+                  petitionCount = petitionCount + uncoveredCount;
+                  
+                  incrementCounter([LEADER, COMPLETED, fid], (petitionCount - previousPetitionCount) );
+                  
+                  followerCount = followerCount + uncoveredCount;
+                  if (petitionCount > followerCount) {
+                    followerCount = petitionCount;
+                  }                   
+                  incrementCounter([DIVISION, "ALL", leaderType, SUPPORTERS, WORKING, COMPLETED], uncoveredCount );
+                  incrementCounter([DIVISION, div, leaderType, SUPPORTERS, WORKING, COMPLETED], uncoveredCount );
+                  incrementCounter([REGIONAL_DIRECTOR, div, regDirector, leaderType, SUPPORTERS, WORKING, COMPLETED], uncoveredCount );
+                  incrementCounter([COORDINATOR, div, regDirector, coordinator, leaderType, SUPPORTERS, WORKING, COMPLETED], uncoveredCount );
+                  incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, leaderType, SUPPORTERS, WORKING, COMPLETED], uncoveredCount );
+                  incrementCounter([EMPLOYER, employer, leaderType, SUPPORTERS, WORKING, COMPLETED], uncoveredCount );                               
+                  
+                  //
+                  //  credit existing Leaders for new followers
+                  //
+                  if (leaderType == EXISTING) {
+                    var newCount = getCounter([LEADER, SUPPORTERS, NEW, fid]);
+                    incrementCounter([DIVISION, ALL, EXISTING, NEW, ADJUSTMENT], newCount );
+                    incrementCounter([DIVISION, div, EXISTING, NEW, ADJUSTMENT], newCount );
+                    incrementCounter([REGIONAL_DIRECTOR, div, regDirector, EXISTING, NEW, ADJUSTMENT], newCount );
+                    incrementCounter([COORDINATOR, div, regDirector, coordinator, EXISTING, NEW, ADJUSTMENT], newCount );
+                    incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, EXISTING, NEW, ADJUSTMENT], newCount );
+                    incrementCounter([EMPLOYER, employer, EXISTING, NEW, ADJUSTMENT], newCount );                                                   
+                    totalExistingNewCount += newCount;
+                  }
+                  
+                  if (response == "o" || petitionCount >= 10) {
+                    // supporters complete
+                    incrementCounter([DIVISION, "ALL", leaderType, SUPPORTERS, COMPLETED, COMPLETED], uncoveredCount );
+                    incrementCounter([DIVISION, div, leaderType, SUPPORTERS, COMPLETED, COMPLETED], uncoveredCount );
+                    incrementCounter([REGIONAL_DIRECTOR, div, regDirector, leaderType, SUPPORTERS, COMPLETED, COMPLETED], uncoveredCount );
+                    incrementCounter([COORDINATOR, div, regDirector, coordinator, leaderType, SUPPORTERS, COMPLETED, COMPLETED], uncoveredCount );
+                    incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, leaderType, SUPPORTERS, COMPLETED, COMPLETED], uncoveredCount );
+                    incrementCounter([EMPLOYER, employer, leaderType, SUPPORTERS, COMPLETED, COMPLETED], uncoveredCount );                                                 
+                    // leaders complete
+                    //if (previousPetitionCount < 10) {
+                    //  incrementCounter([DIVISION, "ALL", leaderType, LEADERS, COMPLETED], 1);
+                    //  incrementCounter([DIVISION, div, leaderType, LEADERS, COMPLETED], 1);
+                    //  incrementCounter([REGIONAL_DIRECTOR, div, regDirector, leaderType, LEADERS, COMPLETED], 1);
+                    //  incrementCounter([COORDINATOR, div, regDirector, coordinator, leaderType, LEADERS, COMPLETED], 1);
+                    //  incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, leaderType, LEADERS, COMPLETED], 1);
+                    //  incrementCounter([EMPLOYER, employer, leaderType, LEADERS, COMPLETED], 1 );                  
+                    //}
+                  }
+                  uncoveredCount = 0;                    
+                }
+                if (petitionCount >= 10 && response != "a") {
+                  errorText = "&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"blue\" size=\"+1\">PLZ UPDATE STATUS</font>";
+                  debugWriter += sr.FID__c + "|A<br/>";
+                } else if ((response == "a") && petitionCount < 10) {
+                  errorText = "&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\" size=\"+2\">TOO FEW COMPLETIONS</font>";
+                  debugWriter += sr.FID__c + "|W<br/>";                
+                }                
+                if ((doOutput && (isCoordinator || isOrganizer || turfFiltered)) || mode == "leaders" || mode.indexOf("extend") == 0 || (mode.indexOf("override") >= 0 && response == "o") || (mode.indexOf("toofew") >= 0 && response == "a" && petitionCount < 10)) {   
+                  var processedWriter = processTemplate(ldrTemplate); 
+                  newWriter += processedWriter;    
+                  writeCount++;  
+                } 
+              }
+            }
+          }
+        }
+      }
+    $(".leaderRowTemplate").html(newWriter);
+    $("#leaderCountDiv").html("Leaders = " + writeCount);      
+          
+
+    var leadersAddedToCoverage = 0;
+    //
+    //  START CALCULATING COMPLETED LEADERS
+    //
+    for (var dex = 0; dex < leaderSortSet.length; dex++) {
+      var larray = JSON.parse(leaderSortSet[dex]);
+      var cid = larray[6];
+      var fid = larray[7];
+      var sr = leaderMap[fid];
+      sr.FID__c = fid;    
+      var ldrFid = fid;
+      var leaderType = EXISTING;
+      if (newLeaderSet.indexOf(ldrFid) >= 0) {
+              leaderType = NEW;            
+      }
+      
+      var organizer = leaderMap[ldrFid].Organizer;
+ 
+      var contactName = leaderMap[ldrFid].Contact_Name__c;
+
+      //if (organizer.toLowerCase().indexOf("saldana") >= 0 && leaderType == NEW) {
+          //alert("isCoordinator = " + isCoordinator + ", isOrganizer = " + isOrganizer);
+          //if (getCounter([LEADER, COMPLETED, ldrFid]) >= 10 || (statusMap[ldrFid] != null && statusMap[ldrFid].toUpperCase().substring(0, 1) == "O")) {
+          //  alert("found completed leader = " + ldrFid + " (" + leaderType + ") " + contactName + " = " + getCounter([LEADER, COMPLETED, ldrFid]));
+          //}
+      //}
+      
+      //
+      //either 10 or more Dialysis completions OR override
+      //
+      if (getCounter([LEADER, COMPLETED, ldrFid]) >= 10 || (statusMap[ldrFid] != null && statusMap[ldrFid].toUpperCase().substring(0, 1) == "O")) {
+        
+        completedLeaderSet.push(ldrFid);
+        
+        //alert("found completed leader - " + ldrFid + ", " + leaderType);
+        var div = leaderMap[ldrFid].Division;
+        var regionalDirector = leaderMap[ldrFid].RegionalDirector;
+        var regDirector = regionalDirector;
+        var coordinator = leaderMap[ldrFid].Coordinator;
+        
+
+        var employer = leaderMap[ldrFid].Employer;
+        incrementCounter([DIVISION, "ALL", leaderType, LEADERS, COMPLETED], 1.0);
+        incrementCounter([DIVISION, div, leaderType, LEADERS, COMPLETED], 1.0);
+        incrementCounter([REGIONAL_DIRECTOR, div, regDirector, leaderType, LEADERS, COMPLETED], 1.0);
+        incrementCounter([COORDINATOR, div, regDirector, coordinator, leaderType, LEADERS, COMPLETED], 1.0);
+        incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, leaderType, LEADERS, COMPLETED], 1.0);
+        incrementCounter([EMPLOYER, employer, leaderType, LEADERS, COMPLETED], 1.0);
+
+        var addLeaderToCoverage = 0;
+        if (completedSet.indexOf(ldrFid) < 0) {
+          addLeaderToCoverage = 1;
+          leadersAddedToCoverage++;
+        }        
+        incrementCounter([DIVISION, "ALL", leaderType, SUPPORTERS, COMPLETED, COMPLETED], addLeaderToCoverage + (MULTIPLIER * getCounter([LEADER, COMPLETED, ldrFid])) );
+        incrementCounter([DIVISION, div, leaderType, SUPPORTERS, COMPLETED, COMPLETED], addLeaderToCoverage + (MULTIPLIER * getCounter([LEADER, COMPLETED, ldrFid])) );
+        incrementCounter([REGIONAL_DIRECTOR, div, regDirector, leaderType, SUPPORTERS, COMPLETED, COMPLETED], addLeaderToCoverage + (MULTIPLIER * getCounter([LEADER, COMPLETED, ldrFid])) );
+        incrementCounter([COORDINATOR, div, regDirector, coordinator, leaderType, SUPPORTERS, COMPLETED, COMPLETED], addLeaderToCoverage + (MULTIPLIER * getCounter([LEADER, COMPLETED, ldrFid])) );
+        incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, leaderType, SUPPORTERS, COMPLETED, COMPLETED], addLeaderToCoverage + (MULTIPLIER * getCounter([LEADER, COMPLETED, ldrFid])) );
+        incrementCounter([EMPLOYER, employer, leaderType, SUPPORTERS, COMPLETED, COMPLETED], addLeaderToCoverage + (MULTIPLIER * getCounter([LEADER, COMPLETED, ldrFid])) );                                
+      }
+    }
+    //
+    //  END COMPLETED LEADERS
+    //    
+    //alert("leaders added to coverage = " + leadersAddedToCoverage );
+    
+    //alert("Existing Leader, New Supporter Count = " + totalExistingNewCount );
+    
+    
+    //
+    //  Division Counts
+    //
+    var newWriter = "";
+    divArray.push("ALL");
+    for (var ddex = 0; ddex < divArray.length; ddex++) {
+      var division = divArray[ddex];
+      var div = toProperCase(division);
+      if (filter == null || division.toLowerCase() == filter.toLowerCase()) {            
+        if (corporation == null || division.toLowerCase() == "hospital") {
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          
+          var startCoverPct = getCounter([DIVISION, div, START, COVER]) / getCounter([DIVISION, div, BU]);
+          var currentCoverPct = (getCounter([DIVISION, div, EXISTING, NEW, ADJUSTMENT]) + getCounter([DIVISION, div, NEW, SUPPORTERS, COMPLETED, COMPLETED]) + getCounter([DIVISION, div, START, COVER])) / getCounter([DIVISION, div, BU]);
+          var coverIncreasePct = (getCounter([DIVISION, div, EXISTING, NEW, ADJUSTMENT]) + getCounter([DIVISION, div, NEW, SUPPORTERS, COMPLETED, COMPLETED])) / getCounter([DIVISION, div, BU]);
+          var goalPct = getCounter([DIVISION, div, GOAL, COVER], goalCount ) / getCounter([DIVISION, div, BU]);
+          var progressPct = coverIncreasePct / (goalPct - startCoverPct);
+
+          //alert("existing leader new support count for " + div + " = " + getCounter([DIVISION, div, EXISTING, NEW, ADJUSTMENT]));
+          
+          divTemplate = $(".divisionRowTemplate").html();    
+          var processedWriter = processTemplate(divTemplate);  
+          if (division.toUpperCase() == "ALL") {
+               processedWriter = processedWriter.replace(">All<", "> <b>All</b> <");
+          }      
+          newWriter += processedWriter;
+          rowCounter++;
+        }
+      }
+    }
+    $(".divisionRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isCoordinator || isOrganizer) {
+      $("#countDiv").hide();
+    }
+    var rowCounter = 0;
+
+    //
+    //  Regional Counts
+    //
+    var newWriter = "";
+    var lastRegionalDirector = "";
+    for (var tdex = 0; tdex < turfSortSet.length; tdex++) {
+      var tarray = JSON.parse(turfSortSet[tdex]);
+      var division = tarray[0];
+      var regionalDirector = toProperCase(tarray[1]);
+      var coordinator = toProperCase(tarray[2]);
+      var organizer = toProperCase(tarray[3]);
+      if ( lastRegionalDirector != regionalDirector) {  
+        if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0) {                                 
+          var div = toProperCase(division);
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regionalDirectorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coordinatorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var organizerLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer ) + "\">" + organizer + "</a>";          
+          regionalTemplate = $(".regionalRowTemplate").html();  
+
+          var startCoverPct = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, START, COVER]) / getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]);
+          var currentCoverPct = (getCounter([REGIONAL_DIRECTOR, div, regionalDirector, EXISTING, NEW, ADJUSTMENT]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, SUPPORTERS, COMPLETED, COMPLETED]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, START, COVER])) / getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]);
+          var coverIncreasePct = (getCounter([REGIONAL_DIRECTOR, div, regionalDirector, EXISTING, NEW, ADJUSTMENT]) + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, NEW, SUPPORTERS, COMPLETED, COMPLETED])) / getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]);
+          var goalPct = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, GOAL, COVER], goalCount ) / getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]);
+          var progressPct = coverIncreasePct / (goalPct - startCoverPct);          
+            
+          var processedWriter = processTemplate(regionalTemplate );      
+          newWriter += processedWriter;
+          rowCounter++
+        }
+      }
+      lastRegionalDirector = regionalDirector;
+    }
+    $(".regionalRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isCoordinator || isOrganizer) {
+      $("#regionDiv").hide();
+    }
+    var rowCounter = 0;
+
+    //
+    //  Coordinator Counts
+    //
+    var newWriter = "";
+    var lastCoordinator = "";
+    for (var tdex = 0; tdex < turfSortSet.length; tdex++) {
+      var tarray = JSON.parse(turfSortSet[tdex]);
+      var division = tarray[0];
+      var regionalDirector = toProperCase(tarray[1]);
+      var coordinator = toProperCase(tarray[2]);
+      var organizer = toProperCase(tarray[3]);
+      if ( lastCoordinator != coordinator) { 
+        if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0 || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) {                                  
+          var div = toProperCase(division);
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regionalDirectorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coordinatorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var organizerLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer ) + "\">" + organizer + "</a>";            
+          coordinatorTemplate = $(".coordinatorRowTemplate").html();    
+
+          var startCoverPct = getCounter([COORDINATOR, div, regionalDirector, coordinator,  START, COVER]) / getCounter([COORDINATOR, div, regionalDirector, coordinator,  BU]);
+          var currentCoverPct = (getCounter([COORDINATOR, div, regionalDirector, coordinator, EXISTING, NEW, ADJUSTMENT]) + getCounter([COORDINATOR, div, regionalDirector, coordinator,  NEW, SUPPORTERS, COMPLETED, COMPLETED]) + getCounter([COORDINATOR, div, regionalDirector, coordinator,  START, COVER])) / getCounter([COORDINATOR, div, regionalDirector, coordinator,  BU]);
+          var coverIncreasePct = (getCounter([COORDINATOR, div, regionalDirector, coordinator, EXISTING, NEW, ADJUSTMENT]) + getCounter([COORDINATOR, div, regionalDirector, coordinator,  NEW, SUPPORTERS, COMPLETED, COMPLETED])) / getCounter([COORDINATOR, div, regionalDirector, coordinator,  BU]);
+          var goalPct = getCounter([COORDINATOR, div, regionalDirector, coordinator,  GOAL, COVER], goalCount ) / getCounter([COORDINATOR, div, regionalDirector, coordinator,  BU]);
+          var progressPct = coverIncreasePct / (goalPct - startCoverPct);  
+
+          var processedWriter = processTemplate(coordinatorTemplate );      
+          newWriter += processedWriter;
+          rowCounter++;
+        }
+      }
+      lastCoordinator = coordinator;
+    }
+    $(".coordinatorRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isOrganizer) {
+      $("#coordinatorDiv").hide();
+    }
+    var rowCounter = 0;
+
+//
+    //  Organizer Counts
+    //
+    var newWriter = "";
+    var lastCoordinator = "";
+    var lastOrganizer = "";    
+    for (var tdex = 0; tdex < turfSortSet.length; tdex++) {
+      var tarray = JSON.parse(turfSortSet[tdex]);
+      var division = tarray[0];
+      var regionalDirector = toProperCase(tarray[1]);
+      var coordinator = toProperCase(tarray[2]);
+      var organizer = toProperCase(tarray[3]);
+      if ( lastCoordinator != coordinator || lastOrganizer != organizer) {                       
+        if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0 || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) {      
+          var div = toProperCase(division);
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regionalDirectorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coordinatorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var organizerLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer ) + "\">" + organizer + "</a>";            
+          organizerTemplate = $(".organizerRowTemplate").html();  
+         
+          //alert("start cover = " + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, START, COVER]));
+          var startCoverPct = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, START, COVER]) / getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  BU]);
+          var currentCoverPct = (getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, EXISTING, NEW, ADJUSTMENT]) + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  NEW, SUPPORTERS, COMPLETED, COMPLETED]) + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  START, COVER])) / getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  BU]);
+          //alert("completed completed = " + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  NEW, SUPPORTERS, COMPLETED, COMPLETED]) + ", bu = " + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  BU]));
+          var coverIncreasePct = 1.0 * ((getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, EXISTING, NEW, ADJUSTMENT]) + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  NEW, SUPPORTERS, COMPLETED, COMPLETED])) / getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  BU]));
+          //alert(coverIncreasePct);
+          var goalPct = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  GOAL, COVER], goalCount ) / getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  BU]);
+          var progressPct = coverIncreasePct / (goalPct - startCoverPct);  
+          
+          var processedWriter = processTemplate(organizerTemplate );      
+          newWriter += processedWriter;
+        }
+      }
+      lastOrganizer = organizer;
+      lastCoordinator = coordinator;      
+    }
+    $(".organizerRowTemplate").html(newWriter);
+
+    var rowCounter = 0;
+
+
+    //
+    //  Employer Counts
+    //
+    var newWriter = "";
+    var lastCoordinator = "";
+    var lastOrganizer = "";    
+    for (var tdex = 0; tdex < turfSortSet.length; tdex++) {
+      var tarray = JSON.parse(turfSortSet[tdex]);
+      var division = tarray[0];
+      var regionalDirector = toProperCase(tarray[1]);
+      var coordinator = toProperCase(tarray[2]);
+      var organizer = toProperCase(tarray[3]);
+      if ( lastCoordinator != coordinator || lastOrganizer != organizer) {                       
+        for (var emName in Turf) {
+          var employer = toProperCase(emName);
+          if (Turf[emName].BU_Count > 10 && Turf[emName].Organizer.toLowerCase() == organizer.toLowerCase() && Turf[emName].Coordinator.toLowerCase() == coordinator.toLowerCase()) {
+            if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase().indexOf(filter.toLowerCase()) >= 0 || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) {      
+              var div = toProperCase(division);
+              var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+              var regionalDirectorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+              var coordinatorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+              var organizerLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer ) + "\">" + organizer + "</a>";            
+              employerTemplate = $(".employerRowTemplate").html();    
+              
+              
+              var startCoverPct = getCounter([EMPLOYER, employer, START, COVER]) / getCounter([EMPLOYER, employer, BU]);
+              var currentCoverPct = (getCounter([EMPLOYER, employer, EXISTING, NEW, ADJUSTMENT]) + getCounter([EMPLOYER, employer,  NEW, SUPPORTERS, COMPLETED, COMPLETED]) + getCounter([EMPLOYER, employer,  START, COVER])) / getCounter([EMPLOYER, employer,  BU]);
+              var coverIncreasePct = (getCounter([EMPLOYER, employer, EXISTING, NEW, ADJUSTMENT]) + getCounter([EMPLOYER, employer,  NEW, SUPPORTERS, COMPLETED, COMPLETED])) / getCounter([EMPLOYER, employer,  BU]);
+              var goalPct = getCounter([EMPLOYER, employer,  GOAL, COVER], goalCount ) / getCounter([EMPLOYER, employer,  BU]);
+              var progressPct = coverIncreasePct / (goalPct - startCoverPct);  
+          
+              
+              var processedWriter = processTemplate(employerTemplate );      
+              newWriter += processedWriter;
+             
+            }
+          }
+        }
+      }
+      lastOrganizer = organizer;
+      lastCoordinator = coordinator;      
+    }
+    $(".employerRowTemplate").html(newWriter);
+
+
+    if (isOrganizer2) {
+      $("#coordinatorDiv").hide();
+    }
+     
+          
+    if (mode.indexOf("override") >= 0 || mode.indexOf("toofew") >= 0 ) {
+      $("#countDiv").hide();
+      $("#regionDiv").hide();
+      $("#coordinatorDiv").hide();
+      $("#organizerDiv").hide();                  
+      $("#ecommDiv").hide();                        
+      $("#employerDiv").hide();                  
+      $("#jumpDiv").hide();               
+    } else if (mode.indexOf("ecomm") == 0) {
+      $("#countDiv").hide();
+      $("#regionDiv").hide();
+      $("#coordinatorDiv").hide();
+      $("#organizerDiv").hide();                  
+      $("#leaderDiv").hide();   
+      $("#employerDiv").hide();       
+      $("#ecommDiv").show();    
+      $("#jumpDiv").hide();               
+      $("#titleDiv").html($("#titleDiv").html() + " - Ldrs Run By EBoard");                    
+    }      
+
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+ debugWriter += "<br/><br/>" + "An Error has Occured. Error:" +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord); 
+}    
+
+  document.getElementById("progressDiv").innerHTML = ""; 
+  $("#mainDiv").show();
+  
+  //$( ".goalCols" ).hide();
+  
+  if (mode == "leaders") {
+    $("#countDiv").hide();
+      $("#regionDiv").hide();
+      $("#coordinatorDiv").hide();
+      $("#organizerDiv").hide();                  
+      $("#ecommDiv").hide();                        
+      $("#employerDiv").hide();                  
+      $("#jumpDiv").hide();  
+    $("#leaderDiv").show(); 
+  } else {
+    if (isCoordinator || isOrganizer || (filter != null && filter != "" && filter != "kaiser" && filter != "hospital")) {
+      $("#leaderDiv").show();
+    } else {
+      $("#leaderDiv").hide();    
+    }
+  }
+  //debugWriter += JSON.stringify(countMap);
+  
+  //document.getElementById("debugDiv").innerHTML = debugWriter ; 
+   
+   
+</script> 
+  
+</apex:page>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Employer Splits</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Employer Splits</value>
+    </caseValues>
+    <fields>
+        <label><!-- BU --></label>
+        <name>BU__c</name>
+    </fields>
+    <fields>
+        <label><!-- Base Employer Name --></label>
+        <name>Base_Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Department --></label>
+        <name>Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- Split Employer Name --></label>
+        <name>Split_Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Worksite --></label>
+        <name>Worksite__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

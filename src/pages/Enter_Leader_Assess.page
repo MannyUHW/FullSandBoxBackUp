@@ -1,0 +1,523 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Enter Leader Evaluation</title>
+ 
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/35.0/apex.js" type="text/javascript"></script>
+
+
+</head>
+
+  <body>
+
+<div align="center">
+<!-- <h5>Member Leader Evaluation 2016</h5>-->
+
+<br>&nbsp;</br>
+<table cellpadding="7" border="0">
+
+<script language="JavaScript">
+
+var GENDER = "gend";
+var SHOLD_BE_LEVEL = "should_lvl";
+var CONTINUE_AT_TIER_1 = "cont_t1";
+var DEVELOP_TO_TIER_1 = "dev_t1";
+var CONVENE = "conv";
+var AGE_RANGE = "ager";
+var NEXT_CAMPAIGNS = "nextcamps";
+var ETHNICITIES = "ethn";
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    //window.history.back();
+    navigateTo("Report_Leader_List");
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location = pUrl;
+  }
+  return true;
+}
+
+
+
+    var cid = "{!$CurrentPage.parameters.cid}";
+    if (cid == null || cid == "") {
+      //default to Luz Rojas
+      cid = "003i0000017a2lZAAQ";
+    }
+    
+var previousId = null;
+var previousAddInfo = null;
+var previousComments = null;
+var previousValue = "";
+
+var countsWriter = "";
+
+    var minWageMbrSigs = 0;
+    var minWageTeamSigs = 0;
+    var minWageTeamLdrs = 0;
+    var execCompMbrSigs = 0;
+    var execCompTeamSigs = 0;
+    var execCompTeamLdrs = 0;
+var sr = null;
+var coolAssessment = null;
+var coolCampaigns = null;
+
+try{ 
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    //////alert("start");
+    
+    //see if there was a previous value
+    var query = "select Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, Department__c, Contact__r.Title, Question_Name__c, Survey_Code__c, Response_Value__c, Add_Info_Numeric__c, Add_Info__c, Collected_By__c, Contact__r.Ethnicity__c, Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Comments__c,  Contact__r.Executive_Body_Title__c, Contact__r.COPE_Pledge__c   FROM Survey_Response__c";
+    query = query + " where (Survey_Code__c=\'L16\' OR Survey_Code__c=\'P15\' OR Survey_Code__c=\'P6S\'  OR Survey_Code__c=\'CL6\') and (Contact__c = \'" + cid + "\' OR Collected_By__c = \'" + cid + "\' ) "; 
+  
+    //alert("query = " + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    
+    var evalMap = {};
+    
+    var comments = "";
+    
+    //alert("previous responses count =" + records1.length); 
+    for(var i = 0; i < records1.length; i++) { 
+      //alert("sr = " + (records1[i].Survey_Code__c));
+      if (records1[i].Contact__c == cid) {
+        sr = records1[i];
+      } else if (records1[i].Collected_By__c == cid) {
+        sr = records1[i];
+        var query2 = "select Id, FID__c, LastName, FirstName, MiddleName, Account.Account_Group__c, Account.Name, Department, County__c, Executive_Body_Title__c, COPE_Pledge__c, Title, Gender__c, Age__c, Ethnicity__c from Contact where  Id=\'" + cid + "\' ";    
+        //alert(query2);
+        var records = sforce.connection.query(query2); 
+        var records2 = records.getArray('records'); 
+        //alert("records2 length = " + records2.length);
+        if (records2.length > 0) {
+          var cr = records2[0];      
+          cr.Contact_Name__c = cr.LastName + ", " + cr.FirstName;
+          if (cr.MiddleName != null) {
+            cr.Contact_Name__c += " " + cr.MiddleName;
+          }
+          cr.Contact__c = cr.Id;
+          cr.Employer_Name__c = cr.Account.Name;
+          cr.Department__c = cr.Department;
+          cr.Title__c = cr.Title;
+          cr.Contact__r = cr;
+          sr = cr;
+        }
+      }
+      if (records1[i].Survey_Code__c == "L16" && records1[i].Contact__c == cid) {
+        if (records1[i].Add_Info__c != null) {
+          evalMap = JSON.parse(records1[i].Add_Info__c);
+        }
+        previousId = records1[i].Id;
+        previousValue = records1[i].Response_Value__c;
+        previousAddInfo = records1[i].Add_Info__c;      
+        previousComments = records1[i].Comments__c;
+      } else if (records1[i].Survey_Code__c == "CL6" && records1[i].Contact__c == cid) {
+        //alert("found COOL Assessment, " + JSON.stringify(records1[i]));
+        coolAssessment = records1[i].Response_Value__c;
+        coolCampaigns = records1[i].Add_Info__c;
+        if (coolCampaigns == null || coolCampaigns == "null") {
+          coolCampaigns = "Unknown";
+        } 
+      } else if (records1[i].Survey_Code__c == "P6S") {
+        if (records1[i].Contact__c == cid) {
+          execCompMbrSigs += parseInt(records1[i].Add_Info_Numeric__c);        
+        } else {
+          execCompTeamLdrs++;
+          execCompTeamSigs += parseInt(records1[i].Add_Info_Numeric__c);
+        }      
+      } else if (records1[i].Survey_Code__c == "P15") {
+        if (records1[i].Contact__c == cid) {
+          minWageMbrSigs += parseInt(records1[i].Add_Info_Numeric__c);        
+        } else {
+          minWageTeamLdrs++;
+          minWageTeamSigs += parseInt(records1[i].Add_Info_Numeric__c);
+        }
+      }
+    }
+    if (sr == null) {
+      var query = "select Id, FID__c, LastName, FirstName, MiddleName, Account.Account_Group__c, Account.Name, Department, County__c, Executive_Body_Title__c, COPE_Pledge__c from Contact where  Id=\'" + cid + "\' ";    
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      if (records1.length > 0) {   
+          cr = records1[0];   
+          cr.Contact_Name__c = cr.LastName + ", " + cr.FirstName;
+          if (cr.MiddleName != null) {
+            cr.Contact_Name__c += " " + cr.MiddleName;
+          }
+          cr.Contact__c = cr.Id;
+          cr.Employer_Name__c = cr.Account.Name;
+          cr.Department__c = cr.Department;
+          cr.Title__c = cr.Title;
+          cr.Contact__r = cr;  
+          sr = cr;    
+      } else {
+        alert("Malformed Contact Id.  No record found.");
+      }
+    }
+    
+    countsWriter += "<table cellpadding=\"5\">";
+    countsWriter += "<tr valign=\"bottom\">";
+    countsWriter += "<td width=\"20%\">&nbsp;</td>";    
+    countsWriter += "<td bgcolor=\"#481C60\" width=\"40%\" align=\"center\"><font color=\"white\">Min<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Wage&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>";    
+    countsWriter += "<td bgcolor=\"#481C60\" width=\"40%\" align=\"center\"><font color=\"white\">Exec<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Comp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>";    
+    countsWriter += "</tr>";        
+    countsWriter += "<tr valign=\"middle\">";    
+    countsWriter += "<td align=\"center\">Signatures</td>";       
+    countsWriter += "<td align=\"center\">" + minWageMbrSigs + "</td>";        
+    countsWriter += "<td align=\"center\">" + execCompMbrSigs + "</td>";            
+    countsWriter += "</tr>\n";
+
+    countsWriter += "<tr valign=\"middle\">";    
+    countsWriter += "<td align=\"center\">Team Leaders</td>";       
+    countsWriter += "<td align=\"center\">" + minWageTeamLdrs + "</td>";        
+    countsWriter += "<td align=\"center\">" + execCompTeamLdrs + "</td>";            
+    countsWriter += "</tr>\n";
+
+    countsWriter += "<tr valign=\"middle\">";    
+    countsWriter += "<td align=\"center\">Team Signatures</td>";       
+    countsWriter += "<td align=\"center\">" + minWageTeamSigs + "</td>";        
+    countsWriter += "<td align=\"center\">" + execCompTeamSigs + "</td>";            
+    countsWriter += "</tr>\n";    
+
+    countsWriter += "</table>";      
+
+    var query = "SELECT Id, Name, Allowed_Responses__c,Survey_Code__c FROM Survey_Question__c where Survey_Code__c = \'L16\' limit 1"; 
+    //////alert("query=" + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var allowedResponses = null;
+    var qname = null;
+    var qid = null;
+    if (records1.length==0) {
+      ////alert("Invalid Survey Question Code \"" + qcode + "\".  Please double-check the Survey Question object to confirm the code.");
+    }
+    for(var i=0;i<records1.length;i++){ 
+      allowedResponses = records1[i].Allowed_Responses__c;
+      qname = records1[i].Name; 
+      qid = records1[i].Id;      
+    }
+    
+
+} 
+catch(e){ 
+  alert('An Error has Occured. Error:' +e); 
+}
+
+</script>
+
+<tr valign="top"><td align="center" colspan="3"><div align="center" id="div_cname"></div></td></tr>
+<tr valign="top"><td align="right">Employer:</td><td>&nbsp;</td><td><div id="div_emname"></div></td></tr>
+
+<tr valign="top"><td align="center" colspan="3"><div id="div_counts"></div></td></tr>
+
+
+<tr valign="top"><td align="right"><b>Current Leader Assessment:</b></td><td>&nbsp;</td>
+  <td>
+  <select id="response"></select>
+  </td>
+</tr>
+
+<tr valign="top"><td align="right">Confirm Ethnicities:&nbsp;&nbsp;&nbsp;<div id="db_ethnicity"></div></td><td>&nbsp;</td>
+  <td>
+  <select id="ethn"  size="5" multiple="true">
+    <option value="asian">Asian or Pacific Islander</option>    
+    <option value="afram">Black or African American</option>    
+    <option value="latino">Hispanic or Latino</option>    
+    <option value="white">White/Caucasian</option>        
+    <option value="other">Other</option>    
+  </select>
+  </td>
+</tr>
+
+<tr valign="top"><td align="right">Confirm Age Range:&nbsp;&nbsp;&nbsp;<div id="db_age"></div></td><td>&nbsp;</td>
+  <td>
+  <select id="ager">
+    <option value="r18">18 to 25</option>    
+    <option value="r26">26 to 35</option>    
+    <option value="r36">36 to 45</option>    
+    <option value="r46">46 to 55</option>    
+    <option value="r56">56 to 65</option>        
+    <option value="r66">Over 65</option>    
+  </select>
+  </td>
+</tr>
+
+
+<tr valign="top"><td align="right">Gender:&nbsp;&nbsp;&nbsp;<div id="db_gender"></div></td><td>&nbsp;</td>
+  <td>
+  <select id="gend">
+    <option value="F">female</option>    
+    <option value="M">male</option>    
+  </select>
+  </td>
+</tr>
+
+<tr valign="top"><td align="right">Did they convene their team as a group?</td><td>&nbsp;</td>
+  <td>
+  <select id="conv">
+    <option value="y">yes</option>
+    <option selected="true" value="n">no</option>
+  </select>
+  </td>
+</tr>
+
+<tr valign="top"><td align="right">Should they continue to be a Tier 1/Team Leader?</td><td>&nbsp;</td>
+  <td>
+  <select id="cont_t1">
+    <option value="y">yes</option>
+    <option selected="true" value="n">no</option>
+  </select>
+  </td>
+</tr>
+
+<tr valign="top"><td align="right">Should this Tier 2/Member Leader<br/> be developed into a<br/> Tier 1/Team Leader?</td><td>&nbsp;</td>
+  <td>
+  <select id="dev_t1">
+    <option value="y">yes</option>
+    <option selected="true" value="n">no</option>
+  </select>
+  </td>
+</tr>
+
+<tr valign="top"><td align="right">What level of Leader should they be at?</td><td>&nbsp;</td>
+  <td>
+  <select id="should_lvl">
+  </select>
+  </td>
+</tr>
+
+<tr valign="top"><td align="right">Next Campaigns?</td><td>&nbsp;</td>
+  <td>
+  <select id="nextcamps"  size="6" multiple="true">
+    <option value="primary">Primary Election</option>
+    <option value="general">General Election</option>  
+    <option value="employer">Employer-Specific</option>      
+    <option value="new org">New Organizing</option>          
+    <option value="residual">Residual Organizing</option>              
+    <option value="cope">COPE</option>      
+    <option value="other">Other</option>       
+  </select>
+  </td>
+</tr>
+
+
+<tr valign="top"><td colspan="3" align="center">Specific Development Plan (e.g. Get Tier 2 leader to be a Tier 1<br/> leader by getting them to convene a team meeting,<br/> developing the Leader&quot;s ability to get other people to get COPE cards,<br/> developing their ability to mobilize people by having them recruit<br/> three people to participate in the primaries):<br/><textarea  rows="9" cols="85" id="comments"></textarea></td></tr>
+ 
+</table>
+<br>&nbsp;</br>
+
+<button class="btn btn-lg btn-primary" type="submit" onclick="submitSurvey()">  
+
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  Submit Survey
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br> 
+  
+<br>&nbsp;</br>
+
+<button class="btn btn-lg btn-primary" type="submit" onclick="navigateBack()">Back</button>
+
+
+<br>&nbsp;</br>
+<script language="JavaScript">
+
+  document.getElementById("div_cname").innerHTML = "Member Leader Evaluation<br/><u><font size=\"+2\">" + sr.Contact_Name__c + "</font></u>";
+  var copeString = "$0";
+  if (sr.Contact__r.COPE_Pledge__c != null) {
+    copeString = "$" + parseInt(sr.Contact__r.COPE_Pledge__c);
+  }
+  var coolString = "";
+  if (coolAssessment != null) {
+    coolString = "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COOL: " + coolAssessment + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size=\"-1\">Campaigns: " + coolCampaigns + "</font>\n";
+  }
+  
+  document.getElementById("div_emname").innerHTML = sr.Employer_Name__c + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + sr.Department__c + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + sr.Contact__r.Title + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;COPE: " + copeString + "\n" + coolString;
+
+  if (sr.Contact__r.Executive_Body_Title__c != null) {
+    document.getElementById("div_emname").innerHTML = document.getElementById("div_emname").innerHTML + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"orange\">" + sr.Contact__r.Executive_Body_Title__c + "</font>";
+  }
+  
+  //document.getElementById("div_qname").innerHTML = qname;  
+  //document.getElementById("div_previousValue").innerHTML = previousValue;    
+  document.getElementById("div_counts").innerHTML = countsWriter;    
+  document.getElementById("comments").value = comments ;
+  
+  var rselect = document.getElementById("response");
+  var rselect2 = document.getElementById("should_lvl");  
+  var rarray = allowedResponses.split("\n");
+  //////alert(allowedResponses);
+  //////alert(sforce.connection.getServerTimestamp()["timestamp"]);
+  for (var i = 0; i < rarray.length; i++) {
+    rselect.options[i] = new Option(rarray[i], rarray[i]);  
+    rselect2.options[i] = new Option(rarray[i], rarray[i].substring(0, 1));      
+  }
+
+  ////alert("minWageTeamLdrs = " + minWageTeamLdrs + "\nexecCompTeamLdrs = " + execCompTeamLdrs );
+
+  if (minWageTeamLdrs == 0 && execCompTeamLdrs == 0) {
+    $("#response").val(rarray[1]);
+    $("#should_lvl").val(rarray[1].substring(0,1));    
+    //alert("setting to 2.");  
+  }
+  if (previousValue != null && previousValue.trim() != "") {
+     $("#response").val(previousValue );
+  }
+  if (previousComments != null) {
+     $("#comments").val(previousComments);
+  }  
+  
+  var contactAge = 99;
+  if (sr.Contact__r.Age__c != null) {
+    contactAge = parseInt(sr.Contact__r.Age__c);
+  }
+  
+  document.getElementById("db_age").innerHTML = "<i>Age in Salesforce = " + contactAge + "</i>";
+  if (contactAge == 99) {
+     document.getElementById("db_age").innerHTML = "<i>Age in Salesforce = Unknown</i>";  
+  }
+  
+  var ethnicity = sr.Contact__r.Ethnicity__c;  
+  if (ethnicity == null) {
+    ethnicity = "Unknown";
+  }
+  
+  document.getElementById("db_ethnicity").innerHTML = "<i>Ethnicity in Salesforce = " + ethnicity  + "</i>";  
+ 
+ var gender = sr.Contact__r.Gender__c;  
+ if (gender == null) {
+   gender = "Unknown";
+ }
+ document.getElementById("db_gender").innerHTML = "<i>Gender in Salesforce = " + gender + "</i>";  
+  
+  
+  var previousEvalData = {};  
+  if (previousAddInfo != null) {
+    ////alert(previousAddInfo);
+    previousEvalData = JSON.parse(previousAddInfo );
+    for (var evalKey in previousEvalData) {
+      var evalData = previousEvalData[evalKey];
+      $("#" + evalKey).val(evalData);
+      ////alert(evalKey + " changing to _" + evalData + "_ new value = " + $("#" + evalKey).val());
+    }
+  } else {
+    var age = parseInt(sr.Contact__r.Age__c);
+    if (age < 26) {
+      $('#ager').val("r18");
+    } else if (age < 36) {
+      $('#ager').val("r26");
+    } else if (age < 46) {
+      $('#ager').val("r36");
+    } else if (age < 56) {
+      $('#ager').val("r46");
+    } else if (age < 66) {
+      $('#ager').val("r56");      
+    } else {
+      $('#ager').val("r66");  
+    }
+    
+
+    //////alert(ethnicity);
+    var ethn2 = ethnicity.toLowerCase();
+    if (ethn2.indexOf("latin") >= 0 || ethn2.indexOf("hisp") >= 0) {
+      $('#ethn').val(["latino"]);
+    } else if (ethn2.indexOf("asian") >= 0) {
+      $('#ethn').val(["asian"]);
+    } else if (ethn2.indexOf("black") >= 0 || ethn2.indexOf("african") >= 0) {
+      $('#ethn').val(["afram"]);
+    } else if (ethn2.indexOf("pacific") >= 0 || ethn2.indexOf("hawaii") >= 0) {
+      $('#ethn').val(["asian"]);
+    } else if (ethn2.indexOf("white") >= 0 || ethn2.indexOf("caucas") >= 0) {
+      $('#ethn').val(["white"]);
+    } else {
+      $('#ethn').val(["other"]);
+    }  
+    
+    if (gender != null) {
+      $('#gend').val(gender);
+    }
+  } 
+    
+  function submitSurvey() {
+    //alert("submitting...");
+    //add insert/push
+    var responses = []; 
+    var response = new sforce.SObject("Survey_Response__c"); 
+    response.Contact__c = cid;
+    response.Survey_Question__c = qid;
+    response.Collected_Datetime__c = sforce.connection.getServerTimestamp()["timestamp"];
+    response.Response_Value__c = document.getElementById("response").value;
+    response.Comments__c = document.getElementById("comments").value;    
+
+    var evalData = {};
+    evalData["should_lvl"] = $('#should_lvl').val();
+    evalData["cont_t1"] = document.getElementById("cont_t1").value;
+    evalData["dev_t1"] = document.getElementById("dev_t1").value;
+    evalData["conv"] = document.getElementById("conv").value;
+    evalData["gend"] = document.getElementById("gend").value;    
+    evalData["ager"] = $('#ager').val();
+    evalData["nextcamps"] = $("#nextcamps").val();
+    evalData["ethn"] = $("#ethn").val();
+    
+    //alert(JSON.stringify(evalData) + " (len = " + JSON.stringify(evalData).length + ")");
+    
+    response.Add_Info__c = JSON.stringify(evalData);
+    if (previousId != null) {
+      response.Id = previousId;
+    }        
+    responses.push(response); 
+    
+
+    var results = null;
+    if (previousId == null) {
+      results = sforce.connection.create(responses); 
+    } else {
+      results = sforce.connection.update(responses); 
+    }
+    if (results[0].getBoolean("success")) { 
+      localStorage.setItem("ldr_eval_q2_2016-" + cid, response.Response_Value__c);
+      alert("Evaluation submitted successfully."); 
+      //navigateBack();
+      //navigateTo("Enter_Leader_Assess");
+      window.open('','_parent',''); 
+      window.close();
+    } else { 
+      alert("failed to create Survey Response " + results[0]); 
+    } 
+
+  }
+
+
+</script>
+</div>
+
+
+ 
+    </body>
+</html>
+
+
+</apex:page>

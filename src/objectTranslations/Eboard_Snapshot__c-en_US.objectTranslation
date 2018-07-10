@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Eboard Snapshot</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Eboard Snapshot</value>
+    </caseValues>
+    <fields>
+        <label><!-- Account Id --></label>
+        <name>Account_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Age Group --></label>
+        <name>Age_Group__c</name>
+        <picklistValues>
+            <masterLabel>30 to 39</masterLabel>
+            <translation><!-- 30 to 39 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>40 to 49</masterLabel>
+            <translation><!-- 40 to 49 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>50 to 59</masterLabel>
+            <translation><!-- 50 to 59 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>60 to 69</masterLabel>
+            <translation><!-- 60 to 69 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>70+</masterLabel>
+            <translation><!-- 70+ --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Under 30</masterLabel>
+            <translation><!-- Under 30 --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Age --></label>
+        <name>Age__c</name>
+    </fields>
+    <fields>
+        <label><!-- Birth Date --></label>
+        <name>Birth_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Constituency Id --></label>
+        <name>Constituency_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact ID --></label>
+        <name>Contact_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Coordinator Email --></label>
+        <name>Coordinator_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Coordinator User Id --></label>
+        <name>Coordinator_User_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+    </fields>
+    <fields>
+        <label><!-- District Name --></label>
+        <name>District_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard Seat --></label>
+        <name>Eboard_Seat__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard Seats Id --></label>
+        <name>Eboard_Seats_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard/Vacant Seat name --></label>
+        <name>Eboard_Vacant_Seat_name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer Id --></label>
+        <name>Employer_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ethnicity --></label>
+        <name>Ethnicity__c</name>
+        <picklistValues>
+            <masterLabel>Asian</masterLabel>
+            <translation><!-- Asian --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Black or African American</masterLabel>
+            <translation><!-- Black or African American --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hispanic or Latino</masterLabel>
+            <translation><!-- Hispanic or Latino --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>White</masterLabel>
+            <translation><!-- White --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Executive Body Title --></label>
+        <name>Executive_Body_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- FID --></label>
+        <name>FID__c</name>
+    </fields>
+    <fields>
+        <label><!-- First Name --></label>
+        <name>First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Gender --></label>
+        <name>Gender__c</name>
+        <picklistValues>
+            <masterLabel>Female</masterLabel>
+            <translation><!-- Female --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Male</masterLabel>
+            <translation><!-- Male --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Hire Date --></label>
+        <name>Hire_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Home Phone --></label>
+        <name>Home_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Classification --></label>
+        <name>Job_Classification__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Group --></label>
+        <name>Job_Group__c</name>
+    </fields>
+    <fields>
+        <label><!-- Last Name --></label>
+        <name>Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mailing City --></label>
+        <name>Mailing_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mailing State/Province --></label>
+        <name>Mailing_State_Province__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mailing Street --></label>
+        <name>Mailing_Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mailing Zip/Postal Code --></label>
+        <name>Mailing_Zip_Postal_Code__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member ID --></label>
+        <name>Member_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile --></label>
+        <name>Mobile__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 1 Email --></label>
+        <name>Organizer_1_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 1 User Id --></label>
+        <name>Organizer_1_User_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 1 --></label>
+        <name>Organizer_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 2 Email --></label>
+        <name>Organizer_2_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 2 User Id --></label>
+        <name>Organizer_2_User_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer 2 --></label>
+        <name>Organizer_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone --></label>
+        <name>Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Race --></label>
+        <name>Race__c</name>
+        <picklistValues>
+            <masterLabel>A/PI</masterLabel>
+            <translation><!-- A/PI --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Black or African American</masterLabel>
+            <translation><!-- Black or African American --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Latino</masterLabel>
+            <translation><!-- Latino --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>White</masterLabel>
+            <translation><!-- White --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Seat Id --></label>
+        <name>Seat_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Seat Name --></label>
+        <name>Seat_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Snapshot Month --></label>
+        <name>Snapshot_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- Snapshot Year --></label>
+        <name>Snapshot_Year__c</name>
+    </fields>
+    <fields>
+        <label><!-- Work Email --></label>
+        <name>Work_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Years of Service --></label>
+        <name>Years_of_Service__c</name>
+    </fields>
+    <fields>
+        <label><!-- Yrs of Service --></label>
+        <name>Yrs_of_Service__c</name>
+        <picklistValues>
+            <masterLabel>10 to 15 yrs</masterLabel>
+            <translation><!-- 10 to 15 yrs --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>15+</masterLabel>
+            <translation><!-- 15+ --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>3 to 5 yrs</masterLabel>
+            <translation><!-- 3 to 5 yrs --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>5 to 10 yrs</masterLabel>
+            <translation><!-- 5 to 10 yrs --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Under 3 yrs</masterLabel>
+            <translation><!-- Under 3 yrs --></translation>
+        </picklistValues>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

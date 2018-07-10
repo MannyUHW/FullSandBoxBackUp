@@ -1,0 +1,1871 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="UnpaidInternshipRemoteController2">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <apex:stylesheet value="{!URLFOR($Resource.MaterialZip, 'material.min.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.MaterialZip,'material.min.js')}"/>
+        <apex:includeScript value="{!$Resource.agGridEnterprise}"/>
+        <apex:includeScript value="{!$Resource.MomentJs}"/>
+        <apex:includeScript value="{!$Resource.dexieMin}"/>
+
+        <!-- To do: put into static resource -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+
+        <style>
+
+            #q5_other {
+                width:190px;
+                border:1px solid #f2e8e8;
+                margin-left: 10px;
+            }
+
+            #Container3 {
+                width:828px;
+                float:left;
+            }
+
+            .page-content {
+                margin-bottom: 10px;
+                margin-top: 10px;
+                margin-left: 10px;
+            }
+
+            .message-card-wide.mdl-card {
+                margin-top: 5px;
+                margin-left: 5px;
+                width: 900px;
+                min-height: 50px;
+                background-color: #9566aa;
+            }
+
+            .message-card-wide > .mdl-card__title {
+                color: #9c27b0;
+            }
+
+            .mdl-card__title-text {
+                color:blue;
+            }
+
+            .mdl-card__supporting-text {
+                color: white;;
+                width: 100%;
+            }
+
+            #ContactFilterInput {
+                padding-left: 2px;
+                width: 470px;
+                margin-left: 21px;
+                margin-bottom: 12px;
+                float: left;
+                font-size: 1.2em;
+                height: 22px;
+            }
+
+            #MessageDiv {
+                margin-left: 10px;
+            }
+
+            <!--         #SelectEmpMessageDiv, #SelectContactMessageDiv, #LocalDbStatusMessageDiv, #UpdateStatusMessageDiv {} -->
+
+            #log-div {
+                margin-left: 18px;
+                border:1px solid blue;
+                height:400px;
+                width:800px;
+                overflow-y: scroll;
+            }
+
+            #LogText {
+                padding:4px;
+                background-color: blue;
+                min-height: 399px;
+            }
+
+            .DownloadButton {
+                background-color: white;
+                color:#9C27B0;
+                font-size: 1.1em;
+                width: 200px;
+                margin-left: 10px;
+            }
+
+            .DownloadButton:disabled {
+                color:#C28D8D;
+            }
+
+            #save-response-button {
+                background-color: #8412ef;
+                color:white;
+                font-size: 1.1em;
+                width: 100px;
+                margin-left: 10px;
+            }
+
+            #save-response-button:disabled {
+                color:#C28D8D;
+            }
+
+            .UpdateButton {
+                background-color: white;
+                color:#8412ef;
+                width: 200px;
+                float: right;
+            }
+
+            .UpdateButton:disabled {
+                color:#C28D8D;
+            }
+
+            #content {
+                width: 1000px;
+                background-color: whitesmoke;
+            }
+
+            .Container {
+                width:910px;
+                margin-top:10px;
+                margin-bottom:10px;
+                padding-bottom: 10px;
+                float: left;
+            }
+
+            #SelectedEmpDiv {
+                margin: 10px;
+                padding: 10px;
+                display: inline-block;
+                width: 190px;
+                font-size: 9px;
+            }
+
+            #EmployersGridDiv {
+                height:400px;
+                width:760px;
+                float: left;
+            }
+
+            #ContactsGridDiv {
+                height:450px;
+                width:760px;
+            }
+
+            #LocalContactsGridDiv {
+                height:400px;
+                width:830px;
+            }
+
+            #LocalResponsesGridDiv {
+                height:400px;
+                width:830px;
+            }
+
+            #q2 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #q3 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #q4 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #q5 {
+                display: inline-block;
+                width: 283px;
+            }
+
+            #q6 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #q10 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #q11 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #q12 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #q13 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #q14 {
+                display: inline-block;
+                width: 525px;
+            }
+            #q15 {
+                display: inline-block;
+                width: 525px;
+            }
+
+            #c1 {
+                clear:both;
+            }
+
+            #c2 {
+                clear:both;
+            }
+
+            tab5-content {
+                display: block;
+            }
+
+            #interview-content {
+                display: block;
+            }
+
+            #member-name {
+                display: inline-block;
+                width: 80px;
+            }
+
+            #member-name-output {
+                display: inline-block;
+                font-weight: bold;
+                width: 606px;
+                height: 21px;
+            }
+
+            #gender-radio {
+                display: inline-block;
+                width: 163px;
+                margin-left: 86px;
+                margin-right: 30px;
+            }
+
+            #interviewer-name {
+                display: inline-block;
+                width: 82px;
+            }
+
+            #interviewer-name-output {
+                display: inline-block;
+                width: 540px;
+                font-weight: bold;
+            }
+
+            #interview-date-output {
+                display: inline-block;
+                width: 142px;
+                text-align: right;
+                font-weight: bold;
+            }
+
+            #interviewer-date,#ethnic-group {
+                display: inline-block;
+                width: 95px;
+            }
+
+            #ethnic-group {
+                display: inline-block;
+                width: 210px;
+            }
+
+            #ethnic-group-select {
+                width: 195px;
+            }
+
+            #primary-language {
+                display: inline-block;
+                width: 210px;
+            }
+
+            #primary-language-select {
+                width: 195px;
+            }
+
+            #c3 {
+                clear:both;
+            }
+
+            #email {
+                display: inline-block;
+                margin-left: 10px;
+            }
+
+            #gender  {
+                display: inline-block;
+                width: 90px;
+                margin-left: 30px;
+            }
+
+            #employer  {
+                display: inline-block;
+                width: 66px;
+                margin-left: 5px;
+            }
+
+            #hire-date {
+                display: inline-block;
+                margin-left: 5px;
+            }
+
+            #hire-date-output  {
+                display: inline-block;
+                width: 66px;
+                margin-left: 5px;
+            }
+
+            #home-phone-number-div, #cell-phone-number-div, #home-phone-number-output-div {
+                display: inline-block;
+            }
+
+            #home-phone-number {
+                display: inline-block;
+            }
+
+            #occupation-div {
+                display: inline-block;
+            }
+
+            #occupation,#address {
+                width: 80px;
+                display: inline-block;
+            }
+
+            #home-phone-number-output {
+                display: inline-block;
+                width: 145px;
+                background-color: #fff5e7;
+            }
+
+            #occupation-output {
+                display: inline-block;
+                width: 236px;
+                background-color: #fff5e7;
+            }
+
+            #hire-date-output {
+                display: inline-block;
+                background-color: #fff5e7;
+            }
+
+            #birthdate {
+                display: inline-block;
+            }
+
+            #birthdate-output {
+                display: inline-block;
+                background-color: #fff5e7;
+            }
+
+            #cell-phone-number {
+                display: inline-block;
+            }
+
+            #cell-phone-number-output-div {
+                display: inline-block;
+            }
+
+            #cell-phone-number-output {
+                display: inline-block;
+                width: 145px;
+                background-color: #fff5e7;
+            }
+
+            #employer-output {
+                display: inline-block;
+                width: 300px;
+                background-color: #fff5e7;
+            }
+
+            #email-output {
+                display: inline-block;
+                width: 380px;
+                background-color: #fff5e7;
+            }
+
+            #address-output {
+                display: inline-block;
+                width: 655px;
+                background-color: #fff5e7;
+                height: 21px;
+            }
+
+            #example-content {
+                width: 1000px;
+                background-color: #ebf5f8;
+            }
+
+            .m10 {
+                margin-top: 10px;
+                margin-bottom: 10px;
+                margin-left: 10px;
+                margin-right: 10px;
+                background-color: aliceblue;
+            }
+
+            .hr90 {
+                width:90%;
+            }
+
+            .q {
+                margin-bottom: 5px;
+            }
+
+            input[type=radio] {
+                margin-left: 20px;
+            }
+
+            .cellClass1 {
+                padding-right:5px !important;
+                text-align: right;
+            }
+
+            .cellClass3 {
+                padding-left:5px !important;
+            }
+
+            body {
+                font-family:"Arial";
+            }
+
+            table.main {
+                border: 1px solid #666;
+            }
+            .highlighted {
+                background-color:#D6EDFC;
+            }
+            .odd {
+                background-color:#fea;
+            }
+            form {
+                margin-bottom: 1em;
+            }
+
+            #prompt {
+                display: none;
+                margin-top: 10px;
+                border:1px solid red;
+                padding:5px;
+            }
+
+            #list {
+                display: none;
+                margin-top: 10px;
+                border:1px solid blue;
+            }
+
+            #field {
+                border:1px solid yellow;
+            }
+
+        </style>
+
+    </head>
+    <body>
+
+    <title>
+        Unpaid Internship
+    </title>
+
+    <!-- Simple header with scrollable tabs. -->
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+        <header class="mdl-layout__header">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span class="mdl-layout-title">Unpaid Internship data collection (beta release)</span>
+            </div>
+            <!-- Tabs -->
+            <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+                <a href="#scroll-tab-1" class="mdl-layout__tab is-active">Select</a>
+                <a href="#scroll-tab-2" class="mdl-layout__tab">Data Entry</a>
+                <a href="#scroll-tab-3" class="mdl-layout__tab">Download</a>
+                <a href="#scroll-tab-4" class="mdl-layout__tab">History</a>
+                <a href="#scroll-tab-5" class="mdl-layout__tab">Debug</a>
+            </div>
+        </header>
+        <main class="mdl-layout__content">
+            <section class="mdl-layout__tab-panel  is-active" id="scroll-tab-1">
+                <div class="page-content">
+                    <div id="tab1-content">
+                        <div id="SelectEmpMessageDiv">
+                            <div class="message-card-wide mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title">
+                                    <h3 class="mdl-card__title-text">Select Employer</h3>
+                                </div>
+                                <div class="mdl-card__supporting-text">
+                                    <select id="KaiserSelectList"   style="visibility:hidden;"></select>
+                                    <select id="HospitalSelectList" style="visibility:hidden;"></select>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div id="SelectContactMessageDiv">
+                            <div class="message-card-wide mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title">
+                                    <h3 class="mdl-card__title-text">Select Employee</h3>
+                                </div>
+                                <div class="mdl-card__supporting-text">
+                                    <input id="ContactFilterInput" placeholder="Search..." type="text"/>
+                                    <div class="Container">
+                                        <div id="LocalContactsGridDiv" class="ag-fresh"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mdl-layout__tab-panel" id="scroll-tab-2">
+                <div class="page-content">
+                    <div id="tab2-content">
+                        <div id="c1" class="m10"><div id="interviewer-name">Interviewer:</div>
+                            <div id="interviewer-name-output"> </div>
+                            <div id="interviewer-date">Interview Date:</div>
+                            <div id="interview-date-output"> </div>
+
+                        </div>
+                        <hr class="hr90"/>
+
+                        <div id="c2" class="m10">
+                            <div id="member-name">Member:</div>
+                            <div id="member-name-output"></div>
+                            <div id="birthdate">DOB:</div>
+                            <div id="birthdate-output"></div>
+                        </div>
+
+                        <div id="c4" class="m10">
+                            <div id="cell-phone-number-div">
+                                <div id="cell-phone-number">Cell:</div>
+                            </div>
+                            <div id="cell-phone-number-output-div">
+                                <div id="cell-phone-number-output"> </div>
+                            </div>
+                            <div id="home-phone-number-div">
+                                <div id="home-phone-number">Home:</div>
+                            </div>
+                            <div id="home-phone-number-output-div">
+                                <div id="home-phone-number-output"> </div>
+                            </div>
+                            <div id="email">Email:</div>
+                            <div id="email-output"></div>
+                        </div>
+
+                        <div id="c3"  class="m10">
+
+                            <div id="gender-radio">
+                                <input type="radio" name="gender" value="F">Female</input>
+                                <input type="radio" name="gender" value="M">Male</input>
+                            </div>
+
+                            <div id="ethnic-group">
+                                <select id="ethnic-group-select">
+                                    <option value="0">Ethnicity</option>
+                                    <option value="1">Asian / Pacific Islander</option>
+                                    <option value="2">Black / African American</option>
+                                    <option value="3">Hispanic / Latino</option>
+                                    <option value="4">White / Caucasian</option>
+                                    <option value="5">Other</option>
+                                </select>
+                            </div>
+
+                            <div id="primary-language">
+                                <select id="primary-language-select">
+                                    <option value="0">Primary language</option>
+                                    <option value="1">Chinese</option>
+                                    <option value="2">English</option>
+                                    <option value="3">Hmong</option>
+                                    <option value="4">Russian</option>
+                                    <option value="5">Spanish</option>
+                                    <option value="6">Other</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div id="c5" class="m10">
+                            <div id="occupation-div">
+                                <div id="occupation">Occupation:</div>
+                                <div id="occupation-output"></div>
+                            </div>
+                            <div id="employer">Employer:</div> <div id="employer-output"></div>
+                            <div id="hire-date">Hired:</div>
+                            <div id="hire-date-output"></div>
+                        </div>
+
+                        <div id="c6" class="m10">
+                            <div id="address">City/Zip:</div> <div id="address-output"></div>
+                        </div>
+                        <hr class="hr90"/>
+
+                        <div id="cq1" class="m10">
+                            <div id="q1" class="q">1. Which licensing certification or registration requirement were you trying to earn with your internship?</div>
+                            <input type="radio" name="rb_q1" value="X">X-ray Technologist</input>
+                            <input type="radio" name="rb_q1" value="R">Respiratory Therapist</input>
+                            <input type="radio" name="rb_q1" value="S">Surgical Technologist</input>
+                            <input type="radio" name="rb_q1" value="P">Pharmacy Technologist</input>
+                        </div>
+                        <div id="cq2" class="m10">
+                            <div id="q2" class="q">2. Did you do your clinical hours in California within the last 4 years?</div>
+                            <input type="radio" name="rb_q2" value="Y">Yes</input>
+                            <input type="radio" name="rb_q2" value="N">No</input>
+                        </div>
+                        <div id="cq3" class="m10">
+                            <div id="q3" class="q">3. Were you a student during your clinical hours?</div>
+                            <input type="radio" name="rb_q3" value="Y">Yes</input>
+                            <input type="radio" name="rb_q3" value="N">No</input>
+                        </div>
+                        <div id="cq4" class="m10">
+                            <div id="q4" class="q">4. Did you have to work outside of your clinical hours and schooling to support yourself and or your family?</div>
+                            <input type="radio" name="rb_q4" value="Y">Yes</input>
+                            <input type="radio" name="rb_q4" value="N">No</input>
+                        </div>
+                        <div id="cq5" class="m10">
+                            <div id="q5" class="q">5. Where did you do your clinical internship?</div>
+                            <input type="radio" name="rb_q5" value="K">Kaiser</input>
+                            <input type="radio" name="rb_q5" value="D">Dignity</input>
+                            <input type="radio" name="rb_q5" value="S">Sutter</input>
+                            <input type="radio" name="rb_q5" value="O">Other</input>
+                            <input type="text" id="q5_other"></input>
+                        </div>
+                        <div id="cq6" class="m10">
+                            <div id="q6" class="q">6. Did you receive hands on training in your discipline during your clinical hours?</div>
+                            <input type="radio" name="rb_q6" value="Y">Yes</input>
+                            <input type="radio" name="rb_q6" value="N">No</input>
+                        </div>
+                        <div id="cq7" class="m10">
+                            <div id="q7" class="q">7. How often during your clinical hours were you performing tasks related to your discipline under direct supervision?</div>
+                            <input type="radio" name="rb_q7" value="M">Most of the time</input>
+                            <input type="radio" name="rb_q7" value="S">Some of the time</input>
+                            <input type="radio" name="rb_q7" value="L">Very little</input>
+                        </div>
+                        <div id="cq8" class="m10">
+                            <div id="q8" class="q">8. How often during your clinical hours were you performing tasks not related to your discipline like answering the phone or restocking supplies?</div>
+                            <input type="radio" name="rb_q8" value="M">Most of the time</input>
+                            <input type="radio" name="rb_q8" value="S">Some of the time</input>
+                            <input type="radio" name="rb_q8" value="L">Very little</input>
+                        </div>
+                        <div id="cq9" class="m10">
+                            <div id="q9" class="q">9. Do you think that your clinical facility billed the patient or insurance company for the services or treatment that you performed?</div>
+                            <input type="radio" name="rb_q9" value="Y">Yes</input>
+                            <input type="radio" name="rb_q9" value="N">No</input>
+                            <input type="radio" name="rb_q9" value="U">Unsure</input>
+                        </div>
+                        <div id="cq10" class="m10">
+                            <div id="q10" class="q">10. Do you know if your facility lowered staffing when they had students?</div>
+                            <input type="radio" name="rb_q10" value="Y">Yes</input>
+                            <input type="radio" name="rb_q10" value="N">No</input>
+                            <input type="radio" name="rb_q10" value="U">Unsure</input>
+                        </div>
+                        <div id="cq11" class="m10">
+                            <div id="q11" class="q">11. Did you expect the internship to lead to a job with your clinical facility?</div>
+                            <input type="radio" name="rb_q11" value="Y">Yes</input>
+                            <input type="radio" name="rb_q11" value="N">No</input>
+                        </div>
+                        <div id="cq12" class="m10">
+                            <div id="q12" class="q">12. Was there a clear understanding between the clinical facility and you that you would not get paid for the time spent in the internship?</div>
+                            <input type="radio" name="rb_q12" value="Y">Yes</input>
+                            <input type="radio" name="rb_q12" value="N">No</input>
+                        </div>
+                        <div id="cq13" class="m10">
+                            <div id="q13" class="q">13. What is your schedule?</div>
+                            <input type="radio" name="rb_q13" value="F">Full Time</input>
+                            <input type="radio" name="rb_q13" value="P">Part Time</input>
+                            <input type="radio" name="rb_q13" value="D">Per Diem</input>
+                        </div>
+                        <div id="cq14" class="m10">
+                            <div id="q14" class="q">14. Usual Shift?</div>
+                            <input type="radio" name="rb_q14" value="A">AM</input>
+                            <input type="radio" name="rb_q14" value="P">PM</input>
+                            <input type="radio" name="rb_q14" value="N">NOC</input>
+                        </div>
+                        <div id="cq15" class="m10">
+                            <div id="q15" class="q">15. Do you want to be involved in this campaign?</div>
+                            <input type="radio" name="rb_q15" value="Y">Yes</input>
+                            <input type="radio" name="rb_q15" value="N">No</input>
+                        </div>
+
+                        <div id="save-div" class="m10">
+                            <div id="save-response-div">
+                                <input type="button" id="save-response-button" value="Save"></input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mdl-layout__tab-panel" id="scroll-tab-3">
+                <div class="page-content">
+                    <div id="tab3-content">
+                        <div class="message-card-wide mdl-card mdl-shadow--2dp">
+                            <div class="mdl-card__supporting-text">
+                                <input id="DeleteDbButton"         type="Button" value="Delete DB"         class="DownloadButton"></input>
+                                <input id="DownloadKaiserButton"   type="Button" value="Download Kaiser"   class="DownloadButton"></input>
+                                <input id="DownloadHospitalButton" type="Button" value="Download Hospital" class="DownloadButton"></input>
+                            </div>
+                        </div>
+                        <div id="LocalDbStatusMessageDiv">
+                            <div class="message-card-wide mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__supporting-text">
+                                    <div id="current-download-output"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mdl-layout__tab-panel" id="scroll-tab-4">
+                <div class="page-content">
+                    <div id="tab4-content">
+                        <div id="SelectContactMessageDiv">
+                            <div class="message-card-wide mdl-card mdl-shadow--2dp">
+                                <div class="mdl-card__title">
+                                    <h3 class="mdl-card__title-text">Responses</h3>
+                                </div>
+                                <div class="mdl-card__supporting-text">
+                                    <div id = "Container3">
+                                        <input id="SaveAsCsvButton" type="Button" value="Save as csv"></input>
+                                        <input id="UpdateButton"    type="Button" value="Update Salesforce" disabled="true" class="UpdateButton"></input>
+                                    </div>
+                                    <div class="Container">
+                                        <div id="LocalResponsesGridDiv" class="ag-fresh"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mdl-layout__tab-panel" id="scroll-tab-5">
+                <div class="page-content">
+                    <div id="tab5-content">
+                        <div class="message-card-wide mdl-card mdl-shadow--2dp">
+                            <div class="mdl-card__supporting-text">
+                                <div id="log-div">
+                                    <div id="LogText"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="text/javascript">
+
+        'use strict';
+
+        function logout(e) {
+            e.preventDefault();
+            window.location.href = 'https://login.salesforce.com/secur/logout.jsp';
+        }
+
+        function saveAccountsLocally() {
+            let time = Date.now();
+            db.transaction("rw", db.accounts, function*() {
+                yield db.accounts.bulkPut(employersDataArray);
+                log("Save complete - took " + (Date.now() - time) + " milliseconds.");
+            }).catch(function (error) {
+                log(error);
+                console.error(error);
+            });
+        }
+
+        function saveContactsLocally() {
+            return new Promise(function(resolve, reject) {
+                db.transaction("rw", db.contacts, function () {
+                    let time = Date.now();
+                    log( 'length [' + contactsDataArray.length + ']');
+                    db.contacts.bulkPut(contactsDataArray).then(function() {
+                        log(' local Save complete - ' + contactsDataArray.length + ' records - took ' + (Date.now() - time) + ' milliseconds.');
+                        resolve(contactsDataArray);
+                    }).catch(Dexie.BulkError, function (e) {
+                        // Explicitely catching the bulkPut operation makes those successful additions commit despite that there were errors.
+                        console.error(e);
+                        reject(e);
+                    });
+                }).catch(function (error) {
+                    console.error(error);
+                    reject(error);
+                });
+            });
+        }
+
+        function getUserData(userId) {
+            /*
+             controller code - getUserData():
+             SELECT ActingDivision__c,ActingTitle__c
+             FROM User
+             WHERE Id = :userId
+             */
+            return new Promise(function(resolve, reject) {
+                UnpaidInternshipRemoteController2.getUserData(userId, (result, event) => {
+                    if (event.status) {
+                    userDivision = result.ActingDivision__c;
+                    userTitle    = result.ActingTitle__c;
+                    log('User division: ' + userDivision);
+                    log('User title: '    + userTitle);
+                    resolve(result);
+                }
+                else {
+                    log('User data downloaded error');
+                    reject(event);
+                }
+            });
+            });
+        }
+
+        function getEmployerData() {
+            /*
+             controller code - getAccountData():
+             SELECT Id,Name, Account_Group__c,Hospital_System__c,BU_Count__c
+             FROM Account Where Account_Group__c In ('Kaiser','Hospital') And Type = 'Employer' And Active__c = 'YES'
+             ORDER BY Account_Group__c, Name
+             */
+            return new Promise(function(resolve, reject) {
+                UnpaidInternshipRemoteController2.getAccountData( (result, event) => {
+                    if (event.status) {
+                    log('Employer data downloaded successfully');
+                    resolve(result);
+                }
+                else {
+                    log('Employer data downloaded error');
+                    reject(event);
+                }
+            });
+            });
+        }
+
+        function processEmployers(results) {
+            return new Promise(function(resolve, reject) {
+                let i,len,rec,empId,empDiv,empCode,empName,parentCorp,buCnt;
+                employersDataArray = [];
+                employerMap        = {};
+                employerCount      = 0;
+                kaiserIdArray      = [];
+                hospitalIdArray    = [];
+                len = results.length;
+                for (i = 0; i < len; i++) {
+                    employerCount++;
+                    rec = results[i];
+                    empDiv = toProperCase(rec.Account_Group__c);
+                    empId = rec.Id;
+                    empName = toProperCase(rec.Name);
+                    parentCorp = toProperCase(rec.Hospital_System__c);
+                    buCnt = rec.BU_Count__c || 0;
+                    employersDataArray.push({ Id: empId, Name: empName, Division: empDiv, ParentCorp: parentCorp, BuCnt: buCnt});
+                    employerMap[empId] = {Id: empId, Name: empName, Division: empDiv, ParentCorp: parentCorp, BuCnt: buCnt};
+                    if (empDiv == 'Kaiser') {
+                        kaiserIdArray.push(empId);
+                        addOption(kaiserDropdown,empName,empId);
+                    }
+                    else {
+                        hospitalIdArray.push(empId);
+                        addOption(hospitalDropdown,empName,empId);
+                    }
+                }
+                saveAccountsLocally();
+                resolve('ok');
+            });
+        }
+
+        function getLocalContacts(empId) {
+            log('debug - getLocalContacts()');
+            return new Promise(function(resolve, reject) {
+                db.contacts.where('AccountId').equals(empId).toArray(function (arr) {
+                    localContactsDataArray = arr.slice();
+                    log('LocalContacts length::: ' + localContactsDataArray.length);
+                }).then(function () {
+                    contactsMap = {};
+                    localContactsDataArray.forEach(function(element) {
+                        contactsMap[element.Id] = element;
+                    });
+                    showLocalContactsGrid();
+                }).then(function() {
+                    resolve('ok');
+                });
+            });
+        }
+
+        function getContactsForAllAccounts(srcArray) {
+            log('-- getContactsForAllAccounts --');
+            var sequence = Promise.resolve();
+            srcArray.forEach(function(accountId){
+                sequence = sequence.then(function(){
+                    return getContactData(accountId);
+                }).then(function(contactData){
+                    return processMembers(contactData,false);
+                }).then(function() {
+                    return saveContactsLocally();
+                }).catch(function(err){
+                    log(err);
+                    console.log('error - something failed to load!');
+                })
+            })
+        }
+
+        function getContactsForSingleAccount(empId) {
+            getContactData(empId).then(contactData => {
+                return processMembers(contactData,true);
+        }).then( function() {
+                showContactsGrid();
+            }).catch(error => {
+                log('Error' + error);
+        });
+        }
+
+        function getContactData(empId) {
+            /*
+             controller code - getContactData(Id):
+             SELECT Id,FirstName,LastName,Birthdate,Hire_Date__c,Gender__c,Title,HomePhone,MobilePhone,MailingCity,MailingPostalCode,AccountId,Department,Email,Ethnic_Group__c,LanguagePrimary__c
+             From Contact
+             Where AccountId = :Id AND In_Current_BU__c = true
+             */
+            return new Promise(function(resolve, reject) {
+                downloadCount++;
+                log('Downloading ' + downloadCount + ' of ' + downloadTotal + ' (' + employerMap[empId].Name +')');
+                currentDownloadOutput.innerHTML = 'Downloading ' + downloadCount + ' of ' + downloadTotal + ' (' + employerMap[empId].Name +')';
+
+                UnpaidInternshipRemoteController2.getContactData(empId, (result, event) => {
+                    if (event.status) {
+                    log('Contact data downloaded successfully');
+                    resolve(result);
+                }
+                else  {
+                    log('Contact data downloaded error');
+                    reject(event);
+                }
+            });
+            });
+        }
+
+        function processMembers(results,show) {
+
+            return new Promise(function(resolve, reject) {
+                let i,len,rec;
+                let accountId,department,email,employer,ethnicGroup,firstName,homePhone,id,primaryLanguage,lastName,mailingCity,mailingPostalCode,cellPhone,title,name,birthdate,hireDate,gender
+                let ptr = 0;
+
+                contactsDataArray = [];
+                contactsMap  = {};
+                contactCount = 0;
+                len = results.length;
+                for (i = 0; i < len; i++) {
+                    accountId = department = email = employer = ethnicGroup = firstName = homePhone = id = primaryLanguage = lastName = mailingCity = mailingPostalCode = cellPhone = title = birthdate = hireDate = gender = '';
+                    ptr++;
+                    contactCount++;
+                    rec = results[i];
+                    if (rec) {
+                        id                  = rec.Id;
+                        firstName           = toProperCase(rec.FirstName);
+                        lastName            = toProperCase(rec.LastName);
+                        title               = toProperCase(rec.Title);
+                        homePhone           = phoneFormat(rec.HomePhone);
+                        cellPhone           = phoneFormat(rec.MobilePhone);
+                        mailingCity         = toProperCase(rec.MailingCity);
+                        mailingPostalCode   = rec.MailingPostalCode || '';
+                        accountId           = rec.AccountId;
+                        department          = toProperCase(rec.Department);
+                        gender              = rec.Gender__c    || '';
+                        email               = rec.Email        || '';
+                        employer            = employerMap[accountId].Id;
+                        ethnicGroup         = toProperCase(rec.Ethnic_Group__c);
+                        primaryLanguage     = toProperCase(rec.LanguagePrimary__c);
+                        name = lastName + ', ' + firstName;
+                        if(rec.Birthdate)
+                            birthdate = moment(rec.Birthdate).format('YYYY-MM-DD');
+                        if(rec.Hire_Date__c)
+                            hireDate  = moment(rec.Hire_Date__c).format('YYYY-MM-DD');
+
+                        contactsDataArray.push({
+                            Id: id, FirstName: firstName, LastName: lastName, Birthdate : birthdate, HireDate:hireDate, Gender:gender, Title: title, HomePhone: homePhone, CellPhone: cellPhone, MailingCity: mailingCity, MailingPostalCode: mailingPostalCode, AccountId: accountId, Department: department, Email: email, Employer: employer, EthnicGroup: ethnicGroup, PrimaryLanguage: primaryLanguage, Name: name
+                        });
+                    }
+                    else {
+                        console.log('record error');
+                    }
+                }
+                resolve(contactsDataArray);
+            });
+        }
+
+        function initAgGrid() {
+            agGrid.LicenseManager.setLicenseKey("United_Healthcare_Workers_West_10-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+
+            employersColDefs  = [
+                { headerName: 'Division',   field: 'Division',      width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Name',       field: 'Name',          width: 290, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'BU Count',   field: 'BuCnt',         width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass1'},
+                { headerName: 'ParentCorp', field: 'ParentCorp',    width: 270, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Id',         field: 'Id',            width: 120, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'}
+            ];
+
+            contactsColDefs = [
+                { headerName: 'Id',                 field: 'Id',                width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Name',               field: 'Name',              width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'FirstName',          field: 'FirstName',         width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'LastName',           field: 'LastName',          width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'HireDate',           field: 'HireDate',          width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Birthdate',          field: 'Birthdate',         width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Gender',             field: 'Gender',            width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Title',              field: 'Title',             width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Department',         field: 'Department',        width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Employer',           field: 'Employer',          width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'HomePhone',          field: 'HomePhone',         width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'CellPhone',          field: 'CellPhone',         width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Email',              field: 'Email',             width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'EthnicGroup',        field: 'EthnicGroup',       width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'PrimaryLanguage',    field: 'PrimaryLanguage',   width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'AccountId',          field: 'AccountId',         width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'City',               field: 'MailingCity',       width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Zip',                field: 'MailingPostalCode', width:  90, suppressMenu: true, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'}
+            ];
+
+            localContactsColDefs = [
+                { headerName: 'Name',               field: 'Name',              width:  200, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+                { headerName: 'HireDate',           field: 'HireDate',          width:  100, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+                { headerName: 'Birthdate',          field: 'Birthdate',         width:  100, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Title',              field: 'Title',             width:  200, suppressMenu: false, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Department',         field: 'Department',        width:  200, suppressMenu: false, sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'HomePhone',          field: 'HomePhone',         width:  200, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'CellPhone',          field: 'CellPhone',         width:  200, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'}
+            ];
+
+            localEmployersColDefs = employersColDefs.slice();
+
+            localResponsesColDefs = [
+                { headerName: 'Updated',            field: 'Updated',           width:  140, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Updated Date',       field: 'UpdatedDate',       width:  130, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3',cellRenderer: updatedDateRenderer},
+                { headerName: 'Member',             field: 'MemberName',        width:  130, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3', sort:'asc'},
+                { headerName: 'Interviewed',        field: 'InterviewDate',     width:  160, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3',cellRenderer: interviewDateRenderer},
+                { headerName: 'Ethnic Group',       field: 'EthnicGroup',       width:  160, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'PrimaryLanguage',    field: 'PrimaryLanguage',   width:  160, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'Gender',             field: 'Gender',            width:   90, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A1',                 field: 'A1',                width:   50, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A2',                 field: 'A2',                width:   50, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A3',                 field: 'A3',                width:   50, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A4',                 field: 'A4',                width:   50, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A5',                 field: 'A5',                width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A5 Other',           field: 'A5_Other',          width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A6',                 field: 'A6',                width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A7',                 field: 'A7',                width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A8',                 field: 'A8',                width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A9',                 field: 'A9',                width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A10',                field: 'A10',               width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A11',                field: 'A11',               width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A12',                field: 'A12',               width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A13',                field: 'A13',               width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A14',                field: 'A14',               width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'},
+                { headerName: 'A15',                field: 'A15',               width:   70, suppressMenu: true,  sortingOrder: ['asc', 'desc'], cellClass: 'cellClass3'}
+            ];
+
+        }
+
+        function updatedDateRenderer(params) {
+            if(params.data.Updated)
+            // Dexie won't let a null be stored, so using Updated field to control.
+                return params.data.UpdatedDate.toLocaleString('en-US', dateOptions1)
+            else
+                return '';
+        }
+
+        function interviewDateRenderer(params) {
+            if(params.data.InterviewDate)
+                return params.data.InterviewDate.toLocaleString('en-US', dateOptions2);
+            else
+                return '';
+        }
+
+        function contactSelectionHandler() {
+            log('debug - contact selected');
+        }
+
+        function getRadioValue(radioName) {
+            let radios = document.getElementsByName(radioName);
+            let selectedValue = '';
+            for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) {
+                    selectedValue = radios[i].value;
+                    break;
+                }
+            }
+            return selectedValue;
+        }
+
+        function getLocalResponses() {
+            log('debug - getLocalResponses()');
+            return new Promise(function(resolve, reject) {
+                let tmpArray;
+                localResponsesDataArray = [];
+                db.responses.toArray(function (arr) {
+                    localResponsesDataArray = arr.slice();
+                    log('localResponses length::: ' + localResponsesDataArray.length);
+                }).then(function () {
+                    responsesMap = {};
+                    if(localResponsesDataArray.length > 0) {
+                        localResponsesDataArray.forEach(function (resp) {
+                            responsesMap[resp.Id] = resp;
+                        });
+                        showLocalResponsesGrid();
+                    }
+                    return localResponsesDataArray.length;
+                }).then(function() {
+                    resolve(localResponsesDataArray.length);
+                });
+            });
+        }
+
+        function resetRadio(radioName) {
+            let radios = document.getElementsByName(radioName);
+            for (var i = 0; i < radios.length; i++) {
+                radios[i].checked = false;
+            }
+        }
+
+        function resetRadios() {
+            q5_other.value = '';
+            for(let i = 1; i <= 15; i++)
+                resetRadio('rb_q' + i);
+        }
+
+        function saveResponse() {
+            let answersArray = [],missedArray = [];
+            let answer,missedSome,missedList;
+
+            let ethnicGroup     = '';
+            let primaryLanguage = '';
+
+            if(ethnicGroupSelect.value > 0)
+                ethnicGroup = ethnicGroupSelect.value;
+
+            if(primaryLanguageSelect.value > 0)
+                primaryLanguage = primaryLanguageSelect.value;
+
+            let gender  = getRadioValue('gender');
+
+            missedSome  = false;
+            missedArray = [];
+            for(let i = 1; i <= 15; i++) {
+                answer = getRadioValue('rb_q' + i);
+                answersArray[i] = answer;
+                if(!answer) {
+                    missedSome = true;
+                    missedArray.push(i);
+                }
+            }
+
+            let a5_other = q5_other.value;
+            answer  = getRadioValue('rb_q5');
+            if(answer == 'O' && a5_other == '' ) {
+                missedSome = true;
+                missedArray.push("'5 Other'");
+            }
+
+            if(missedSome) {
+                missedList = missedArray.join();
+                alert('Please answer all qestions.  You skipped ' + missedList );
+            }
+            else {
+                let responseObj = {
+                    EthnicGroup:ethnicGroup,
+                    PrimaryLanguage:primaryLanguage,
+                    Gender:gender,
+                    Id:localSelectedContactId,
+                    A1:answersArray[1],
+                    A2:answersArray[2],
+                    A3:answersArray[3],
+                    A4:answersArray[4],
+                    A5:answersArray[5],
+                    A5_Other: a5_other,
+                    A6:answersArray[6],
+                    A7:answersArray[7],
+                    A8:answersArray[8],
+                    A9:answersArray[9],
+                    A10:answersArray[10],
+                    A11:answersArray[11],
+                    A12:answersArray[12],
+                    A13:answersArray[13],
+                    A14:answersArray[14],
+                    A15:answersArray[15],
+                    ContactId: localSelectedContactId,
+                    MemberName: localSelectedContactName,
+                    InterviewDate: new Date(),
+                    InterviewerId: userId,
+                    UpdatedDate: new Date(),
+                    Updated:false
+                };
+
+                db.responses.put(responseObj).then (function(){
+                    return db.responses.get(localSelectedContactId);
+                }).then(function (resp) {
+                    getLocalResponses();
+                    log('Response saved');
+                    alert ("Saved");
+                }).catch(function(error) {
+                    alert ("Error saving: " + error);
+                });
+            }
+        }
+
+        function loadResponse(id) {
+            let interviewerNameOutput,interviewDateOutput,memberNameOutput,emailOutput,homePhoneNumberOutput,cellPhoneNumberOutput,occupationOutput,employerOutput,addressOutput,birthdateOutput,hireDateOutput;
+
+            interviewerNameOutput   = document.getElementById('interviewer-name-output');
+            interviewDateOutput     = document.getElementById('interview-date-output');
+            memberNameOutput        = document.getElementById('member-name-output');
+            birthdateOutput         = document.getElementById('birthdate-output');
+            hireDateOutput          = document.getElementById('hire-date-output');
+            cellPhoneNumberOutput   = document.getElementById('cell-phone-number-output');
+            homePhoneNumberOutput   = document.getElementById('home-phone-number-output');
+            emailOutput             = document.getElementById('email-output');
+            occupationOutput        = document.getElementById('occupation-output');
+            employerOutput          = document.getElementById('employer-output');
+            addressOutput           = document.getElementById('address-output');
+
+            let contactObj         = contactsMap[id];
+            let interviewDate      = new Date();
+            let options            = { year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute:'numeric'};
+            let interviewDateStr   = interviewDate.toLocaleString('en-US', options);
+            let memberName         = contactObj.FirstName + ' ' + contactObj.LastName;
+            let memberEmail        = contactObj.Email;
+            let address            = contactObj.MailingCity + ', ' + contactObj.MailingPostalCode;
+            let jobTitle           = contactObj.Title;
+            let homePhoneNumberStr = phoneFormat(contactObj.HomePhone);
+            let cellPhoneNumberStr = phoneFormat(contactObj.CellPhone);
+            let dateOfBirth        = contactObj.Birthdate;
+            let hireDate           = contactObj.HireDate;
+            let gender             = contactObj.Gender;
+
+            log(memberName);
+            interviewDateOutput.innerHTML   = interviewDateStr;
+            interviewerNameOutput.innerHTML = userName;
+            memberNameOutput.innerHTML      = memberName;
+            emailOutput.innerHTML           = '{' + memberEmail + '}';
+            employerOutput.innerHTML        = localSelectedEmp;
+            homePhoneNumberOutput.innerHTML = homePhoneNumberStr;
+            cellPhoneNumberOutput.innerHTML = cellPhoneNumberStr;
+            occupationOutput.innerHTML      = jobTitle;
+            addressOutput.innerHTML         = address;
+            birthdateOutput.innerHTML       = dateOfBirth;
+            hireDateOutput.innerHTML        = hireDate;
+
+        }
+
+        function localResponsesSelectionHandler() {
+            let localSelectedNode = localResponsesGridOptions.api.getSelectedNodes()[0];
+            localSelectedResponsesId = localSelectedNode.data.Id;
+            //      log('debug - local contact selected');
+            //      loadResponse(localSelectedContactId);
+        }
+
+        function localContactSelectionHandler() {
+            let localSelectedNode = localContactsGridOptions.api.getSelectedNodes()[0];
+            localSelectedContactId   = localSelectedNode.data.Id;
+            localSelectedContactName = localSelectedNode.data.Name;
+            log('debug - local contact selected');
+            resetRadios();
+            loadResponse(localSelectedContactId);
+        }
+
+        function showLocalResponsesGrid() {
+            if (localResponsesShownBefore)
+                localResponsesGridOptions.api.destroy();
+            else localResponsesShownBefore = true;
+
+            localResponsesGridOptions = {
+                columnDefs: localResponsesColDefs,
+                rowData: localResponsesDataArray,
+                rowSelection: 'single',
+                onSelectionChanged: localResponsesSelectionHandler,
+                enableSorting: true,
+                suppressMenuColumnPanel: true,
+                suppressMenuFilterPanel: false,
+                suppressMenuMainPanel: true,
+                debug: false
+            };
+            new agGrid.Grid(localResponsesGridDiv, localResponsesGridOptions);
+
+            updateArray   = [];
+            updateTxArray = [];
+
+            localResponsesDataArray.forEach(function (responseRec) {
+                console.log(responseRec);
+// temp fix
+//                if(!responseRec.Updated) {
+                let tmpUnpaidInternsTx = {};
+
+                tmpUnpaidInternsTx.ContactId       = responseRec.ContactId;
+                tmpUnpaidInternsTx.InterviewerId   = responseRec.InterviewerId;
+                tmpUnpaidInternsTx.InterviewDate   = responseRec.InterviewDate;
+                tmpUnpaidInternsTx.MemberName      = responseRec.MemberName;
+                tmpUnpaidInternsTx.A1              = responseRec.A1;
+                tmpUnpaidInternsTx.A2              = responseRec.A2;
+                tmpUnpaidInternsTx.A3              = responseRec.A3;
+                tmpUnpaidInternsTx.A4              = responseRec.A4;
+                tmpUnpaidInternsTx.A5              = responseRec.A5;
+                tmpUnpaidInternsTx.A6              = responseRec.A6;
+                tmpUnpaidInternsTx.A7              = responseRec.A7;
+                tmpUnpaidInternsTx.A8              = responseRec.A8;
+                tmpUnpaidInternsTx.A9              = responseRec.A9;
+                tmpUnpaidInternsTx.A10             = responseRec.A10;
+                tmpUnpaidInternsTx.A11             = responseRec.A11;
+                tmpUnpaidInternsTx.A12             = responseRec.A12;
+                tmpUnpaidInternsTx.A13             = responseRec.A13;
+                tmpUnpaidInternsTx.A14             = responseRec.A14;
+                tmpUnpaidInternsTx.A15             = responseRec.A15;
+                tmpUnpaidInternsTx.A5_Other        = responseRec.A5_Other;
+                tmpUnpaidInternsTx.UpdatedDate     = new Date();
+                tmpUnpaidInternsTx.Updated         = true;
+                tmpUnpaidInternsTx.EthnicGroup     = responseRec.EthnicGroup;
+                tmpUnpaidInternsTx.PrimaryLanguage = responseRec.PrimaryLanguage;
+                tmpUnpaidInternsTx.Gender          = responseRec.Gender;
+                console.log(updateTxArray);
+                updateTxArray.push(JSON.stringify(tmpUnpaidInternsTx));
+                tmpUnpaidInternsTx.Id = responseRec.Id;
+                updateArray.push(tmpUnpaidInternsTx);
+//                }
+            });
+
+            if(updateTxArray.length>0) {
+                console.log(updateTxArray);
+                updateButton.disabled = false;
+            }
+
+        }
+
+        function showLocalContactsGrid() {
+            if(localContactsShownBefore)
+                localContactsGridOptions.api.destroy();
+            else localContactsShownBefore = true;
+
+            localContactsGridOptions = {
+                columnDefs: localContactsColDefs,
+                rowData:    localContactsDataArray,
+                rowSelection: 'single',
+                onSelectionChanged: localContactSelectionHandler,
+                enableSorting: true,
+                suppressMenuColumnPanel: true,
+                suppressMenuFilterPanel: false,
+                suppressMenuMainPanel: true,
+                debug: false
+            };
+            new agGrid.Grid(localContactsGridDiv, localContactsGridOptions);
+
+            /* To do: This needs refactoring as a promise in order to work.
+
+             localContactsGridOptions = {
+             // note - we do not set 'virtualPaging' here, so the grid knows we are doing standard paging
+             enableSorting: true,
+             enableFilter: true,
+             debug: false,
+             rowSelection: 'single',
+             enableColResize: false,
+             paginationPageSize: 20,
+             columnDefs: localContactsColDefs,
+             rowModelType: 'pagination'
+             };
+
+             createNewDatasource();
+             */
+        }
+
+        /*
+         function onPageSizeChanged(newPageSize) {
+         this.localContactsGridOptions.paginationPageSize = new Number(newPageSize);
+         createNewDatasource();
+         }
+
+         function createNewDatasource() {
+         let dataSource = {
+         rowCount: localContactsDataArray.length,
+         getRows: function (params) {
+         // take a chunk of the array, matching the start and finish times
+         let rowsThisPage = localContactsDataArray.slice(params.startRow, params.endRow);
+         let lastRow = -1;
+         if (localContactsDataArray.length <= params.endRow) {
+         lastRow = localContactsDataArray.length;
+         }
+         params.successCallback(rowsThisPage, lastRow);
+         }
+         };
+         localContactsGridOptions.api.setDatasource(dataSource);
+         }
+         */
+
+        function showContactsGrid() {
+            if(contactsShownBefore)
+                contactsGridOptions.api.destroy();
+            else contactsShownBefore = true;
+
+            contactsGridOptions = {
+                columnDefs: contactsColDefs,
+                rowData:    contactsDataArray,
+                rowSelection: 'single',
+                onSelectionChanged: contactSelectionHandler,
+                enableSorting: true,
+                debug: false
+            };
+            new agGrid.Grid(contactsGridDiv, contactsGridOptions);
+        }
+
+        function phoneFormat(s) {
+            let s1;
+            if(s == null || s.trim().length < 10)
+                s1 = '';
+            else {
+                s1 = s.trim().replace(/[^0-9]/g,'');
+                s1 = '(' + s1.substr(0,3) + ') ' + s1.substr(3,3) + '-' + s1.substr(6);
+            }
+            return s1;
+        }
+
+        function toProperCase(s) {
+            // My version - handles hyphenated names correctly :)
+            let s1 = '';
+            if(s)
+                s1 = s.trim().toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function deleteDbButtonClickHandler(e) {
+
+            db.close();
+            db.delete().then(function () {
+                log("Database successfully deleted");
+                console.log("Database successfully deleted");
+            }).then(function() {
+                db.open();
+            }).catch(function (err) {
+                log("Could not delete/reopen database");
+                log(err);
+                console.error("Could not delete/reopen database");
+            });
+
+        }
+
+        function downloadKaiserClickHandler(e) {
+            downloadCount = 0;
+            downloadTotal = kaiserIdArray.length;
+            db.contacts.clear().then(function () {
+                log("Contacts Database successfully deleted");
+                getContactsForAllAccounts(kaiserIdArray);
+            }).catch(function (err) {
+                log("Could not delete Contacts database");
+                log(err);
+            });
+        }
+
+        function downloadHospitalClickHandler(e) {
+            downloadCount = 0;
+            downloadTotal = hospitalIdArray.length;
+            db.contacts.clear().then(function () {
+                log("Contacts Database successfully deleted");
+                getContactsForAllAccounts(hospitalIdArray);
+            }).catch(function (err) {
+                log("Could not delete Contacts database");
+                log(err);
+            });
+        }
+
+        function saveResponseClickHandler(e) {
+            saveResponse();
+        }
+
+        function updateButtonClickHandler(e) {
+            log('debug - update salesforce');
+            return new Promise(function(resolve, reject) {
+                UnpaidInternshipRemoteController2.updateResponses2(updateTxArray, (result, event) => {
+                    if (event.status) {
+                    db.transaction("rw", db.responses, function*() {
+                        yield db.responses.bulkPut(updateArray);
+                        log("Save complete - responses updated locally");
+                    }).then(function () {
+                        getLocalResponses();
+                        alert('Salesforce updated');
+                        log('Response data synced to Salesforce successfully');
+                        log('Reloading responses');
+                    }).catch(function (error) {
+                        log(error);
+                        alert ("Error saving: " + error);
+                        console.error(error);
+                    });
+                    resolve(result);
+                }
+                else {
+                    let eType  = event.type;
+                    let eMsg   = event.message;
+                    let eWhere = event.where;
+                    alert('Response data synced error');
+                    log('Response data synced error');
+                    log(eType);
+                    log(eMsg);
+                    if(eWhere != undefined)
+                        log(eWhere);
+                    reject(event);
+                }
+            });
+            });
+        }
+
+        function log(pText) {
+            let date = new Date();
+            let options = { year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute:'numeric', second:'numeric'};
+            let dateStr = date.toLocaleString('en-US', options);
+            let d = document.createElement('div');
+            let t = document.createTextNode(pText);
+            let x = document.createTextNode('[' + dateStr + '] ');
+            d.appendChild(x);
+            d.appendChild(t);
+            logText.appendChild(d);
+        }
+
+        function addOption(dropDown,name,id) {
+            var opt = document.createElement("option");
+            opt.text  = name;
+            opt.value = id;
+            dropDown.add(opt, null);
+        }
+
+        function empDropdownHandler(e) {
+            localSelectedEmpId = e.currentTarget.value;
+            localSelectedEmp   = employerMap[localSelectedEmpId].Name;
+            getLocalContacts(localSelectedEmpId);
+        }
+
+        function contactFilterInputHandler(e) {
+            var searchText = e.target.value;
+            localContactsGridOptions.api.setQuickFilter(searchText);
+        }
+
+        function saveAsCsv() {
+            let fileName = 'UIdata.csv';
+            localResponsesGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function init() {
+            contactsDiv           = document.getElementById('ContactsDiv');
+            messageDiv            = document.getElementById('MessageDiv');
+            employersGridDiv      = document.getElementById('EmployersGridDiv');
+            contactsGridDiv       = document.getElementById('ContactsGridDiv');
+            selectedEmpDiv        = document.getElementById('SelectedEmpDiv');
+            logText               = document.getElementById('LogText');
+            contactFilterInput    = document.getElementById('ContactFilterInput');
+            currentDownloadOutput = document.getElementById('current-download-output');
+            currentDownloadOutput.innerHTML = '';
+
+            contactFilterInput.addEventListener ('input', contactFilterInputHandler, false);
+
+            localEmployersGridDiv = document.getElementById('LocalEmployersGridDiv');
+            localContactsGridDiv  = document.getElementById('LocalContactsGridDiv');
+            localSelectedEmpDiv   = document.getElementById('LocalSelectedEmpDiv');
+            localResponsesGridDiv = document.getElementById('LocalResponsesGridDiv');
+
+            kaiserDropdown   = document.getElementById("KaiserSelectList");
+            addOption(kaiserDropdown,'Kaiser',0);
+            kaiserDropdown.addEventListener("change", empDropdownHandler);
+
+            hospitalDropdown = document.getElementById("HospitalSelectList");
+            addOption(hospitalDropdown,'Hospital',0);
+            hospitalDropdown.addEventListener("change", empDropdownHandler);
+
+            ethnicGroupSelect       = document.getElementById('ethnic-group-select');
+            primaryLanguageSelect   = document.getElementById('primary-language-select');
+
+            q5_other                = document.getElementById('q5_other');
+
+            deleteDbButton = document.getElementById('DeleteDbButton');
+            deleteDbButton.addEventListener('click',deleteDbButtonClickHandler, false);
+
+            downloadKaiserButton = document.getElementById('DownloadKaiserButton');
+            downloadKaiserButton.addEventListener('click',downloadKaiserClickHandler, false);
+
+            downloadHospitalButton = document.getElementById('DownloadHospitalButton');
+            downloadHospitalButton.addEventListener('click',downloadHospitalClickHandler, false);
+
+            saveResponseButton = document.getElementById('save-response-button');
+            saveResponseButton.addEventListener('click',saveResponseClickHandler, false);
+
+            updateButton = document.getElementById('UpdateButton');
+            updateButton.addEventListener('click',updateButtonClickHandler, false);
+
+            saveAsCsvButton  = document.getElementById("SaveAsCsvButton");
+            saveAsCsvButton.addEventListener("click", saveAsCsv, false);
+
+            employersShownBefore = localEmployersShownBefore = contactsShownBefore = localContactsShownBefore = localResponsesShownBefore = false;
+
+            employerMap     = {};
+            contactsMap     = {};
+            kaiserIdArray   = [];
+            hospitalIdArray = [];
+            localEmployersDataArray = [];
+            localContactsDataArray  = [];
+            localResponsesDataArray = [];
+
+            dateOptions1 = { year: 'numeric', month: 'numeric', day: 'numeric'};
+            dateOptions2 = { year: 'numeric', month: 'numeric', day: 'numeric', hour:'numeric', minute:'numeric'};
+        }
+
+        // ***************** Global vars *****************
+        var db,sysObj,sessionId,userId,userFirstName,userLastName,userName,logText;
+        var kaiserIdArray,hospitalIdArray,ethnicGroupSelect,primaryLanguageSelect;
+        var contactsDiv,messageDiv,employersGridDiv,localEmployersGridDiv,contactsGridDiv,localContactsGridDiv,selectedEmpDiv,localSelectedEmpDiv,localResponsesGridDiv;
+        var selectedEmp,selectedEmpId,localSelectedEmp,localSelectedEmpId,localSelectedContactId,localSelectedContactName;
+        var downloadHospitalButton,downloadKaiserButton,deleteDbButton,saveResponseButton,updateButton,saveAsCsvButton;
+        var employersDataArray,employersGridOptions,employersColDefs,employerCount;
+        var contactsDataArray,contactsGridOptions,contactsColDefs,contactCount;
+        var localContactsDataArray,localContactsGridOptions,localContactsColDefs;
+        var localEmployersDataArray,localEmployersColDefs;
+        var employersShownBefore,localEmployersShownBefore,contactsShownBefore,localContactsShownBefore,localResponsesShownBefore;
+        var kaiserDropdown, hospitalDropdown;
+        var employerMap,contactsMap,contactFilterInput,currentDownloadOutput;
+        var localSelectedResponsesId,localResponsesDataArray,localResponsesGridOptions,localResponsesColDefs,responsesMap;
+
+        var dateOptions1,dateOptions2, downloadCount = 0, downloadTotal = 0;
+        var updateArray,updateTxArray,userDivision, userTitle,q5_other,userTheme;
+
+        var initDexie = Dexie.async(function* () {
+
+            log('Unpaid Interns App v1.32 (beta)');
+
+            log('initDexie start');
+
+            console.log('Dexie v' + Dexie.semVer);
+            Dexie.debug = true;
+
+            //
+            // Check for existing database
+            //
+            Dexie.getDatabaseNames(function (databases) {
+                for (var i=0; i< databases.length; ++i) {
+                    log('dexie sees - ' + databases[i]);
+                }
+            });
+
+            //
+            // Define database
+            //
+            db = new Dexie("uhw_database");
+
+            // delete it - dev mode only
+            /*
+             db.delete().then(function () {
+             log("Database successfully deleted");
+             console.log("Database successfully deleted");
+             }).catch(function (err) {
+             log("Could not delete database");
+             log(err);
+             console.error("Could not delete database");
+             });
+             */
+
+            db.version(1).stores({
+                accounts:  '&Id,*Division',
+                contacts:  '&Id,*AccountId',
+                responses: '&Id',
+                system: '&Id,*Updated'
+            });
+
+            //
+            // Define schema
+            //
+            var Sys = db.system.defineClass({
+                Id: String,
+                UserName: String
+            });
+
+            Sys.prototype.save = function () {
+                return db.system.put(this);
+            }
+
+            var Account = db.accounts.defineClass({
+                Id: String,
+                Name: String,
+                Division: String,
+                ParentCorp: String,
+                BuCnt: Number
+            });
+
+            Account.prototype.save = function () {
+                return db.accounts.put(this);
+            }
+
+            var Contact = db.contacts.defineClass({
+                Id: String,
+                AccountId: String,
+                Name: String,
+                FirstName: String,
+                LastName: String,
+                Title: String,
+                HomePhone: String,
+                MobilePhone: String,
+                MailingCity: String,
+                MailingPostalCode: String,
+                Department: String,
+                Email: String,
+                EmployerID: String,
+                Employer: String,
+                EthnicGroup: String,
+                LanguagePrimary: String
+            });
+
+            Contact.prototype.save = function () {
+                return db.contacts.put(this);
+            }
+
+            // Mimics structure of UnpaidInternsTx
+            //                 UserId: String ?
+            var Response = db.responses.defineClass({
+                Id: String,
+                EthnicGroup: String,
+                PrimaryLanguage: String,
+                Gender: String,
+                ContactId: String,
+                InterviewerId: String,
+                InterviewDate: Date,
+                A1: String,
+                A2: String,
+                A3: String,
+                A4: String,
+                A5: String,
+                A5_Other: String,
+                A6: String,
+                A7: String,
+                A8: String,
+                A9: String,
+                A10: String,
+                A11: String,
+                A12: String,
+                A13: String,
+                A14: String,
+                A15: String,
+                MemberName: String,
+                UpdatedDate: Date,
+                Updated: Boolean
+            });
+
+            Response.prototype.save = function () {
+                return db.responses.put(this);
+            }
+
+            try {
+                yield db.open();
+
+                db.tables.forEach(function (table) {
+                    log('T:' +  table.name);
+                });
+
+                let sysCnt = yield db.system.count().then(function(cnt) {
+                    log('System Cnt:' + cnt);
+                });
+
+                let accCnt = yield db.accounts.count().then(function(cnt) {
+                    log('Accounts Cnt:' + cnt);
+                    return cnt;
+                });
+
+                if(accCnt > 0) {
+                    let contCnt = yield db.contacts.count().then(function(cnt) {
+                        log('Contact Cnt:' + cnt);
+                    });
+                }
+
+                let respCnt = yield db.responses.count().then(function(cnt) {
+                    log('Responses Cnt:' + cnt);
+                });
+
+            } catch(err) {
+                log('Error opening db...');
+                log(err);
+            }
+
+            log('initDexie end');
+
+        });
+
+        // ***************** Main Program Entry *****************
+        init();
+        initAgGrid();
+
+        Dexie.spawn(function* () {
+            log('before initDexie..');
+            yield initDexie();
+            log('...after initDexie');
+
+            try {
+                // Note: I don't think this use case will happen currently, as Salesforce 1 needs WiFi to launch.
+                //       This app therefore is session aware by definition.  If Salesforce get their act together
+                //       and cache VF pages in SF1, then the catch would work and UserId would be valid.
+                sessionId     = "{!$Api.Session_ID}";
+                userId        = "{!$User.Id}";
+                userFirstName = "{!$User.FirstName}";
+                userLastName  = "{!$User.LastName}";
+                userName      = userFirstName + ' ' + userLastName;
+                sysObj        = {Id:userId,UserName:userName};
+                userTheme     = "{!$User.UITheme}";
+
+log('Theme: ' + userTheme);
+                
+                if(userTheme == 'Theme4t') // Hide button on iPad
+                    saveAsCsvButton.setAttribute("style", 'visibility:hidden');
+
+                log('Salesforce Session_ID read successfully. Hello ' + userFirstName);
+                db.system.put(sysObj).then(function (resp) {
+                    log('UserId stored locally');
+                }).catch(function(error) {
+                    alert ("Error - UserId not stored locally: " + error);
+                });
+
+                let employerData = yield getEmployerData();
+                yield processEmployers(employerData);
+                let responseCount = yield getLocalResponses();
+
+                let userObj = yield getUserData(userId);
+
+                if(userDivision.toUpperCase() == 'KAISER') {
+                    deleteDbButton.setAttribute("style",'visibility:hidden');
+                    hospitalDropdown.setAttribute("style",'visibility:hidden');
+                    kaiserDropdown.setAttribute("style", 'visibility:visible');
+                }
+
+                if(userDivision.toUpperCase() == 'HOSPITAL') {
+                    deleteDbButton.setAttribute("style", 'visibility:hidden');
+                    kaiserDropdown.setAttribute("style", 'visibility:hidden');
+                    hospitalDropdown.setAttribute("style", 'visibility:visible');
+                }
+
+                if(userDivision.toUpperCase() != 'HOSPITAL' && userDivision.toUpperCase() != 'KAISER') {
+                    deleteDbButton.setAttribute("style",'visibility:visible');
+                    kaiserDropdown.setAttribute("style",'visibility:visible');
+                    hospitalDropdown.setAttribute("style",'visibility:visible');
+                }
+
+            }
+            catch (err) {
+                sessionId = userId = null;
+                log('Error: ' + err.toString());
+                console.error(err);
+
+                db.system.first().then(function (resp) {
+                    log('UserId retrieved from local db');
+                    sysObj          = {};
+                    sysObj.Id       = resp.Id;
+                    sysObj.UserName = resp.UserName;
+                }).catch(function(error) {
+                    alert ("Error - UserId not stored locally: " + error);
+                });
+            }
+        });
+
+    </script>
+    </body>
+</apex:page>

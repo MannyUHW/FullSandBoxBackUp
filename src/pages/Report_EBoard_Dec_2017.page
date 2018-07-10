@@ -1,0 +1,1270 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>EBoard Dec 2017 Packets</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+<style type="text/css" media="screen,print">
+   .page-breaker {
+     display: block;
+     page-break-after: always;
+     border :1px solid black
+   }
+</style>
+
+<script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+</head>
+
+<body>
+
+<font size="+2">EBoard Dec 2017 Packets</font><br/>
+
+
+<div id="progressDiv" align="center">Loading Employer Sheets...</div>
+
+<div class="page-breaker"></div>
+
+<div id="mainDiv" align="center">
+   
+<div id="employerTemplate">
+<table width="100%">
+  <tr valign="top">
+    <td bgcolor="#481C60">
+      <font color="white" size="+2"><b>{{employer}}</b></font>
+    </td>
+    
+  </tr>
+  <tr valign="top">
+    <td>
+      &nbsp;<br/>
+      <table cellpadding="10" width="100%">
+        <tr valign="top">
+          <td width="40%" align="center">
+            <font size="-1">EBoard:</font><br/> <font size="+1"><u>{{eboard}}</u></font>
+          </td>
+          <td width="30%" align="center">
+            <font size="-1">Executive Committee:</font><br/> <font size="+1"><u>{{ecomm}}</u></font>
+          </td>
+          <td width="30%" align="center">
+            <font size="-1">City:</font><br/> {{city}}            
+          </td>          
+        </tr>
+                  
+        <tr valign="top">
+          <td align="center">
+            <font size="-1">Constituency:</font><br/>{{seat}}
+          </td>
+          <td align="center">
+            <font size="-1">District:</font><br/> {{district}}
+          </td>
+          <td align="center">
+            <font size="-1">County:</font><br/> {{county}}
+          </td>          
+        </tr>
+            
+  
+        <tr valign="top">
+
+          <td align="center">
+            <font size="-1">Organizer:</font><br/>
+            {{organizer}}
+          </td>
+
+          <td align="center">
+            <font size="-1">Coordinator:</font><br/>
+            {{coordinator}}
+          </td>
+                  
+          <td align="center">
+            <font size="-1">Regional Director:</font><br/>
+            {{regionalDirector}}
+          </td>          
+        </tr>
+      </table>
+      &nbsp;<br/>
+    </td>
+  </tr>
+  <tr valign="top">
+    <td align="center"> 
+      &nbsp;<br/>     
+      <font size="+1"><i><u>Metrics</u></i></font><br/>
+      <table width="100%">      
+        <tr valign="middle">       
+          <td width="50%" align="right">
+            BU Count:
+          </td>
+          <td width="10%"  align="center">
+             <font size="+1">{{buCount}}</font>
+          </td>
+          <td width="40%" align="left"></td>
+        </tr>
+        <tr valign="middle">    
+          <td align="center" colspan="3">&nbsp;</td>
+        </tr>
+        <tr valign="middle">              
+          <td align="right">
+            Leaders:
+          </td>
+          <td align="center">
+             <font size="+1">{{leaderCount}}</font>
+          </td>
+        </tr>
+        <tr valign="middle">    
+          <td align="right">
+            New Leaders (since April):
+          </td>
+          <td align="center">
+             <font size="+1">{{newLeaderCount}}</font>
+          </td>          
+          <td align="center"></td>          
+        </tr>
+        <tr valign="middle">              
+          <td colspan="3">&nbsp;</td>
+        </tr>
+        <tr valign="middle">                        
+          <td align="right">
+            Current Coverage:
+          </td>
+          <td align="center">
+             <font size="+1">{{coverage}}</font>
+          </td>
+          <td align="left">
+          </td>          
+        </tr>
+        <tr valign="middle">                        
+          <td align="right">
+            Current Coverage Pct:
+          </td>
+          <td align="center">
+             <font size="+1">{{coveragePct.toFixed(0)}}%</font>
+          </td>
+          <td align="left">
+            (Div Avg: {{divCoveragePct.toFixed(0)}}%, UHW Avg: {{allCoveragePct.toFixed(0)}}%)
+          </td>          
+        </tr>        
+        <tr valign="middle">    
+          <td align="right">
+            Newly Covered (since April):
+          </td>
+          <td align="center">
+             <font size="+1">+{{newCoverage.toFixed(0)}}</font>
+          </td>          
+          <td align="center">
+          </td>
+        </tr>
+        <tr valign="middle">    
+          <td align="right">
+            Newly Covered Pct:
+          </td>
+          <td align="center">
+             <font size="+1">+{{newCoveragePct.toFixed(0)}}%</font>
+          </td>          
+          <td align="left">
+            (Div Avg: +{{divNewCoveragePct.toFixed(0)}}%, UHW Avg: +{{allNewCoveragePct.toFixed(0)}})
+          </td>
+        </tr>
+        <!--
+        <tr valign="middle">    
+          <td align="center" colspan="3">________________________________</td>
+        </tr>
+        <tr valign="middle">              
+          <td align="right">
+            COPE Avg:
+          </td>
+          <td align="center">
+             <font size="+1">${{copeAvg.toFixed(2)}}</font>
+          </td>
+          <td align="left">             
+             (Div Avg: ${{divCopeAvg.toFixed(2)}})
+          </td>
+        </tr>
+        <tr valign="middle">              
+          <td align="right">
+            BU Pct COPE $10+:
+          </td>
+          <td align="center">
+             <font size="+1">{{cope10Pct.toFixed(0)}}%</font>
+          </td>
+          <td align="left">
+            (Div Avg: {{divCope10Pct.toFixed(0)}}%)
+          </td>
+        </tr>
+        <tr valign="middle">              
+          <td align="right">
+            Year over Year COPE Increase:
+          </td>
+          <td align="center">
+             <font size="+1">+${{copeDiffAvg.toFixed(2)}}</font>
+          </td>
+          <td align="left">             
+             (Div Avg: +${{divCopeDiffAvg.toFixed(2)}})
+          </td>
+        </tr>   
+        -->    
+        <tr valign="middle">                        
+          <td colspan="3">&nbsp;</td>
+        </tr>
+        <tr valign="middle">              
+          <td align="right">
+            Phone Bank Shifts:
+          </td>
+          <td align="center">
+             <font size="+1">{{phoneBank.toFixed(1)}}</font>
+          </td>
+          <td align="left">             
+             (Div Avg Adjusted for BU: {{divPhoneBank.toFixed(1)}})       
+          </td>              
+        </tr>
+      </table>
+      &nbsp;<br/>
+      {{facilityPhoto}}
+    </td>
+  </tr>
+</table>
+&nbsp;<br/>
+<div align="center">{{adate.toLocaleString()}}</div>
+<div class="page-breaker"></div>
+</div>
+<div align="center" id="deptTemplate">
+  <font size="+1"><i><u>Departments</u></i></font><br/>
+  <table>
+    <tr valign="bottom">
+      <td width="28%" bgcolor="#481C60" align="center"><font size="-1" color="white">Dept</font></td>
+      <td width="10%" bgcolor="#481C60" align="center"><font size="-1" color="white">BU Count</font></td>    
+      <td width="1%" bgcolor="#481C60" align="center">&nbsp;</td>    
+      <td width="10%" bgcolor="#481C60" align="center"><font size="-1" color="white">Ldrs Phase 1</font></td>    
+      <td width="10%" bgcolor="#481C60" align="center"><font size="-1" color="white">Current Ldrs</font></td>          
+      <td width="10%" bgcolor="#481C60" align="center"><font size="-1" color="white">Ldrs Increase</font></td>    
+      <td width="1%" bgcolor="#481C60" align="center">&nbsp;</td>    
+      <td width="10%" bgcolor="#481C60" align="center"><font size="-1" color="white">Supporters Phase 1</font></td>    
+      <td width="10%" bgcolor="#481C60" align="center"><font size="-1" color="white">Current Supporters</font></td>          
+      <td width="10%" bgcolor="#481C60" align="center"><font size="-1" color="white">Supporters Increase</font></td>    
+    </tr>
+    <tbody class="deptRowTemplate" >
+    <tr valign="top">           
+      <td>{{department}}</td>
+      <td align="center">{{buCount}}</td>
+      <td bgcolor="#481C60"></td>
+      <td align="center">{{reachLdrs}}</td>      
+      <td align="center">{{currentLdrs}}</td>            
+      <td align="center">+{{currentLdrs - reachLdrs}}</td>                  
+      <td bgcolor="#481C60"></td>
+      <td align="center">{{reachSupporters}}</td>      
+      <td align="center">{{currentSupporters}}</td>            
+      <td align="center">+{{currentSupporters - reachSupporters}}</td>                  
+    </tr>
+    </tbody>
+  </table>
+  
+
+<div align="center">{{adate.toLocaleString()}}</div>
+<div class="page-breaker"></div>
+</div>
+
+
+    <div id="writerDiv"></div>
+    
+    <div id="debugDiv"></div>
+
+</div>
+
+ 
+<script language="JavaScript">
+
+var vacancySet = [];
+   vacancySet.push("dignity health medical foundation - santa cruz")
+   vacancySet.push("dominican hospital")
+   vacancySet.push("dominican medical foundation")
+   vacancySet.push("dominican oaks assisted living")
+   vacancySet.push("watsonville community hospital")
+   vacancySet.push("watsonville hosp-prof unit")
+   vacancySet.push("encino hospital medical center")
+   vacancySet.push("dignity health med grp northridge")
+   vacancySet.push("northridge hospital medical center-roscoe")
+   vacancySet.push("usc verdugo hills hospital")
+   vacancySet.push("centinela hospital medical center")
+   vacancySet.push("garden grove hospital & medical center")
+   vacancySet.push("kindred hospital south bay")
+   vacancySet.push("st mary medical center-long beach")
+   vacancySet.push("st vincent medical center")
+   vacancySet.push("tri-city medical center")
+   vacancySet.push("barlow respiratory hospital")
+   vacancySet.push("providence st joseph medical center")
+   vacancySet.push("frank campbell dds inc")
+   vacancySet.push("marina del rey hospital")
+   vacancySet.push("roger p fieldman dds inc & assoc")
+   vacancySet.push("southern california hospital at culver city")
+   vacancySet.push("western dental")
+   vacancySet.push("sequoia hospital")
+   vacancySet.push("stanford university medical center")
+   vacancySet.push("el camino hospital")
+   vacancySet.push("lucile packard childrens hospital")
+   vacancySet.push("stanford ensr")
+   vacancySet.push("kaiser-west los angeles")
+   vacancySet.push("kaiser-santa rosa")
+   vacancySet.push("kaiser-napa")
+   vacancySet.push("kaiser-vallejo")
+   vacancySet.push("kaiser-davis")
+   vacancySet.push("kaiser-rancho cordova")
+   vacancySet.push("kaiser-sacramento")
+   vacancySet.push("kaiser-santa clara hospital")
+   vacancySet.push("kaiser-campbell")
+   vacancySet.push("kaiser-milpitas")
+   vacancySet.push("kaiser-mountain view")
+   vacancySet.push("kaiser-santa clara clinics")
+
+
+var dmetricsMap = {};
+      dmetricsMap["hospital"] = [1911, 15598, 467, 124, 1296];
+      dmetricsMap["kaiser"] = [2347, 18632, 714, 196, 2351];
+      dmetricsMap["all"] = [4258, 34230, 1181, 320, 3647];
+
+
+
+var metricsMap = {};
+            metricsMap["marian medical center"] = [20, 209, 0, 0, 0];
+      metricsMap["sierra vista regional med center-crothall svcs"] = [0, 0, 0, 0, 0];
+      metricsMap["french hospital medical center"] = [11, 56, 0, 0, 0];
+      metricsMap["sierra vista regional med center"] = [2, 15, 0, 0, 0];
+      metricsMap["twin cities community hospital"] = [5, 45, 4, 0, 0];
+      metricsMap["arroyo grande community hospital"] = [10, 46, 0, 0, 0];
+      metricsMap["dominican medical foundation"] = [2, 9, 0, 2, 5];
+      metricsMap["dominican hospital"] = [29, 410, 2, 1, 17];
+      metricsMap["watsonville community hospital"] = [7, 72, 0, 0, 0];
+      metricsMap["watsonville hosp-prof unit"] = [0, 0, 0, 0, 0];
+      metricsMap["dominican oaks assisted living"] = [4, 11, 0, 1, 14];
+      metricsMap["dignity health medical foundation - santa cruz"] = [4, 7, 0, 1, 17];
+      metricsMap["st josephs medical center"] = [43, 507, 1, 0, 0];
+      metricsMap["st josephs behavioral health center"] = [3, 20, 14, 2, 34];
+      metricsMap["sutter amador hospital"] = [0, 0, 0, 0, 0];
+      metricsMap["mark twain st josephs hospital"] = [4, 24, 0, 0, 0];
+      metricsMap["dignity health med grp stockton"] = [2, 32, 0, 1, 10];
+      metricsMap["doctors hospital of manteca"] = [3, 55, 0, 0, 0];
+      metricsMap["doctors medical center modesto"] = [17, 289, 0, 1, 12];
+      metricsMap["sodexo doctors medical center modesto"] = [1, 0, 0, 1, 10];
+      metricsMap["emanuel medical center"] = [1, 0, 0, 0, 0];
+      metricsMap["st johns pleasant valley hospital"] = [22, 223, 4, 2, 19];
+      metricsMap["st johns regional med ctr"] = [26, 242, 3, 3, 29];
+      metricsMap["encino hospital medical center"] = [7, 25, 0, 2, 20];
+      metricsMap["city of hope"] = [30, 214, 0, 0, 0];
+      metricsMap["greater el monte community hospital"] = [1, 1, 0, 0, 0];
+      metricsMap["northridge hospital medical center-roscoe"] = [38, 418, 2, 0, 0];
+      metricsMap["usc verdugo hills hospital"] = [11, 75, 3, 0, 0];
+      metricsMap["dignity health med grp northridge"] = [0, 0, 0, 0, 0];
+      metricsMap["antelope valley hospital"] = [38, 326, 5, 1, 11];
+      metricsMap["barstow community hospital"] = [0, 0, 0, 0, 0];
+      metricsMap["bakersfield memorial hospital"] = [31, 414, 2, 3, 34];
+      metricsMap["mercy hospitals of bakersfield"] = [31, 322, 0, 0, 0];
+      metricsMap["centinela hospital medical center"] = [28, 221, 0, 5, 49];
+      metricsMap["kindred hospital south bay"] = [3, 27, 0, 1, 12];
+      metricsMap["garden grove hospital & medical center"] = [12, 86, 0, 1, 7];
+      metricsMap["california hospital medical center"] = [28, 311, 4, 2, 20];
+      metricsMap["good samaritan hospital los angeles-crothall svcs"] = [5, 16, 6, 3, 6];
+      metricsMap["monterey park hospital"] = [6, 29, 14, 1, 12];
+      metricsMap["good samaritan hospital-los angeles"] = [18, 82, 22, 4, 29];
+      metricsMap["la casa mental health rehab center"] = [11, 45, 5, 2, 15];
+      metricsMap["los alamitos medical center"] = [21, 94, 0, 0, 0];
+      metricsMap["lakewood regional medical center"] = [24, 214, 0, 0, 0];
+      metricsMap["st vincent medical center"] = [24, 193, 1, 5, 37];
+      metricsMap["st mary medical center-long beach"] = [28, 378, 0, 2, 17];
+      metricsMap["kindred hospital la mirada"] = [4, 26, 0, 0, 0];
+      metricsMap["st francis medical center"] = [40, 201, 16, 2, 6];
+      metricsMap["garfield medical center"] = [10, 94, 13, 1, 1];
+      metricsMap["menifee valley medical center"] = [4, 0, 0, 1, 11];
+      metricsMap["riverside community hospital"] = [34, 319, 8, 1, 4];
+      metricsMap["kindred hospital ontario"] = [7, 17, 2, 1, 12];
+      metricsMap["hemet valley medical center"] = [8, 31, 0, 2, 18];
+      metricsMap["tri-city medical center"] = [26, 321, 0, 2, 24];
+      metricsMap["desert regional medical center"] = [28, 234, 5, 4, 46];
+      metricsMap["jfk memorial hospital"] = [10, 118, 0, 0, 0];
+      metricsMap["chapman global medical center"] = [5, 59, 0, 2, 8];
+      metricsMap["anaheim global medical center (frmr western medical-anaheim)"] = [11, 109, 0, 0, 0];
+      metricsMap["south coast global medical center"] = [11, 93, 11, 0, 0];
+      metricsMap["community hospital of san bernardino"] = [26, 465, 6, 2, 25];
+      metricsMap["st bernardine medical center"] = [34, 397, 0, 0, 0];
+      metricsMap["west hills hospital & medical center"] = [28, 155, 15, 3, 36];
+      metricsMap["los robles hospital & medical center"] = [8, 71, 4, 0, 0];
+      metricsMap["motion picture & television fund"] = [23, 126, 21, 2, 21];
+      metricsMap["pacifica hospital of the valley"] = [17, 145, 5, 1, 12];
+      metricsMap["hollywood presbyterian med ctr"] = [25, 184, 7, 1, 5];
+      metricsMap["serra community medical clinic, inc"] = [2, 37, 0, 0, 0];
+      metricsMap["cedars-sinai medical center"] = [43, 539, 0, 4, 49];
+      metricsMap["southern california hospital at hollywood"] = [1, 2, 0, 0, 0];
+      metricsMap["barlow respiratory hospital"] = [6, 58, 0, 0, 0];
+      metricsMap["providence st joseph medical center"] = [8, 197, 0, 2, 22];
+      metricsMap["southern california hospital at culver city"] = [33, 260, 0, 3, 31];
+      metricsMap["roger p fieldman dds inc & assoc"] = [0, 0, 0, 0, 0];
+      metricsMap["marina del rey hospital"] = [13, 123, 0, 0, 0];
+      metricsMap["regional medical center of san jose"] = [30, 129, 0, 1, 6];
+      metricsMap["good samaritan hospital (frmr good sam hosp/mission oaks)"] = [25, 97, 3, 1, 10];
+      metricsMap["verity medical foundation (frmr san jose medical group)"] = [7, 41, 0, 1, 11];
+      metricsMap["oconnor hospital"] = [22, 74, 12, 3, 33];
+      metricsMap["saint louise regional hospital"] = [10, 38, 0, 0, 0];
+      metricsMap["sequoia hospital"] = [2, 33, 0, 0, 0];
+      metricsMap["stanford university medical center"] = [40, 267, 0, 1, 10];
+      metricsMap["el camino hospital"] = [38, 150, 0, 3, 38];
+      metricsMap["lucile packard childrens hospital"] = [38, 160, 2, 1, 11];
+      metricsMap["stanford ensr"] = [36, 246, 0, 0, 0];
+      metricsMap["bruceville terrace"] = [7, 76, 0, 0, 0];
+      metricsMap["methodist hospital of sacramento"] = [16, 65, 0, 0, 0];
+      metricsMap["mercy healthcare sacramento"] = [6, 37, 0, 0, 0];
+      metricsMap["woodland healthcare clinic"] = [14, 110, 0, 5, 57];
+      metricsMap["woodland hospital"] = [17, 145, 0, 1, 11];
+      metricsMap["mercy general hospital"] = [36, 318, 13, 0, 0];
+      metricsMap["mercy mcmahon terrace"] = [6, 59, 3, 0, 0];
+      metricsMap["dignity health medical foundation"] = [49, 347, 13, 8, 115];
+      metricsMap["mercy med ctr of redding"] = [34, 476, 1, 2, 37];
+      metricsMap["st elizabeth community hospital"] = [17, 167, 2, 1, 18];
+      metricsMap["mercy med ctr of mt shasta"] = [13, 79, 3, 2, 24];
+      metricsMap["enloe medical center"] = [16, 47, 4, 4, 49];
+      metricsMap["enloe medical center-crothall svcs"] = [7, 40, 2, 0, 0];
+      metricsMap["compass/morrison mgmt specialists [thomas cuisine]"] = [5, 8, 0, 1, 10];
+      metricsMap["sutter lakeside hospital"] = [1, 12, 10, 0, 0];
+      metricsMap["sutter roseville medical center"] = [14, 64, 1, 0, 0];
+      metricsMap["vibra hospital of sacramento"] = [7, 53, 1, 0, 0];
+      metricsMap["mercy san juan med ctr"] = [42, 400, 18, 3, 30];
+      metricsMap["mercy hospital of folsom"] = [10, 87, 8, 1, 9];
+      metricsMap["sutter delta medical center"] = [27, 189, 40, 0, 0];
+      metricsMap["john muir medical center-concord"] = [30, 173, 29, 0, 0];
+      metricsMap["san ramon regional medical center"] = [6, 42, 10, 0, 0];
+      metricsMap["waters edge"] = [5, 33, 0, 0, 0];
+      metricsMap["southshore convalescent hospital"] = [1, 15, 0, 0, 0];
+      metricsMap["alameda hospital"] = [28, 102, 4, 0, 0];
+      metricsMap["tiburcio vasquez health center"] = [7, 17, 0, 0, 0];
+      metricsMap["west oakland health council"] = [5, 4, 0, 0, 0];
+      metricsMap["saint francis memorial hospital"] = [15, 67, 5, 2, 21];
+      metricsMap["st marys medical center"] = [23, 209, 19, 0, 0];
+      metricsMap["chinese hospital of san francisco"] = [4, 28, 0, 0, 0];
+      metricsMap["alta bates summit medical center"] = [43, 283, 45, 0, 0];
+      metricsMap["sutter solano medical center"] = [7, 60, 3, 0, 0];
+      metricsMap["cpmc-st lukes hospital"] = [14, 80, 1, 0, 0];
+      metricsMap["sutter santa rosa regional hospital"] = [10, 85, 7, 1, 17];
+      metricsMap["santa rosa community health"] = [13, 74, 0, 0, 0];
+      metricsMap["washington hospital"] = [7, 29, 3, 0, 0];
+      metricsMap["eden medical center"] = [20, 109, 0, 1, 12];
+      metricsMap["villa fairmont mental health center"] = [3, 1, 0, 0, 0];
+      metricsMap["gladman mental health rehab center"] = [3, 27, 0, 0, 0];
+      metricsMap["kaiser-orange county north"] = [40, 624, 5, 2, 13];
+      metricsMap["kaiser-orange county south"] = [23, 566, 7, 4, 48];
+      metricsMap["kaiser-san diego"] = [0, 0, 0, 0, 0];
+      metricsMap["kaiser-fontana"] = [8, 102, 0, 1, 14];
+      metricsMap["kaiser-downey"] = [76, 648, 0, 4, 52];
+      metricsMap["kaiser-lamc hospital"] = [53, 532, 30, 5, 56];
+      metricsMap["kaiser-baldwin park"] = [56, 422, 58, 3, 78];
+      metricsMap["kaiser-la regional svcs & admin"] = [71, 600, 46, 2, 23];
+      metricsMap["kaiser-lamc clinics"] = [45, 375, 40, 8, 93];
+      metricsMap["kaiser-west los angeles"] = [77, 794, 0, 9, 98];
+      metricsMap["kaiser-woodland hills"] = [107, 753, 26, 6, 57];
+      metricsMap["kaiser-south bay"] = [56, 418, 0, 5, 55];
+      metricsMap["kaiser-panorama city"] = [60, 633, 12, 2, 35];
+      metricsMap["kaiser-antelope valley"] = [29, 283, 4, 0, 0];
+      metricsMap["kaiser-richmond"] = [22, 149, 29, 2, 38];
+      metricsMap["kaiser-san rafael"] = [38, 250, 31, 3, 54];
+      metricsMap["kaiser-novato"] = [10, 77, 19, 0, 0];
+      metricsMap["kaiser-petaluma"] = [12, 78, 8, 2, 23];
+      metricsMap["kaiser-vallejo call ctr"] = [37, 220, 66, 3, 33];
+      metricsMap["kaiser-fairfield"] = [6, 29, 3, 4, 45];
+      metricsMap["kaiser-vacaville"] = [31, 295, 8, 4, 47];
+      metricsMap["kaiser-santa rosa"] = [42, 233, 29, 9, 113];
+      metricsMap["kaiser-vallejo"] = [55, 484, 5, 4, 47];
+      metricsMap["kaiser-napa"] = [6, 41, 0, 0, 0];
+      metricsMap["kaiser-so.sacramento"] = [60, 695, 0, 0, 0];
+      metricsMap["kaiser-roseville clinics"] = [40, 331, 0, 2, 28];
+      metricsMap["kaiser-folsom"] = [15, 116, 0, 0, 0];
+      metricsMap["kaiser-sacramento call ctr"] = [20, 198, 0, 2, 22];
+      metricsMap["kaiser-lincoln medical offices"] = [7, 48, 0, 0, 0];
+      metricsMap["kaiser-roseville hospital"] = [42, 493, 5, 3, 35];
+      metricsMap["kaiser-sacramento"] = [71, 623, 5, 1, 18];
+      metricsMap["kaiser-rancho cordova"] = [5, 34, 0, 0, 0];
+      metricsMap["kaiser-davis"] = [3, 54, 0, 0, 0];
+      metricsMap["kaiser-fresno"] = [75, 448, 12, 0, 0];
+      metricsMap["kaiser-manteca"] = [26, 230, 23, 0, 0];
+      metricsMap["kaiser-stockton"] = [39, 239, 44, 4, 62];
+      metricsMap["kaiser-medical social workers"] = [18, 99, 0, 0, 0];
+      metricsMap["kaiser-tracy"] = [3, 26, 0, 0, 0];
+      metricsMap["kaiser-modesto"] = [20, 199, 0, 0, 0];
+      metricsMap["kaiser-alameda medical office bldg"] = [2, 9, 0, 0, 0];
+      metricsMap["kaiser-1950 franklin"] = [8, 35, 0, 0, 0];
+      metricsMap["kaiser-oakland"] = [68, 447, 37, 6, 77];
+      metricsMap["kaiser-post acute care center"] = [9, 92, 13, 0, 0];
+      metricsMap["kaiser-livermore distribution ctr"] = [3, 11, 0, 0, 0];
+      metricsMap["kaiser-berkeley lab"] = [13, 90, 8, 1, 10];
+      metricsMap["kaiser-walnut creek"] = [141, 634, 25, 16, 246];
+      metricsMap["kaiser-san ramon"] = [11, 45, 0, 0, 0];
+      metricsMap["kaiser-antioch"] = [62, 382, 22, 19, 201];
+      metricsMap["kaiser-martinez"] = [20, 123, 16, 6, 62];
+      metricsMap["kaiser-redwood city"] = [54, 385, 12, 4, 53];
+      metricsMap["kaiser-so.san francisco"] = [66, 322, 1, 1, 10];
+      metricsMap["kaiser-fremont"] = [20, 186, 11, 3, 34];
+      metricsMap["kaiser-pleasanton"] = [8, 72, 4, 0, 0];
+      metricsMap["kaiser-livermore clinic"] = [6, 56, 13, 0, 0];
+      metricsMap["kaiser-san leandro"] = [58, 372, 30, 4, 49];
+      metricsMap["kaiser-french campus"] = [8, 58, 0, 0, 0];
+      metricsMap["kaiser-san francisco"] = [89, 829, 0, 3, 39];
+      metricsMap["kaiser-santa clara hospital"] = [105, 741, 7, 15, 146];
+      metricsMap["kaiser-milpitas"] = [10, 86, 0, 0, 0];
+      metricsMap["kaiser-campbell"] = [5, 24, 0, 0, 0];
+      metricsMap["kaiser-mountain view"] = [4, 69, 0, 0, 0];
+      metricsMap["kaiser-santa clara clinics"] = [45, 368, 0, 6, 35];
+      metricsMap["kaiser-gilroy"] = [4, 13, 0, 1, 4];
+      metricsMap["kaiser-san jose"] = [122, 746, 0, 17, 198];
+
+
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              //pWorksite = pWorksite.replace(/\./g,'');
+              //pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return dept;
+}
+
+function truncateEmployer(pEmployer) {
+  var returnModEmployer = pEmployer.toLowerCase();
+  returnModEmployer = " " + returnModEmployer + " ";
+            returnModEmployer = returnModEmployer.replace("kaiser-", "");
+            returnModEmployer = returnModEmployer.replace(" hospital", "");                     
+            returnModEmployer = returnModEmployer.replace(" medical center", "");                                 
+            returnModEmployer = returnModEmployer.replace(" med ctr", "");                                              
+            returnModEmployer = returnModEmployer.replace(" west los angeles", " wla");              
+            returnModEmployer = returnModEmployer.replace(" orange county", " oc");  
+            returnModEmployer = returnModEmployer.replace(" svcs & admin", "");
+            returnModEmployer = toProperCase(returnModEmployer.trim());
+  return returnModEmployer;
+}
+
+function removeQuotes(pString) {
+  if (pString == null) {
+    return null;
+  }
+  var returnString = "";
+  for (var sdex = 0 ; sdex < pString.length; sdex++) {
+    if (pString.charAt(sdex) != "\"") {
+      returnString += pString.charAt(sdex);
+    }
+  }
+  return returnString;
+}
+
+var lastRecord = {};
+
+function processTemplate(pTemplate) {
+ var templateVars = pTemplate.match(/{{([^{}]+)}}/g);
+ var newWriter = pTemplate;
+ for (var q = 0; q < templateVars.length; q++) {   
+   lastRecord.debug = "evaluating var " + templateVars[q];
+   var evalCode = templateVars[q].substring(2, templateVars[q].length -2);
+   var evalValue = eval(evalCode);
+   newWriter = newWriter.replace(templateVars[q], evalValue);
+ }
+ lastRecord.debug = "";
+ return newWriter;
+}
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+
+
+var user = sforce.connection.getUserInfo();
+
+var leaderSet = [];
+
+var LEADER = "LEADER";
+var LEADERS = "LEADERS";
+var SUPPORTERS = "SUPPORTERS";
+
+var ALL = "ALL";
+var DIVISION = "DIVISION";
+var EMPLOYER = "EMPLOYER";
+
+var BU = "BU";
+var NEED_CARD = "NEED_CARD";
+var COPE = "COPE";
+var COPE10 = "COPE10";
+var COPEDIFF = "COPEDIFF";
+
+var EITHER = "EITHER";
+var NEED_INFO = "NEED_INFO";
+
+var PHONEBANK = "PHONEBANK";
+
+var DEPARTMENT = "DEPARTMENT";
+var DEPT = DEPARTMENT;
+var COVERAGE = "COVERAGE";
+
+var REACH = "REACH";
+
+var emSortSet = [];
+var conECommMap = {};
+var conEBoardMap = {};
+
+
+$(".employerTemplate").hide();
+
+var filter = "{!$CurrentPage.parameters.filter}";
+
+var mode = "{!$CurrentPage.parameters.mode}";
+
+if (mode == null || mode == "null" || mode == "") {
+  mode = "all";
+} else {
+  mode = mode.toLowerCase();
+}
+
+if (filter == null || filter == "null" || filter == "") {
+  filter = null;
+} else {
+  filter = filter.toLowerCase();
+}
+
+var adate = new Date();
+
+var CODE_ALL_LDRS = "501";
+var CODE_DIALYSIS = "502";
+var CODE_NEW_LDRS = "504";
+
+var emWriter = "";
+var emTemplate = $("#employerTemplate").html();
+$("#employerTemplate").hide();
+var deptTemplate = $("#deptTemplate").html();
+var deptRowTemplate = $(".deptRowTemplate").html();
+$("#deptTemplate").hide();
+
+try {
+
+    var debugWriter = "<br>Debug:<br/>";
+
+    var reachLdrSet = [];
+    var cope2016Map = {};
+    //    xset is for excluded leaders
+    var xset = [];    
+    var completedSet = [];
+    var completedLdrMap = {};
+    var newLdrCompletedSet = [];
+    
+    var query = "select FID__c, Collected_By_FID__c, Collected_By__c, Collected_By__r.Account.Account_Group__c, Survey_Code__c, Response_Value__c, Add_Info_Numeric__c, Contact__r.Stretch_Ldr_Promotion_Status__c, Contact__r.Stretch_Team_Intake_Phase__c, Contact__r.Department_Mod__c  ";
+    query += " from Survey_Response__c where (Survey_Code__c = \'J02\' OR Survey_Code__c = \'502\' OR Survey_Code__c = \'P42\' OR Survey_Code__c = \'D02\' OR Survey_Code__c = \'501\'  OR Survey_Code__c = \'CO6\' ) ";
+    //query += " and Collected_By__c != null and (Collected_By__r.Account.Account_Group__c = \'KAISER\' OR Collected_By__r.Account.Account_Group__c = \'HOSPITAL\')";
+    query += " and Contact__c != null ";
+    //
+    //  TESTING REMOVE
+    //
+    //query += " AND Employer_Name__c like \'tri%cit%\' ";
+    //
+    //
+    //        
+    var result = sforce.connection.query(query); 
+    var queryMore = true;
+    while (queryMore) {    
+      var records1 = result.getArray('records'); 
+      for (var i = 0; i < records1.length; i++) {    
+        var a = records1[i];
+        var promStat = a.Contact__r.Stretch_Ldr_Promotion_Status__c;
+        if (promStat == null) {
+          promStat = "";
+        }
+        promStat = promStat.toLowerCase();
+        var response = a.Response_Value__c.toLowerCase().substring(0, 1);
+        if (a.Survey_Code__c == "J02") {
+          if (a.Collected_By__c != null && (a.Collected_By__r.Account.Account_Group__c.toLowerCase() == "kaiser" || a.Collected_By__r.Account.Account_Group__c.toLowerCase() == "hospital")) {
+            reachLdrSet.push(a.Collected_By_FID__c );
+          }
+        } else if (a.Survey_Code__c == "CO6") {
+          //alert("found old COPE for " + a.FID__c + " = " + a.Add_Info_Numeric__c);
+          cope2016Map[a.FID__c] = parseFloat(a.Add_Info_Numeric__c);
+        } else if (a.Survey_Code__c == "502") {
+          if (response != "n") {
+            var intakePhase = a.Contact__r.Stretch_Team_Intake_Phase__c;
+            if (intakePhase != null) {
+              intakePhase = intakePhase.toLowerCase();
+              if (intakePhase.indexOf("phase 4") >= 0 || intakePhase.indexOf("phase 5") >= 0) {
+                completedSet.push(a.FID__c);
+                completedLdrMap[a.FID__c] = a.Collected_By_FID__c;
+              }
+            }
+          }
+        } else {
+          if (response == "x") {
+            xset.push(a.FID__c);          
+          } else if (a.Survey_Code__c == "501" && (promStat.indexOf("phase 4") >= 0 || promStat.indexOf("phase 5") >= 5) && response != "a" && response != "o") {
+            xset.push(a.FID__c);      
+          }          
+          if (a.Survey_Code__c == "501" && (promStat.indexOf("phase 4") >= 0 || promStat.indexOf("phase 5") >= 5) && (response == "a" || response == "o")) {          
+            newLdrCompletedSet.push(a.FID__c);
+          }
+        }
+      }
+      if (result.getBoolean("done")) {
+        queryMore = false;
+      } else {
+        result = sforce.connection.queryMore(result.queryLocator);
+      }        
+    }
+
+    //alert("completed set = " + completedSet.length);
+
+    var emMap = {};
+    var emSet = [];
+    var emSortSet = [];    
+
+    query = "select Id, Name, Constituency__r.ConstituencyName__c, District_2017__r.ConstituencyName__c, Account_Group__c, Regional_Director__r.Name, Coordinator__r.Name, Organizer_1__r.Name, Facility_Image_Displayed__c, ShippingCity, BillingCity, County__c, Phase_5_Starting_Cover_Pct__c, Phase_5_Total_Cover_Goal_Pct__c  ";
+    query += " from Account where ";
+    query += " MO_Active__c = true and (Account_Group__c = 'HOSPITAL' OR Account_Group__c = 'KAISER') and Regional_Director__c != null and District_2017__c != null";
+    //
+    //  TESTING REMOVE
+    //
+    //query += " AND Name like \'tri%cit%\' ";
+    //
+    //
+    //
+    debugWriter += ("SR query = " + query + "<br/><br/>");  
+    
+    var result = sforce.connection.query(query); 
+    var queryMore = true;
+    while (queryMore) {    
+      var records1 = result.getArray('records'); 
+      for (var i = 0; i < records1.length; i++) {
+        var a = records1[i];
+        var employer = a.Name;
+        var employer2 = employer.toLowerCase();
+        
+        var seat = a.Constituency__r.ConstituencyName__c;
+        var district = a.District_2017__r.ConstituencyName__c
+        var division = a.Account_Group__c;
+        var facilityPhoto = a.Facility_Image_Displayed__c;
+        var regionalDirector = a.Regional_Director__r.Name;
+        var coordinator = "Vacant Coordinator";
+        if (a.Coordinator__r != null) {
+          coordinator = a.Coordinator__r.Name;
+        }
+        var organizer = "Vacant Organizer";
+        if (a.Organizer_1__r != null) {        
+          organizer = a.Organizer_1__r.Name;
+        }
+        var sortEntryString = JSON.stringify([division.toLowerCase(), district.toLowerCase(), seat.toLowerCase(), employer.toLowerCase(), regionalDirector.toLowerCase(), coordinator.toLowerCase(), organizer.toLowerCase(), facilityPhoto ]);
+        emSortSet.push(sortEntryString);
+
+        a.Employer = employer;  
+        a.Coordinator = coordinator;
+        a.Organizer = organizer;
+        a.Division = division;
+        a.District = district;
+        a.Seat = seat;
+        a.RegionalDirector = regionalDirector;
+        a.COPETotal = 0.0;
+        a.PhoneBankTotal = 0.0;
+        
+        a.Phase5Start = a.Phase_5_Starting_Cover_Pct__c / 100.0;
+        a.Phase5Goal = a.Phase_5_Total_Cover_Goal_Pct__c / 100.0;
+        
+        emMap[employer2] = a;
+      }
+      if (result.getBoolean("done")) {
+        queryMore = false;
+      } else {
+        result = sforce.connection.queryMore(result.queryLocator);
+      }          
+    }
+
+    $("#progressDiv").html("querying contacts...");
+
+    var ldrSet = [];
+    var contactMap = {};
+
+    var ecommMap = {};
+    var eboardMap = {};
+
+    var emDeptSet = [];
+    var deptSortSet = [];
+    
+    var mbrCount = 0;
+    var contactSelectFields = "select Account.Account_Group__c, Account.Regional_Director__r.Name, Account.Coordinator__r.Name, Account.Organizer_1__r.Name, Account.Name, Stretch_Leader_Employer_Name__c, Stretch_Leader__r.Constituency_Name_2017__c, Constituency_Name_2017__c, Account.Constituency__r.ConstituencyName__c, Account.District_2017__r.ConstituencyName__c, FID__c, Stretch_Leader__c, Stretch_Leader_FID__c, Name, Worksite__c, Department, Department_Mod__c, Report_Tags__c, COPE_Pledge__c, Stretch_Member_Card_Signed__c, Email, MobilePhone, Executive_Body_Title__c, Stretch_Ldr_Promotion_Status__c, Tier_1_Leader__r.Name, Tier_1_Leader__r.FirstName, Tier_1_Leader__r.LastName, Tier_1_Leader__r.FID__c, Stretch_Leader_Name__c, Stretch_Leader__r.FID__c, Stretch_Ldr_Run_By_EBoard__c, Stretch_EBoard_Team__c, Stretch_Leader__r.Tier_1_Leader__r.FID__c, Shift_Standardized__c, Stretch_Team_Intake_Phase__c, Stretch_EBoard_Leader_Name__c from Contact ";      
+    var query = contactSelectFields ;
+    query += " where (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6) AND  (NOT Stretch_Leader_Employer_Name__c like \'pomona valley%\') AND (NOT Stretch_Leader_Employer_Name__c like \'parkview%\') AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND (Account.Account_Group__c = \'KAISER\' OR Account.Account_Group__c = \'HOSPITAL\' ) AND Account.Regional_Director__c != null AND Account.District_2017__c != null ";
+
+    //
+    //  START REMOVE FOR TESTING
+    //
+    //query += " AND Account.Name like \'tri%cit%\' ";
+    //
+    //  END REMOVE FOR TESTING
+    //
+           
+    var result = sforce.connection.query(query); 
+    var queryMore = true;
+    while (queryMore) {    
+      var records1 = result.getArray('records'); 
+      for (var i = 0; i < records1.length; i++) {    
+        var a = records1[i];
+        var fid = a.FID__c;
+        var employer = toProperCase(a.Account.Name);
+        var employer2 = a.Account.Name.toLowerCase();
+        var division = a.Account.Account_Group__c;
+        
+        
+        
+        incrementCounter([EMPLOYER, BU, employer], 1.0);
+        incrementCounter([DIVISION, BU, division], 1.0);
+        if (i % 1000 == 0) {
+          $("#progressDiv").html("Querying...<br/>" + mbrCount + " UHW Members");        
+        }
+        mbrCount++;
+
+        var seat = a.Account.Constituency__r.ConstituencyName__c;
+        var district = a.Account.District_2017__r.ConstituencyName__c
+        var seat2 = seat.toLowerCase();
+        var district2 = district.toLowerCase();
+        
+        var cope = 0.0;
+        if (a.COPE_Pledge__c != null) {
+          cope = parseFloat(a.COPE_Pledge__c);
+        }
+        var oldCope = 0.0;
+        if (cope2016Map[fid] != null) {
+          oldCope = cope2016Map[fid];
+        }
+        if (oldCope > cope) {
+          oldCope = 0.0;
+        }
+        
+        incrementCounter([EMPLOYER, COPE, employer], cope);
+        incrementCounter([DIVISION, COPE, division], cope);
+        incrementCounter([EMPLOYER, DEPARTMENT, COPE, employer, a.Department_Mod__c], cope);
+        
+        incrementCounter([EMPLOYER, COPEDIFF, employer], cope - oldCope);
+        incrementCounter([DIVISION, COPEDIFF, division], cope - oldCope);
+        incrementCounter([EMPLOYER, DEPARTMENT, COPEDIFF, employer, a.Department_Mod__c], cope - oldCope);
+                
+        if (cope > 9.0) {
+          incrementCounter([EMPLOYER, COPE10, employer], 1.0);
+          incrementCounter([DIVISION, COPE10, division], 1.0);
+          incrementCounter([EMPLOYER, DEPARTMENT, COPE10, employer, a.Department_Mod__c], 1.0);        
+        }
+        
+        var dept = a.Department_Mod__c;
+        var emDeptKey = JSON.stringify([employer, dept]);
+        if (emDeptSet.indexOf(emDeptKey) < 0) {
+          emDeptSet.push(emDeptKey);
+        }
+        incrementCounter([EMPLOYER, DEPARTMENT, BU, employer, a.Department_Mod__c], 1.0);
+        a.Division = division;
+        a.Employer = employer;
+        a.Department = dept;
+        a.Dept = dept;
+        contactMap[fid] = a;
+        var ldrFid = a.Stretch_Leader_FID__c;
+        if (ldrFid != null) {
+         incrementCounter([LEADER, ldrFid], 1.0);
+         if (ldrSet.indexOf(ldrFid) < 0) {
+           ldrSet.push(ldrFid);
+         }
+        }
+        if (a.Executive_Body_Title__c != null) {
+          var etitle = a.Executive_Body_Title__c;
+          var emRecord = emMap[employer2];
+          if (emSet.indexOf(employer2) < 0) {
+            emSet.push(employer2);
+          }          
+          if (etitle.toLowerCase() == "executive board") {
+            var ewriter = "";
+            if (eboardMap[seat2] != null) {
+              ewriter = eboardMap[seat2] + "<br/>";
+            } 
+            var modEmployer = truncateEmployer(employer);
+            ewriter += removeQuotes(a.Name) + " (" + modEmployer + ")";
+             
+            eboardMap[seat2] = ewriter;
+          } else if (etitle.toLowerCase() == "executive committee") {
+            ecommMap[district2] = a.Name + " (" + truncateEmployer(employer) + ")";
+          }
+        }
+        if (a.Report_Tags__c != null && a.Report_Tags__c.toLowerCase().indexOf("reach2017") >= 0) {
+          incrementCounter([EMPLOYER, REACH, employer], 1.0);
+          incrementCounter([DIVISION, REACH, division], 1.0);
+          incrementCounter([EMPLOYER, DEPARTMENT, REACH, employer, a.Department_Mod__c], 1.0);                
+        }
+        if (a.Report_Tags__c != null && a.Report_Tags__c.toLowerCase().indexOf("startp5covered") >= 0) {
+          incrementCounter([EMPLOYER, COVERAGE, employer], 1.0);
+          incrementCounter([DIVISION, COVERAGE, division], 1.0);
+          incrementCounter([EMPLOYER, DEPARTMENT, COVERAGE, employer, a.Department_Mod__c], 1.0);                                
+        }
+      }
+      if (result.getBoolean("done")) {
+        queryMore = false;
+      } else {
+        result = sforce.connection.queryMore(result.queryLocator);
+      }      
+    }
+
+
+
+    //
+    // adjust leaders
+    //
+    for (var i = 0; i < ldrSet.length; i++) {
+      var ldrFid = ldrSet[i];
+      var supporterCount = getCounter([LEADER, ldrFid]);
+      if (contactMap[ldrFid] != null && supporterCount >= 3 && xset.indexOf(ldrFid) < 0) {
+        var a = contactMap[ldrFid];
+        var employer = a.Employer;
+        var division = a.Division;
+        
+        incrementCounter([DIVISION, LEADER, division], 1.0);
+        incrementCounter([EMPLOYER, LEADER, employer], 1.0);
+        incrementCounter([EMPLOYER, DEPARTMENT, LEADER, employer, a.Department_Mod__c], 1.0);   
+        
+        if (reachLdrSet.indexOf(ldrFid) >= 0) {
+          incrementCounter([DIVISION, REACH, LEADER, division], 1.0);
+          incrementCounter([EMPLOYER, REACH, LEADER, employer], 1.0);
+          incrementCounter([EMPLOYER, DEPARTMENT, REACH, LEADER, employer, a.Department_Mod__c], 1.0);           
+        }
+        //incrementCounter([DIVISION, COVERAGE, division], supporterCount + 1);             
+        //incrementCounter([EMPLOYER, COVERAGE, employer], supporterCount + 1);
+        //incrementCounter([EMPLOYER, DEPARTMENT, COVERAGE, employer, a.Department_Mod__c], supporterCount + 1);        
+      } else {
+        if (xset.indexOf(ldrFid) < 0) {
+          xset.push(ldrFid);
+        }
+      }
+    }
+    //alert("ldrSet = " + ldrSet.length + ", xset = " + xset.length);
+
+    //
+    //  new completeds
+    //
+    for (var i = 0; i < completedSet.length; i++) {
+      var fid = completedSet[i];
+      var a = contactMap[fid];
+      if (a != null) {
+        var division = a.Division;
+        var employer = a.Employer;
+        var dept = a.Department;     
+        var ldrFid = completedLdrMap[fid];
+        if (a.Report_Tags__c == null || a.Report_Tags__c.toLowerCase().indexOf("startp5covered") < 0) {               
+          if (xset.indexOf(ldrFid) < 0 && newLdrCompletedSet.indexOf(ldrFid) >= 0) {
+            incrementCounter([DIVISION, COVERAGE, division], 1);             
+            incrementCounter([EMPLOYER, COVERAGE, employer], 1);
+            incrementCounter([EMPLOYER, DEPARTMENT, COVERAGE, employer, dept], 1); 
+          }
+        }
+      }
+    }
+
+    //
+    //  phone banking
+    // 
+    var query = "select Id, FID__c, Division__c, Employer_Name__c, Total_Shift__c  from Recruit__c where Volunteer_Date__c >= 2016-11-29 and Total_Shift__c > 0 and (Division__c = \'HOSPITAL\' OR Division__c = \'KAISER\') ";
+    //
+    //  TESTING REMOVE
+    //
+    //query += " AND Employer_Name__c like \'tri%cit%\' ";
+    //
+    //
+    //    
+    var result = sforce.connection.query(query); 
+    var queryMore = true;
+    while (queryMore) {    
+      var records1 = result.getArray('records'); 
+      for (var i = 0; i < records1.length; i++) {    
+        var a = records1[i];
+        var employer = a.Employer_Name__c;
+        var shifts = parseFloat(a.Total_Shift__c);
+        var division = a.Division__c;
+        incrementCounter([EMPLOYER, PHONEBANK, employer], shifts);
+        incrementCounter([DIVISION, PHONEBANK, division], shifts);        
+      }
+      if (result.getBoolean("done")) {
+        queryMore = false;
+      } else {
+        result = sforce.connection.queryMore(result.queryLocator);
+      }      
+    }
+
+    /*
+    for (var i = 0; i < emSet.length; i++) {
+      var employer = emSet[i];
+      var employer2 = employer.toLowerCase();
+      var b = emMap[employer2];    
+      var buCount = getCounter([EMPLOYER, BU, employer]);
+      if (buCount == 0) {
+        buCount = 1;
+      }
+      var division = b.Division;
+      if (employer2.indexOf("hemet") >= 0) {
+        alert("starting Hemet coverage = " + Math.round(buCount * b.Phase5Start));
+      }
+      //incrementCounter([DIVISION, COVERAGE, division], Math.round(buCount * b.Phase5Start));             
+      //incrementCounter([EMPLOYER, COVERAGE, employer], Math.round(buCount * b.Phase5Start));             
+      //incrementCounter([EMPLOYER, DEPARTMENT, COVERAGE, employer, a.Department_Mod__c], Math.round(buCount * b.Phase5Start));                        
+    }
+    */
+    
+    emSortSet.sort();
+    for (var i = 0; i < emSortSet.length; i++) {
+
+      var a = JSON.parse(emSortSet[i]);
+      var division = toProperCase(a[0]);
+      var district = toProperCase(a[1]);
+      var district2 = district.toLowerCase();
+      var seat = toProperCase(a[2]);   
+      var seat2 = seat.toLowerCase();
+      var employer =    toProperCase(a[3]);   
+      var employer2 = employer.toLowerCase();
+      var regionalDirector = toProperCase(a[4]);
+      var coordinator = toProperCase(a[5]);    
+      var organizer = toProperCase(a[6]);
+      var facilityPhoto = a[7];            
+      //facilityPhoto = facilityPhoto.replace("width=", "ignore1=").replace("height=", "ignore2=");    
+      facilityPhoto = facilityPhoto.replace("384", "256").replace("384", "256");
+      
+      var buCount = getCounter([EMPLOYER, BU, employer]);
+      if (buCount == 0) {
+        buCount = 1;
+      }
+      var b = emMap[employer2];    
+      
+      
+      var divBu = getCounter([DIVISION, BU, division]);
+      var allBu = getCounter([DIVISION, BU, "HOSPITAL"]) + getCounter([DIVISION, BU, "KAISER"]);
+
+      
+      var city = b.ShippingCity;
+      if (city == null) {
+        city = b.BillingCity;
+      }
+      if (city == null) {
+        city = "Not Applicable";
+      }      
+      city = toProperCase(city);
+      
+      var county = b.County__c;
+      if (county == null) {
+        //alert("ERROR. no county for " + employer);
+        county = "Not Applicable";
+      }
+      
+      if (i == 0) {
+        //alert(JSON.stringify(b));
+      } 
+       
+      var ecomm = "Vacant EComm";
+      if (ecommMap[district2] != null) {
+        ecomm = ecommMap[district2];
+      }
+      var eboard = "Vacant Seat";
+      if (eboardMap[seat2] != null) {
+        eboard = eboardMap[seat2];
+      }
+      if (vacancySet.indexOf(employer2) >= 0) {
+        eboard += "<br/>Vacant Seat";
+      }
+      
+      var copeAvg = getCounter([EMPLOYER, COPE, employer]) / buCount;
+      var divCopeAvg = getCounter([DIVISION, COPE, division]) / divBu;
+      
+      var copeDiffAvg = getCounter([EMPLOYER, COPEDIFF, employer]) / buCount;
+      var divCopeDiffAvg = getCounter([DIVISION, COPEDIFF, division]) / divBu;
+      
+      var cope10Pct = 100 * getCounter([EMPLOYER, COPE10, employer]) / buCount;
+      var divCope10Pct = 100 * getCounter([DIVISION, COPE10, division]) / divBu;
+            
+      var phoneBank = getCounter([EMPLOYER, PHONEBANK, employer]);
+      var divPhoneBank = buCount * (getCounter([DIVISION, PHONEBANK, division]) / divBu);
+      
+      var marray = metricsMap[employer2];
+      if (marray == null) {
+        //alert("metrics null for = " + employer2);
+      }
+      var dmarray = dmetricsMap[division.toLowerCase()];
+      var dhmarray = dmetricsMap["hospital"];
+      var dkmarray = dmetricsMap["kaiser"];      
+      
+      var leaderCount = getCounter([EMPLOYER, LEADER, employer]);
+      if (marray != null) {
+        var leaderCount = marray[0] + marray[3];
+      }    
+      
+      var newLeaderCount = leaderCount - getCounter([EMPLOYER, REACH, LEADER, employer]);
+      if (newLeaderCount < 0) {
+        newLeaderCount = 0;
+      }
+      
+      var coverage = getCounter([EMPLOYER, COVERAGE, employer]);
+      var hcoverage = getCounter([DIVISION, COVERAGE, "hospital"]);
+      var kcoverage = getCounter([DIVISION, COVERAGE, "kaiser"]);
+      var divCoverage = getCounter([DIVISION, COVERAGE, division]);
+      
+      if (marray != null) {      
+        coverage = marray[1] + marray[2] + marray[4];
+        divCoverage = dmarray[1] + dmarray[2] + dmarray[4];
+        hcoverage = dhmarray[1] + dhmarray[2] + dhmarray[4];
+        kcoverage = dkmarray[1] + dkmarray[2] + dkmarray[4];        
+        allCoverage = hcoverage + kcoverage;
+      }      
+      
+      var coveragePct = 100 * coverage / buCount;
+      var divCoveragePct = 100 * getCounter([DIVISION, COVERAGE, division]) / divBu;
+      var allCoveragePct = divCoveragePct;
+      if (dmarray != null) {
+        divCoveragePct = 100 * (divCoverage) / divBu;
+        allCoveragePct = 100 * (allCoverage) / allBu;
+      }
+      
+      
+      var newCoverage = coverage - getCounter([EMPLOYER, REACH, employer]);
+      if (newCoverage < 0) {
+        newCoverage = 0;
+      }
+      var newCoveragePct = 100 * newCoverage / buCount
+      var divNewCoveragePct = 100 * (divCoverage - getCounter([DIVISION, REACH, division])) / divBu;
+      var allNewCoveragePct = 100 * (allCoverage - (getCounter([DIVISION, REACH, "hospital"]) + getCounter([DIVISION, REACH, "kaiser"]))) / allBu;    
+      
+      
+      if (buCount > 10 && employer2.indexOf("parkview") < 0 && employer2.indexOf("pomona valley") < 0) {
+        var processWriter = processTemplate(emTemplate );
+        emWriter += processWriter;
+        
+        var deptWriter = "";
+        deptWriter += deptTemplate.substring(0, deptTemplate.indexOf("<tbody class"));
+        var deptSortSet = [];
+        for (var j = 0; j < emDeptSet.length; j++) {
+          var emDept = JSON.parse(emDeptSet[j]);
+          if (emDept[0].toLowerCase() == employer2) {
+            
+            var dept = toProperCase(emDept[1]);
+            var department = dept;
+            var buCount = getCounter([EMPLOYER, DEPARTMENT, BU, employer2, dept]);
+            var reachLdrs = 0;
+            var reachSupporters = 0;
+            var currentLdrs = 0;
+            var currentSupporters = 0;
+            
+            deptSortSet.push(JSON.stringify([999999 - buCount, dept]));    
+                               
+          }
+        }
+        //
+        //  sort by BU descending
+        //
+        deptSortSet.sort();
+        for (var j = 0 ; j < deptSortSet.length; j++) {
+          var dept = JSON.parse(deptSortSet[j])[1];
+          var department = dept;
+          var buCount = getCounter([EMPLOYER, DEPARTMENT, BU, employer2, dept]);
+          if (buCount < 5 || j > 50) {
+            break;
+          }
+          var reachLdrs = getCounter([EMPLOYER, DEPARTMENT, REACH, LEADER, employer2, dept]);
+          var reachSupporters = getCounter([EMPLOYER, DEPARTMENT, REACH, employer2, dept]);
+          var currentLdrs = getCounter([EMPLOYER, DEPARTMENT, LEADER, employer2, dept]);
+          var currentSupporters = getCounter([EMPLOYER, DEPARTMENT, COVERAGE, employer2, dept]);
+          if (currentLdrs < reachLdrs) {
+            reachLdrs = currentLdrs;
+          }
+          if (currentSupporters < reachSupporters) {
+            reachSupporters = currentSupporters;
+          }          
+          var rowWriter = processTemplate(deptRowTemplate);    
+          deptWriter += rowWriter;           
+        } 
+
+        
+        deptWriter += "</table>";
+        deptWriter += "&nbsp;<br/>" + adate.toLocaleString();
+        deptWriter += "<div class=\"page-breaker\"></div>";
+        //alert(deptWriter );
+        
+        emWriter += deptWriter ;
+      }
+    }
+    
+   
+    
+  $("#writerDiv").html(emWriter);      
+  
+  $("#progressDiv").html("");  
+
+  $("#employerTemplate").hide();
+  
+  //alert("done-zo! " + emWriter.length);
+
+  
+} catch(e) { 
+       alert('An Error has Occured. Error:' +e + "\n" + JSON.stringify(lastRecord)); 
+}  
+
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

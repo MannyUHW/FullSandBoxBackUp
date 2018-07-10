@@ -1,0 +1,363 @@
+<apex:page controller="BhatActivityReminderDebugCtrl" standardStylesheets="false">
+
+<html>
+  
+  
+   <style type="text/css">        
+         .container {border:2px solid #ccc; width:200px; height: 100px; overflow-y: scroll;}
+    </style>
+
+<apex:form >
+
+<apex:includeScript value="{!URLFOR($Resource.BhatWeeklyReview, '/js/jquery-1.11.2.min.js')}"  />
+
+<apex:pageMessages id="errors" />
+
+
+<table width="100%" border="0">
+
+    <tr>
+        <td colspan="2">
+            <b>Activity Reminder Debug Tool</b>
+        </td>
+    </tr>
+
+   <tr>
+   
+       <td width="150" valign="top">
+       
+       
+    <apex:pageBlock mode="edit" id="criteria"> 
+
+      
+
+      <script type="text/javascript">
+ 
+      Visualforce.remoting.timeout = 120000; // Set timeout at page level
+ 
+      function sendEmailReminder()
+      {
+      
+       
+           var ids ='';
+            var inputElements = document.getElementsByClassName("userCb");
+            
+            for (var i = 0; i < inputElements.length; i++)
+            {
+              if(inputElements[i].checked)
+              {
+                  ids = ids + inputElements[i].value + ',';
+              }
+            }
+    
+        if(ids.length > 0 )
+        {
+            ids = ids.substring(0, ids.length-1);
+        }
+
+
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.BhatActivityReminderDebugCtrl.SendEmailToSelectedUser}',
+            ids, 
+            handleResult
+        );
+          
+      }
+ 
+ 
+     function handleResult(result, event) { 
+         alert('Reminder Email has been sent.');
+      }
+     
+
+      function exportToExcel()
+      {
+
+
+            //Employee Selection                      
+            var checkboxes = $( "table.container >tbody >tr >td >input:checked" );
+            var employeeIds = '';
+            for (var i = 0; i < checkboxes.length; i++)
+            {
+                employeeIds = employeeIds+ checkboxes[i].value + ',';
+            }
+        
+            if(employeeIds.length > 0 )
+            {
+                employeeIds = employeeIds.substring(0, employeeIds.length-1);
+            }
+                     
+
+
+            //period Selection                      
+            var periodcheckboxes = $( "table.period-options >tbody >tr >td >input:checked" );
+            var periods= '';
+            for (var i = 0; i < periodcheckboxes.length; i++)
+            {
+                periods= periods + periodcheckboxes[i].value + ',';
+            }
+        
+            if(periods.length > 0 )
+            {
+                periods= periods.substring(0, periods.length-1);
+            }
+
+
+        // return false;
+          
+        window.open('/apex/BhatActivityReminderDebugToExcel?periods=' + periods + '&users=' + employeeIds);
+      
+      }
+
+      function showReminderReport()
+      {
+        showReminder(
+          document.getElementById("userid").options[document.getElementById("userid").selectedIndex].value
+       );
+      }    
+
+      
+      
+      function resetLog()
+      {
+        ResetLog(
+          document.getElementById("userid").options[document.getElementById("userid").selectedIndex].value
+       );
+      }    
+      
+       </script> 
+
+    <apex:actionFunction name="searchServer" action="{!SendEmailReminder}" rerender="results,debug,errors">
+          <apex:param name="userList" value="" />
+     </apex:actionFunction>
+
+
+
+
+     <!--   
+      <apex:actionFunction name="showReminder" action="{!ShowReminderReport}" rerender="results,debug,errors">
+          <apex:param name="userid" value="" />
+      </apex:actionFunction>
+
+      <apex:actionFunction name="ResetLog" action="{!ResetLog}" rerender="results,debug,errors">
+          <apex:param name="userid" value="" />
+      </apex:actionFunction> 
+      
+      -->
+
+      <table cellpadding="2" cellspacing="2">
+      
+        <tr>
+            <td>
+                 <b>Reminders:</b><br/>
+                <!--
+                <apex:inputCheckbox value="{!Reminder30Days}" title="30 Days Reminder"/> 30 Days &nbsp;
+                <apex:inputCheckbox value="{!Reminder60Days}" title="60 Days Reminder"/> 60 Days &nbsp;
+                <apex:inputCheckbox value="{!Reminder90Days}" title="90 Days Reminder"/> 90 Days<br/>
+                -->
+                <apex:selectCheckboxes styleClass="period-options"  style="white-space: nowrap" value="{!PeriodValuesSelected}">
+                    <apex:selectOptions value="{!PeriodValueOptionList}"/>
+                </apex:selectCheckboxes>
+                
+            </td>
+        
+        </tr>
+        
+    <tr>
+         <td style="font-weight:bold;">
+                 Employees:<br/>
+                 <div style="height: 150px;overflow: scroll;">
+                   <apex:selectCheckboxes styleClass="container" id="Acctlist" value="{!EmployeeFilterList}" layout="pageDirection">  
+                     <apex:selectOptions value="{!list}"/><br/>  
+                    </apex:selectCheckboxes>  
+                
+                    <!--
+                    <apex:repeat var="employeefilter" value="{!list}">
+                        <input type="checkbox" class="employeecb" value="{!employeefilter}" onchange="toggleItem();"/> employeefilter<br/>
+                     </apex:repeat>
+                    -->
+
+                
+                    
+                </div>
+                
+                <!--
+                <apex:inputCheckbox value="{!selectAll}" id="employeeSelectAll" title="All" onchange="EmployeetoggleSelectAll(this);"/>&nbsp;  All
+                -->
+                
+          </td>
+          </tr>
+      
+      <tr>
+        <td style="font-weight:bold;"><br/>
+        <!--    
+        <apex:commandButton value="Unselect Employees" id="ResetReminderLog" action="{!ResetLog}"/> <br/><br/>
+        -->
+        <apex:commandButton value="Show Reminder Report" id="ShowReminderReport" action="{!ShowReminderReport}"/> <br/><br/>
+        
+        <apex:commandButton value="Download As Excel" id="ExportToExcelButton" onclick="exportToExcel();return false;" />    <br/><br/>
+        </td>
+      </tr>
+      </table>
+
+   </apex:pageBlock>
+
+    
+
+   
+
+       </td>
+   
+    <td valign="top">
+
+        <apex:pageBlock id="results">
+        
+          <input type ="button" value="Send Reminder Email" id="SendReminderButton" onclick="sendEmailReminder();"/> &nbsp;&nbsp;&nbsp;  
+      
+         
+
+         <apex:outputText value="No of records found: {!ReminderEmailReportList.size}"/> 
+            
+        <table width="100%" class="list">
+        
+            <thead>
+                    <tr class='headerRow'>
+                        <th class='headerRow' scope="col">
+                        <apex:inputCheckbox value="{!selectAll}" id="selectAll" title="All" onchange="toggleSelectAll(this);"/>&nbsp;  All</th>
+                        <th class='headerRow' scope="col">No of Days</th>
+                        <th class='headerRow' scope="col">First Name</th>
+                        <th class='headerRow' scope="col">Last Name</th>
+                        <th class='headerRow' scope="col">30 Days delinquent </th>
+                        <th class="headerRow" scope="col">60 Days delinquent</th>
+                        <th class="headerRow" scope="col">90 Days delinquent</th>
+                        <th class="headerRow" scope="col">Last Reminder Sent on</th>
+                    </tr>
+            </thead>
+        
+                
+            <tbody>
+        
+                <apex:repeat value="{!ReminderEmailReportList}" var="m">
+                    <tr>
+                    
+                        <td>
+                           <!-- <apex:inputCheckbox styleClass="userCb" value="{!m.OwnerId}" onchange="toggleItem();"/>  -->
+                            <input type="checkbox" class="userCb" value="{!m.OwnerId}" onchange="toggleItem();"/> 
+                        </td>
+                        
+                        
+                    
+                        <td>
+                            <apex:outputText value="{!m.NoOfDays} Days"/> 
+                        </td>
+                        <td>
+                            <apex:outputText value="{!m.FirstName}"/>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!m.LastName}"/>
+                        </td>
+                        <td width="20%">
+                              <apex:repeat value="{!m.BhatWeekly30PendingList}" var="bwk">
+                                <apex:outputLink value="{!$Label.Salesforce_URL}{!bwk.BhatWeekId}" id="bhatid"  title="{!bwk.Status}">{!bwk.BhatWeekName}</apex:outputLink> &nbsp;
+                             </apex:repeat>   
+                        </td>
+                        <td width="20%">
+                              <apex:repeat value="{!m.BhatWeekly60PendingList}" var="bwk">
+                                <apex:outputLink value="{!$Label.Salesforce_URL}{!bwk.BhatWeekId}" id="bhatid"  title="{!bwk.Status}">{!bwk.BhatWeekName}</apex:outputLink> &nbsp;
+                             </apex:repeat>   
+                        </td>
+                        <td width="20%">
+                              <apex:repeat value="{!m.BhatWeekly90PendingList}" var="bwk">
+                                <apex:outputLink value="{!$Label.Salesforce_URL}{!bwk.BhatWeekId}" id="bhatid"  title="{!bwk.Status}">{!bwk.BhatWeekName}</apex:outputLink> &nbsp;
+                             </apex:repeat>   
+                        </td>
+                        <td>
+                             <apex:outputText value="{!m.LastReminderSentOn}"/>                                 
+                        </td>
+                    </tr>
+                </apex:repeat>
+                
+                  
+            </tbody>
+          
+        </table>
+        </apex:pageBlock>
+
+</td>
+  </tr>
+  </table>
+</apex:form>
+</html>
+
+<script type="text/javascript">
+
+
+        /*
+        * set row level checkboxes based on "all checkbox" state
+        */
+        function toggleSelectAll(checkbox){
+        
+            var $j = jQuery.noConflict();
+            
+            //all checkbox is selected
+            if(checkbox.checked){
+ 
+                //set all row level checkboxes selected
+                $j( ".userCb" ).prop('checked', true);
+                
+            }
+            else{
+ 
+                //set all row level checkboxes de-selected
+                $j( ".userCb" ).prop('checked', false);
+                
+            }
+            
+        }
+        
+        /*
+        * set "all checkbox" based on state of row level checkboxes
+        */
+        function toggleItem(checkbox){
+            
+            var $j = jQuery.noConflict();
+            
+            
+            var cbs = $j('.userCb');
+            
+            //all row level checkboxes selected
+            if(cbs.filter(':not(:checked)').length==0){
+                
+                //set "all checkbox" selected
+                $j("input[id$=selectAll]").prop('checked', true);
+                
+            }
+            else{
+                
+                //set "all checkboxes" de-selected
+                $j("input[id$=selectAll]").prop('checked', false);
+                
+            }
+                        
+        }
+        
+        
+        function confirmAction(promptText){
+        
+            var r=confirm(promptText)
+            if (r==true){
+                return true;
+            }
+            else{
+                return false;
+            }
+                    
+        }
+        
+        
+   
+        
+    
+    </script>
+
+</apex:page>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BHAT Reviewer Staff</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BHAT Reviewer Staff</value>
+    </caseValues>
+    <fields>
+        <label><!-- Email --></label>
+        <name>Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employee No --></label>
+        <name>Employee_No__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employee Type --></label>
+        <name>Employee_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reviewer --></label>
+        <name>Reviewer__c</name>
+        <relationshipLabel><!-- BHAT Reviewer Staff --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Staff Division/Dept --></label>
+        <name>Staff_Division_Dept__c</name>
+    </fields>
+    <fields>
+        <label><!-- Staff --></label>
+        <name>Staff__c</name>
+        <relationshipLabel><!-- BHAT Reviewer Staff --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields>
+    <layouts>
+        <layout>BHAT Reviewer Staff Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

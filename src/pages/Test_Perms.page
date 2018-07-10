@@ -1,0 +1,228 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Test Mbr Ldr Permissions</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+
+<script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+</head>
+
+<body>
+<div id="mainDiv" align="center">
+
+</div>
+<br/>&nbsp;<br/>
+<div id="debugDiv" align="center">
+
+</div>
+
+
+<script language="JavaScript">
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+function getModDepartment(pEmployerName, pWorksite, pDepartment) {
+  var dept = "Unknown";
+  if (pDepartment != null && pDepartment != "null" && pDepartment != "") {
+    dept = pDepartment;
+  }
+  if (isKaiserSouth(pEmployerName)) {
+            if (pWorksite != null) {
+              //pWorksite = pWorksite.replace(/\./g,'');
+              //pWorksite = pWorksite.replace(/,/g,'');              
+              if (pWorksite.length > 18) {
+                dept = pWorksite.substring(0, 18).trim() + " - " + dept;
+              } else {
+                dept = pWorksite + " - " + dept;
+              }
+            }
+  }
+  return dept;
+}
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+var user = sforce.connection.getUserInfo();
+
+var plist = [];
+
+var tiers = ["Tier 1", "Tier 2", "Staff"];
+
+var contactMap = {};
+
+try {
+
+  var debugWriter = "";
+
+  var writer = "<table border=\"1\">";
+  writer += "<tr><td><b>Contact Id</b></td><td><b>Name</b></td><td><b>Tier 1 Leader</b></td><td><b>Reason<b></td></tr>\n";
+
+  var query = " Select Id, Department__c, Mbr_Ldr__c, Mbr_Ldr_Tier__c, Shift__c, Team_Account__c, Team_Mbr__c, Team_Mbr_Name__c, Worksite__c, BU_Count__c, Mbr_Ldr_Name__c FROM Mbr_Ldr_App_Permissions__c where Team_Employer_Name__c like \'kaiser-baldwin%\'  order by Team_Mbr__c nulls last, Shift__c nulls last, Department__c nulls last, Worksite__c nulls last ";
+  var result = sforce.connection.query(query);
+  //alert(query);
+  var records = result.getArray("records");  
+  plist = records;
+  //alert("plist length = " + plist.length);
+  for (var i = 0; i < records.length; i++) {
+    //debugWriter += i + ". " + JSON.stringify(records[i]) + "<br/>\n";
+  }
+  
+  var query = " Select AccountId, Id, FID__c, Name, Worksite__c, Department from Contact where Account.Name like \'kaiser-baldwin%\' and In_Current_BU__c = true ";
+  var result = sforce.connection.query(query);
+  //alert(query);
+  var records = result.getArray("records");  
+  for (var i = 0; i < records.length; i++) {
+    var c = records[i];
+    contactMap[c.Id] = records[i];
+  }
+  for (var i = 0; i < records.length; i++) {
+    var c = records[i];
+    c.Tier_1_Leader__c = "";
+    c.Tier_2_Leader__c = "";
+    c.Tier_Staff__c = "";    
+    var reason = "";    
+    for (var k = 0; k < tiers.length; k++) {
+      var tier = tiers[k];
+      var ldr = null;    
+      for (var j = 0; j < plist.length; j++) {
+        var p = plist[j];     
+        if (ldr == null && c.AccountId == p.Team_Account__c && p.Mbr_Ldr_Tier__c == tier) {
+          if (c.Id == p.Team_Mbr__c && c.Id != p.Mbr_Ldr__c) {
+            ldr = p.Mbr_Ldr__c;
+            reason = "Individual Perm";
+            if (c.Name.toLowerCase().indexOf("casas") >= 0) {
+              debugWriter += (j + ". found individual perm for " + c.Name + "\n" + JSON.stringify(p));
+            }
+          } else if (p.Team_Mbr__c == null) {
+            var worksiteMatch = true;
+            if (p.Worksite__c != null && p.Worksite__c.trim() != '') {
+              worksiteMatch = false;
+              if (c.Worksite__c != null && c.Worksite__c.toLowerCase().indexOf(p.Worksite__c.toLowerCase()) >= 0) {
+                worksiteMatch = true;
+              }
+            }
+            var deptMatch = true;
+            if (p.Department__c != null && p.Department__c.trim() != '') {
+              deptMatch = false;
+              if (c.Department != null && p.Shift__c != '' && c.Department.toLowerCase().indexOf(p.Department__c.toLowerCase()) >= 0) {
+                deptMatch = true;
+              }
+            }
+            var shiftMatch = true;
+            if (p.Shift__c != null && p.Shift__c.trim() != '') {
+              shiftMatch = false;
+              if (c.Shift__c != null && c.Shift__c.toLowerCase().indexOf(p.Shift__c.toLowerCase()) >= 0) {
+                       shiftMatch = true;
+              }
+            }
+            if (worksiteMatch && deptMatch && shiftMatch && p.Mbr_Ldr__c != c.Id) {
+              ldr = p.Mbr_Ldr__c;
+              reason = "Dept Perm";    
+              if (c.Name.toLowerCase().indexOf("casas") >= 0) {
+                debugWriter += (j + ". found dept perm for " + c.Name + "\n" + JSON.stringify(p));
+              }                        
+            }
+          }
+          if (ldr != null) {
+                   if (tier == 'Tier 1') {
+                       c.Tier_1_Leader__c = ldr;
+                   } else if (tier == 'Tier 2') {
+                       c.Tier_2_Leader__c = ldr;
+                   } else if (tier == 'Staff') {
+                       c.Tier_Staff__c = ldr;                   
+                   }
+                   //break;
+          }
+        }
+      }
+    }  
+    writer += "<tr valign=\"top\">";    
+    writer += "<td align=\"center\">";
+    writer += c.Id;
+    writer += "</td>";
+    writer += "<td align=\"center\">";
+    writer += c.Name;
+    writer += "</td>";    
+    writer += "<td align=\"center\">";
+    if (contactMap[c.Tier_1_Leader__c] != null) {
+      writer += contactMap[c.Tier_1_Leader__c].Name;
+    }
+    writer += "</td>";    
+    writer += "<td align=\"center\">";
+    writer += reason;
+    writer += "</td>";     
+    writer += "</tr>\n";        
+  }
+  
+  writer += "</table>\n";
+  
+  $("#mainDiv").html(writer);
+  $("#debugDiv").html(debugWriter);  
+  
+} catch(e) { 
+       alert('An Error has Occured. Error:' +e); 
+}  
+
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Boothforce;This is a demo station or exhibit that needs staffing; This is use by Sarah Steck;</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Area_Zone__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The Area on the trade show floor where the Booth is located</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Area on the trade show floor where the Booth is located</inlineHelpText>
+        <label>Area</label>
+        <referenceTo>Area_Zone__c</referenceTo>
+        <relationshipLabel>Booths</relationshipLabel>
+        <relationshipName>Booths</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Booth_Description__c</fullName>
+        <description>Description of what will be shown or demonstrated at this particular booth</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Description of what will be shown or demonstrated at this particular booth</inlineHelpText>
+        <label>Booth Description</label>
+        <length>32000</length>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Booth_Type__c</fullName>
+        <description>The function of the Booth</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The function of the Booth</inlineHelpText>
+        <label>Booth Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Demo Station</fullName>
+                    <default>false</default>
+                    <label>Demo Station</label>
+                </value>
+                <value>
+                    <fullName>Success Clinic</fullName>
+                    <default>false</default>
+                    <label>Success Clinic</label>
+                </value>
+                <value>
+                    <fullName>Shift Manager</fullName>
+                    <default>false</default>
+                    <label>Shift Manager</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Remaining_Shifts_to_be_Staffed__c</fullName>
+        <externalId>false</externalId>
+        <formula>Total_Shifts_to_be_Staffed__c - Total_Shifts_Staffed__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Remaining Shifts to be Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Total_Shifts_Staffed__c</fullName>
+        <description>Number of Shifts currently Staffed for this Booth</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of Shifts currently Staffed for this Booth</inlineHelpText>
+        <label>Total Shifts Staffed</label>
+        <summarizedField>Staffing_Assignment__c.Is_Staffed__c</summarizedField>
+        <summaryForeignKey>Staffing_Assignment__c.Booth__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Shifts_to_be_Staffed__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Shifts to be Staffed</label>
+        <summaryForeignKey>Staffing_Assignment__c.Booth__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>User_Booth_Staff__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This dictates what users will be allowed to sign up for this Booth.</inlineHelpText>
+        <label>User Booth Staffing Roles Allowed</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Staff</fullName>
+                    <default>false</default>
+                    <label>Staff</label>
+                </value>
+                <value>
+                    <fullName>Coordinator</fullName>
+                    <default>false</default>
+                    <label>Coordinator</label>
+                </value>
+                <value>
+                    <fullName>Organizer</fullName>
+                    <default>false</default>
+                    <label>Organizer</label>
+                </value>
+                <value>
+                    <fullName>Director</fullName>
+                    <default>false</default>
+                    <label>Director</label>
+                </value>
+                <value>
+                    <fullName>Executive</fullName>
+                    <default>false</default>
+                    <label>Executive</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Zone__c</fullName>
+        <description>A logical or physical grouping of Booths that share a common theme.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>A logical or physical grouping of Booths that share a common theme.</inlineHelpText>
+        <label>Zone</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Booth</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Area_Zone__c</columns>
+        <columns>Zone__c</columns>
+        <columns>Booth_Type__c</columns>
+        <columns>Booth_Description__c</columns>
+        <columns>Total_Shifts_to_be_Staffed__c</columns>
+        <columns>Total_Shifts_Staffed__c</columns>
+        <columns>Remaining_Shifts_to_be_Staffed__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Booths</label>
+    </listViews>
+    <nameField>
+        <label>Booth Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Booths</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Zone__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Booth_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Total_Shifts_to_be_Staffed__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Total_Shifts_Staffed__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Remaining_Shifts_to_be_Staffed__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Area_Zone__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Zone__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Booth_Type__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Area_Zone__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Zone__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Booth_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total_Shifts_to_be_Staffed__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Total_Shifts_Staffed__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Remaining_Shifts_to_be_Staffed__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

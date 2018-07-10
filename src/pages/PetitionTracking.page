@@ -1,0 +1,1066 @@
+<apex:page controller="plController" docType="html-5.0" showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="false">
+
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<div ng-controller="plCtrl"  ng-app="app">
+     <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="setTab(1)">
+         Petition Ledger
+     </button>
+    <!--isSet(1) [$scope.tab=1] is the HOME page with button nav-->
+<div ng-show="isSet(1)">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <form>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="setTab(2)">
+            Transfer / Check Out
+            </button>
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit"
+                                                             ng-click="setTab(3)"
+                                                             ng-disabled="{{ckin_brn}}">
+            Check In
+            </button>
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit"
+                                                             ng-click="setTab(4)"
+                                                             ng-disabled="{{ckin_brn}}">
+            Burn
+            </button>
+            <!--summary report button (keep in dev until Ben's Phase 5)
+            <button class="btn btn-lg btn-primary btn-block" ng-click="setTab(9)">
+                Summary
+            </button>
+            -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+    <!--isSet(2) is the TRANSFER page with From/To contact choices-->
+    <div ng-show="isSet(2)">
+        <div class="container-fluid">
+            <body>
+                <div class="panel panel-default">    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!--picklist for the transfer type-->
+                            <div class="panel-body">
+                                <form name="xfr_form">
+                                    <div class ="form-group">
+                                        <div class="col-md-6 col-xs-8">
+                                            <div class="input-group">
+                                                <label for="picklist1">Type: </label>
+                                                <select id="picklist1" class="form-control">
+                                                    <option value="S. Staff Check-Out">S. Staff Check Out</option>
+                                                    <option value="M. Member Leader Check-Out">M. Member Leader Check Out</option>
+                                                    <option value="R. Returned Blank to Operations">R. Returned Blank to Operations</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    <div class="col-md-6 col-xs-4">
+                                    <div class="input-group">
+                                    <label for="xfrpQty1">
+                                    Amount: </label>
+                                    <input name="xfrpQty1" id="xfrpQty1"
+                                                           type="number"
+                                                           min="1"
+                                                           max="{{plxfrMax}}"
+                                    required="true" ng-model="plXfrQty" class="form-control"/>
+                                    </div>
+                                    </div>
+                                    </div>
+                                </form>    
+                            </div>
+                            <!--picklist ends-->
+                            <!--begin body of transfer overview and from/to choices-->
+                            <!--start petitions From button and overview section-->
+                            <div class="panel-body">
+                                <label for="from_btn">Name of Distributor: (giver)</label> 
+                                <button id="from_btn" class="btn btn-primary btn-block" ng-click="chooseCt_from()" type='button'>
+                                    {{plFromName}}
+                                </button>
+                                <div class="table-responsive">
+                                    <table class="table" ng-show="sc_from">
+                                        <thead>
+                                            <tr>
+                                                <th><u>Giver Chosen</u></th>
+                                                <th>Transfer Qty</th>
+                                                <th>Proposed Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{plFromName}}</td>
+                                                <td>{{plXfrQty}}</td>
+                                                <td>{{plFromQty - plXfrQty}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!--end petitions From button and overview section-->
+                            <!--start petitions To button and overview section-->
+                            <div class="panel-body">
+                                <label for="to_btn">Name of Requestor: (receiver)</label> 
+                                <button id="to_btn" class="btn btn-primary btn-block" ng-click="chooseCt_to()" type='button'>
+                                    {{plToName}}
+                                </button>
+                                <table class="table-responsive">
+                                    <table class="table" ng-show="sc_to">
+                                        <thead>
+                                            <tr>
+                                                <th><u>Recipient Chosen</u></th>
+                                                <th>Transfer Qty</th>
+                                                <th>Proposed Qty</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{plToName}}</td>
+                                                <td>{{plXfrQty}}</td>
+                                                <td>{{+plXfrQty + +plToQty}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </table>
+                            </div>
+                        </div>    
+                        <!--end petitions To button and overview section-->
+                    </div>
+                </div>
+                <button type="button" class="btn btn-lg btn-primary btn-block"
+                                      ng-click="saveLedgerEntry_xfr()" ng-disabled="xfr_to ||
+                                      xfr_from || xfr_form.$invalid">Submit Transfer</button>
+            </body>
+            <!--end body of transfer overview and from/to choices-->
+        </div>
+    </div>
+    <!--isSet(3) is the CHECK IN page-->
+    <div ng-show="isSet(3)">
+        <div class="container-fluid">
+            <body>
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel-body">
+                                    <label for="circ_btn">Name of Circulator: </label>
+                                    <button id="circ_btn" class="btn btn-primary btn-block" type="button" ng-click="chooseCt_ckin()">
+                                        {{plCkInName}}
+                                    </button>
+                                    <div class="table-responsive col-md-12">
+                                    <table class="table" ng-show="sc">
+                                        <thead>
+                                            <tr>
+                                            <th><u>Named Circulator</u></th>
+                                            <th><b>Same Circulator?</b></th>
+                                            <th>Current Qty</th>
+                                            <th>Post Check In</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                            <td>{{plCkInName}}</td>
+                                            <td><input type="checkbox"
+                                                ng-model="circ_same"
+                                                ng-change="circalt()"/></td>
+                                            <td>{{plCkInQty}}</td>
+                                            <td>{{plCkInQty - getTotalCkInPetQty()}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                    <div ng-show="!circ_same">
+                                    <form class="form-inline" name="circ_form">
+                                        <div class="input-group col-md-4">
+                                        <label for="alt_circ">Name of Signed Circulator: </label> 
+                                        <input id="alt_circ" type="text"
+                                        class="form-control"
+                                        ng-model="circ_alt" ng-required="!circ_same"/>
+                                        </div>
+                                        <div class="col-md-4">
+                                        <label for="alt_circ_r">Relation to Named Circulator: </label> 
+                                        <input id="alt_circ_r" type="text"
+                                        class="form-control"
+                                        ng-model="circ_alt_r"/>
+                                        </div>
+                                    </form>
+                                    </div>
+                                </div>
+                                
+                                <form name="ckin_form" ng-submit="addNew()">
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <div class="col-xs-6">
+                                                <div class="input-group">
+                                                    <label for="datepicker">Check In Date: </label>
+                                                    <input id="datepicker" type="date" required="true" class="form-control" ng-model="ckinDate"></input>
+                                                </div>        
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="input-group">
+                                                    <!--picklist for the county-->
+                                                    <label for="picklist_cnty">County: </label>
+                                                    <select id="picklist_cnty" ng-model="pldetInit.County__c" class="form-control">
+                                                        <option value="Alameda">Alameda</option>
+                                                        <option value="Alpine">Alpine</option>
+                                                        <option value="Amador">Amador</option>
+                                                        <option value="Butte">Butte</option>
+                                                        <option value="Calaveras">Calaveras</option>
+                                                        <option value="Colusa">Colusa</option>
+                                                        <option value="Contra Costa">Contra Costa</option>
+                                                        <option value="Del Norte">Del Norte</option>
+                                                        <option value="El Dorado">El Dorado</option>
+                                                        <option value="Fresno">Fresno</option>
+                                                        <option value="Glenn">Glenn</option>
+                                                        <option value="Humboldt">Humboldt</option>
+                                                        <option value="Imperial">Imperial</option>
+                                                        <option value="Inyo">Inyo</option>
+                                                        <option value="Kern">Kern</option>
+                                                        <option value="Kings">Kings</option>
+                                                        <option value="Lake">Lake</option>
+                                                        <option value="Lassen">Lassen</option>
+                                                        <option value="Los Angeles">Los Angeles</option>
+                                                        <option value="Madera">Madera</option>
+                                                        <option value="Marin">Marin</option>
+                                                        <option value="Mariposa">Mariposa</option>
+                                                        <option value="Mendocino">Mendocino</option>
+                                                        <option value="Merced">Merced</option>
+                                                        <option value="Modoc">Modoc</option>
+                                                        <option value="Mono">Mono</option>
+                                                        <option value="Monterey">Monterey</option>
+                                                        <option value="Napa">Napa</option>
+                                                        <option value="Nevada">Nevada</option>
+                                                        <option value="Orange">Orange</option>
+                                                        <option value="Placer">Placer</option>
+                                                        <option value="Plumas">Plumas</option>
+                                                        <option value="Riverside">Riverside</option>
+                                                        <option value="Sacramento">Sacramento</option>
+                                                        <option value="San Benito">San Benito</option>
+                                                        <option value="San Bernardino">San Bernardino</option>
+                                                        <option value="San Diego">San Diego</option>
+                                                        <option value="San Francisco">San Francisco</option>
+                                                        <option value="San Joaquin">San Joaquin</option>
+                                                        <option value="San Luis Obispo">San Luis Obispo</option>
+                                                        <option value="San Mateo">San Mateo</option>
+                                                        <option value="Santa Barbara">Santa Barbara</option>
+                                                        <option value="Santa Clara">Santa Clara</option>
+                                                        <option value="Santa Cruz">Santa Cruz</option>
+                                                        <option value="Shasta">Shasta</option>
+                                                        <option value="Sierra">Sierra</option>
+                                                        <option value="Siskiyou">Siskiyou</option>
+                                                        <option value="Solano">Solano</option>
+                                                        <option value="Sonoma">Sonoma</option>
+                                                        <option value="Stanislaus">Stanislaus</option>
+                                                        <option value="Sutter">Sutter</option>
+                                                        <option value="Tehama">Tehama</option>
+                                                        <option value="Trinity">Trinity</option>
+                                                        <option value="Tulare">Tulare</option>
+                                                        <option value="Tuolumne">Tuolumne</option>
+                                                        <option value="Ventura">Ventura</option>
+                                                        <option value="Yolo">Yolo</option>
+                                                        <option value="Yuba">Yuba</option>        
+                                                    </select>
+                                                    <!--picklist for the county ends-->
+                                                </div>        
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="form-group">
+                                            <div class="col-xs-6">
+                                                <div class="input-group">
+                                                    <label for="valid_sigs">Valid Signatures: </label>
+                                                    <input name="valid_sigs" id="valid_sigs" type="number" min="0" class="form-control" ng-model="pldetInit.Valid_Signatures__c" sigs-maxsum="{{pldetInit.Bad_Signatures__c}}" required="true"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <div class="input-group">
+                                                    <label for="bad_sigs">Invalid Signatures: </label>
+                                                    <input name="bad_sigs" id="bad_sigs" type="number" min="0" class="form-control" ng-model="pldetInit.Bad_Signatures__c" sigs-maxsum="{{pldetInit.Valid_Signatures__c}}" required="true"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <button type="submit"
+                                                        ng-disabled="ckin_form.$invalid
+                                                        || !maxrows" class="btn btn-primary addnew">Add New</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel-body">
+                                    <div class="table-responsive">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th><input type="checkbox" ng-model="selectedAll" ng-click="checkAll()" /></th>
+                                                    <th>County</th>
+                                                    <th>Valid</th>
+                                                    <th>Invalid</th>
+                                                    <th>Total Sigs</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="plrowDetail in plDetails">
+                                                    <td><input type="checkbox" ng-model="plrowDetail.selected"/></td>
+                                                    <td>{{plrowDetail.County__c}}</td>
+                                                    <td>{{plrowDetail.Valid_Signatures__c}}</td>
+                                                    <td>{{plrowDetail.Bad_Signatures__c}}</td>
+                                                    <td>{{+plrowDetail.Valid_Signatures__c + +plrowDetail.Bad_Signatures__c}}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="form-group">
+                                        <input ng-hide="!plDetails.length" type="button" class="btn btn-danger pull-right" style="float:left" ng-click="remove()" value="Remove"/>
+                                    </div>
+                                </div>
+                                <button ng-click="saveLedgerEntry_ckin()"
+                                        style="float:left;margin-right:10px" type="button" class="btn
+                                        btn-lg btn-primary btn-block" ng-disabled="!plDetails.length ||
+                                        circ || circ_form.$invalid">Submit Rows</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </body>
+        </div>
+    </div>
+    <!--isSet(4) is the BURN page-->
+    <div ng-show="isSet(4)">
+        <div class="container-fluid">
+            <body>
+                <div class="panel panel-default">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="panel-body">
+                                <label for="brn_btn">Petition Burner: </label>
+                                <button id="brn_btn" class="btn btn-primary btn-block" ng-click="chooseCt_brn()" type='button'>
+                                    {{plBrnName}}
+                                </button>
+                                <div ng-show="sc_brn">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th><u>Burner</u></th>
+                                                <th>Burn Qty</th>
+                                                <th>Remainder</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{plBrnName}}</td>
+                                                <td>{{items_brn.Quantity__c}}</td>
+                                                <td>{{plBurnQty - items_brn.Quantity__c}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <form name="brn_form">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                    <div class="input-group">
+                                        <label for="petbrnqty"># of Petitions:</label>
+                                        <input id="petbrnqty" name="petbrnqty" type="number" class="form-control" ng-model="items_brn.Quantity__c" required="true" min="1" ng-change="checkBrn()"/>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                    <p>
+                                    <label for="textarea1">Comments (reason **required**): </label>
+                                    <textarea id="textarea1" required="true" class="form-control" rows="4" ng-model="items_brn.Comments__c">
+                                    </textarea>
+                                    </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button ng-click="saveLedgerEntry_brn()" type="button" class="btn
+                btn-lg btn-primary btn-block" ng-disabled="brn || brn_form.$invalid ">Submit Burn</button>
+            </body>
+        </div>
+    </div>
+    <!-- isSet(5) = CHECK IN circulator choice page -->
+    <div ng-show="isSet(5)">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="st">Name Search (first
+                                        and/or last): <input
+                                           ng-model="searchText" 
+                                           id="st"
+                                           class="form-control"
+                                           ng-keydown="$event.keyCode === 13 && get_sosl_remote_cts()" />
+                                    </label>
+                                    <button class="btn btn-primary"
+                                        ng-click="get_sosl_remote_cts()">Search Contacts</button>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>click to choose</th>
+                                            <th>Name</th>
+                                            <th>Employer</th>
+                                            <th>Department</th>
+                                            <th>Worksite</th>
+                                            <th>Title</th>
+                                            <th>Division</th>
+                                            <th>Petition Qty</th>
+                                            <th>Mobile Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="contactVar in contacts">
+                                            <td><button  ng-click="pickContact(contactVar)" class="btn btn-primary">Choose</button></td>
+                                            <td>{{contactVar.Name}}</td>
+                                            <td>{{contactVar.Account.Name}}</td>
+                                            <td>{{contactVar.Department}}</td>
+                                            <td>{{contactVar.Worksite__c}}</td>
+                                            <td>{{contactVar.Title}}</td>
+                                            <td>{{contactVar.Division_Type__c}}</td>
+                                            <td>{{contactVar.PetitionQty__c}}</td>
+                                            <td>{{contactVar.MobilePhone}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END isSet(5) circulator choice page -->
+    <!-- isSet(6) BURNER contact choice menu-->
+    <div ng-show="isSet(6)">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="st_brn">Name Search (first
+                                        and/or last): <input
+                                        ng-model="searchText_brn"
+                                    id="st_brn" class="form-control" ng-keydown="$event.keyCode === 13 && get_sosl_remote_cts_brn()"/></label>
+                                    <button ng-click="get_sosl_remote_cts_brn()" class="btn btn-primary">Search Contacts</button>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>click to choose</th>
+                                            <th>Name</th>
+                                            <th>Employer</th>
+                                            <th>Department</th>
+                                            <th>Worksite</th>
+                                            <th>Title</th>
+                                            <th>Division</th>
+                                            <th>Petition Qty</th>
+                                            <th>Mobile Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="contactVar in contacts_brn">
+                                            <td><button  ng-click="pickContact_brn(contactVar)" class="btn btn-primary">Choose</button></td>
+                                            <td>{{contactVar.Name}}</td>
+                                            <td>{{contactVar.Account.Name}}</td>
+                                            <td>{{contactVar.Department}}</td>
+                                            <td>{{contactVar.Worksite__c}}</td>
+                                            <td>{{contactVar.Title}}</td>
+                                            <td>{{contactVar.Division}}</td>
+                                            <td>{{contactVar.PetitionQty__c}}</td>
+                                            <td>{{contactVar.MobilePhone}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end burner contact choice menu-->
+    <!-- isSet(7) To xfr Contact choice menu-->
+    <div ng-show="isSet(7)">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="st_to">Name Search (first
+                                        and/or last): <input
+                                           ng-model="searchText_to"
+                                           id="st_to" class="form-control"
+                                           ng-keydown="$event.keyCode === 13 && get_sosl_remote_cts_to()"/>
+                                    </label>
+                                    <button 
+                                        ng-click="get_sosl_remote_cts_to()" class="btn btn-primary" type="button">Search Contacts</button>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>click to choose</th>
+                                            <th>Name</th>
+                                            <th>Employer</th>
+                                            <th>Department</th>
+                                            <th>Worksite</th>
+                                            <th>Title</th>
+                                            <th>Division</th>
+                                            <th>Petition Qty</th>
+                                            <th>Mobile Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="contactVar in contacts_to">
+                                            <td><button  ng-click="pickContact_to(contactVar)" class="btn btn-primary" type="button">Choose</button></td>
+                                            <td>{{contactVar.Name}}</td>
+                                            <td>{{contactVar.Account.Name}}</td>
+                                            <td>{{contactVar.Department}}</td>
+                                            <td>{{contactVar.Worksite__c}}</td>
+                                            <td>{{contactVar.Title}}</td>
+                                            <td>{{contactVar.Division_Type__c}}</td>
+                                            <td>{{contactVar.PetitionQty__c}}</td>
+                                            <td>{{contactVar.MobilePhone}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end To xfr Contact choice menu-->
+    <!-- isSet(8) From xfr Contact choice menu-->
+    <div ng-show="isSet(8)">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form class="form-inline">
+                                <div class="form-group">
+                                    <label for="st_frm">Name Search (first
+                                        and/or last): <input
+                                           ng-model="searchText_from"
+                                           id="st_frm" class="form-control"
+                                           type="text" ng-keydown="$event.keyCode === 13 && get_sosl_remote_cts_from()"/>
+                                    </label>
+                                    <button 
+                                        ng-click="get_sosl_remote_cts_from()" class="btn btn-primary" type="button">Search Contacts</button>
+                                </div>
+                            </form>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>click to choose</th>
+                                            <th>Name</th>
+                                            <th>Employer</th>
+                                            <th>Department</th>
+                                            <th>Worksite</th>
+                                            <th>Title</th>
+                                            <th>Division</th>
+                                            <th>Petition Qty</th>
+                                            <th>Mobile Phone</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="contactVar in contacts_from">
+                                            <td><button  ng-click="pickContact_from(contactVar)" class="btn btn-primary" type="button">Choose</button></td>
+                                            <td>{{contactVar.Name}}</td>
+                                            <td>{{contactVar.Account.Name}}</td>
+                                            <td>{{contactVar.Department}}</td>
+                                            <td>{{contactVar.Worksite__c}}</td>
+                                            <td>{{contactVar.Title}}</td>
+                                            <td>{{contactVar.Division_Type__c}}</td>
+                                            <td>{{contactVar.PetitionQty__c}}</td>
+                                            <td>{{contactVar.MobilePhone}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end From xfr Contact choice menu-->
+</div>
+   <apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+   <apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+   <apex:includeScript value="//ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.js"/>
+   <apex:includeScript value="//ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-animate.js"/>
+   <apex:includeScript value="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.3.js"/>
+   <apex:includeScript value="//ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular-touch.js"/>
+   <script>
+var app = angular.module('app', []);
+
+app.controller('plCtrl', function($scope) {
+    $scope.tab = 1;
+
+    $scope.checkBrn = function(){
+        if($scope.plBurnQty - $scope.items_brn.Quantity__c < 0){
+            $scope.brn = true;
+        }
+        else{
+            $scope.brn = false;
+        }
+    }
+
+    $scope.todaysDate = new Date();
+
+    $scope.username = '{!username}';
+    $scope.ckin_brn = '{!userCheckinBurn}';
+    $scope.staffxfr = '{!userStaffXfr}';
+    $scope.userContact =
+        {
+            'Id':'{!userContactId}',
+            'Name':'{!userContactName}',
+            'MobilePhone':'{!userContactMobile}',
+            'PetitionQty__c':'{!userContactPetqty}',
+            'Account':{'Name':'{!userContactEmployer}'},
+            'Department':'{!userContactDept}',
+            'Title':'{!userContactTitle}',
+            'Division_Type__c':'{!userContactDiv}'
+        };
+
+    $scope.setTab = function(newTab){
+      $scope.tab = newTab;
+    };
+
+    $scope.isSet = function(tabNum){
+      return $scope.tab === tabNum;
+    };
+
+    $scope.checkAll = function () {
+        angular.forEach($scope.plDetails, function(plrowDetail) {
+            plrowDetail.selected = $scope.selectedAll;
+        });
+    };
+
+    $scope.init_brn = function() {        
+        $scope.plBrnName = 'Choose Petition Burner...';
+        $scope.plBrnId = '';
+        $scope.contacts_brn = [];       
+        $scope.sc_brn = false;
+        $scope.brn = true;
+        $scope.searchText_brn='';
+        $scope.items_brn =
+        {
+            'Quantity__c':0,
+            'Transferred_From__c':'',
+            'Transfer_Type__c':'X. Burned',
+            'Comments__c':'',
+            'UHW_Campaign__c':'{!currentCampaignId}'
+        };
+    };
+
+    $scope.init_xfr = function() {
+        $scope.plToName = 'Choose Requestor...';
+        $scope.plFromName = 'Choose Distributor...';
+        $scope.plXfrQty = '';
+        $scope.sc_to = false;
+        $scope.sc_from = false;
+        $scope.xfr_to = true;
+        $scope.xfr_from = true;
+        $scope.contacts_to = [];
+        $scope.plxfrMax = 0;
+        $scope.contacts_from = [];
+        $scope.searchText_to = '';
+        $scope.searchText_from = '';
+        $scope.items_xfr =
+        {
+            'Transferred_From__c':'',
+            'Transferred_To__c':'',
+            'Transfer_Type__c':'',
+            'Quantity__c':'',
+            'Comments__c':'',
+            'UHW_Campaign__c':'{!currentCampaignId}'
+        };
+    };
+
+    $scope.init_ckin = function() {
+        $scope.plCkInName = 'Choose Circulator...';
+        $scope.contacts = [];
+        $scope.sc = false;
+        $scope.circ = true;
+        $scope.circ_same = true;
+        $scope.plDetails= []; 
+        $scope.ckinDate = $scope.todaysDate;
+        $scope.searchText = '';
+        $scope.pldetInit =             
+           {
+               'County__c':'Alameda',
+               'Quantity__c':'1',
+               'Valid_Signatures__c':'',
+               'Bad_Signatures__c': '0',
+               'Transfer_Type__c':'O. Check-In to Operations',
+               'UHW_Campaign__c':'{!currentCampaignId}'
+           };
+    };
+
+    $scope.init_ckin();
+    $scope.init_brn();
+    $scope.init_xfr();
+
+    $scope.saveLedgerEntry_ckin = function() {
+        angular.forEach($scope.plDetails, function(plrowDetail) {
+            plrowDetail.Transfer_Type__c = 'O. Check-In to Operations';
+            plrowDetail.Transferred_From__c = $scope.plCkInId;
+            plrowDetail.Circulator_Alt__c = $scope.circ_alt;
+            plrowDetail.Circulator_Alt_Relation__c = $scope.circ_alt_r;
+            plrowDetail.Transfer_Date__c = $scope.ckinDate.getFullYear() + '-' + ('0' + ($scope.ckinDate.getMonth() + 1)).slice(-2) + '-' + ('0' + $scope.ckinDate.getDate()).slice(-2);
+        });
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.plController.saveCheckInEntries}',
+                JSON.stringify($scope.plDetails),
+                function(result, event){
+                    if(event.status){
+                        var ckin_id = $scope.plCkInId;
+                        var user_id = $scope.userContact.Id;
+                        if(ckin_id.indexOf(user_id) > -1){
+                            $scope.userContact.PetitionQty__c -= $scope.plDetails.length;
+                        }
+                        $scope.init_ckin();
+                        alert('success!');
+                    }else{
+                        alert(event.message);
+                    }
+                },
+                {escape: false}
+            );
+        $scope.setTab(1);
+    };
+
+    $scope.saveLedgerEntry_brn = function() {
+        $scope.items_brn.Transferred_From__c = $scope.plBrnId;
+        $scope.items_brn.Transfer_Date__c = $scope.todaysDate.getFullYear() + '-' + ('0' + ($scope.todaysDate.getMonth() + 1)).slice(-2) + '-' + ('0' + $scope.todaysDate.getDate()).slice(-2);
+         Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.plController.saveXfrEntry}',
+                JSON.stringify($scope.items_brn),
+                function(result, event){
+                    if(event.status){
+                        var brn_id = $scope.plBrnId;
+                        var user_id = $scope.userContact.Id;
+                        if(brn_id.indexOf(user_id) > -1){
+                            $scope.userContact.PetitionQty__c -= $scope.items_brn.Quantity__c;
+                        }
+                        $scope.init_brn();
+                        alert('success!');
+                    }else{
+                        alert(event.message);
+                    }
+                },
+                {escape: false}
+            );
+        $scope.setTab(1);
+    };
+
+    $scope.saveLedgerEntry_xfr = function() {
+        $scope.items_xfr.Quantity__c = $scope.plXfrQty;
+        $scope.items_xfr.Transfer_Type__c = document.getElementById('picklist1').value;
+        $scope.items_xfr.Transfer_Date__c = $scope.todaysDate.getFullYear() + '-' + ('0' + ($scope.todaysDate.getMonth() + 1)).slice(-2) + '-' + ('0' + $scope.todaysDate.getDate()).slice(-2);
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.plController.saveXfrEntry}',
+                JSON.stringify($scope.items_xfr),
+                function(result, event){
+                    if(event.status){
+                        var from_id = $scope.items_xfr.Transferred_From__c;
+                        var to_id = $scope.items_xfr.Transferred_To__c;
+                        var user_id = $scope.userContact.Id;
+                        if(from_id.indexOf(user_id) > -1){
+                            $scope.userContact.PetitionQty__c -= $scope.plXfrQty;
+                        }
+                        if(to_id.indexOf(user_id) > -1){
+                            $scope.userContact.PetitionQty__c += $scope.plXfrQty;
+                        }
+                        $scope.init_xfr();
+                        alert('success!');
+                    }else{
+                        alert(event.message);
+                    }
+                },
+                {escape: false}
+            );
+        $scope.setTab(1);
+    };
+
+    $scope.addNew = function(plrowDetail){
+            $scope.plDetails.push($scope.pldetInit);
+            $scope.pldetInit =             
+            {
+                'County__c':'Alameda',
+                'Quantity__c':'1',
+                'Valid_Signatures__c':'',
+                'Invalid_Signatures__c':'',
+                'Bad_Signatures__c': '',
+                'Transfer_Type__c':'O. Check-In to Operations',
+                'UHW_Campaign__c':'{!currentCampaignId}'
+            };
+    };
+
+    $scope.pickContact_to = function(ct) {
+        $scope.items_xfr.Transferred_To__c = ct.Id;
+        $scope.plToName = ct.Name;
+        $scope.plToId = ct.Id;
+        $scope.plToQty = ct.PetitionQty__c;
+        $scope.sc_to = true;
+        $scope.xfr_to = false;
+        $scope.setTab(2);
+    };
+
+    $scope.pickContact_from = function(ct) {
+        $scope.items_xfr.Transferred_From__c = ct.Id;
+        $scope.plFromName = ct.Name;
+        $scope.plFromId = ct.Id;
+        if(ct.PetitionQty__c === undefined){
+            $scope.plFromQty = 0;            
+        }else{
+            $scope.plFromQty = parseInt(ct.PetitionQty__c,10);            
+        }
+        if(Number.isNaN($scope.plFromQty)){
+            $scope.plFromQty = 0;            
+        }
+
+        $scope.plxfrMax = $scope.plFromQty;
+        $scope.sc_from = true;
+        $scope.xfr_from = false;
+        $scope.setTab(2);
+    };
+
+    $scope.chooseCt_from = function() {
+        $scope.setTab(8);
+        $scope.contacts_from = [];
+        $scope.getContacts_from();
+    };
+
+    $scope.chooseCt_to = function() {
+        $scope.setTab(7);
+        $scope.contacts_to = [];
+        $scope.getContacts_to();
+    };
+
+    $scope.chooseCt_brn = function() {
+        $scope.setTab(6);
+        $scope.contacts_brn = [];
+        $scope.getContacts_brn();
+    };
+
+    $scope.chooseCt_ckin = function() {
+        $scope.setTab(5);
+        $scope.contacts = [];
+        $scope.getContacts();
+    };
+
+    $scope.pickContact_brn = function(ct) {
+        $scope.plBrnName = ct.Name;
+        $scope.plBrnId = ct.Id;
+        $scope.plBurnQty = ct.PetitionQty__c;
+        $scope.sc_brn = true;        
+        $scope.brn = false;
+        $scope.setTab(4);
+    };
+
+    $scope.pickContact = function(ct) {
+       $scope.plCkInName = ct.Name;
+       $scope.plCkInId = ct.Id;
+       $scope.plCkInQty = ct.PetitionQty__c;
+       $scope.sc = true;
+       $scope.circ = false;
+       $scope.maxrows = $scope.plCkInQty
+       $scope.circ_same = true;
+       $scope.setTab(3);
+    };
+
+    $scope.getTotalCkInPetQty = function(){
+        var total = 0;
+        angular.forEach($scope.plDetails, function(plrowDetail) {
+                total += 1;
+        });
+        if ($scope.plCkInQty > 0){
+            $scope.maxrows = $scope.plCkInQty - total;
+        }
+        else{
+            $scope.maxrows = 0;
+        }
+        return total;
+    };
+
+    $scope.circalt = function(){
+        $scope.circ_alt = '';
+        $scope.circ_alt_r = '';
+    };
+
+    $scope.remove = function(){
+            var newDataList=[];
+            $scope.selectedAll = false;
+        angular.forEach($scope.plDetails, function(selected){
+                if(!selected.selected){
+                    newDataList.push(selected);
+                }
+            });
+            $scope.plDetails = newDataList;
+    };
+
+    $scope.get_sosl_remote_cts = function(){
+       $scope.contacts={};
+       Visualforce.remoting.Manager.invokeAction(
+           '{!$RemoteAction.plController.sosl_remote}',
+           $scope.searchText,$scope.username, $scope.staffxfr,
+           function(result, event) {
+               $scope.contacts = result;
+               $scope.$apply();
+       });
+    };
+
+    $scope.get_sosl_remote_cts_brn = function(){
+       $scope.contacts_brn={};
+       Visualforce.remoting.Manager.invokeAction(
+           '{!$RemoteAction.plController.sosl_remote}',
+           $scope.searchText_brn,$scope.username, $scope.staffxfr,
+           function(result, event) {
+               $scope.contacts_brn = result;
+               $scope.$apply();
+       });
+    };
+
+    $scope.get_sosl_remote_cts_to = function(){
+       $scope.contacts_to={};
+       Visualforce.remoting.Manager.invokeAction(
+           '{!$RemoteAction.plController.sosl_remote}',
+           $scope.searchText_to,$scope.username, $scope.staffxfr,
+           function(result, event) {
+               $scope.contacts_to = result;
+               $scope.contacts_to.unshift($scope.userContact);
+               $scope.$apply();
+       });
+    };
+
+    $scope.get_sosl_remote_cts_from = function(){
+       $scope.contacts_from={};       
+       Visualforce.remoting.Manager.invokeAction(
+           '{!$RemoteAction.plController.sosl_remote}',
+           $scope.searchText_from,$scope.username, $scope.staffxfr,
+           function(result, event) {
+               $scope.contacts_from = result;
+               $scope.contacts_from.unshift($scope.userContact);
+               $scope.$apply();
+       });
+    };
+
+    $scope.getContacts = function() {
+     Visualforce.remoting.Manager.invokeAction(
+     '{!$RemoteAction.plController.listContacts_recentv1}',
+     $scope.username, $scope.staffxfr,
+     function(result, event) {
+       $scope.contacts = result;
+       $scope.$apply();
+     });
+    };
+
+    $scope.getContacts_brn = function() {
+     Visualforce.remoting.Manager.invokeAction(
+     '{!$RemoteAction.plController.listContacts_recentv1}',$scope.username, $scope.staffxfr,
+     function(result, event) {
+       $scope.contacts_brn = result;
+       $scope.$apply();
+     });
+    };
+
+    $scope.getContacts_to = function() {
+     Visualforce.remoting.Manager.invokeAction(
+     '{!$RemoteAction.plController.listContacts_recentv1}',$scope.username, $scope.staffxfr,
+     function(result, event) {
+       $scope.contacts_to = result;
+       $scope.contacts_to.unshift($scope.userContact);
+       $scope.$apply();
+     });
+    };
+
+    $scope.getContacts_from = function() {
+     Visualforce.remoting.Manager.invokeAction(
+     '{!$RemoteAction.plController.listContacts_recentv1}',$scope.username, $scope.staffxfr,
+     function(result, event) {
+       $scope.contacts_from = result;
+       $scope.contacts_from.unshift($scope.userContact);
+       $scope.$apply();
+     });
+    };
+
+});
+app.directive('sigsMaxsum', [
+  function() {
+
+    var link = function($scope, $element, $attrs, ctrl) {
+
+      var validate = function(viewValue) {
+        var comparisonModel = $attrs.sigsMaxsum;               
+        var maxvalue = 8;
+        ctrl.$setValidity('sigsMaxsum', parseInt(viewValue, 10) +
+            parseInt(comparisonModel, 10) <= maxvalue && parseInt(viewValue, 10) + parseInt(comparisonModel, 10) > 0);
+        return viewValue;
+      };
+
+      ctrl.$parsers.unshift(validate);
+      ctrl.$formatters.push(validate);
+
+      $attrs.$observe('sigsMaxsum', function(comparisonModel){
+        return validate(ctrl.$viewValue);
+      });
+      
+    };
+
+    return {
+      require: 'ngModel',
+      link: link
+    };
+
+  }
+]);
+   </script>
+</apex:page>

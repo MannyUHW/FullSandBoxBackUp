@@ -1,0 +1,461 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  sessionStorage.setItem("mo_last_page", "MO_Stretch_Nominees");
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+<div align="center">
+
+
+  <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MO_Search_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+  
+
+
+
+<br>&nbsp;</br>
+  <h1 id="h1Title">Stretch Nominees</h1>
+<br>&nbsp;</br>
+
+<div id="toggleOffDiv">
+<a href="javascript:toggleOffNoms()">Hide Nominator Names</a>
+</div>
+<div id="toggleOnDiv">
+<a href="javascript:toggleOnNoms()">Show Nominator Names</a>
+</div>
+
+<table border="0" cellpadding="10">
+<tr valign="top">
+<td align="center">
+
+<div id="countDiv"></div>
+<br/>
+<div id="nomineeDiv">Loading...</div>
+<br/>
+<div id="debugDiv"></div>
+<br/>
+
+<script language="JavaScript">
+
+$("#toggleOnDiv").hide();  
+
+var CODE_REACH = "J02";
+var CODE_STRETCH = "S02";
+var CODE_NOMINEE = "S03";
+var CODE_PETITION = "S04";
+
+var lastRecord = null;
+var debugWriter = "";
+
+    var emids =  localStorage.getItem("mo_sync_emids");
+    var emnames =  localStorage.getItem("mo_sync_emnames");
+    var emsfids =  localStorage.getItem("mo_sync_emsfids");
+    var syncTs = localStorage.getItem("mo_last_sync");
+    var currentTs = (new Date()).getTime();
+    if (emnames == null || emnames == "" || emsfids == null || emsfids == "") {
+      navigateTo('{! $Page.MO_Choose_Page}');
+    } else if (currentTs - syncTs > (24 * 60 * 60 * 1000)) {
+      navigateTo('{! $Page.MO_Sync_Page}?emids=' + emids);
+    }
+
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+
+var emidArray = emids.replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnameArray = emnames.replace("[", "").replace("]","").replace("\"", "").split(",");
+var emNameIdMap = new Array();
+var emIdNameMap = new Array();
+for (var i = 0; i < emidArray.length; i++ ) { 
+  emNameIdMap[emnameArray[i].toLowerCase()] = emidArray[i];
+  emIdNameMap[emidArray[i]] = emnameArray[i];  
+}
+
+var buCount = 0;
+for (var rr = 0; rr < localStorage.length; rr++) {
+  if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+    buCount++;
+  }
+}
+
+var reachLdrMap = {};
+var stretchMap = {};
+var nomineeMap = {};
+var nomineeSortSet = [];
+var nominationMap = {};
+var nominationCountMap = {};
+
+var petitionMap = {};
+var nomCounter = 0;
+var reachCounter = 0;
+var petitionCounter = 0;
+
+var qcodeidMap = {};
+
+var updateResponses = [];
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == "" || mode == "null") {
+      mode = "MO";
+}
+mode = mode.toLowerCase().trim();
+
+try{ 
+    
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var partitions = 10;
+    if (mode == "all") {
+      partitions = 100;
+    }
+    for (var i = 0; i < partitions; i++) {
+      var query = "select Id, Survey_Question__c, Contact__c, FID__c, Collected_By__r.FID__c, Contact_Name__c, Division__c, Employer_Name__c,  Contact__r.MobilePhone, Contact__r.Worksite__c, Department__c, Contact__r.Shift__c, Contact__r.Age_Range__c, Question_Name__c, Survey_Code__c, Response_Value__c, Add_Info__c, Add_Info_Numeric__c, Collected_By__c, Collected_By_Name__c, Collected_By_Employer_Name__c, Contact__r.Ethnicity__c, Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, Contact__r.COPE_Pledge__c, Collected_By__r.Worksite__c, Collected_By__r.Department, Contact__r.In_Current_BU__c, Collected_By__r.Age_Range__c, Collected_By__r.Shift__c, Collected_By__r.In_Current_BU__c, Survey_How_Old__c, Report_Group__c, Contact__r.Tier_Staff__c  from Survey_Response__c where CreatedDate >= 2016-11-01T14:04:00Z AND ";
+      //query += " ( Survey_Code__c = \'" + CODE_REACH + "\' OR Survey_Code__c = \'" + CODE_STRETCH + "\' OR Survey_Code__c = \'" + CODE_NOMINEE + "\' OR Survey_Code__c = \'" + CODE_PETITION + "\' ) AND ";
+      query += " ( Survey_Code__c = \'" + CODE_STRETCH + "\' OR Survey_Code__c = \'" + CODE_NOMINEE + "\' OR Survey_Code__c = \'" + CODE_PETITION + "\' ) AND ";      
+      if (mode == "all") {
+        query += " FID__c like \'%";
+        if (i  < 10) {
+          query += "0";
+        }
+        query += "" + i + "\' "  ;
+        $("#countDiv").html("Survey Responses = " + i + " of " + partitions);
+      } else {
+        if (partitions == 10) {
+          query += " FID__c like \'%" + i + "\' "  ;
+          query += " AND "  
+        }
+        query += " ( ";
+        var emArray = emids.split(",");
+        for (var emdex = 0; emdex < emArray.length; emdex++) {
+              if (emdex > 0) {
+                query = query + " OR ";
+              }
+              query = query + " Contact__r.Account.Employer_ID__c=\'" + emArray[emdex].replace("\"", "").replace("\"", "") + "\' ";         
+              query = query + " OR Collected_By__r.Account.Employer_ID__c=\'" + emArray[emdex].replace("\"", "").replace("\"", "") + "\' ";                     
+        }
+        query += ") ";
+      }
+      query += " AND (NOT Response_Value__c like \'N%\') AND (NOT Response_Value__c like \'X%\') ";
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      debugWriter += query + "<br/>" + "count = " + records1.length + "<br/>\n";
+      for( var j = 0; j < records1.length; j++ ){ 
+        lastRecord = records1[j];
+        var a = records1[j];
+        var scode = a.Survey_Code__c;
+        qcodeidMap[scode] = a.Survey_Question__c;
+        //
+        //  Stretch
+        //
+        if (a.FID__c != null) {
+          if (stretchMap[a.FID__c] == null) {
+            stretchMap[a.FID__c] = a;
+          } else if (scode == CODE_STRETCH) {
+            stretchMap[a.FID__c] = a;        
+          }
+        }
+        //
+        // Nominee
+        //
+        if (scode == CODE_NOMINEE) {
+          nomineeMap[a.FID__c] = a; 
+          var nomineeKey = JSON.stringify([a.Contact_Name__c, a.FID__c, a.Employer_Name__c]);
+          nomineeSortSet.push(nomineeKey);
+        }
+        //
+        // Reach
+        //      
+        if (scode == CODE_REACH && a.Collected_By__c != null) {          
+          var ldrCount = 0;
+          if (reachLdrMap[a.Collected_By__r.FID__c] != null) {
+            ldrCount = reachLdrMap[a.Collected_By__r.FID__c];
+          }
+          ldrCount++;
+          reachCounter++;
+          reachLdrMap[a.Collected_By__r.FID__c] = ldrCount;
+        }
+        //
+        // Petitions
+        //  
+        if (scode == CODE_PETITION && a.Collected_By__c != null) {          
+          var ldrCount = 0;
+          if (petitionMap[a.Collected_By__r.FID__c] != null) {
+            ldrCount = petitionMap[a.Collected_By__r.FID__c];
+          }
+          ldrCount++;
+          petitionCounter++;
+          petitionMap[a.Collected_By__r.FID__c] = ldrCount;
+        }                
+      } 
+    }
+    var partitions = 10;
+    if (mode == "all") {
+      partitions = 100;
+    }
+    var records1 = [];
+    for (var i = 0; i < partitions; i++) {    
+      var query = "select Id, Survey_Response__c, Survey_Response__r.FID__c, Survey_Response__r.Contact_Name__c, Survey_Response__r.Department__c, Nomination_1_Contact__c, Nomination_1_Contact__r.FID__c, Nomination_1_Contact__r.Name, Nomination_1_Contact__r.Department  from Reach_Questionnaire__c  where CreatedDate >= 2017-04-01T14:04:00Z AND Nomination_1_Contact__c != null AND Questionnaire_Status__c = \'Member\' AND Survey_Response__c != null AND ";
+      if (mode == "all") {
+        query += " Name like \'%";
+        if (i  < 10) {
+          query += "0";
+        }
+        query += "" + i + "\' "  ;
+        $("#countDiv").html("Questionnaires = " + i + " of " + partitions);
+      } else {
+        if (partitions == 10) {
+          query += " Name like \'%" + i + "\' "  ;
+          query += " AND "
+        }
+        query += " (";
+        var emArray = emids.split(",");
+        for (var emdex = 0; emdex < emArray.length; emdex++) {
+              if (emdex > 0) {
+                query = query + " OR ";
+              }
+              query = query + " Nomination_1_Contact__r.Account.Employer_ID__c=\'" + emArray[emdex].replace("\"", "").replace("\"", "") + "\' ";         
+        }
+        query += ")";    
+      }
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records');     
+      debugWriter += query + "<br/>" + "count = " + records0.length + "<br/>\n"; 
+      records1 = records1.concat(records0);
+    }
+    for( var j = 0; j < records1.length; j++ ){ 
+        lastRecord = records1[j];
+        var a = records1[j];
+        if (a.Nomination_1_Contact__c != null) {
+          //debugWriter += "RQ = " + JSON.stringify(a) + "<br/>";
+          var fidArray = [];
+          var ldrFid = a.Nomination_1_Contact__r.FID__c;
+          var mbrFid = a.Survey_Response__r.FID__c;   
+          var mbrName = a.Survey_Response__r.Contact_Name__c;     
+          var mbrDept = a.Survey_Response__r.Department__c;          
+          if (nominationMap[ldrFid] != null) {
+            fidArray = nominationMap[ldrFid];        
+          }
+          
+          var mbrKey = JSON.stringify([mbrName, mbrDept, mbrFid]);
+          
+          if (fidArray.indexOf(mbrKey) < 0) {
+            fidArray.push(mbrKey);
+          }
+          fidArray.sort();
+          nominationMap[ldrFid] = fidArray;
+        }
+    }     
+    nomineeSortSet.sort();
+    
+    var nomWriter = "<table border=\"0\">";
+    for (var i = 0; i < nomineeSortSet.length; i++) {
+      var rowWriter = "";
+      rowWriter += "<tr valign=\"top\">\n"; 
+      rowWriter += "<td colspan=\"3\" align=\"left\">\n";      
+      
+      var narray = JSON.parse(nomineeSortSet[i]);
+      var nname = narray[0];
+      var nfid = narray[1];
+      var emName = narray[2];
+      
+      if (nominationMap[nfid] != null) {
+        rowWriter += "<a href=\"javascript:navigateTo(\'{! $Page.MO_Contact_Page}?fid="+ nfid +"\');\"><b>" + nname + "</b></a>\n";
+        rowWriter += "</td>\n";
+        rowWriter += "</tr>\n";
+      
+        rowWriter += "<tr valign=\"top\">\n";
+        rowWriter += "<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";      
+        rowWriter += "<td>";      
+        rowWriter += toProperCase(emName) + "<br/>\n";
+      
+        var sr = nomineeMap[nfid];
+        if (isKaiserSouth(emName)) {
+          rowWriter += toProperCase(sr.Contact__r.Worksite__c.substring(0, 28).trim()) + "<br/>\n";
+        }
+        rowWriter += toProperCase(sr.Department__c) + "<br/>\n";
+        if (sr.Contact__r.MobilePhone == null) {
+          sr.Contact__r.MobilePhone = "";
+        }
+        rowWriter += "Cell: " + sr.Contact__r.MobilePhone + "<br/>\n";      
+      
+        if (sr.Contact__r.COPE_Pledge__c == null) {
+          sr.Contact__r.COPE_Pledge__c = 0.0;
+        }
+      
+        rowWriter += "COPE: $" + parseFloat(sr.Contact__r.COPE_Pledge__c).toFixed(0) + "<br/>\n";      
+
+        var nomCount = parseFloat(sr.Add_Info_Numeric__c);
+        if (nomCount != nominationMap[nfid].length) {
+          var sr2 = new sforce.SObject("Survey_Response__c");
+          sr2.Id = sr.Id;
+          sr2.Add_Info__c = "" + nominationMap[nfid].length;
+          updateResponses.push(sr2);
+        }
+        nomCount = nominationMap[nfid].length;
+        
+        //var reachCount = 0;
+        //if (reachLdrMap[nfid] != null) {
+        //  reachCount = reachLdrMap[nfid];
+        //}
+        var petitionCount = 0;
+        if (petitionMap[nfid] != null) {
+          petitionCount = petitionMap[nfid];
+        }
+        rowWriter += "<br/><div class=\"nominatorDiv\"><font size=\"-1\">Nominated By:<br/>\n";
+        if (1 == 1 && nominationMap[nfid] != null) {
+          for (var k = 0; k < nominationMap[nfid].length; k++) {
+            var mbrArray = JSON.parse(nominationMap[nfid][k]);
+            rowWriter += "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"javascript:navigateTo(\'{! $Page.MO_Contact_Page}?fid="+ mbrArray[2] +"\');\">" + mbrArray[0] + " - " + toProperCase(mbrArray[1]) + "</a><br/>\n";
+          }
+        }
+        rowWriter += "</font></div>";
+        rowWriter += "</td>\n";
+        rowWriter += "<td align=\"center\">";      
+        rowWriter += "Nom Count:<br/>\n";
+        rowWriter += "<font size=\"+1\">" + nomCount.toFixed(0) + "</font><br/>\n";
+        rowWriter += "<br/>\n";      
+        rowWriter += "Nom Status:<br/>\n";
+        rowWriter += "<font size=\"-1\"><a href=\"javascript:enterNomStatus(\'" + nfid + "\')\">" + sr.Response_Value__c + "</a></font><br/>\n";      
+        //rowWriter += "<br/>\n";      
+        //rowWriter += "Reach Count:<br/>\n";
+        //rowWriter += reachCount.toFixed(0) + "<br/>\n";            
+        rowWriter += "<br/>\n";      
+        rowWriter += "Petition Count:<br/>\n";
+        rowWriter += "<font size=\"+1\">" + petitionCount.toFixed(0) + "</font><br/>\n";          
+        rowWriter += "</td>\n";
+
+        rowWriter += "</tr>\n";
+        rowWriter += "<tr valign=\"top\">\n"; 
+        rowWriter += "<td colspan=\"3\" align=\"center\">____________________________________________________________</td>";      
+        rowWriter += "</tr>\n";
+                  
+        if (nomCount >= 3 || sr.Response_Value__c.toLowerCase().trim().indexOf("w") == 0 || sr.Response_Value__c.toLowerCase().trim().indexOf("a") == 0  || sr.Response_Value__c.toLowerCase().trim().indexOf("o") == 0 ) {
+          if (sr.Contact__r.Tier_Staff__c != null && sr.Contact__r.Tier_Staff__c != "" && (sr.Report_Group__c == null || sr.Report_Group__c.toLowerCase().indexOf("reach") < 0)) {
+            nomWriter += rowWriter;
+            nomCounter++;
+          }
+        }
+      }
+    }
+    nomWriter += "</table>";
+    debugWriter += "<br/>Update Responses:<br/>" + JSON.stringify(updateResponses) + "<br/>\n";
+    debugWriter += "Updated Count = " +  updateResponses.length + "<br/>\n";
+    if (updateResponses.length > 0) { 
+      var partitions = Math.ceil(updateResponses.length / 10);
+      debugWriter += "partitions = " + partitions + "<br/>\n";
+      for (var i = 0; i < partitions; i++) {
+        debugWriter += "Updating " + i + "...<br/>";
+        var endDex = (i*10) + 10;
+        if (endDex > updateResponses.length) {
+          endDex = updateResponses.length;
+        }
+        var partResponses = updateResponses.slice((i*10), endDex);
+        var results = sforce.connection.update(partResponses); 
+        
+        //alert("results = " + results);
+        if (results[0].getBoolean("success") == false) { 
+          alert("Sync error with Nomination Counts.  Please contact Data Group for assistance.  " + JSON.stringify(updateResponses));
+        } else {
+          //alert("Sync of Nomination Counts successful.");
+        }
+      }
+    }
+
+    $("#countDiv").html("Nominees (3+ Noms) = " + nomCounter.toFixed(0));
+        
+    $("#nomineeDiv").html(nomWriter);
+    
+    debugWriter += "<br/>Reach Counter = " + reachCounter + "<br/>\n";
+    debugWriter += "<br/>Petition Counter = " + petitionCounter + "<br/>\n";
+    //debugWriter += "<br/>Nomination Map = " + JSON.stringify(nominationMap) + "<br/>\n";  
+      
+    if (mode == "all") {
+      $("#debugDiv").html(debugWriter);    
+    }
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+function enterNomStatus(pFid) {
+    //alert("qid = " + qcodeidMap["S03"]);
+    localStorage.setItem("mo_enter_survey_qselect", qcodeidMap["S03"]); 
+    sessionStorage.getItem("mo_enter_survey_fid1", null);
+    sessionStorage.getItem("mo_enter_survey_fid2", null);
+    sessionStorage.setItem("mo_enter_survey_fid3", null);
+    sessionStorage.setItem("mo_enter_survey_altlast", null);        
+    sessionStorage.setItem("mo_enter_survey_altfirst", null);        
+    sessionStorage.setItem("mo_enter_survey_altmiddle", null);        
+    sessionStorage.setItem("mo_enter_survey_altlast", null);                               
+    sessionStorage.setItem("mo_enter_survey_altemid", null);     
+    sessionStorage.setItem("mo_enter_survey_altptype", null);     
+    sessionStorage.setItem("mo_enter_survey_phone", null);   
+    sessionStorage.setItem("mo_enter_survey_email", null);   
+    sessionStorage.setItem("mo_last_page", "MO_Stretch_Nominees");
+    navigateTo('{! $Page.MO_Enter_Survey_Page}?fid1=' + pFid);  
+}
+
+function toggleOnNoms() {
+  $(".nominatorDiv").show();
+  $("#toggleOffDiv").show();
+  $("#toggleOnDiv").hide();  
+}
+function toggleOffNoms() {
+  $(".nominatorDiv").hide();
+  $("#toggleOffDiv").hide();
+  $("#toggleOnDiv").show();  
+}
+
+</script>
+
+<br>&nbsp;</br>
+
+<a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+
+</td>
+</tr>
+</table>
+
+</div>
+</apex:page>

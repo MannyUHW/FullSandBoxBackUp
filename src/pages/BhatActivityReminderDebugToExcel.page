@@ -1,0 +1,46 @@
+<apex:page controller="BhatActivityReminderDebugToExcel" readOnly="true" contentType="application/vnd.ms-excel#ActivityReminderReport.xls">
+     
+   <style>
+        table, th, td { border: .5px solid black; } 
+        tr{ border: .5px solid black;} 
+        
+    </style>           
+     
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!ReminderEmailReportList}" border="1" var="m">
+           <apex:column headerValue="No of Days">
+                {!m.NoOfDays}
+            </apex:column>
+             <apex:column headerValue="First Name">
+                {!m.FirstName}
+            </apex:column>
+             <apex:column headerValue="Last Name">
+                {!m.LastName}
+            </apex:column>
+             <apex:column headerValue="30 Days delinquent">
+                 
+                 <apex:repeat value="{!m.BhatWeekly30PendingList}" var="pl" >
+                    <apex:outputText value="{!pl.BhatWeekName }" /><br/>
+                </apex:repeat>
+         
+            </apex:column>
+             <apex:column headerValue="60 Days delinquent">
+                                 <apex:repeat value="{!m.BhatWeekly60PendingList}" var="pl2" >
+                    <apex:outputText value="{!pl2.BhatWeekName }" /><br/>
+                </apex:repeat>
+         
+            </apex:column>
+            <apex:column headerValue="90 Days delinquent">
+                  <apex:repeat value="{!m.BhatWeekly90PendingList}" var="pl3" >
+                    <apex:outputText value="{!pl3.BhatWeekName }" /><br/>
+                </apex:repeat>
+         
+            </apex:column>
+             <apex:column headerValue="Last Reminder Sent on">
+                {!m.LastReminderSentOn}
+            </apex:column>
+
+        </apex:pageBlockTable>
+    </apex:pageBlock>   
+ 
+</apex:page>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Project Zone</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Project Zones</value>
+    </caseValues>
+    <fields>
+        <label><!-- Active --></label>
+        <name>Active__c</name>
+    </fields>
+    <fields>
+        <label><!-- Group Name --></label>
+        <name>Group_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Project Zone Group --></label>
+        <name>Project_Zone_Group__c</name>
+        <relationshipLabel><!-- Project Zones --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Project --></label>
+        <name>Project__c</name>
+        <relationshipLabel><!-- Project Zones --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Zone Group  Coordinator --></label>
+        <name>Zone_Group_Coordinator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Zone Leader --></label>
+        <name>Zone_Leader__c</name>
+        <relationshipLabel><!-- Project Zones --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Zone_Name --></label>
+        <name>Zone_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Zone(p) --></label>
+        <name>Zone_p__c</name>
+        <relationshipLabel><!-- Project Zones --></relationshipLabel>
+    </fields>
+    <layouts>
+        <layout>Project Zone Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

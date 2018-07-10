@@ -1,0 +1,67 @@
+<apex:page controller="BoothForce_MyBoothsController"  showHeader="false" standardStylesheets="false">
+
+  <div id="myBooths">
+  
+	  <apex:outputPanel rendered="{!!signedUp}" layout="block">
+	    <h1>Please select booths to staff by selecting the "Pick Booths To Staff" tab above.</h1>
+	  </apex:outputPanel>
+	  
+	  
+	  <apex:repeat value="{!boothsByDate}" var="bbd" id="theRepeat2">
+	  
+	    <div class="dayCluster">
+	      <div class="dayHeader">
+	        
+	        <div class="day">{!DAY(bbd.occurDate)}</div>
+	        <div class="day-text"><apex:outputText value="{0,date,EEEE}"><apex:param value="{!bbd.occurDate}" /></apex:outputText></div>
+	        <div class="month"><apex:outputText value="{0,date,MMMM}"><apex:param value="{!bbd.occurDate}" /></apex:outputText></div>
+	        <div class="year">{!YEAR(bbd.occurDate)}</div>
+	        
+	      </div>
+	
+				<apex:repeat value="{!bbd.userStaffingAssignments}" var="staffing" id="theRepeat2">
+					<div class="dataCell" data-day="{!staffing.shiftDay}">
+						
+						<div class="shiftTime">{!staffing.shiftTime}</div>
+						<h2>{!staffing.boothName}</h2>
+						<span class="btn btnPrimary" onclick="swapShift('{!staffing.staffingId}')" rel="#swapContainer">Trade/Drop Shift</span>
+					
+					</div>
+				</apex:repeat>
+			
+			</div>
+		</apex:repeat>
+		
+		<apex:repeat value="{!boothsByDate}" var="bbd" id="theRepeat3">
+     
+      <div class="detailCluster">
+      
+        <div class="dayHeader">
+	        <div class="day">{!DAY(bbd.occurDate)}</div>
+          <div class="day-text"><apex:outputText value="{0,date,EEEE}"><apex:param value="{!bbd.occurDate}" /></apex:outputText></div>
+          <div class="month"><apex:outputText value="{0,date,MMMM}"><apex:param value="{!bbd.occurDate}" /></apex:outputText></div>
+          <div class="year">{!YEAR(bbd.occurDate)}</div>
+        </div>
+  
+        <apex:repeat value="{!bbd.userStaffingAssignments}" var="staffing" id="theRepeat2">
+          <div class="dataCell" data-day="{!staffing.shiftDay}">
+            
+            <div class="shiftTime">{!staffing.shiftTime}</div>
+            <h2>{!staffing.boothName}</h2>
+            <div class="richData">
+              <apex:outputText value="{!staffing.boothDesc}" escape="false"/>
+            </div>
+          </div>
+        </apex:repeat>
+      
+      </div>
+    </apex:repeat>
+		
+		<div id="swapContainer" class="overlay ajaxWho">
+		  <a class="close btn btnPrimary">Cancel</a>
+	    <div></div>
+	  </div>
+	 
+	</div>
+	
+</apex:page>

@@ -1,0 +1,343 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <style>
+
+            #percent {
+                margin-top: 10px;
+                margin-left: 19px;
+            }
+
+            #t2 {
+                padding-top: 2px;
+                padding-bottom: 2px;
+                margin-top: 1px;
+                margin-bottom: 1px;
+                font-weight: bold;
+            }
+
+            #title {
+                text-align: center;
+            }
+
+            #legends {
+                display: inline-block;
+                font-weight: 600;
+            }
+
+            #content {
+                width:320px;
+            }
+
+            #Confirm {
+                color:#43d222;
+                display: inline-block;
+            }
+
+            #Reconfirm {
+                color:#c7c7ff;
+                display: inline-block;
+            }
+
+            h3 {
+                font-size: 12px;
+                padding: 1px;
+            }
+
+            .headerClass {
+                background-color: #481C60;
+                color: white;
+            }
+
+            .headerClass1 {
+                background-color: #481C60;
+                color: #31ff00;
+            }
+
+            .headerClass2 {
+                background-color: #481C60;
+                color: #c7c7ff;
+            }
+
+            .divisionClass {
+                text-align: Left;
+                padding-left: 3px;;
+            }
+
+            .dataClass {
+                text-align: right;
+            }
+
+            #DetailDiv {
+                width: 600px;
+                height: 400px;
+            }
+
+            table {
+                border-collapse: collapse;
+                border: 1px solid #cbcbcb;
+            }
+
+            table, th, td {
+                border: 1px solid #cbcbcb;
+                border-width: 1px 1px 1px 1px;
+                font-size: inherit;
+                margin: 0;
+                padding: .5em 1em;
+            }
+
+        </style>
+    </head>
+    <body>
+
+    <div id="content">
+        <div id="title">
+            <div id="t2">Leadership Assembly 2016</div>
+            <div id="legends">
+                <span id="Confirm">
+                    Confirmed
+                </span>
+                /
+                <span id="Reconfirm">
+                    Reconfirmed
+                </span>
+            </div>
+        </div>
+        <hr style="width: 60%;"/>
+        <div  id = "CountsDiv"></div>
+        
+    </div>
+
+    <script type="text/javascript">
+
+        function loadResponses() {
+
+            var responseQuery = "SELECT Contact__r.Division_Type__c, Response_Value__c, Count(Id) cnt FROM Survey_Response__c WHERE Survey_Code__c = 'LA1'  And (Response_Value__c In ('B. Confirmed','R. Reconfirmed')) GROUP BY Contact__r.Division_Type__c, Response_Value__c ORDER BY Contact__r.Division_Type__c, Response_Value__c";
+            try {
+                var responseResults = sforce.connection.query(responseQuery);
+                processResponses(responseResults);
+            }
+            catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processResponses(results) {
+
+            /*  Hard-coded goals from Jake, via email */
+            var hospitalGoal  = 350;
+            var kaiserGoal    = 550;
+            var communityGoal = 200;
+            var staffGoal     = 200;
+
+            var hospitalConfirmedCnt,hospitalReconfirmedCnt;
+            var kaiserConfirmedCnt,kaiserReconfirmedCnt;
+            var communityConfirmedCnt,communityReconfirmedCnt;
+            var staffConfirmedCnt,staffReconfirmedCnt;
+            var hospitalPC,kaiserPC,communityPC,staffPC;
+            var records;
+            var rec;
+            var hospitalTotal, kaiserTotal, communityTotal = 0;
+
+            hospitalConfirmedCnt  = hospitalReconfirmedCnt  = kaiserConfirmedCnt = kaiserReconfirmedCnt = 0;
+            communityConfirmedCnt = communityReconfirmedCnt = staffConfirmedCnt  = staffReconfirmedCnt  = 0;
+
+            hospitalPC  = kaiserPC  = communityPC  = staffPC  = 0.0;
+            records     = results.getArray('records');
+
+            for (i = 0; i < records.length; i++) {
+                rec = records[i];
+                console.log(rec.Division_Type__c);
+                console.log(rec.cnt);
+                switch (rec.Division_Type__c) {
+                    case 'Hospital' :
+                        if(rec.Response_Value__c == 'B. Confirmed')   hospitalConfirmedCnt    = rec.cnt;
+                        if(rec.Response_Value__c == 'R. Reconfirmed') hospitalReconfirmedCnt  = rec.cnt;
+                        break;
+                    case 'Kaiser' :
+                        if(rec.Response_Value__c == 'B. Confirmed')   kaiserConfirmedCnt      = rec.cnt;
+                        if(rec.Response_Value__c == 'R. Reconfirmed') kaiserReconfirmedCnt    = rec.cnt;
+                        break;
+                    case 'Community' :
+                        if(rec.Response_Value__c == 'B. Confirmed')   communityConfirmedCnt   = rec.cnt;
+                        if(rec.Response_Value__c == 'R. Reconfirmed') communityReconfirmedCnt = rec.cnt;
+                        break;
+//                    case 'Staff' :
+//                        if(rec.Response_Value__c == 'B. Confirmed')   staffConfirmedCnt       = rec.cnt;
+//                        if(rec.Response_Value__c == 'R. Reconfirmed') staffReconfirmedCnt     = rec.cnt;
+                }
+            }
+debugger;
+            hospitalTotal = parseInt(hospitalConfirmedCnt) + parseInt(hospitalReconfirmedCnt);
+            if(hospitalTotal > 0) {
+                hospitalPC = (hospitalReconfirmedCnt / hospitalTotal) * 100;
+                hospitalPC = hospitalPC.toFixed(2);
+            }
+
+            kaiserTotal = parseInt(kaiserConfirmedCnt) + parseInt(kaiserReconfirmedCnt);
+            if(kaiserTotal > 0) {
+                kaiserPC = (kaiserReconfirmedCnt / kaiserTotal) * 100;
+                kaiserPC = kaiserPC.toFixed(2);
+            }
+
+            communityTotal = parseInt(communityReconfirmedCnt) + parseInt(communityConfirmedCnt);
+            if(communityTotal > 0) {
+                communityPC = (communityReconfirmedCnt / communityTotal) * 100;
+                communityPC = communityPC.toFixed(2);
+            }
+
+            var body = document.getElementById('CountsDiv');
+            var tab  = document.createElement('table');
+            var th,tr,td,tn;
+
+            tr   = document.createElement('tr');
+
+            th           = document.createElement('th');
+            tn           = document.createTextNode('Division');
+            th.className = 'headerClass';
+            th.appendChild(tn);
+            tr.appendChild(th);
+
+            th            = document.createElement('th');
+            tn            = document.createTextNode('#');
+            th.className  = 'headerClass1';
+            th.appendChild(tn);
+            tr.appendChild(th);
+
+            th            = document.createElement('th');
+            tn            = document.createTextNode('Reconf.');
+            th.className  = 'headerClass2';
+            th.appendChild(tn);
+            tr.appendChild(th);
+
+            th            = document.createElement('th');
+            tn            = document.createTextNode('%');
+            th.className  = 'headerClass2';
+            th.appendChild(tn);
+            tr.appendChild(th);
+
+            tab.appendChild(tr);
+
+            tr   = document.createElement('tr');
+            td   = document.createElement('td');
+            tn   = document.createTextNode('Hospital');
+            td.className = 'divisionClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode( hospitalConfirmedCnt);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode(hospitalReconfirmedCnt);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode(hospitalPC);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            tab.appendChild(tr);
+
+            tr   = document.createElement('tr');
+            td   = document.createElement('td');
+            tn   = document.createTextNode('Kaiser');
+            td.className = 'divisionClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode(kaiserConfirmedCnt);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode(kaiserReconfirmedCnt);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode(kaiserPC);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            tab.appendChild(tr);
+
+            tr   = document.createElement('tr');
+            td   = document.createElement('td');
+            tn   = document.createTextNode('Community');
+            td.className = 'divisionClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode(communityConfirmedCnt);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode(communityReconfirmedCnt);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            td   = document.createElement('td');
+            tn   = document.createTextNode(communityPC);
+            td.className = 'dataClass';
+            td.appendChild(tn);
+            tr.appendChild(td);
+
+            tab.appendChild(tr);
+
+//            tr   = document.createElement('tr');
+//            td   = document.createElement('td');
+//            tn   = document.createTextNode('Staff');
+//            td.className = 'divisionClass';
+//            td.appendChild(tn);
+//            tr.appendChild(td);
+//
+//            td   = document.createElement('td');
+//            tn   = document.createTextNode(staffConfirmedCnt);
+//            td.className = 'dataClass';
+//            td.appendChild(tn);
+//            tr.appendChild(td);
+//
+//            td   = document.createElement('td');
+//            tn   = document.createTextNode(staffReconfirmedCnt);
+//            td.className = 'dataClass';
+//            td.appendChild(tn);
+//            tr.appendChild(td);
+
+//            td   = document.createElement('td');
+//            tn   = document.createTextNode(staffPC);
+//            td.className = 'dataClass';
+//            td.appendChild(tn);
+//            tr.appendChild(td);
+
+//            tab.appendChild(tr);
+
+            body.appendChild(tab);
+        }
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            loadResponses();
+
+        });
+
+    </script>
+    </body>
+</apex:page>

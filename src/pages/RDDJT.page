@@ -1,0 +1,393 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html>
+<head>
+  <title>Data Group Trump Bot</title>
+    <script src="https://jquery.com/jquery-wp-content/themes/jquery/js/main.js"></script>  
+<meta http-equiv="refresh" content="15"></meta> 
+</head>
+<body>
+<div align="center">
+&nbsp;<br/>
+<table>
+<tr>
+<td align="center" bgcolor="#48106C">
+<font style="font-size: 20px; line-height: 32px; letter-spacing: .01em; font-family: Segoe UI,Arial,sans-serif;" color="white"><b>
+<a style="text-decoration: none; color: white;" href="javascript:location.reload(true)">&nbsp;&nbsp;&nbsp;&nbsp;Next Tweet&nbsp;&nbsp;&nbsp;&nbsp;</a></b></font>
+</td>
+</tr>
+</table>
+
+
+<table width="30%">
+<tr valign="top">
+<td>
+<div align="center"><img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/tr_header.png')}"></img></div>
+&nbsp;
+<font style="font-size: 27px; line-height: 32px; letter-spacing: .01em; font-family: Segoe UI,Arial,sans-serif;">
+  <div id="mainDiv">
+  </div>
+</font>
+
+&nbsp;
+<font style="font-size: 14px; color: #657786; font-family: Segoe UI,Arial,sans-serif;">
+<div id="tsDiv"></div>
+</font>
+&nbsp;
+
+
+<div align="center"><img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/tr_footer.png')}"></img></div>
+&nbsp;
+
+</td>
+</tr>
+</table>
+
+
+
+
+</div>
+<script language="JavaScript">
+
+var soundexCodes = {
+             a: '', e: '', i: '', o: '', u: '',
+             b: 1, f: 1, p: 1, v: 1,
+             c: 2, g: 2, j: 2, k: 2, q: 2, s: 2, x: 2, z: 2,
+             d: 3, t: 3,
+             l: 4,
+             m: 5, n: 5,
+             r: 6
+         };
+
+var t = [];
+
+t.push("I tried logging into Salesforce from Mar a Lago but couldn&#39;t!  Said I needed two factories idemnification.  I told {{name}} to close one of overseas factories and bring the other factory back to the USA for American jobs!");
+t.push("Where&#39;s my report?  {{name}} says there&#39;s no column for &quot;winning&quot; in Salesforce!");
+t.push("Crooked Hillary is a saint compared to {{name}}.  Lock them both up!");
+t.push("Fake news says I didn&#39;t get my BHAT entries done!  {{name}} needs to apologize for being so mean.");
+t.push("I hear UHW Data doesn&#39;t have real AMERICANS on the team.  I want to see {{name}}&#39;s birth certificate (long form).");
+t.push("I asked {{name}} about how my Leaders are doing.  Said my BU covfefe");
+t.push("UHW Salesforce is sad!  I told {{name}} that if Donald Trump was in charge itd be beautiful and classy!");
+t.push("VAN worked fine.  But {{name}} cries when I say the truth about stupid Salesforce.");
+t.push("I asked {{name}} how many midwestern factory workers they have in UHW Salesforce?  ZERO.  UHW doesn&#39;t care about REAL AMERICANS.");
+t.push("After the first four years of Barack Obama&#39;s presidency, UHW had ZERO records in Salesforce.  Today after just a year of Donald Trump&#39;s leadership, UHW has almost 400K Contact records!  But {{name}} won&#39;t give me credit!");
+t.push("I&#39;m making America GREAT again!  {{name}} just sits at a computer all day.");
+t.push("{{name}} probably eats veggie burgers when they go to bed at 6:30 pm!");
+t.push("I&#39;m like really smart.  Like 100 times as smart as {{name}}.  My doctor says I have the best brain parts!");
+t.push("There was no Russian collusion!  {{name}} is saying that to distract from not having their report done!");
+t.push("Sloppy Steve Bannon should join UHW Data Team!  If they employ {{name}}, they&#39;ll hire anyone!");
+t.push("My Salesforce is broken.  I tried calling {{name}} but they&#39;re at a Data Retreat NOT WORKING!");
+t.push("Little Rocket Man Kim Jong-Un better not launch any more missiles.  {{name}} sent me a whole MCL worth of bomb targets in NK!");
+t.push("No wonder failing SEIU-UHW is failing.  {{name}} doesn&#39;t regularly check voice mail!");
+t.push("Fox and Friends tells the truth about my making America GREAT again.  {{name}} and UHW Data Team do not!");
+t.push("Dishonest and unfair {{name}} won&#39;t install the Gorilla Channel app in Salesforce!  Make Salesforce great again!");
+t.push("{{name}} says UHW air conditioning is too cold but claims global warming is a problem.  Get your story straight!");
+t.push("Health care executives love my tax cuts!  {{name}} calls me something NASTY in response.  Most unfair to my big efforts!");
+t.push("My approval rate sometimes exceeds Leader coverage rates at UHW.  Take that {{name}}!");
+t.push("I refuse to sign up for UHW COPE contributions until UHW people like {{name}} stand for the national anthology.");
+t.push("Everyone thanks me for bringing back the expression Merry Christmas.  But you know who doesn&#39;t?  {{name}}.  SAD!");
+t.push("{{name}}?  Bigly disappointing.");
+t.push("I appointed Jared Kushner to oversee fixing the UHW Data Team. {{name}} told me something mean.  I tried!");
+t.push("{{name}} suggests collecting COPE from Mar a Lago members.  Great idea!");
+t.push("When I organized a Data retreat, I had the biggest turnout ever.  But {{name}} is jealous they don&#39;t have my incredible smarts.  Too bad!");
+t.push("Worst Data team person ever?  So many (BAD) choices.  But {{name}} is the most loser-y.");
+t.push("Every time I speak of the haters and losers I do so with great love.  People like {{name}} can&#39;t help the way they were born.");
+t.push("I try to be friends with UHW Data Team.  But {{name}} just holds finger up to my face.  Not nice!");
+t.push("I told the ambassador that if he takes {{name}} to his country maybe we&#39;ll let in some refugees.  No takers on that offer!");
+t.push("I&#39;m very rich.  You know who&#39;s not?  {{name}}.");
+t.push("I told Eric and Don Jr - don&#39;t grow up to be like {{name}}.  GOOD ADVICE.");
+t.push("I saw the button {{name}} put on the Salesforce page.  Mine is bigger and it DOESN&#39;T POPUP A JAVASCRIPT ERROR.");
+t.push("How can we have law and order when {{name}} still has Salesforce access?");
+
+t.push("Fake data people like {{name}} are biased against me.  MAKE DATA GREAT AGAIN!");
+t.push("I offered to fund fixxing the Membership-Salesforce API if {{name}} agrees to support the Wall.  They said no.  NOT SMART!");
+t.push("Ivanka is such a kind person.  She was even nice to {{name}}.  I couldn&#39;t be that way around such a nasty person.");
+t.push("{{name}} begged for a job in the Trump organization.  I said no we don&#39;t take people from shithole places like the UHW Data Team.");
+t.push("I told {{name}} if they would work hard for a day I&#39;d buy them a well-done Trump Tower steak, xtra ketchup.   I don&#39;t think I'll ever have to pay up.");
+t.push("I&#39;m on Fox Hannity tonight at 9 pm.  Even someone like {{name}} might learn something.");
+t.push("I&#39;m on Judge Jeanine tonight at 6 pm, Fox News.  Discussing why {{name}} is so bad!");
+t.push("I'm being wiretapped by {{name}}!  Somebody call whoever the FBI Director is.");
+t.push("Nut job {{name}} spends day saying wrong things about Donald Trump.  I&#39m too busy winning and MAGA to even notice!");
+t.push("{{name}} says I&#39;m dumb.  But wait until I win the Nobel trophy for Most Outstanding Brain.  YOU&#39;LL SAY SORRY!");
+t.push("If {{name}} comes to the White House, they're not getting any ice cream.  Tough!");
+t.push("When I want real info I talk to Kellyanne Conway.  {{name}} is no Kellyanne.");
+t.push("Colonel Sanders makes great chicken but when he called me to ask for a job, I told him I only hire Generals.  Definitely not a General?  {{name}}.");
+t.push("People are saying Melania is the best First Lady in history.  You know who they aren&#39t saying that about - {{name}}.");
+t.push("Whatever {{name}} is up to, believe me Vice President Pence does NOT approve.");
+t.push("I asked HUD Dr Ben Carson if we could do brain surgery to fix {{name}}?  After blinking for three minutes, he said patient was incurable.");
+
+t.push("{{name}} suggested I try eating Tide pods.  TASTY, GOOD CALL!");
+
+var p = [];
+p.push("Ben");
+p.push("Thomas");
+p.push("Jake");
+p.push("Mary Ann");
+p.push("Christina");
+p.push("Chris");
+p.push("Graham");
+p.push("Melisa");
+
+var a = [];
+a.push("Aloof");
+a.push("Bitter");
+a.push("Boring");
+a.push("Bossy");
+a.push("Crooked");
+a.push("Careless");
+a.push("Directionless");
+a.push("Clingy");
+a.push("Deceitful");
+a.push("Low Down");
+a.push("Finicky");
+a.push("Foolish");
+a.push("Fussy");
+a.push("Gloomy");
+a.push("Greedy");
+a.push("Grumpy");
+a.push("Gullible");
+a.push("Goopy");
+a.push("Harsh");
+a.push("Cranky");
+a.push("Impatient");
+a.push("Not Polite");
+a.push("Impulsive");
+a.push("Inconsiderate");
+a.push("Inconsistent");
+a.push("Inflexible");
+a.push("Irresponsible");
+a.push("Gullible");
+a.push("Jealous");
+a.push("Little");
+a.push("Lazy");
+a.push("Low Energy");
+a.push("Mean");
+a.push("Miserable");
+a.push("Moody");
+a.push("Nasty");
+a.push("Nervous");
+a.push("Insane");
+a.push("Not Smart");
+a.push("Belchy");
+a.push("Pessimistic");
+a.push("Crappy");
+a.push("Ungrateful");
+a.push("Resentful");
+a.push("Rude");
+a.push("Ruthless");
+a.push("Rotten");
+a.push("Sarcastic");
+a.push("Secretive");
+a.push("Selfish");
+a.push("Silly");
+a.push("Sneaky");
+a.push("Stingy");
+a.push("Stubborn");
+a.push("Stupid");
+a.push("Superficial");
+a.push("Slothful");
+a.push("Tactless");
+a.push("Timid");
+a.push("Touchy");
+a.push("Thoughtless");
+a.push("Turrible");
+a.push("Unkind");
+a.push("Unreliable");
+a.push("Untidy");
+a.push("Untrusty");
+a.push("Benighted");
+a.push("Vague");
+a.push("Vain");
+a.push("Vengeful");
+a.push("Vulgar");
+
+a.push("Weak");
+a.push("Pissy");
+a.push("Bad Data");
+a.push("Chronically Wrong");
+a.push("Incompetent");
+a.push("Monstrous");
+a.push("Turdy");
+a.push("Whack Job");
+a.push("Messy");
+a.push("Jabbering");
+a.push("Jaded");
+a.push("Jerky");
+a.push("Junky");
+a.push("Janky");
+a.push("Garbage");
+a.push("Gibbering");
+a.push("Goofy");
+a.push("Greasy");
+a.push("Gross");
+
+a.push("Crumbly");
+a.push("Creaky");
+a.push("Crazy");
+
+a.push("Corrosive");
+a.push("Data-Splaining");
+a.push("Cannibal");
+
+a.push("Babbling");
+a.push("Backward");
+a.push("Barbarian");
+a.push("Bemoaning");
+
+a.push("Beserk");
+a.push("Bewildered");
+a.push("Bickering");
+a.push("Blah Blah");
+a.push("Blockhead");
+a.push("Dud Dud");
+a.push("Brutish");
+a.push("Bullshity");
+a.push("Bumpkin");
+a.push("Lame Brain");
+a.push("Bird-Brained");
+a.push("Kooky");
+a.push("Cray Cray");
+a.push("Mush-Minded");
+a.push("Lethargic");
+a.push("Crying");
+a.push("Sneaky");
+a.push("Sloppy");
+a.push("Mucky");
+a.push("Wacky");
+a.push("Sleepy");
+a.push("Dopey");
+a.push("Low Class");
+a.push("Maybe Very Bad");
+a.push("Clueless");
+a.push("Crosswired");
+a.push("Fried");
+a.push("Dishonest");
+a.push("Mental");
+a.push("Double Doy");
+a.push("Un-fefe");
+a.push("Scaredy-Cat");
+a.push("Soggy");
+a.push("Unsmart");
+a.push("Bad Hombre");
+a.push("Unstable Non-Genius");
+a.push("Crabby");
+a.push("Fizzled");
+a.push("Failing");
+a.push("Flailing");
+a.push("Stoopid-face");
+a.push("Blockhead");
+a.push("Toad Breath");
+a.push("Lousy");
+a.push("Gross");
+a.push("Deluded");
+a.push("Undercooked");
+a.push("Dishwater Dull");
+a.push("Wishy-Washy");
+a.push("Dim-Headed");
+a.push("Batty");
+a.push("Ridiculous");
+a.push("Obsolete");
+
+
+//alert(a.length * p.length * t.length);
+
+var pdex = Math.floor(Math.random() * p.length);
+var tdex = Math.floor(Math.random() * t.length);
+var adex = Math.floor(Math.random() * a.length);
+
+var person = p[pdex];
+var template = t[tdex];
+var adjective = a[adex];
+
+var p2 = soundexCodes[person.toLowerCase().substring(0, 1)];
+var a2 = "";
+
+//bias towards alliteration
+/*
+var z = 0;
+  
+while (a2 != p2 & z < 10000) {
+  var adex2 = Math.floor(Math.random() * a.length);
+  var adjective2 = a[adex2];  
+  a2 = soundexCodes[adjective2.toLowerCase().substring(0, 1)];
+  if (a2 == p2 && Math.random() > 0.5) {
+    adjective = adjective2;  
+    adex = adex2;   
+    break;
+  }
+  z++;
+}
+*/
+
+var prevPersons = [];
+var prevTemplates = [];
+var prevAdjectives = [];
+
+var PREV_PERSONS = "dgrdj.prev.persons"
+var PREV_TEMPLATES = "dgrdj.prev.templates"
+var PREV_ADJECTIVES = "dgrdj.prev.adjectives"
+
+if (sessionStorage.getItem(PREV_ADJECTIVES) != null) {
+  prevAdjectives = JSON.parse(sessionStorage.getItem(PREV_ADJECTIVES));
+} 
+
+if (sessionStorage.getItem(PREV_PERSONS) != null) {
+  prevPersons = JSON.parse(sessionStorage.getItem(PREV_PERSONS));
+} 
+
+if (sessionStorage.getItem(PREV_TEMPLATES) != null) {
+  prevTemplates = JSON.parse(sessionStorage.getItem(PREV_TEMPLATES));
+} 
+
+if (prevAdjectives.length < a.length) {
+  while (prevAdjectives.indexOf("a" + adex) >= 0) {
+     adex = Math.floor(Math.random() * a.length);
+     adjective = a[adex];   
+  }
+} else {
+  prevAdjectives = [];
+}
+
+if (prevPersons.length < p.length) {
+  while (prevPersons.indexOf("p" + pdex) >= 0) {
+     pdex = Math.floor(Math.random() * p.length);
+     person = p[pdex];   
+  }
+} else {
+  prevPersons = [];
+}
+
+if (prevTemplates.length < t.length) {
+  while (prevTemplates.indexOf("t" + tdex) >= 0) {
+     tdex = Math.floor(Math.random() * t.length);
+     template = t[tdex];   
+  }
+} else {
+  //alert("resetting previous template array...");
+  prevTemplates = [];
+}
+
+
+//
+// save last person, adjective, and template
+//
+prevPersons.push("p" + pdex);
+prevTemplates.push("t" + tdex);
+prevAdjectives.push("a" + adex);
+sessionStorage.setItem(PREV_PERSONS, JSON.stringify(prevPersons));
+sessionStorage.setItem(PREV_TEMPLATES, JSON.stringify(prevTemplates));
+sessionStorage.setItem(PREV_ADJECTIVES, JSON.stringify(prevAdjectives));
+//
+//
+//
+
+document.getElementById("mainDiv").innerHTML = template.replace("{{name}}", "<u>" + adjective + " " + person + "</u>");
+var d = new Date();
+document.getElementById("tsDiv").innerHTML = d.toLocaleString();
+
+</script>
+</body>
+</html>
+
+
+</apex:page>

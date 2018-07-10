@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>06:00 - 08:00</fullName>
+        <default>false</default>
+        <label>06:00 - 08:00</label>
+    </customValue>
+    <customValue>
+        <fullName>06:00 - 12:00</fullName>
+        <default>false</default>
+        <label>06:00 - 12:00</label>
+    </customValue>
+    <customValue>
+        <fullName>06:00 - 18:00</fullName>
+        <default>false</default>
+        <label>06:00 - 18:00</label>
+    </customValue>
+    <customValue>
+        <fullName>06:30 - 12:30</fullName>
+        <default>false</default>
+        <label>06:30 - 12:30</label>
+    </customValue>
+    <customValue>
+        <fullName>06:30 - 18:30</fullName>
+        <default>false</default>
+        <label>06:30 - 18:30</label>
+    </customValue>
+    <customValue>
+        <fullName>08:00 - 10:00</fullName>
+        <default>false</default>
+        <label>08:00 - 10:00</label>
+    </customValue>
+    <customValue>
+        <fullName>08:00 - 12:00</fullName>
+        <default>false</default>
+        <label>08:00 - 12:00</label>
+    </customValue>
+    <customValue>
+        <fullName>08:00 - 20:00</fullName>
+        <default>false</default>
+        <label>08:00 - 20:00</label>
+    </customValue>
+    <customValue>
+        <fullName>10:00 - 22:00</fullName>
+        <default>false</default>
+        <label>10:00 - 22:00</label>
+    </customValue>
+    <customValue>
+        <fullName>14:00 - 22:00</fullName>
+        <default>false</default>
+        <label>14:00 - 22:00</label>
+    </customValue>
+    <customValue>
+        <fullName>16:00 - 18:00</fullName>
+        <default>false</default>
+        <label>16:00 - 18:00</label>
+    </customValue>
+    <customValue>
+        <fullName>18:00 - 00:00</fullName>
+        <default>false</default>
+        <label>18:00 - 00:00</label>
+    </customValue>
+    <customValue>
+        <fullName>18:30 - 00:30</fullName>
+        <default>false</default>
+        <label>18:30 - 00:30</label>
+    </customValue>
+    <customValue>
+        <fullName>20:00 - 04:00</fullName>
+        <default>false</default>
+        <label>20:00 - 04:00</label>
+    </customValue>
+    <description>Every needed value, past, present and future</description>
+    <masterLabel>Vote Block Times</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

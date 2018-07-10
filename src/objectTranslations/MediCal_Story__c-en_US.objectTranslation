@@ -1,0 +1,1144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Medi-Cal Story</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Medi-Cal Stories</value>
+    </caseValues>
+    <fields>
+        <label><!-- Alt City --></label>
+        <name>Alt_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Email --></label>
+        <name>Alt_Email__c</name>
+    </fields>
+    <fields>
+        <help><!-- Facility on form --></help>
+        <label><!-- Alt Employer Name --></label>
+        <name>Alt_Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt First Name --></label>
+        <name>Alt_First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Last Name --></label>
+        <name>Alt_Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Street --></label>
+        <name>Alt_Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alt Zip Code --></label>
+        <name>Alt_Zip_Code__c</name>
+    </fields>
+    <fields>
+        <help><!-- See if any of the questions are answered True. --></help>
+        <label><!-- Any Question True --></label>
+        <name>Any_Question_True__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Story Notes --></label>
+        <name>Attorney_Story_Lead_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Assmnt Connection --></label>
+        <name>Atty_Assmnt_Connection__c</name>
+        <picklistValues>
+            <masterLabel>Connected</masterLabel>
+            <translation><!-- Connected --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Needs Connection</masterLabel>
+            <translation><!-- Needs Connection --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Connection Needed</masterLabel>
+            <translation><!-- No Connection Needed --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Assmnt Content --></label>
+        <name>Atty_Assmnt_Content__c</name>
+        <picklistValues>
+            <masterLabel>Likely Plaintiff</masterLabel>
+            <translation><!-- Likely Plaintiff --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Neutral</masterLabel>
+            <translation><!-- Neutral --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Possible Paintiff</masterLabel>
+            <translation><!-- Possible Paintiff --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Story Corps</masterLabel>
+            <translation><!-- Story Corps --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Story Corps Plus</masterLabel>
+            <translation><!-- Story Corps Plus --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Assmnt First Meeting --></label>
+        <name>Atty_Assmnt_First_Meeting__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Assmnt Med Recs Release --></label>
+        <name>Atty_Assmnt_Med_Recs_Release__c</name>
+        <picklistValues>
+            <masterLabel>Do Not Need</masterLabel>
+            <translation><!-- Do Not Need --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Need Release</masterLabel>
+            <translation><!-- Need Release --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>On File</masterLabel>
+            <translation><!-- On File --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Assmnt Performance --></label>
+        <name>Atty_Assmnt_Performance__c</name>
+        <picklistValues>
+            <masterLabel>Medium</masterLabel>
+            <translation><!-- Medium --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Strong</masterLabel>
+            <translation><!-- Strong --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Weak</masterLabel>
+            <translation><!-- Weak --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Assmnt Primary Contact --></label>
+        <name>Atty_Assmnt_Primary_Contact__c</name>
+        <relationshipLabel><!-- Medi-Cal Stories (Atty Assmnt Primary Contact) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Atty Assmnt Retainer --></label>
+        <name>Atty_Assmnt_Retainer__c</name>
+        <picklistValues>
+            <masterLabel>Don&apos;t Need</masterLabel>
+            <translation><!-- Don&apos;t Need --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Need Update</masterLabel>
+            <translation><!-- Need Update --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Needs Retainer</masterLabel>
+            <translation><!-- Needs Retainer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>On File</masterLabel>
+            <translation><!-- On File --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Assmnt Want Contact with Doc --></label>
+        <name>Atty_Assmnt_Want_Contact_with_Doc__c</name>
+        <picklistValues>
+            <masterLabel>In Contact</masterLabel>
+            <translation><!-- In Contact --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>TBD</masterLabel>
+            <translation><!-- TBD --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes</masterLabel>
+            <translation><!-- Yes --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Intake Date --></label>
+        <name>Atty_Intake_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Intake Grade Content --></label>
+        <name>Atty_Intake_Grade_Content__c</name>
+        <picklistValues>
+            <masterLabel>A</masterLabel>
+            <translation><!-- A --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>A Minus</masterLabel>
+            <translation><!-- A Minus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>A Plus</masterLabel>
+            <translation><!-- A Plus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>B</masterLabel>
+            <translation><!-- B --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>B Minus</masterLabel>
+            <translation><!-- B Minus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>B Plus</masterLabel>
+            <translation><!-- B Plus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>C</masterLabel>
+            <translation><!-- C --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>C Minus</masterLabel>
+            <translation><!-- C Minus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>C Plus</masterLabel>
+            <translation><!-- C Plus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>D</masterLabel>
+            <translation><!-- D --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>F</masterLabel>
+            <translation><!-- F --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Intake Grade Performance --></label>
+        <name>Atty_Intake_Grade_Performance__c</name>
+        <picklistValues>
+            <masterLabel>A</masterLabel>
+            <translation><!-- A --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>A Minus</masterLabel>
+            <translation><!-- A Minus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>A Plus</masterLabel>
+            <translation><!-- A Plus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>B</masterLabel>
+            <translation><!-- B --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>B Minus</masterLabel>
+            <translation><!-- B Minus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>B Plus</masterLabel>
+            <translation><!-- B Plus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>C</masterLabel>
+            <translation><!-- C --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>C Minus</masterLabel>
+            <translation><!-- C Minus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>C Plus</masterLabel>
+            <translation><!-- C Plus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>D</masterLabel>
+            <translation><!-- D --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>F</masterLabel>
+            <translation><!-- F --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Intake In-Person Meeting Request --></label>
+        <name>Atty_Intake_In_Person_Meeting_Request__c</name>
+        <picklistValues>
+            <masterLabel>High Priority</masterLabel>
+            <translation><!-- High Priority --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Low Priority</masterLabel>
+            <translation><!-- Low Priority --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Medium Priority</masterLabel>
+            <translation><!-- Medium Priority --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Intake Meeting Req Jan 2017 --></label>
+        <name>Atty_Intake_Meeting_Req_Jan_2017__c</name>
+        <picklistValues>
+            <masterLabel>no</masterLabel>
+            <translation><!-- no --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>yes</masterLabel>
+            <translation><!-- yes --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Intake Notes --></label>
+        <name>Atty_Intake_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Intake User --></label>
+        <name>Atty_Intake_User__c</name>
+        <relationshipLabel><!-- Medi-Cal Stories (Atty Intake User) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Follow-Up Appt Date --></label>
+        <name>Atty_Lead_Follow_Up_Appt_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Follow-Up Contact --></label>
+        <name>Atty_Lead_Follow_Up_Contact__c</name>
+        <relationshipLabel><!-- Medi-Cal Stories (Atty Lead Follow-Up Contact) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Follow-Up Date --></label>
+        <name>Atty_Lead_Follow_Up_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Follow-Up Notes --></label>
+        <name>Atty_Lead_Follow_Up_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Follow-Up Result --></label>
+        <name>Atty_Lead_Follow_Up_Result__c</name>
+        <picklistValues>
+            <masterLabel>Appointment Set</masterLabel>
+            <translation><!-- Appointment Set --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Bad Number</masterLabel>
+            <translation><!-- Bad Number --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>House Visit</masterLabel>
+            <translation><!-- House Visit --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not Home</masterLabel>
+            <translation><!-- Not Home --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Not a Story</masterLabel>
+            <translation><!-- Not a Story --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Refused</masterLabel>
+            <translation><!-- Refused --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Scheduled to Talk</masterLabel>
+            <translation><!-- Scheduled to Talk --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Follow-Up Status --></label>
+        <name>Atty_Lead_Follow_Up_Status__c</name>
+        <picklistValues>
+            <masterLabel>Completed Appointment</masterLabel>
+            <translation><!-- Completed Appointment --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No Show</masterLabel>
+            <translation><!-- No Show --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Re-Scheduled</masterLabel>
+            <translation><!-- Re-Scheduled --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Print Date --></label>
+        <name>Atty_Lead_Print_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Request Date --></label>
+        <name>Atty_Lead_Request_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Atty Lead Priority --></label>
+        <name>Atty_Priority__c</name>
+        <picklistValues>
+            <masterLabel>1A</masterLabel>
+            <translation><!-- 1A --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>1st</masterLabel>
+            <translation><!-- 1st --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>2nd</masterLabel>
+            <translation><!-- 2nd --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>3rd</masterLabel>
+            <translation><!-- 3rd --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Reject</masterLabel>
+            <translation><!-- Reject --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Resubmit</masterLabel>
+            <translation><!-- Resubmit --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Community Organizer --></label>
+        <name>Community_Organizer__c</name>
+        <relationshipLabel><!-- Medi-Cal Stories (Community Organizer) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Contact FID --></label>
+        <name>Contact_FID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact Home Phone --></label>
+        <name>Contact_Home_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact Mobile Phone --></label>
+        <name>Contact_Mobile_Phone__c</name>
+    </fields>
+    <fields>
+        <help><!-- Check if contact blank then use Alt Names otherwise use Contact Names --></help>
+        <label><!-- Interviewee Name --></label>
+        <name>Contact_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Interviewee Contact --></help>
+        <label><!-- Interviewee --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Medi-Cal Stories (Contact) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Accepted --></label>
+        <name>Coordinator_Accepted__c</name>
+    </fields>
+    <fields>
+        <help><!-- Check if reviewed and accepted by coordinator --></help>
+        <label><!-- Coordinator Reviewed --></label>
+        <name>Coordinator_Reviewed__c</name>
+        <picklistValues>
+            <masterLabel>Not Reviewed</masterLabel>
+            <translation><!-- Not Reviewed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes - Accepted</masterLabel>
+            <translation><!-- Yes - Accepted --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes - Not Accepted</masterLabel>
+            <translation><!-- Yes - Not Accepted --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- Check if Interviewer blank default to Coordinator Names --></help>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+    </fields>
+    <fields>
+        <help><!-- Yes! Count me in. I want to help fix Medi-Cal --></help>
+        <label><!-- Count Me In --></label>
+        <name>Count_Me_In__c</name>
+    </fields>
+    <fields>
+        <label><!-- County --></label>
+        <name>County__c</name>
+        <picklistValues>
+            <masterLabel>Alameda</masterLabel>
+            <translation><!-- Alameda --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Alpine</masterLabel>
+            <translation><!-- Alpine --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Amador</masterLabel>
+            <translation><!-- Amador --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Butte</masterLabel>
+            <translation><!-- Butte --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Calaveras</masterLabel>
+            <translation><!-- Calaveras --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Colusa</masterLabel>
+            <translation><!-- Colusa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Contra Costa</masterLabel>
+            <translation><!-- Contra Costa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Del Norte</masterLabel>
+            <translation><!-- Del Norte --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>El Dorado</masterLabel>
+            <translation><!-- El Dorado --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fresno</masterLabel>
+            <translation><!-- Fresno --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Glenn</masterLabel>
+            <translation><!-- Glenn --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Humboldt</masterLabel>
+            <translation><!-- Humboldt --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Imperial</masterLabel>
+            <translation><!-- Imperial --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Inyo</masterLabel>
+            <translation><!-- Inyo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Kern</masterLabel>
+            <translation><!-- Kern --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Kings</masterLabel>
+            <translation><!-- Kings --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lake</masterLabel>
+            <translation><!-- Lake --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lassen</masterLabel>
+            <translation><!-- Lassen --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Los Angeles</masterLabel>
+            <translation><!-- Los Angeles --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Madera</masterLabel>
+            <translation><!-- Madera --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Marin</masterLabel>
+            <translation><!-- Marin --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mariposa</masterLabel>
+            <translation><!-- Mariposa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mendocino</masterLabel>
+            <translation><!-- Mendocino --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Merced</masterLabel>
+            <translation><!-- Merced --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Modoc</masterLabel>
+            <translation><!-- Modoc --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mono</masterLabel>
+            <translation><!-- Mono --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Monterey</masterLabel>
+            <translation><!-- Monterey --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Napa</masterLabel>
+            <translation><!-- Napa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Nevada</masterLabel>
+            <translation><!-- Nevada --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Orange</masterLabel>
+            <translation><!-- Orange --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Out of State</masterLabel>
+            <translation><!-- Out of State --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Placer</masterLabel>
+            <translation><!-- Placer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Plumas</masterLabel>
+            <translation><!-- Plumas --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Riverside</masterLabel>
+            <translation><!-- Riverside --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sacramento</masterLabel>
+            <translation><!-- Sacramento --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Benito</masterLabel>
+            <translation><!-- San Benito --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Bernardino</masterLabel>
+            <translation><!-- San Bernardino --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Diego</masterLabel>
+            <translation><!-- San Diego --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Francisco</masterLabel>
+            <translation><!-- San Francisco --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Joaquin</masterLabel>
+            <translation><!-- San Joaquin --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Luis Obispo</masterLabel>
+            <translation><!-- San Luis Obispo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Mateo</masterLabel>
+            <translation><!-- San Mateo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Santa Barbara</masterLabel>
+            <translation><!-- Santa Barbara --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Santa Clara</masterLabel>
+            <translation><!-- Santa Clara --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Santa Cruz</masterLabel>
+            <translation><!-- Santa Cruz --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Shasta</masterLabel>
+            <translation><!-- Shasta --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sierra</masterLabel>
+            <translation><!-- Sierra --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Siskiyou</masterLabel>
+            <translation><!-- Siskiyou --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Solano</masterLabel>
+            <translation><!-- Solano --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sonoma</masterLabel>
+            <translation><!-- Sonoma --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Stanislaus</masterLabel>
+            <translation><!-- Stanislaus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sutter</masterLabel>
+            <translation><!-- Sutter --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tehama</masterLabel>
+            <translation><!-- Tehama --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Trinity</masterLabel>
+            <translation><!-- Trinity --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tulare</masterLabel>
+            <translation><!-- Tulare --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tuolumne</masterLabel>
+            <translation><!-- Tuolumne --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unknown</masterLabel>
+            <translation><!-- Unknown --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Ventura</masterLabel>
+            <translation><!-- Ventura --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yolo</masterLabel>
+            <translation><!-- Yolo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yuba</masterLabel>
+            <translation><!-- Yuba --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Division Goal --></label>
+        <name>Division_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Dummy Story --></label>
+        <name>Dummy_Story__c</name>
+    </fields>
+    <fields>
+        <label><!-- Interviewer Facility --></label>
+        <name>Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Goal-Current --></label>
+        <name>Goal_Current__c</name>
+    </fields>
+    <fields>
+        <label><!-- Goal-Pevious --></label>
+        <name>Goal_Pevious__c</name>
+    </fields>
+    <fields>
+        <label><!-- Google Map --></label>
+        <name>Google_Map__c</name>
+    </fields>
+    <fields>
+        <label><!-- Dialysis --></label>
+        <name>Have_Kidney_Disease__c</name>
+    </fields>
+    <fields>
+        <help><!-- Phone is for home? --></help>
+        <label><!-- Home Phone --></label>
+        <name>Home_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hospital Goal --></label>
+        <name>Hospital_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hospital Coordinator --></label>
+        <name>Hospital_Team__c</name>
+        <picklistValues>
+            <masterLabel>North - Jackie&apos;s Team</masterLabel>
+            <translation><!-- North - Jackie&apos;s Team --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>North - Salvador&apos;s Team</masterLabel>
+            <translation><!-- North - Salvador&apos;s Team --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>South - John&apos;s Team</masterLabel>
+            <translation><!-- South - John&apos;s Team --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>South - Mali&apos;s Team</masterLabel>
+            <translation><!-- South - Mali&apos;s Team --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Interviewee City --></label>
+        <name>Interviewee_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Interviewee Division --></label>
+        <name>Interviewee_Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Interviewee Facility --></label>
+        <name>Interviewee_Facility__c</name>
+    </fields>
+    <fields>
+        <label><!-- Interviewee Type --></label>
+        <name>Interviewee_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Interviewer FID --></label>
+        <name>Interviewer_FID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Interviewer Name --></label>
+        <name>Interviewer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Interviewer --></label>
+        <name>Interviewer__c</name>
+        <relationshipLabel><!-- Medi-Cal Stories --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- IsMember --></label>
+        <name>IsMember__c</name>
+    </fields>
+    <fields>
+        <help><!-- Do you have kidney disease and/or need dialysis? --></help>
+        <label><!-- Kidney Disease --></label>
+        <name>Kidney_Disease__c</name>
+        <picklistValues>
+            <masterLabel>No</masterLabel>
+            <translation><!-- No --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yes</masterLabel>
+            <translation><!-- Yes --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Language Other --></label>
+        <name>Language_Other__c</name>
+    </fields>
+    <fields>
+        <help><!-- Languages Spoken --></help>
+        <label><!-- Languages --></label>
+        <name>Languages__c</name>
+        <picklistValues>
+            <masterLabel>Chinese</masterLabel>
+            <translation><!-- Chinese --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>English</masterLabel>
+            <translation><!-- English --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Hmong</masterLabel>
+            <translation><!-- Hmong --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other</masterLabel>
+            <translation><!-- Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Russian</masterLabel>
+            <translation><!-- Russian --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Spanish</masterLabel>
+            <translation><!-- Spanish --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Leader Role --></label>
+        <name>Leader_Role__c</name>
+        <picklistValues>
+            <masterLabel>Community Leader</masterLabel>
+            <translation><!-- Community Leader --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Community Team Leader</masterLabel>
+            <translation><!-- Community Team Leader --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- MC Last 5 Ys. --></label>
+        <name>MC_Last_5_Ys__c</name>
+    </fields>
+    <fields>
+        <help><!-- Have you or a family member had Medi-Cal in the last 5 years? --></help>
+        <label><!-- Medi-Cal Last 5 Years --></label>
+        <name>MediCal_Last_5_Years__c</name>
+    </fields>
+    <fields>
+        <label><!-- Medi-Cal Region --></label>
+        <name>Medi_Cal_Region__c</name>
+    </fields>
+    <fields>
+        <help><!-- Missed Data Entry field for the team that is auditing the paper forms. --></help>
+        <label><!-- Missed Data Entry --></label>
+        <name>Missed_Data_Entry__c</name>
+    </fields>
+    <fields>
+        <help><!-- Phone is a cell? --></help>
+        <label><!-- Mobile Phone --></label>
+        <name>Mobile_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- New Goal --></label>
+        <name>New_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Not Accptd --></label>
+        <name>Not_Accepted__c</name>
+    </fields>
+    <fields>
+        <label><!-- To Review --></label>
+        <name>Not_Reviewed__c</name>
+    </fields>
+    <fields>
+        <help><!-- Number of Questions answered as True --></help>
+        <label><!-- Number Questions True --></label>
+        <name>Number_Questions_True__c</name>
+    </fields>
+    <fields>
+        <label><!-- Org Goal --></label>
+        <name>Org_Goal__c</name>
+    </fields>
+    <fields>
+        <help><!-- Check if Interviewer is blank otherwise default to Organizer names --></help>
+        <label><!-- Organizer --></label>
+        <name>Organizer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Program Review Comments --></label>
+        <name>Program_Review_Comments__c</name>
+    </fields>
+    <fields>
+        <help><!-- Has your health or a family member’s health suffered because you were unable to get the care you needed through Medi-Cal? --></help>
+        <label><!-- Health Suffered --></label>
+        <name>Question_Health_Suffered__c</name>
+    </fields>
+    <fields>
+        <help><!-- Have you or your family member with Medi-Cal ever had to leave the U.S. or travel more than 30 minutes/10 miles to get care? --></help>
+        <label><!-- Travel Far --></label>
+        <name>Question_Travel_Far__c</name>
+    </fields>
+    <fields>
+        <help><!-- Have you or a family member ever been turned away by a hospital or clinic because you were a Medi-Cal beneficiary? --></help>
+        <label><!-- Turned Away --></label>
+        <name>Question_Turned_Away__c</name>
+    </fields>
+    <fields>
+        <help><!-- Have you or a family member with Medi-Cal ever been unable to get an appointment to see a doctor or specialist? --></help>
+        <label><!-- Unable To Get Appt --></label>
+        <name>Question_Unable_To_Get_Appt__c</name>
+    </fields>
+    <fields>
+        <help><!-- Have you or a family member with Medi-Cal ever waited more than a month to get care for a medical need? --></help>
+        <label><!-- Wait More Than Month --></label>
+        <name>Question_Wait_More_Than_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Director --></label>
+        <name>Regional_Director__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reject --></label>
+        <name>Reject__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resubmit --></label>
+        <name>Resubmit__c</name>
+    </fields>
+    <fields>
+        <help><!-- Your story may help expose the Medi-Cal crisis and save lives.
+When are the best days and times to reach you to learn more? --></help>
+        <label><!-- Best Time To Contact --></label>
+        <name>Story_Best_Time_To_Contact__c</name>
+    </fields>
+    <fields>
+        <help><!-- What do you hope to achieve by sharing your story? --></help>
+        <label><!-- Hope To Achieve --></label>
+        <name>Story_Hope_To_Achieve__c</name>
+    </fields>
+    <fields>
+        <help><!-- What was the original health problem you were seeking treatment for under Medi-Cal? --></help>
+        <label><!-- Original Health Problem --></label>
+        <name>Story_Original_Health_Problem__c</name>
+    </fields>
+    <fields>
+        <help><!-- What problems did you have as a result of not getting care when you needed it?
+(How did it negatively affect your health, pain, sleep, family, work, etc.?) --></help>
+        <label><!-- Problems From No Care --></label>
+        <name>Story_Problems_From_No_Care__c</name>
+    </fields>
+    <fields>
+        <help><!-- What happened when you tried to get care through Medi-Cal? (How long did you wait for an appointment? Which clinics, doctors or hospitals did you go to? How far did you travel?) --></help>
+        <label><!-- Tried To Get Care --></label>
+        <name>Story_Tried_To_Get_Care__c</name>
+    </fields>
+    <fields>
+        <label><!-- Unduplicated Count --></label>
+        <name>Unduplicated_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk1 Div Goal --></label>
+        <name>Wk1_Div_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk2 Accepted --></label>
+        <name>Wk2_Accepted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk2 Div Goal --></label>
+        <name>Wk2_Div_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk3 Accepted --></label>
+        <name>Wk3_Accepted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk3 Div Goal --></label>
+        <name>Wk3_Div_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk4 Accepted --></label>
+        <name>Wk4_Accepted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk4 Div Goal --></label>
+        <name>Wk4_Div_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk5 Accepted --></label>
+        <name>Wk5_Accepted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk5 Div Goal --></label>
+        <name>Wk5_Div_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk6 Accepted --></label>
+        <name>Wk6_Accepted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk6 Div Goal --></label>
+        <name>Wk6_Div_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- 1A --></label>
+        <name>X1A__c</name>
+    </fields>
+    <fields>
+        <label><!-- 1st --></label>
+        <name>X1st__c</name>
+    </fields>
+    <fields>
+        <label><!-- 2nd --></label>
+        <name>X2nd__c</name>
+    </fields>
+    <fields>
+        <label><!-- 3rd --></label>
+        <name>X3rd__c</name>
+    </fields>
+    <fields>
+        <label><!-- Wk1 Accepted --></label>
+        <name>wk1_Accepted__c</name>
+    </fields>
+    <layouts>
+        <layout>Medi-Cal Story Layout</layout>
+        <sections>
+            <label><!-- Attorney Assessment - Meeting --></label>
+            <section>Attorney Assessment - Meeting</section>
+        </sections>
+        <sections>
+            <label><!-- Attorney Intake - Call --></label>
+            <section>Attorney Intake - Call</section>
+        </sections>
+        <sections>
+            <label><!-- Attorney Lead --></label>
+            <section>Attorney Lead</section>
+        </sections>
+        <sections>
+            <label><!-- Attorney Lead Follow-Up --></label>
+            <section>Attorney Lead Follow-Up</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Interview Questions --></label>
+            <section>Interview Questions</section>
+        </sections>
+        <sections>
+            <label><!-- Interviewee --></label>
+            <section>Interviewee</section>
+        </sections>
+        <sections>
+            <label><!-- Interviewer --></label>
+            <section>Interviewer</section>
+        </sections>
+        <sections>
+            <label><!-- Medi-Cal Story --></label>
+            <section>Medi-Cal Story</section>
+        </sections>
+        <sections>
+            <label><!-- Review and Audit --></label>
+            <section>Review and Audit</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Please enter Community Organizer --></errorMessage>
+        <name>Must_Enter_Community_Org</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Must have Home Phone or Mobile Phone --></errorMessage>
+        <name>Must_Have_Phone</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Make sure there there is non-blank Contact or non-blank Alt City --></errorMessage>
+        <name>Validate_City</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- You can have contact/interviewee information or alt information for names and city but not both --></errorMessage>
+        <name>Validate_Either_Contact_Or_Alt</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Must have a non-blank Contact or non-blank Alt First Name --></errorMessage>
+        <name>Validate_First_Name</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Make sure there is a non-blank Contact or non-blank Alt Last Name --></errorMessage>
+        <name>Validate_Last_Name</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Must fill out an answer for Story A --></errorMessage>
+        <name>Validate_Story_A</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Must fill out an answer for Story B. --></errorMessage>
+        <name>Validate_Story_B</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Must fill out an answer for Story C --></errorMessage>
+        <name>Validate_Story_C</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Must fill out an answer for Story D --></errorMessage>
+        <name>Validate_Story_D</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Must fill out an answer for Story E --></errorMessage>
+        <name>Validate_Story_E</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Make sure Zip is number between 90001 and 96700 --></errorMessage>
+        <name>Validate_Zip_Range</name>
+    </validationRules>
+</CustomObjectTranslation>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>COPE Sign-Up</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>COPE Sign-Ups</value>
+    </caseValues>
+    <fields>
+        <label><!-- Actual  Amount --></label>
+        <name>Actual_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE Amount --></label>
+        <name>Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Amt --></label>
+        <name>Amt__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE Card Origination --></label>
+        <name>COPE_Card_Origination__c</name>
+        <picklistValues>
+            <masterLabel>A. CRE</masterLabel>
+            <translation><!-- A. CRE --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>B. NEO</masterLabel>
+            <translation><!-- B. NEO --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>C. Political Ninja Blitz</masterLabel>
+            <translation><!-- C. Political Ninja Blitz --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>D. Political Action</masterLabel>
+            <translation><!-- D. Political Action --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>E. Ratification</masterLabel>
+            <translation><!-- E. Ratification --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>F. Mail</masterLabel>
+            <translation><!-- F. Mail --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>G. Walk-through/1on1 convo</masterLabel>
+            <translation><!-- G. Walk-through/1on1 convo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>H. 80% Campaign</masterLabel>
+            <translation><!-- H. 80% Campaign --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- This is the COPE Pledge in Contact record; COPE Pledge Amount in the Membership db;
+COPE_Pledge_10X10__c; updated every quarter; --></help>
+        <label><!-- Qrtly COPE Pledge Amount --></label>
+        <name>COPE_Pledge_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE Pledge Static --></label>
+        <name>COPE_Pledge_Static__c</name>
+    </fields>
+    <fields>
+        <label><!-- CP --></label>
+        <name>CP__c</name>
+    </fields>
+    <fields>
+        <label><!-- Card Goal --></label>
+        <name>Card_Goal__c</name>
+    </fields>
+    <fields>
+        <label><!-- Card Number --></label>
+        <name>Card_Number__c</name>
+    </fields>
+    <fields>
+        <label><!-- Collected by Member --></label>
+        <name>Collected_by_Member__c</name>
+        <relationshipLabel><!-- COPE Sign-Ups (Collected by Member:) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Collected by Staff --></label>
+        <name>Collected_by_Staff__c</name>
+        <relationshipLabel><!-- COPE Sign-Ups --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Collected by --></label>
+        <name>Collected_by__c</name>
+    </fields>
+    <fields>
+        <label><!-- Constituency --></label>
+        <name>Constituency__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact Id --></label>
+        <name>Contact_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date Card Collected --></label>
+        <name>Date_Card_Collected__c</name>
+    </fields>
+    <fields>
+        <label><!-- Department --></label>
+        <name>Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- District Name --></label>
+        <name>District_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- District --></label>
+        <name>District__c</name>
+    </fields>
+    <fields>
+        <label><!-- DivisionName --></label>
+        <name>DivisionName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- EL --></label>
+        <name>EL__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard/Ecomm Name --></label>
+        <name>Eboard_Ecomm_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard Full Name --></label>
+        <name>Eboard_Full_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Eboard Name --></label>
+        <name>Eboard_Name__c</name>
+        <relationshipLabel><!-- COPE Sign-Ups (Eboard Name) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Employer Region --></label>
+        <name>Employer_Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Executive Title --></label>
+        <name>Executive_Title__c</name>
+    </fields>
+    <fields>
+        <help><!-- This is the COPE Date in Contact record; Last COPE Payment date in the Membership db; --></help>
+        <label><!-- Last COPE Payment Date --></label>
+        <name>Last_COPE_Payment_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- This COPE Amount in Contact record; Last payment made in the Membership db; --></help>
+        <label><!-- Last COPE Payment --></label>
+        <name>Last_COPE_Payment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Employer Name --></label>
+        <name>Member_Employer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member First Name --></label>
+        <name>Member_First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Full Name --></label>
+        <name>Member_Full_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Id --></label>
+        <name>Member_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Last Name --></label>
+        <name>Member_Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member Name --></label>
+        <name>Member_Name1__c</name>
+        <relationshipLabel><!-- COPE Sign-Ups (Member Name) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Notes --></label>
+        <name>Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Org1? --></label>
+        <name>Org1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer --></label>
+        <name>Organizer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Pledge Amount --></label>
+        <name>Pledge_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Preactive COPE Signer Employer --></label>
+        <name>Preactive_COPE_Signer_Employer__c</name>
+        <relationshipLabel><!-- COPE Sign-Ups --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Preactive COPE Signer --></label>
+        <name>Preactive_COPE_Signer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Prev COPE Pledge --></label>
+        <name>Prev_COPE_Pledge__c</name>
+    </fields>
+    <fields>
+        <label><!-- RL --></label>
+        <name>RL__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Director --></label>
+        <name>Regional_Director__c</name>
+    </fields>
+    <fields>
+        <label><!-- Revoke --></label>
+        <name>Revoke__c</name>
+    </fields>
+    <fields>
+        <label><!-- Seat Id --></label>
+        <name>Seat_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Seat Name --></label>
+        <name>Seat_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Seat Status --></label>
+        <name>Seat_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- EBoardSeats --></label>
+        <name>Seat__c</name>
+        <relationshipLabel><!-- COPE Sign-Ups --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Verified COPE Pledge Date --></label>
+        <name>Verified_COPE_Pledge_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Verified COPE Pledge --></label>
+        <name>Verified_COPE_Pledge__c</name>
+    </fields>
+    <layouts>
+        <layout>COPE SignUp Layout</layout>
+        <sections>
+            <label><!-- COPE --></label>
+            <section>COPE</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Other Info --></label>
+            <section>Other Info</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>COPE Staff</layout>
+        <sections>
+            <label><!-- COPE --></label>
+            <section>COPE</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <description><!-- Use this for Kaiser and Hospital. --></description>
+        <label><!-- COPE Master --></label>
+        <name>COPE_Master</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- COPE Staff --></description>
+        <label><!-- COPE Staff --></label>
+        <name>COPE_Staff</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Date must be greater than or equal to 6/3/2015. --></errorMessage>
+        <name>Date_Collected_Validation_1</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Please select a card origination. --></errorMessage>
+        <name>When_Eboard_is_blank</name>
+    </validationRules>
+</CustomObjectTranslation>

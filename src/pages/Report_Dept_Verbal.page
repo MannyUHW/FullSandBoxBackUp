@@ -1,0 +1,192 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+<div align="center">
+<h1 id="h1Title"></h1>
+
+<br>&nbsp;</br>
+<h4 id="h4Count"></h4>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+
+var paramEmid = "{!$CurrentPage.parameters.emid}";
+var emid = 7544;
+//alert("paramcode="  + paramEmid );
+if (paramEmid != null && paramEmid != "" && paramEmid != "null") {
+  emid = paramEmid ;
+}
+//alert("rcode0="  + rcode);
+
+try{ 
+    var countMap = new Array();
+    var deptList = new Array();
+    
+    var allSupporters = 0;
+    var allUndecideds = 0;    
+    var allNuhws = 0;
+    var allNots = 0;    
+    
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var query = "Select Id, Name from Account where Employer_ID__c=\'" + emid + "\'";
+    //alert(query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var accountId = null;
+    var emName = null;
+    if (records1.length > 0) {
+      accountId = records1[0].Id;
+      emName  = toProperCase(records1[0].Name);
+    } else {
+      alert("Cannot find Employer Id " + emid);
+    }        
+    
+    var idRecordMap = new Array();
+
+    var ccount = 0;
+        
+
+    var query = "SELECT Id, FID__c, LastName, FirstName, MiddleName, Department, Title, Verbal_Assessment__c FROM Contact where Account.Name=\'" + emName + "\' and AssistantName like \'%elist%\' ";
+    //alert(query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records');
+    //alert("count = " + records1.length);
+    for (var i=0;i<records1.length;i++) {
+        var contactId = records1[i].Id;
+        var crecord = records1[i];
+        if (crecord.Department == null || crecord.Department == "" || crecord.Department == "null"  ) {
+          crecord.Department = "Unknown Department";
+        }
+        crecord.Department = toProperCase(crecord.Department.trim());        
+        if (deptList.indexOf(crecord.Department) < 0) {
+          deptList.push(crecord.Department);
+        }
+
+        
+        if (crecord.MiddleName == null) {
+          crecord.MiddleName = "";
+        }        
+        var verbal = 0;
+        if (crecord.Verbal_Assessment__c != null) {
+          verbal = parseInt(crecord.Verbal_Assessment__c.trim().substring(0,1));
+        }
+        var dcount = 0;
+        if (countMap[crecord.Department] != null) {
+          dcount = countMap[crecord.Department];
+        }        
+        
+        var dvcount = 0;        
+        if (countMap[crecord.Department + "~" + verbal] != null) {
+          dvcount = countMap[crecord.Department + "~" + verbal];
+        }
+       
+        dvcount++;
+        dcount++;
+        countMap[crecord.Department + "~" + verbal] = dvcount;
+        countMap[crecord.Department] = dcount;        
+        ccount++;
+        
+        if (verbal == 0 || verbal == 3) {
+          allUndecideds++;
+        } else if (verbal == 1 || verbal == 2) {
+          allSupporters++;
+        } else if (verbal == 4 || verbal == 9) {
+          allNots++;
+        } else {
+          allNuhws++;
+        }
+         
+    }
+
+
+    $("#h1Title").html("Department Verbal Summary for " + emName);    
+
+    var summary = "Count = " + ccount + "<br/>Supporters = " +  allSupporters + " (" + (100 * allSupporters / ccount ).toFixed(0) + "%)<br/>Undecideds = " + allUndecideds + " (" + (100 * allUndecideds / ccount ).toFixed(0) + "%)";
+    summary +=     "<br/>NUHWs = " +  allNuhws + " (" + (100 * allNuhws  / ccount ).toFixed(0) + "%)";
+    summary +=     "<br/>Anti/Not Eligible = " +  allNots + " (" + (100 * allNots / ccount ).toFixed(0) + "%)";
+        
+    $("#h4Count").html(summary);    
+    
+    document.write("<table cellpadding=\"7\" border=\"0\">\n");
+    document.write("  <tr valign=\"bottom\">\n");
+    document.write("    <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Department</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Supporters</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Undecideds</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">NUHW</font></td>\n");
+    document.write("    <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Anti/Not Eligible</font></td>\n");    
+    document.write("  </tr>\n");    
+    deptList.sort();
+    for (var x = 0; x < deptList.length; x++) {
+      document.write("  <tr valign=\"top\">\n");
+      document.write("    <td align=\"left\">" + toProperCase(deptList[x]) + "</td>\n");          
+      var dcount = countMap[deptList[x]];
+      var d0 = 0;
+      if (countMap[deptList[x] + "~0"] != null) {
+        d0 = countMap[deptList[x] + "~0"];
+      }
+      var d0 = 0;
+      if (countMap[deptList[x] + "~0"] != null) {
+        d0 = countMap[deptList[x] + "~0"];
+      }
+      var d1 = 0;
+      if (countMap[deptList[x] + "~1"] != null) {
+        d1 = countMap[deptList[x] + "~1"];
+      }
+      var d2 = 0;
+      if (countMap[deptList[x] + "~2"] != null) {
+        d2 = countMap[deptList[x] + "~2"];
+      }
+      var d3 = 0;
+      if (countMap[deptList[x] + "~3"] != null) {
+        d3 = countMap[deptList[x] + "~3"];
+      }
+      var d4 = 0;
+      if (countMap[deptList[x] + "~4"] != null) {
+        d4 = countMap[deptList[x] + "~4"];
+      }
+      var d5 = 0;
+      if (countMap[deptList[x] + "~5"] != null) {
+        d5 = countMap[deptList[x] + "~5"];
+      }
+      var d6 = 0;
+      if (countMap[deptList[x] + "~6"] != null) {
+        d6 = countMap[deptList[x] + "~6"];
+      }
+      var d7 = 0;
+      if (countMap[deptList[x] + "~7"] != null) {
+        d7 = countMap[deptList[x] + "~7"];
+      }
+      var d9 = 0;
+      if (countMap[deptList[x] + "~9"] != null) {
+        d9 = countMap[deptList[x] + "~9"];
+      }            
+      document.write("    <td align=\"center\">" + (d1+d2) + "</td>\n");          
+      document.write("    <td align=\"center\">" + (d0+d3) + "</td>\n");          
+      document.write("    <td align=\"center\">" + (d5+d6+d7) + "</td>\n");                
+      document.write("    <td align=\"center\">" + (d4+d9) + "</td>\n");                      
+      document.write("  </tr>\n");                          
+    }
+ 
+    document.write("</table>\n");
+    
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+
+</div>
+</apex:page>

@@ -1,0 +1,657 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false" controller="ctrlr_mo">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>MO: Election Shifts</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+
+<script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/35.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+</head>
+
+<body>
+<div align="center">
+<table><tr valign="top"><td align="center">  
+  
+  
+    <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="MO_Main_Page"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    
+  </td>
+  </tr>
+  </table>
+  
+  <br><font color="#481C60" size="+2"><b>Election Shifts</b></font></br>
+    
+
+    
+        <br>&nbsp;</br>
+
+    <table border="0">
+      <tr valign="middle"><td colspan="2">Shift Worker</td></tr>       
+      <tr valign="middle">
+        <td align="left" width="35%">   
+          <a href="javascript:navigateTo('MO_Search_Page?mode=shifts');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+        </td>
+        <td width="65%" align="center">
+          <div id="contactDiv">No Contact Selected</div>
+        </td>
+      </tr>
+      
+      <tr valign="middle"><td colspan="2">&nbsp;</td></tr>    
+      <tr valign="middle"><td colspan="2">Collector/Recruiter</td></tr>       
+      
+            <tr valign="middle">
+        <td align="left" width="35%">   
+          <a href="javascript:navigateTo('MO_Search_Page?mode=shifts2');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+        </td>
+        <td width="65%" align="center">
+          <div id="collectorDiv">No Collector Selected</div>
+        </td>
+      </tr>
+      
+      <tr valign="middle"><td colspan="2">&nbsp;</td></tr>  
+        
+      <tr valign="middle">
+        <td align="center" width="35%">         
+
+            Location:
+        </td>
+        <td width="65%" align="center">
+        
+            <select id="locations" onChange="printDates()">
+<option value="Bakersfield Early(2-5)">Bakersfield Early(2-5)</option>
+<option value="Bakersfield Late(5-8)">Bakersfield Late(5-8)</option>
+
+                  <option value="Fresno Early(2-5)">Fresno Early(2-5)</option>
+    <option value="Fresno Late(5-8)">Fresno Late(5-8)</option>  
+
+<option value="Lancaster Early(2-5)">Lancaster Early(2-5)</option>
+<option value="Lancaster Late(5-8)">Lancaster Late(5-8)</option>
+              
+                  <option value="Los Angeles Early(2-5)">Los Angeles Early(2-5)</option>
+    <option value="Los Angeles Late(5-8)">Los Angeles Late(5-8)</option>
+    <option value="Oakland Early(2-5)">Oakland Early(2-5)</option>
+    <option value="Oakland Late(5-8)">Oakland Late(5-8)</option>
+<option value="OC Early(2-5)">OC Early(2-5)</option>
+<option value="OC Late(5-8)">OC Late(5-8)</option>
+<option value="Oceanside Early(2-5)">Oceanside Early(2-5)</option>
+<option value="Oceanside Late(5-8)">Oceanside Late(5-8)</option>
+    
+    <option value="Redding Early(2-5)">Redding Early(2-5)</option>
+<option value="Redding Late(5-8)">Redding Late(5-8)</option>
+
+    <option value="Riverside Early(2-5)">Riverside Early(2-5)</option>
+<option value="Riverside Late(5-8)">Riverside Late(5-8)</option>
+
+    
+    <option value="Sacramento Early(2-5)">Sacramento Early(2-5)</option>
+    <option value="Sacramento Late(5-8)">Sacramento Late(5-8)</option>
+    <option value="San Fernando Valley Early(2-5)">San Fernando Valley Early(2-5)</option>
+    <option value="San Fernando Valley Late(5-8)">San Fernando Valley Late(5-8)</option>
+    <option value="San Francisco Early(2-5)">San Francisco Early(2-5)</option>
+    <option value="San Francisco Late(5-8)">San Francisco Late(5-8)</option>
+    <option value="San Jose Early(2-5)">San Jose Early(2-5)</option>
+    <option value="San Jose Late(5-8)">San Jose Late(5-8)</option>
+
+            </select>
+    
+        </td>
+      </tr>
+      
+      <tr valign="middle"><td colspan="2">&nbsp;</td></tr>      
+      <tr valign="middle">
+        <td align="center" width="35%">   
+      
+
+    Show Dates:
+    
+            </td>
+        <td width="65%" align="center">
+
+    
+                <select id="showDates">
+                <option value="nextweek">Next 7 Days</option>
+                <option value="nextmonth">Next 30 Days</option>
+                <option value="all">Whole Campaign</option>
+                </select>
+                
+         </td>
+      </tr>
+    </table>
+    
+    
+        <br>&nbsp;</br>
+    
+    <div id="datesDiv"></div>
+
+      <br>&nbsp;</br>
+    
+    <button class="btn btn-lg btn-primary" type="submit" onclick="save()">  
+
+      &nbsp;&nbsp;
+      Save
+      &nbsp;&nbsp;
+      
+    </button><br></br>  
+      <br>&nbsp;</br>
+        &copy; 2017 SEIU-UHW. All rights reserved.
+
+</td>
+</tr>
+</table>
+  
+</div>
+
+
+
+<script language="JavaScript">
+
+
+var ALL = "ALL";
+var SIGNED_UP = "Signed Up";
+var COMPLETED = "Completed";
+var PARTIAL = "Partial";
+var NO_SHOW = "No Show";
+var CANCELED = "Canceled";
+var FUTURE = "Future";
+
+var shidList = new Array();
+
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+var fid1 = "{!$CurrentPage.parameters.fid}";
+if (fid1 == null || fid1 == "" || fid1 == "null") {
+      fid1 = sessionStorage.getItem("mo_enter_shift_fid");
+} else {
+  sessionStorage.setItem("mo_enter_shift_fid", fid1);
+}
+
+
+var fid2 = "{!$CurrentPage.parameters.fid2}";
+if (fid2 == null || fid2 == "" || fid2 == "null") {
+      fid2 = sessionStorage.getItem("mo_enter_shift_fid2");
+} else {
+  sessionStorage.setItem("mo_enter_shift_fid2", fid2);
+}
+
+
+var altlast = "{!$CurrentPage.parameters.altlast}";
+var altmiddle = "{!$CurrentPage.parameters.altmiddle}";
+var altfirst = "{!$CurrentPage.parameters.altfirst}";    
+var altemid = "{!$CurrentPage.parameters.altemid}";      
+var altfull =  toProperCase("" + altlast + ", " + altfirst + " " + altmiddle).trim();
+var altptype = "{!$CurrentPage.parameters.altptype}";     
+var altphone = "{!$CurrentPage.parameters.altphone}";     
+var altemail = "{!$CurrentPage.parameters.altemail}";  
+var altrid = "{!$CurrentPage.parameters.altrid}"; 
+
+var startDate = new Date();
+var endDate = new Date();
+var startDateString = null;
+var endDateString = null;
+var locationOptions = null;
+var allowedDateSet = [];
+
+try {
+  var query = "select Id, Effective_Date__c, End_Date__c, Name, Add_Info_Control__c, Add_Info_Allowed_Dates__c from Survey_Question__c where Linked_to_Recruits__c  = true AND Survey_Code__c=\'" + localStorage.getItem("mo_sync_shifts_code") + "\' ";
+  //alert(query);
+    console.log(query);
+  var result = sforce.connection.query(query);
+  var records = result.getArray("records");
+  if (records.length > 1) {
+    alert("Error.  You can only have one Survey Question linked to Recruits at a time in Mobile Organizer.  Multiple found.");
+  } else if (records.length == 0) {
+    alert("Error.  You must have one Survey Question linked to Recruits for the MO Election Dashboard.  None found.");
+  } else {
+    startDate = moment(records[0].Effective_Date__c, "YYYY-MM-DD").toDate();
+    startDateString = records[0].Effective_Date__c;
+    endDate =  moment(records[0].End_Date__c, "YYYY-MM-DD").toDate();
+    endDateString = records[0].End_Date__c;
+
+    //[TODO]: need to replace allowedDateSet and locationOptions values with the custom settings list.          
+    locationOptions = records[0].Add_Info_Control__c;
+    console.log($("#locations").val());
+    var locDateSet = {!JSONLocationDates};
+    console.log(locDateSet);
+
+    
+    //if (records[0].Add_Info_Allowed_Dates__c != null && records[0].Add_Info_Allowed_Dates__c.length >= 10) {
+    //  allowedDateSet = records[0].Add_Info_Allowed_Dates__c.replace(/(\n)+/g, ";").replace(/,/, ";").split(";");
+    //}
+    //  console.log(allowedDateSet);
+    
+    //alert("locationOptions for " + records[0].Id + " = _" + locationOptions + "_");
+    if (locationOptions != null && locationOptions != "") {
+      $("#locations").html("");
+      var locationArray = locationOptions.split("\n");
+      for (var k = 0; k < locationArray.length; k++) {
+        var loca = locationArray[k];
+        if (loca != null && loca != "") {
+          $("#locations").append(new Option(loca , loca ));
+        }
+      }
+    }
+  }
+} catch(e) { 
+       alert('An Error has Occured. Error:' +e); 
+} 
+
+//alert(startDate);
+ 
+
+function printDates() {
+        console.log("dates printing...");
+  var electionTime = endDate.getTime();
+    //[NEW] get the allowedDateSet based on the custom setting list Phone_Bank_Location
+    console.log($( "#locations" ).val());
+    var myLocation = $( "#locations" ).val();
+    var dLength = locDateSet.length;
+    for(var i = 0; i < dLength; i++){
+        var matchLoc = locDateSet[i].Location__c;
+        if(myLocation == matchLoc){
+            allowedDateSet.push(locDateSet[i].Scheduled_Date__c);
+        }
+    }
+    console.log("date count: " + allowedDateSet.length);
+    console.log(allowedDateSet); 
+  shidList = new Array();
+  
+  var i = 0;
+  var t = 0;
+  var d = new Date();
+  if (d.getTime() > startDate.getTime()) {
+    //alert("revised start date is " + d);
+    startDate = d;
+  }
+  
+  var dwriter = "<table cellpadding=\"5\">\n\n";
+
+  while (t < electionTime) {
+    var showSetting = localStorage.getItem("election_shifts_show_dates");
+    if (showSetting != null) {
+      if (showSetting == "nextweek" && i > 7) {
+        break;
+      } if (showSetting == "nextmonth" && i > 30) {
+        break;
+      }
+    }
+    d = new Date(startDate.getTime() + (24 * 60 * 60 * 1000 * i) );
+    t = d.getTime();
+    
+    //var ALLOWED_DATES = ["2017-11-20", "2017-11-21", "2017-12-05", ];
+
+    
+    dwriter += "<tr><td align=\"left\">";
+    
+    if (allowedDateSet.indexOf(moment(startDate).add(i, "days").format("YYYY-MM-DD")) >= 0) {
+      var shid = "D" + moment(startDate).add(i, "days").format("YYYY-MM-DD");
+      shidList.push(shid);
+      dwriter += "<label><input id=\"" + shid + "\" type=\"checkbox\" >&nbsp;&nbsp;&nbsp;&nbsp;";
+      dwriter += moment(startDate).add(i, "days").format("ddd MMM DD") + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>\n";
+      dwriter += "<font size=\"-2\"><div align=\"center\" id=\"" + shid + "location\"></div></font>";    
+    } else {
+      dwriter += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;No Shifts on <b>" + moment(startDate).add(i, "days").format("ddd") + " " + moment(startDate).add(i, "days").format("MMM") + " " + moment(startDate).add(i, "days").format("DD") + "</br>";
+    }
+    
+    
+    dwriter += "</td>\n</tr>\n";   
+    i++;
+  }
+  dwriter += "</table>\n\n";
+  $("#datesDiv").html(dwriter);  
+  allowedDateSet = [];
+
+  if (fid1 == null || fid1 == "" || fid1 == "") {   
+      var query = "SELECT ID from Account where Employer_ID__c  = \'" + altemid.trim() + "\' ";
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records');  
+      eid = records0[0].Id; 
+  }
+  
+  if (1 == 1) {
+    var query = "SELECT FID__c, Recruit__c, Volunteer_Type__c, Location__c, Recruit_Status__c, Volunteer_Date__c, Recruited_By__c, Recruited_By__r.FID__c  FROM Recruit__c where (NOT Alt_Last_Name__c like \'%dummy%\') AND Volunteer_Date__c >= TODAY AND Volunteer_Date__c >= " + startDateString + " AND Volunteer_Date__c <= " + endDateString + " AND (FID__c = \'" + fid1 + "\' ";
+    if (fid1 == null || fid1 == "" || fid1 == "") {    
+      query += " OR ( Alt_Employer__c = \'" + eid + "\' and Alt_Last_Name__c = \'" + altlast + "\' and Alt_First_Name__c = \'" + altfirst + "\') ";
+    } 
+    query += " ) order by Volunteer_Date__c";
+    //alert(query); 
+    console.log(query);
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records');  
+    for(var i=0; i < records0.length;i++){   
+      if (records0[i].Recruit_Status__c == SIGNED_UP) {
+        $("#D" + records0[i].Volunteer_Date__c   ).prop('checked', true);
+        $("#D" + records0[i].Volunteer_Date__c + "location").html(records0[i].Location__c);
+        
+        if (records0[i].Location__c != null && records0[i].Location__c.toLowerCase().indexOf("w") != 0) {
+          $( "#locations" ).val(records0[i].Location__c);
+        }
+        
+        
+        if (fid2 == null && records0[i].Recruited_By__c != null && localStorage.getItem("mo_fid_" + records0[i].Recruited_By__r.FID__c) != null) {
+          fid2 = records0[i].Recruited_By__r.FID__c;
+          //alert("fid2 = " + fid2);
+          var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + fid2));
+          var crecord2 = uncompressContact(compressedContactArray);
+
+          var lastname = crecord2.LastName;
+          var firstname = crecord2.FirstName;
+          var middlename = crecord2.MiddleName;     
+          cid2 = crecord2.Id;
+          if (middlename == null || middlename == "null") {
+            middlename = "";
+          }     
+          var fullname2 = toProperCase(lastname + ", " + firstname + " " + middlename).trim();
+          document.getElementById("collectorDiv").innerHTML = fullname2;           
+        }
+      }
+    }
+  }
+  return true;
+}
+  
+if (localStorage.getItem("election_shifts_show_dates") == null) {
+    localStorage.setItem("election_shifts_show_dates", "nextweek");
+}
+$( "#showDates" ).val(localStorage.getItem("election_shifts_show_dates"));
+
+if (localStorage.getItem("election_shifts_location") == null) {
+    localStorage.setItem("election_shifts_location", "Oakland");
+}
+$( "#locations" ).val(localStorage.getItem("election_shifts_location"));
+
+$( "#locations" ).change(function() {
+    localStorage.setItem("election_shifts_location", $( "#locations" ).val());
+});
+
+printDates();
+
+
+ 
+$( "#showDates" ).change(function() {
+    localStorage.setItem("election_shifts_show_dates", $( "#showDates" ).val());
+    save();
+    navigateTo( "{! $Page.MO_Enter_Shifts}?fid=" + fid1 );
+    return false;
+    //printDates();
+});
+
+
+
+
+
+
+      
+
+
+try{ 
+      // query Salesforce using SOQL
+      //get previous responses, add to prevResponseMap
+     
+
+  if (fid1 != null && fid1 != "" && fid1 != "null" && (altlast == null || altlast.trim() == "" || altlast.trim() == "null")) {
+    //var crecord1 = JSON.parse(localStorage.getItem("mo_fid_" + fid1));
+    var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + fid1));
+    var crecord1 = uncompressContact(compressedContactArray);
+
+    var lastname = crecord1.LastName;
+    var firstname = crecord1.FirstName;
+    var middlename = crecord1.MiddleName;     
+    cid1 = crecord1.Id;
+    if (middlename == null || middlename == "null") {
+        middlename = "";
+    }     
+    var fullname1 = toProperCase(lastname + ", " + firstname + " " + middlename).trim();
+    document.getElementById("contactDiv").innerHTML = fullname1; 
+    
+  } else if (altfull.length > 1 && altfull.toLowerCase().indexOf("null") != 0 && altemid != null && altemid != "" && altemid != "null") {
+    document.getElementById("contactDiv").innerHTML = altfull + "<br/>[" + altptype  +"]";
+  }
+
+  if (fid2 != null && fid2 != "" && fid2 != "null") {
+    var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + fid2));
+    var crecord2 = uncompressContact(compressedContactArray);
+
+    var lastname = crecord2.LastName;
+    var firstname = crecord2.FirstName;
+    var middlename = crecord2.MiddleName;     
+    cid2 = crecord2.Id;
+    if (middlename == null || middlename == "null") {
+        middlename = "";
+    }     
+    var fullname2 = toProperCase(lastname + ", " + firstname + " " + middlename).trim();
+    document.getElementById("collectorDiv").innerHTML = fullname2; 
+    
+  } else if (altfull.length > 1 && altfull.toLowerCase().indexOf("null") != 0 && altemid != null && altemid != "" && altemid != "null") {
+    document.getElementById("contactDiv").innerHTML = altfull + "<br/>[" + altptype  +"]";
+  }
+
+
+} catch(e) { 
+       alert('An Error has Occured. Error:' +e); 
+} 
+
+
+function save() {
+  sforce.connection.sessionId = "{!$Api.Session_ID}";
+  
+  var user = sforce.connection.getUserInfo();
+  var userName = user.userName;
+  var query = "SELECT ID, Name, Staff_Contact_Id__c, Title from User WHERE User.username=\'" + userName + "\'";
+  var result = sforce.connection.query(query);
+  var records = result.getArray("records");
+  var uid = null;
+  var oid = null;
+  if (records.length > 0) {
+      uid = records[0].Id;
+      oid = records[0].Staff_Contact_Id__c;
+  }
+  
+  var eid = null;
+  if (fid1 == null || fid1 == "" || fid1 == "null") {
+    if (altfirst == null || altfirst == "" || altfirst == "null" || altlast == null || altlast == "" || altlast == "null" || altemid == null || altemid == "" || altemid == "null") {
+      alert("Cannot save.  Please enter in a Contact to save Shifts information.");
+      return false;
+    } else {
+      var query = "SELECT ID from Account where Employer_ID__c  = \'" + altemid.trim() + "\' ";
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records');  
+      eid = records0[0].Id;   
+    }  
+  }
+  try {
+    var cid = null;
+
+    var query = "SELECT ID from Contact  where FID__c = \'" + fid1 + "\' ";
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records');  
+    if (records0.length > 0) {
+      cid = records0[0].Id;
+    }
+    
+    var dmap = {};
+    var query = "SELECT Id, Recruit__c, Volunteer_Type__c, Location__c, Recruit_Status__c, Volunteer_Date__c, Recruited_By__c  FROM Recruit__c where Volunteer_Date__c >= TODAY AND Volunteer_Date__c >= " + startDateString + " AND Volunteer_Date__c <= " + endDateString + " AND (FID__c = \'" + fid1 + "\' ";
+    if (eid != null && eid != "" && eid != "null") {
+      query += " OR ( Alt_Employer__c = \'" + eid + "\' and Alt_Last_Name__c = \'" + altlast + "\' and Alt_First_Name__c = \'" + altfirst + "\') ";
+    } 
+    query += " ) ";
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records');  
+    for(var i=0; i < records0.length;i++){   
+      dmap["D" + records0[i].Volunteer_Date__c] = records0[i];
+    }
+    
+    var updateSet = [];
+    var insertRecruits = []; 
+    var updateRecruits = [];     
+    for (var i = 0; i < shidList.length; i++) {
+      var shid = shidList[i];
+      var recruit = new sforce.SObject("Recruit__c");   
+      if (dmap[shid] != null) {
+          recruit = dmap[shid];
+      }      
+
+      recruit.Volunteer_Date__c = shid.substring(1);
+      if (altfirst != null && altfirst != "" && altfirst != "null" && altlast != null && altlast != "" && altlast != "null" && altemid != null && altemid != "" && altemid != "null") {
+       recruit.Alt_First_Name__c = altfirst;
+       recruit.Alt_Last_Name__c = altlast;       
+       recruit.Alt_Middle_Name__c = altmiddle;              
+       recruit.Alt_Employer__c = eid;
+       recruit.Alt_Phone__c = altphone;
+       if (altemail != null && altemail.indexOf("@") > 0) {
+         recruit.Alt_Email__c = altemail;     
+       }
+       recruit.Alt_Person_Type__c =    altptype ;      
+      }
+      
+      if ($( "#locations" ).val().toLowerCase().indexOf("early") > 0) {
+        recruit.Shift__c = "Afternoon";
+      } else {
+        recruit.Shift__c = "Evening";      
+      }
+      
+      
+      
+      if (dmap[shid] != null) { 
+        //alert("previously = " + JSON.stringify(dmap[shid]) + "\n\nchecked=" + $("#" + shid).prop("checked")  + "\n\status=" + recruit.Recruit_Status__c);
+      }
+      if (dmap[shid] != null) {
+        if ($("#" + shid).prop("checked") == true || $("#" + shid).prop("checked") == "true") {
+          recruit.Recruit_Status__c = "Signed Up";      
+        } else {
+          recruit.Recruit_Status__c = "Canceled";      
+        }
+        //alert("updating - " + JSON.stringify(recruit));
+        if (oid != null) {
+          recruit.Recruited_By__c = oid;        
+        }        
+        if (fid2 != null && fid2 != "null" && fid2 != "") {
+          var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + fid2));
+          var crecord2 = uncompressContact(compressedContactArray);        
+          recruit.Recruited_By__c = crecord2.Id;
+        }
+        if (recruit.Location__c != null && recruit.Location__c.toLowerCase().trim().indexOf("w") != 0) {            
+          recruit.Location__c = $( "#locations" ).val();        
+          updateRecruits.push(recruit);
+          updateSet.push(shid);
+        }
+      } else if (dmap[shid] == null &&  $("#" + shid).prop("checked") == true) {
+        recruit.Recruit__c = cid;
+        recruit.Recruited_By__c = cid;
+        if (oid != null) {
+          recruit.Recruited_By__c = oid;        
+        }
+        if (fid2 != null && fid2 != "null" && fid2 != "") {
+          var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + fid2));
+          var crecord2 = uncompressContact(compressedContactArray);        
+          recruit.Recruited_By__c = crecord2.Id;
+        }
+        //alert("inserting - " + JSON.stringify(recruit));
+        recruit.Location__c = $( "#locations" ).val();        
+        insertRecruits.push(recruit);
+      }
+    }
+    //
+    //update all future locations (even if not on page)
+    //
+    for (var i = 0; i < records0.length; i++) {
+      var shid = "D" + records0[i].Volunteer_Date__c;
+      var recruit = records0[i];
+      if (updateSet.indexOf(shid) < 0) {
+        if (recruit.Location__c != $( "#locations" ).val()) {
+          //alert("current location for " + shid + " = _" + recruit.Location__c + "_");
+          if (recruit.Location__c != null && recruit.Location__c.toLowerCase().trim().indexOf("w") != 0) {        
+            //alert("updating to " + $( "#locations" ).val());
+            recruit.Location__c = $( "#locations" ).val();
+            updateRecruits.push(recruit);
+          }
+        }
+      }
+    }
+    
+    
+    //
+    //update
+    //
+    if (updateRecruits.length > 0) {
+       results = sforce.connection.update(updateRecruits);       
+      if (results[0].getBoolean("success") == false) {      
+        alert("There was a problem in updating records for FID " + fid1 + ".  Please Contact Data Group to resolve.  "   + JSON.stringify(results));
+        return false;
+      }
+    }
+    //
+    //update
+    //
+    if (insertRecruits.length > 0) {
+       results = sforce.connection.create(insertRecruits);       
+      if (results[0].getBoolean("success") == false) {      
+        alert("There was a problem in inserting records for FID " + fid1 + ".  Please Contact Data Group to resolve.  " + JSON.stringify(results));
+        return false;
+      }
+    }
+    
+    alert("Shifts saved successfully.");
+    sessionStorage.removeItem("mo_enter_shift_fid");
+    sessionStorage.removeItem("mo_enter_shift_fid2");    
+    navigateTo( "{! $Page.MO_Election_Dashboard}");
+    return true;
+
+  } catch(e) { 
+       alert('An Error has Occured. Error:' +e); 
+  } 
+}
+
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

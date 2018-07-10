@@ -1,0 +1,1038 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Alt_Employer__c</fullName>
+        <externalId>false</externalId>
+        <label>Alt Employer</label>
+        <length>96</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assessment__c</fullName>
+        <externalId>false</externalId>
+        <label>Assessment</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1. SEIU-UHW Leader Producing</fullName>
+                    <default>false</default>
+                    <label>1. SEIU-UHW Leader Producing</label>
+                </value>
+                <value>
+                    <fullName>2. SEIU-UHW Supporter</fullName>
+                    <default>false</default>
+                    <label>2. SEIU-UHW Supporter</label>
+                </value>
+                <value>
+                    <fullName>3. Undecided</fullName>
+                    <default>false</default>
+                    <label>3. Undecided</label>
+                </value>
+                <value>
+                    <fullName>4. Anti-Union</fullName>
+                    <default>false</default>
+                    <label>4. Anti-Union</label>
+                </value>
+                <value>
+                    <fullName>5. NUHW Supporter</fullName>
+                    <default>false</default>
+                    <label>5. NUHW Supporter</label>
+                </value>
+                <value>
+                    <fullName>6. Management Leader or Activist</fullName>
+                    <default>false</default>
+                    <label>6. Management Leader or Activist</label>
+                </value>
+                <value>
+                    <fullName>7. NUHW leader or Activist</fullName>
+                    <default>false</default>
+                    <label>7. NUHW leader or Activist</label>
+                </value>
+                <value>
+                    <fullName>9. Reported to be NLE</fullName>
+                    <default>false</default>
+                    <label>9. Reported to be NLE</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Bad_Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Bad Phone #</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Phone 1</fullName>
+                    <default>false</default>
+                    <label>Phone 1</label>
+                </value>
+                <value>
+                    <fullName>Phone Contact Home</fullName>
+                    <default>false</default>
+                    <label>Phone Contact Home</label>
+                </value>
+                <value>
+                    <fullName>Phone Contact Mobile</fullName>
+                    <default>false</default>
+                    <label>Phone Contact Mobile</label>
+                </value>
+                <value>
+                    <fullName>Phone 2</fullName>
+                    <default>false</default>
+                    <label>Phone 2</label>
+                </value>
+                <value>
+                    <fullName>Phone 3</fullName>
+                    <default>false</default>
+                    <label>Phone 3</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Birth_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Birth Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Call_Back__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Should we call this person back because they were unavailable at the time of original call?</description>
+        <externalId>false</externalId>
+        <label>Call Back</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>8192</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>9</visibleLines>
+    </fields>
+    <fields>
+        <fullName>DWID__c</fullName>
+        <externalId>false</externalId>
+        <label>DWID</label>
+        <length>9</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Do_Not_Call__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Do Not Call</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Email</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employer_2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Employer 2</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Licensure (Employer 2)</relationshipLabel>
+        <relationshipName>Licensure1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Employer_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank( Employer__c), 
+  if(isblank(Alt_Employer__c), 
+    if(isblank( Related_Contact_1__c), 
+      if(isblank( Related_Contact_2__c), &quot;Unknown&quot;, Related_Contact_2__r.Account.Name),
+    Related_Contact_1__r.Account.Name),
+  Alt_Employer__c), 
+Employer__r.Name)</formula>
+        <label>Employer Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Employer</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Licensure</relationshipLabel>
+        <relationshipName>Licensure</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Encoded_Nearby_Hosp_05__c</fullName>
+        <description>Hospitals within 0 to 5 miles.  Format is semi-colon separated OSHPD_ID.  See http://www.oshpd.ca.gov/HID/Products/Listings.html</description>
+        <externalId>false</externalId>
+        <label>Encoded Nearby Hosp 05</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Encoded_Nearby_Hosp_10__c</fullName>
+        <description>Hospitals within 5 to 10 miles.  Format is semi-colon separated OSHPD_ID.  See http://www.oshpd.ca.gov/HID/Products/Listings.html</description>
+        <externalId>false</externalId>
+        <label>Encoded Nearby Hosp 10</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Encoded_Nearby_Hosp_15__c</fullName>
+        <description>Hospitals within 10 to 15 miles.  Format is semi-colon separated OSHPD_ID.  See http://www.oshpd.ca.gov/HID/Products/Listings.html</description>
+        <externalId>false</externalId>
+        <label>Encoded Nearby Hosp 15</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Encoded_Nearby_Hosp_20__c</fullName>
+        <description>Hospitals within 15 to 20 miles.  Format is semi-colon separated OSHPD_ID.  See http://www.oshpd.ca.gov/HID/Products/Listings.html</description>
+        <externalId>false</externalId>
+        <label>Encoded Nearby Hosp 20</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>First_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>First Name</label>
+        <length>64</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Full_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank(Middle_Name__c), First_Name__c &amp; &quot; &quot; &amp; Last_Name__c,  First_Name__c &amp; &quot; &quot; &amp; Middle_Name__c &amp; &quot; &quot; &amp; Last_Name__c)</formula>
+        <label>Full Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Gender__c</fullName>
+        <externalId>false</externalId>
+        <label>Gender</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Female</fullName>
+                    <default>false</default>
+                    <label>Female</label>
+                </value>
+                <value>
+                    <fullName>Male</fullName>
+                    <default>false</default>
+                    <label>Male</label>
+                </value>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                    <label>Unknown</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Geolocation__c</fullName>
+        <displayLocationInDecimal>true</displayLocationInDecimal>
+        <externalId>false</externalId>
+        <label>Geolocation</label>
+        <required>false</required>
+        <scale>6</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Location</type>
+    </fields>
+    <fields>
+        <fullName>Interest_in_Co_Op__c</fullName>
+        <externalId>false</externalId>
+        <label>Interest in Co-Op</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Interested/Ready to apply</fullName>
+                    <default>false</default>
+                    <label>Interested/Ready to apply</label>
+                </value>
+                <value>
+                    <fullName>Unsure/wants more information</fullName>
+                    <default>false</default>
+                    <label>Unsure/wants more information</label>
+                </value>
+                <value>
+                    <fullName>Not Interested</fullName>
+                    <default>false</default>
+                    <label>Not Interested</label>
+                </value>
+                <value>
+                    <fullName>Not Eligible (no longer an LVN)</fullName>
+                    <default>false</default>
+                    <label>Not Eligible (no longer an LVN)</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Last_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Name</label>
+        <length>96</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Addr_City__c</fullName>
+        <externalId>false</externalId>
+        <label>License Addr City</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Addr_County__c</fullName>
+        <description>CA County</description>
+        <externalId>false</externalId>
+        <label>License Addr County</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Addr_State__c</fullName>
+        <externalId>false</externalId>
+        <label>License Addr State</label>
+        <length>2</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Addr_Street__c</fullName>
+        <externalId>false</externalId>
+        <label>License Addr Street</label>
+        <length>96</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Addr_Zip__c</fullName>
+        <externalId>false</externalId>
+        <label>License Addr Zip</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Agency__c</fullName>
+        <externalId>false</externalId>
+        <label>License Agency</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Expiration_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>License Expiration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>License_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>Unique Id for License</description>
+        <externalId>true</externalId>
+        <label>License Id</label>
+        <length>64</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>License_Issue_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>License Issue Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>License_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>License Status</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>License_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>License Type</label>
+        <length>96</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Licensure_Notes__c</fullName>
+        <description>Notes on Licensure contacts.</description>
+        <externalId>false</externalId>
+        <label>Licensure Notes</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Mailing_Addr_City__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Addr City</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Addr_State__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Addr State</label>
+        <length>2</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Addr_Street__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Addr Street</label>
+        <length>96</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_Addr_Zip__c</fullName>
+        <externalId>false</externalId>
+        <label>Mailing Addr Zip</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Middle_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Middle Name</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Nearby_Hospitals__c</fullName>
+        <description>Nearby Hospitals within 20 miles or max 12 listings</description>
+        <externalId>false</externalId>
+        <label>Nearby Hospitals</label>
+        <length>8192</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>15</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Party_Affiliation__c</fullName>
+        <externalId>false</externalId>
+        <label>Party Affiliation</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Phone 1</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Phone_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Phone 2</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Phone_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Phone 3</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Phone_Contact_Home__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank(Related_Contact_1__r.HomePhone), Related_Contact_2__r.HomePhone, Related_Contact_1__r.HomePhone)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Phone Contact Home</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone_Contact_Mobile__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank(Related_Contact_1__r.MobilePhone), Related_Contact_2__r.MobilePhone, Related_Contact_1__r.MobilePhone)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Phone Contact Mobile</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Race__c</fullName>
+        <description>Race or Ethnicity</description>
+        <externalId>false</externalId>
+        <label>Race</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regr_Addr_City__c</fullName>
+        <externalId>false</externalId>
+        <label>Regr Addr City</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regr_Addr_State__c</fullName>
+        <externalId>false</externalId>
+        <label>Regr Addr State</label>
+        <length>2</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regr_Addr_Street__c</fullName>
+        <description>Voter Registration Street</description>
+        <externalId>false</externalId>
+        <label>Regr Addr Street</label>
+        <length>96</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regr_Addr_Zip__c</fullName>
+        <externalId>false</externalId>
+        <label>Regr Addr Zip</label>
+        <length>32</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Related_Contact_1__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Related Contact 1</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Licensure</relationshipLabel>
+        <relationshipName>Licensure</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Related_Contact_2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Related Contact 2</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Licensure (Contact)</relationshipLabel>
+        <relationshipName>Licensure1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Related_Contact_How_1__c</fullName>
+        <description>How is Contact 1 related to this licensee?</description>
+        <externalId>false</externalId>
+        <label>Related Contact How 1</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Same Person</fullName>
+                    <default>false</default>
+                    <label>Same Person</label>
+                </value>
+                <value>
+                    <fullName>Cohabitator</fullName>
+                    <default>false</default>
+                    <label>Cohabitator</label>
+                </value>
+                <value>
+                    <fullName>Family/Friend</fullName>
+                    <default>false</default>
+                    <label>Family/Friend</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Related_Contact_How_2__c</fullName>
+        <description>How is Contact 2 related to the licensee?</description>
+        <externalId>false</externalId>
+        <label>Related Contact How 2</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Same Person</fullName>
+                    <default>false</default>
+                    <label>Same Person</label>
+                </value>
+                <value>
+                    <fullName>Cohabitator</fullName>
+                    <default>false</default>
+                    <label>Cohabitator</label>
+                </value>
+                <value>
+                    <fullName>Family/Friend</fullName>
+                    <default>false</default>
+                    <label>Family/Friend</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Report_Tags__c</fullName>
+        <externalId>false</externalId>
+        <label>Report Tags</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Spanish_Level__c</fullName>
+        <description>At what level does the person speak Spanish?</description>
+        <externalId>false</externalId>
+        <label>Spanish Level</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Conversational</fullName>
+                    <default>false</default>
+                    <label>Conversational</label>
+                </value>
+                <value>
+                    <fullName>Fluent</fullName>
+                    <default>false</default>
+                    <label>Fluent</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Licensure</label>
+    <listViews>
+        <fullName>Active_LVNs</fullName>
+        <columns>First_Name__c</columns>
+        <columns>Middle_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Phone_1__c</columns>
+        <columns>Phone_Contact_Home__c</columns>
+        <columns>Phone_Contact_Mobile__c</columns>
+        <columns>Bad_Phone__c</columns>
+        <columns>Interest_in_Co_Op__c</columns>
+        <columns>Spanish_Level__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Alt_Employer__c</columns>
+        <columns>Email__c</columns>
+        <columns>Licensure_Notes__c</columns>
+        <columns>License_Issue_Date__c</columns>
+        <columns>License_Addr_City__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>License_Type__c</field>
+            <operation>equals</operation>
+            <value>Licensed Vocational Nurse</value>
+        </filters>
+        <filters>
+            <field>Report_Tags__c</field>
+            <operation>equals</operation>
+            <value>LVN South LA List 4.1.16</value>
+        </filters>
+        <label>Active LVNs</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>License_Type__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Middle_Name__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>License_Addr_Zip__c</columns>
+        <columns>License_Addr_City__c</columns>
+        <columns>Phone_1__c</columns>
+        <columns>Phone_2__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>LVNs</fullName>
+        <columns>NAME</columns>
+        <columns>Last_Name__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Middle_Name__c</columns>
+        <columns>Regr_Addr_City__c</columns>
+        <columns>Employer_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>License_Type__c</field>
+            <operation>equals</operation>
+            <value>Licensed Vocational Nurse</value>
+        </filters>
+        <label>LVNs</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>LVNs_License_Issue_5_10_yrs_ago</fullName>
+        <columns>First_Name__c</columns>
+        <columns>Middle_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Phone_1__c</columns>
+        <columns>Phone_Contact_Home__c</columns>
+        <columns>Phone_Contact_Mobile__c</columns>
+        <columns>Bad_Phone__c</columns>
+        <columns>Interest_in_Co_Op__c</columns>
+        <columns>Spanish_Level__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Alt_Employer__c</columns>
+        <columns>Email__c</columns>
+        <columns>Licensure_Notes__c</columns>
+        <columns>License_Issue_Date__c</columns>
+        <columns>License_Addr_City__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>License_Type__c</field>
+            <operation>equals</operation>
+            <value>Licensed Vocational Nurse</value>
+        </filters>
+        <filters>
+            <field>Report_Tags__c</field>
+            <operation>equals</operation>
+            <value>LVN 5-10 Yrs List</value>
+        </filters>
+        <label>LVNs License Issue 5-10 yrs ago</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>LVNs_License_List5_19_16</fullName>
+        <columns>First_Name__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>Call_Back__c</columns>
+        <columns>Phone_1__c</columns>
+        <columns>Phone_2__c</columns>
+        <columns>Phone_Contact_Home__c</columns>
+        <columns>Phone_Contact_Mobile__c</columns>
+        <columns>Bad_Phone__c</columns>
+        <columns>Interest_in_Co_Op__c</columns>
+        <columns>Spanish_Level__c</columns>
+        <columns>Employer__c</columns>
+        <columns>Alt_Employer__c</columns>
+        <columns>Email__c</columns>
+        <columns>Licensure_Notes__c</columns>
+        <columns>License_Addr_City__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>License_Type__c</field>
+            <operation>equals</operation>
+            <value>Licensed Vocational Nurse</value>
+        </filters>
+        <filters>
+            <field>Report_Tags__c</field>
+            <operation>equals</operation>
+            <value>LVN PB 5.19.16</value>
+        </filters>
+        <label>LVNs License List5.19.16</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Licensure_UHW_Members</fullName>
+        <columns>NAME</columns>
+        <columns>License_Type__c</columns>
+        <columns>Last_Name__c</columns>
+        <columns>First_Name__c</columns>
+        <columns>Middle_Name__c</columns>
+        <columns>Employer_Name__c</columns>
+        <columns>License_Addr_City__c</columns>
+        <columns>License_Addr_Zip__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Related_Contact_1__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>UHW Members</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>LIC-{000000000}</displayFormat>
+        <label>Licensure Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Licensure</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>License_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Last_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>First_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Middle_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>License_Addr_City__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>License_Addr_Zip__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Employer_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Phone_1__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Phone_2__c</customTabListAdditionalFields>
+        <searchResultsAdditionalFields>License_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Last_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>First_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Middle_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>License_Addr_City__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>License_Addr_Zip__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Employer_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Phone_1__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Phone_2__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

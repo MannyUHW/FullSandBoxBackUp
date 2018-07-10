@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DelegateGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customObjects>MCL_Report</customObjects>
+    <customObjects>MCL_Sort_Entry</customObjects>
+    <customObjects>Licensure</customObjects>
+    <customObjects>Area_Zone</customObjects>
+    <customObjects>Booth</customObjects>
+    <customObjects>Shift_Time</customObjects>
+    <customObjects>Staffing_Assignment</customObjects>
+    <customObjects>UHW_Campaign</customObjects>
+    <customObjects>Survey_Question</customObjects>
+    <customObjects>Survey_Response</customObjects>
+    <customObjects>Contact_Address</customObjects>
+    <groups>AAs</groups>
+    <groups>Data Team</groups>
+    <groups>Hospital AAs</groups>
+    <groups>Kaiser AAs</groups>
+    <groups>Full Access Group</groups>
+    <groups>Community</groups>
+    <groups>Kaiser Division</groups>
+    <groups>Hospital Division</groups>
+    <groups>Communications</groups>
+    <groups>Political</groups>
+    <groups>ODD</groups>
+    <groups>Membership Auditors</groups>
+    <groups>Research</groups>
+    <groups>Membership Dept</groups>
+    <groups>Organizing</groups>
+    <groups>New Organizing Full Access</groups>
+    <groups>Kaiser Data Read Access (Non-Kaiser)</groups>
+    <groups>Hospital Data Read Access (Non-Hospital)</groups>
+    <groups>Kaiser Coordinators / Directors</groups>
+    <groups>Hospital Coordinators / Directors</groups>
+    <groups>OPS Meetings-Travels</groups>
+    <label>Delegated Data Administrator</label>
+    <loginAccess>true</loginAccess>
+    <permissionSets>New Organizing</permissionSets>
+    <permissionSets>Allow Data Entry New Organizing Data</permissionSets>
+    <permissionSets>COPE 10X10 R/W - For Division AAs Only</permissionSets>
+    <permissionSets>Allow Salesforce Files Sync</permissionSets>
+    <permissionSets>Allow Change Record Owner</permissionSets>
+    <permissionSets>Allow Create New Contact - All Record Types</permissionSets>
+    <permissionSets>Research Team</permissionSets>
+    <permissionSets>MCL Reports - Create</permissionSets>
+    <permissionSets>MCL Reports - Read/Print Only</permissionSets>
+    <permissionSets>BoothForce Admin</permissionSets>
+    <permissionSets>Create Chatter Group</permissionSets>
+    <permissionSets>Create Report/Dashboard/List View/Export</permissionSets>
+    <permissionSets>Booth Force</permissionSets>
+    <permissionSets>Export Report and Download Data</permissionSets>
+    <permissionSets>BHAT Administrator</permissionSets>
+    <permissionSets>Membership</permissionSets>
+    <permissionSets>Kaiser Division</permissionSets>
+    <permissionSets>MO</permissionSets>
+    <permissionSets>COPE Contribution Reports</permissionSets>
+    <permissionSets>Kaiser Route List</permissionSets>
+    <permissionSets>Hospital Route List</permissionSets>
+    <permissionSets>Hospital Division</permissionSets>
+    <permissionSets>Politician Read/Write</permissionSets>
+    <permissionSets>Political Time</permissionSets>
+    <permissionSets>Community</permissionSets>
+    <permissionSets>UHW Campaigns</permissionSets>
+    <profiles>Temp User Platform</profiles>
+    <profiles>Staff User Platform</profiles>
+    <roles>Full Access</roles>
+    <roles>UHW Staff</roles>
+</DelegateGroup>

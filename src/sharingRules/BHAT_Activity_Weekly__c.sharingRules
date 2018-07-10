@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingOwnerRules>
+        <fullName>BHAT_Activity_Weekly_Hospital</fullName>
+        <accessLevel>Read</accessLevel>
+        <label>BHAT Activity Weekly - Hospital</label>
+        <sharedTo>
+            <group>AAs_Hospital</group>
+        </sharedTo>
+        <sharedFrom>
+            <group>Hospital_Division</group>
+        </sharedFrom>
+    </sharingOwnerRules>
+</SharingRules>

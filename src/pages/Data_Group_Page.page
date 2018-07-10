@@ -1,0 +1,115 @@
+<apex:page standardStylesheets="false">
+
+  <head>
+    <style>
+      .spaced {
+        margin-top: 20px;
+      }
+
+      #DataGroup {
+        font-size: 2.0em;
+        color: blue;
+        font-weight: bold;
+        padding-top: 16px;
+        padding-bottom: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <dl>
+      <dt></dt>
+      <dd>
+        <div id="DataGroup">Data Group Page</div>
+        <ul>
+          <li class="spaced">
+            <a target="_blank" href="https://docs.google.com/document/d/1JTiuu8O-6dU4Hq8DdaJ6zq779dnFhniUs6VYzgs5PKA">Data Group Operational Procedures and Practices (Google Doc)</a>
+          </li>
+          <li class="spaced">
+            <apex:outputLink target="_blank" value="{!$Page.Utility_Phone_Rationalizer}">Phone Rationalizer (Beta)</apex:outputLink>
+          </li>
+          <li class="spaced">
+            <apex:outputLink target="_blank" value="{!$Page.Report_Raw_Logins}">UHW Management Raw Login Report</apex:outputLink>
+          </li>
+          <li class="spaced">
+            <a target="_blank" href="https://data-seiuuhw.herokuapp.com/name_matcher/name_matcher.html">Name Matcher</a>
+          </li>
+          <li class="spaced">
+            <apex:outputLink target="_blank" value="{!$Page.Report_Consolidated_Notes}?emid=5530">Notes Consolidator</apex:outputLink> (replace &quot;emid&quot; parameter with four digit Employer Id)</li>
+          <li class="spaced">
+            <apex:outputLink target="_blank" value="{!$Page.Report_Zero_List}?emid=5530&qcode=ESP">Survey Response Zero List</apex:outputLink> (replace &quot;emid&quot; parameter with four digit Employer Id and
+            &quot;qcode&quot; )</li>
+          <li class="spaced">
+            <apex:outputLink target="_blank" value="{!$Page.Report_Dept_Verbal}?emid=5530">Verbal by Department</apex:outputLink> (contacts must be marked "elist", replace &quot;emid&quot; parameter with
+            four digit Employer Id)</li>
+          <li class="spaced">
+            <apex:outputLink target="_blank" value="{!$Page.Report_Report_Metadata}">Report Metadata</apex:outputLink>
+          </li>
+          <li class="spaced">Office 365/SharePoint Links:</li>
+          <ul>
+            <li>
+              <a target="_blank" href="http://blog.sharepointlearn.com/2011/11/03/sharepoint-in-office-365-the-good-the-bad-the-brilliant-and-the-ugly/">SharePoint in Office 365 (from 2011, some info is dated)</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://www.infoworld.com/article/2974115/applications/office-365-beats-salesforce-as-most-popular-enterprise-service-in-new-survey.html?phint=newt%3Dinfoworld_cloud_computing&phint=idg_eid%3D83e28bb36a42554d559a884300b4ee67#tk.IFWNLE_nlt_cloud_2015-08-24&siteid=&phint=tpcs%3D&phint=idg_eid%3D83e28bb36a42554d559a884300b4ee67">Office 365 Most Popular Enterprise Service</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://www.gartner.com/technology/reprints.do?id=1-2F5VFDX&ct=150513&st=sb">Gartner: Cloud Office Shifts from &quot;If&quot; to &quot;When&quot;</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://www.cmswire.com/social-business/discussion-point-how-do-you-rate-sharepoint-2016-preview/?utm_source=cmswire.com&utm_medium=email&utm_campaign=cm&utm_content=nl-daily-150914-1800&mkt_tok=3RkMMJWWfF9wsRovva%2FIZKXonjHpfsXx6u0oXqCwlMI%2F0ER3fOvrPUfGjI4ATspmN6%2BTFAwTG5toziV8R7fFKs1509QQWRfj">Discussion Point: How Do You Rate SharePoint 2016 Preview?</a>
+            </li>
+            <li>
+              <a target="_blank" href="https://www.youtube.com/watch?v=qWySyx4sKYE">SharePoint Power Hour Video Training Example</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://www.infoworld.com/article/2898113/email-software/how-to-migrate-your-exchange-server-to-office-365.html">Migrating Exchange to Office 365</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://www.project-consult.de/files/Gartner_ECM_MQ_2014.pdf">Gartner Content Management Magic Quadrant</a>
+            </li>
+            <li>
+              <a target="_blank" href="https://blogs.office.com/2015/10/05/whats-new-september-2015/">New in Office 2016</a>
+            </li>
+            <li>
+              <a target="_blank" href="https://help.salesforce.com/HTViewHelpDoc?id=admin_files_connect_sp_online_xds.htm">Salesforce Files Connect for SharePoint/OneDrive</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://core0.staticworld.net/assets/media-resource/55293/ifw_dd_2014_11_office365-final.pdf">InfoWorld: How to Move to Office 365</a>
+            </li>
+            <li>
+              <a target="_blank" href="https://resources.office.com/rs/microsoftoffice/images/TEI_Of_Office_365_For_Enterprise_Customers.pdf">Forrester: Economic Impact of Office 365</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://www.microsoft.com/itshowcase/Article/Content/629">Microsoft Video: Information Rights Management in SharePoint Online (2 minutes 30 seconds)</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://www.microsoft.com/itshowcase/Article/Content/628">Microsoft Video: Lists in SharePoint Online (2 minutes 30 seconds)</a>
+            </li>
+            <li>
+              <a target="_blank" href="http://www.infoworld.com/article/2993063/office-software/why-companies-are-switching-from-google-apps-to-office-365.html">InfoWorld: Why Companies are Switching from Google Apps to Office 365</a>
+            </li>
+          </ul>
+
+          <li class="spaced">
+            <a target="_blank" href="https://uhw--c.na15.content.force.com/servlet/servlet.FileDownload?file=015i0000009zUkC">TALEND Example - Update existing API routine for field MiddleName</a>
+          </li>
+          <li class="spaced">
+            <a target="_blank" href="https://uhw--c.na15.content.force.com/servlet/servlet.FileDownload?file=015i000000CRKYN">TALEND - How to split an Employer to 2 SF Accounts</a>
+          </li>
+          <li class="spaced">
+            <a target="_blank" href="https://uhw.my.salesforce.com/sfc/p/i0000000e1zE/a/i0000000XaUN/3cBhNbNZ8nMQqTGqNXf5VHfCfwyDRex6cSWSmsF6gMw">COPE Dataloader map.sdl</a>
+          </li>
+          <li class="spaced">
+            <a target="_blank" href="https://uhw--c.na46.visual.force.com/apex/VFMetrics">Visualforce Page Views</a>
+          </li>
+          <li class="spaced">
+            <a target="_blank" href="https://uhw--c.na46.visual.force.com/apex/LeaderCovered_Info">Leader Covered</a>
+          </li>
+
+        </ul>
+
+      </dd>
+    </dl>
+  </body>
+</apex:page>

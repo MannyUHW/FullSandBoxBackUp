@@ -1,0 +1,52 @@
+<apex:page standardController="MCL_Report__c" extensions="MCLReportPrintController" showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="true" >
+<!-- contentType="text/csv#filename.csv" language="en-US" -->
+
+<!--
+	<apex:repeat value="{!results}" var="contact">
+		"{!contact.LastName}","{!contact.FirstName}"
+	</apex:repeat>
+-->
+
+<script>
+	function toArray(s) {
+    	if (!s || s.length == 0) return [];
+    	return s.split(",").map(function (val) { return val.replace("\,", ",");})
+  	}
+    function firstChar(s) {
+      return !s || s.length < 2 ? s : s.substring(0, 1);
+    }
+    var initData = {
+      sfSessionId : "{!$Api.Session_Id}",
+      mclReportId: "{!reportConfig.Id}",
+      employer: "{!reportConfig.Employer__c}",
+      columns: {!reportConfig.Columns__c},
+      rows: {!reportConfig.Rows__c},
+      rowHeight: {!reportConfig.Row_Height__c},
+      selectedBUs : toArray("{!reportConfig.Bargaining_Units__c}"), 
+      selectedJobClasses : toArray("{!reportConfig.Job_Classes__c}"),
+      selectedDepartments : toArray("{!reportConfig.Departments__c}"),
+      surveyQuestions : [],
+      selectedSurveyQuestionId : "{!reportConfig.Filter_Survey_Question__c}",
+      selectedSurveyQuestionCode : "{!reportConfig.Filter_Survey_Question__r.Survey_Code__c}",
+      selectedSurveyResponse : firstChar("{!reportConfig.Filter_Survey_Response__c}"),
+      allBUs : [],
+      allJobClasses : [],
+      allDepartments : [],
+      csv : true
+    };
+</script>
+
+<script id="contact-template" type="text/x-handlebars-template">
+{!reportConfig.Template__c}
+</script>
+
+
+  <script src="{!$Resource.async_js}"></script>
+  <script src="{!$Resource.JQuery}"></script>
+  <script src="{!$Resource.handlebars_js}"></script>
+  <script src="{!$Resource.JSForce}"></script>
+  <script src="{!$Resource.PapaParse}"></script>
+  <script src="{!$Resource.MCL_Print_js}"></script>
+
+
+</apex:page>

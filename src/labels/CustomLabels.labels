@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Approval_Exception_Emails</fullName>
+        <categories>Approval</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Approval Exception Usernames</shortDescription>
+        <value>ltemple@seiu-uhw.org;hruddick@seiu-uhw.org</value>
+    </labels>
+    <labels>
+        <fullName>Exception_Approver</fullName>
+        <categories>Approval</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Exception Approver</shortDescription>
+        <value>sgopal2512@gmail.com</value>
+    </labels>
+    <labels>
+        <fullName>HR_Group_Id</fullName>
+        <categories>Id</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>HR Group Id</shortDescription>
+        <value>00Gi0000001nNmk</value>
+    </labels>
+    <labels>
+        <fullName>OvertimeRecordtype</fullName>
+        <categories>RecordType Id</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Overtime Recordtype Id</shortDescription>
+        <value>012i0000001IEuF</value>
+    </labels>
+    <labels>
+        <fullName>Salesforce_URL</fullName>
+        <categories>URL</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Salesforce URL</shortDescription>
+        <value>https://uhw.my.salesforce.com/</value>
+    </labels>
+    <labels>
+        <fullName>TLS_Warning_Help_URL_Link_Text</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TLS Warning Help URL Link Text</shortDescription>
+        <value>Instructions</value>
+    </labels>
+    <labels>
+        <fullName>TLS_Warning_Message</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>TLS Warning Message</shortDescription>
+        <value>This device is using TLS 1.0 to access Salesforce, and TLS 1.0 will no longer work after {effective_date}.</value>
+    </labels>
+    <labels>
+        <fullName>Time_Off_Request_Id</fullName>
+        <categories>RecordType Id</categories>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Time Off Request Id</shortDescription>
+        <value>012i0000001IEuG</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_AbstractClientCredentialsNotSet</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Credentials not set</shortDescription>
+        <value>AbstractClient.Credentials not set</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_AbstractClientNotSet</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AbstractClient not set</shortDescription>
+        <value>AbstractClient not set</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_InvalidStateAddingProtectedHeader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for invalid request</shortDescription>
+        <value>AbstractClientRequest: Invalid State: Cannot add protected header</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_InvalidStateJsonAndRequestBody</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for invalid request</shortDescription>
+        <value>AbstractClientRequest: Invalid State: A request cannot have both a request body and JSON parameters</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullAccessToken</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>AccessToken cannot be null</shortDescription>
+        <value>AccessToken cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullBlob</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Blob cannot be null</shortDescription>
+        <value>Blob cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullContentType</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>ContentType cannot be null</shortDescription>
+        <value>ContentType cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullNamedCredentialName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Named Credential Name cannot be null</shortDescription>
+        <value>Named Credential Name cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_NullTokenType</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>TokenType cannot be null</shortDescription>
+        <value>TokenType cannot be null</value>
+    </labels>
+    <labels>
+        <fullName>ffhttp_UnhandledRedirection</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>Error for unhandled redirection</shortDescription>
+        <value>Response returned a 3xx Redirection error which is currently unhandled</value>
+    </labels>
+</CustomLabels>

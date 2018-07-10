@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Use for reporting snapshot of the COPE Card Collected - All Division report;</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Actual_Increase_Amount__c</fullName>
+        <description>Actual Increase Amount</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Actual Increase Amount</inlineHelpText>
+        <label>Actual Increase Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Amount__c</fullName>
+        <description>Amount</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Amount</inlineHelpText>
+        <label>Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>COPE_Card_Origination__c</fullName>
+        <externalId>false</externalId>
+        <label>COPE Card Origination</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>COPE_Pledge_Amount__c</fullName>
+        <description>COPE Pledge Amount</description>
+        <externalId>false</externalId>
+        <inlineHelpText>COPE Pledge Amount</inlineHelpText>
+        <label>COPE Pledge Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>COPE_Sign_Up_ID__c</fullName>
+        <description>COPE Sign-Up ID (record id in COPE Sign-Up object)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>COPE Sign-Up ID (record id in COPE Sign-Up object)</inlineHelpText>
+        <label>COPE Sign-Up ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>COPE_Sign_Up__c</fullName>
+        <description>COPE Sign-Up ID</description>
+        <externalId>false</externalId>
+        <inlineHelpText>COPE Sign-Up ID</inlineHelpText>
+        <label>COPE Sign-Up</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Card_Number__c</fullName>
+        <description>Card Number</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Card Number</inlineHelpText>
+        <label>Card Number</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Collected_by__c</fullName>
+        <description>Collected by</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Collected by</inlineHelpText>
+        <label>Collected by</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Coordinator__c</fullName>
+        <description>Coordinator</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Coordinator</inlineHelpText>
+        <label>Coordinator</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Date_Card_Collected__c</fullName>
+        <description>Date Card Collected</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date Card Collected</inlineHelpText>
+        <label>Date Card Collected</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>DistrictName__c</fullName>
+        <description>DistrictName</description>
+        <externalId>false</externalId>
+        <inlineHelpText>DistrictName</inlineHelpText>
+        <label>DistrictName</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DivisionName__c</fullName>
+        <description>DivisionName</description>
+        <externalId>false</externalId>
+        <inlineHelpText>DivisionName</inlineHelpText>
+        <label>DivisionName</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division_Type__c</fullName>
+        <description>Division Type - includes the Division Unon-Wide</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Division Type - includes the Division Unon-Wide</inlineHelpText>
+        <label>Division Type</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EBoardSeats_ID__c</fullName>
+        <description>EBoardSeats ID</description>
+        <externalId>false</externalId>
+        <inlineHelpText>EBoardSeats ID</inlineHelpText>
+        <label>EBoardSeats ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EboardEcom_Contact_Id__c</fullName>
+        <description>EboardEcom Contact Id</description>
+        <externalId>false</externalId>
+        <label>EboardEcom Contact Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Eboard_Ecom__c</fullName>
+        <description>Eboard/Ecom</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Eboard/Ecom</inlineHelpText>
+        <label>Eboard/Ecom</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Eboard_Seats__c</fullName>
+        <description>Eboard Seats</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Eboard Seats</inlineHelpText>
+        <label>Eboard Seats</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Employer_Name__c</fullName>
+        <description>Member Employer Name</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Member Employer Name</inlineHelpText>
+        <label>Member Employer Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Name__c</fullName>
+        <description>Member Name</description>
+        <externalId>false</externalId>
+        <label>Member Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_SF_Id__c</fullName>
+        <description>Salesforce contact id for Member</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Salesforce contact id for Member</inlineHelpText>
+        <label>Member SF Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Organizer__c</fullName>
+        <description>Organizer</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Organizer</inlineHelpText>
+        <label>Organizer</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Preactive_COPE_Signer_Employer__c</fullName>
+        <externalId>false</externalId>
+        <label>Preactive COPE Signer Employer</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Preactive_COPE_Signer__c</fullName>
+        <externalId>false</externalId>
+        <label>Preactive COPE Signer</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_Director__c</fullName>
+        <externalId>false</externalId>
+        <label>Regional Director</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Revoke__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Revoke</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>SeatName__c</fullName>
+        <description>SeatName</description>
+        <externalId>false</externalId>
+        <inlineHelpText>SeatName</inlineHelpText>
+        <label>SeatName</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Snapshot_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(MONTH(DATEVALUE(CreatedDate)))+&quot;/&quot; +TEXT(DAY(DATEVALUE(CreatedDate)))+&quot;/&quot; +TEXT(YEAR(DATEVALUE(CreatedDate)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Snapshot Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Title__c</fullName>
+        <description>Title</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Title</inlineHelpText>
+        <label>Title</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Verified_COPE_Pledge_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Verified COPE Pledge Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Verified_COPE_Pledge__c</fullName>
+        <description>Verified COPE Pledge</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Verified COPE Pledge</inlineHelpText>
+        <label>Verified COPE Pledge</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>COPE10X10Snaphot</label>
+    <nameField>
+        <label>Record Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>COPE10X10Snapshot</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>Read</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

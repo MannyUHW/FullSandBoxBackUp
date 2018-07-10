@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BHAT Archived</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BHAT Archived</value>
+    </caseValues>
+    <fields>
+        <label><!-- Activity Date --></label>
+        <name>Activity_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Daily ID --></label>
+        <name>BHAT_Activity_Daily_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Daily Name --></label>
+        <name>BHAT_Activity_Daily_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity ID --></label>
+        <name>BHAT_Activity_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Month --></label>
+        <name>BHAT_Activity_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Name --></label>
+        <name>BHAT_Activity_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Note Name --></label>
+        <name>BHAT_Activity_Note_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Weekly ID --></label>
+        <name>BHAT_Activity_Weekly_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Year --></label>
+        <name>BHAT_Activity_Year__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Code and Short Desc --></label>
+        <name>BHAT_Code_and_Short_Desc__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Owner ID --></label>
+        <name>BHAT_Owner_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Sub Category Other --></label>
+        <name>BHAT_Sub_Category_Other__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Week --></label>
+        <name>BHAT_Week__c</name>
+    </fields>
+    <fields>
+        <label><!-- Backup Export Date --></label>
+        <name>Backup_Export_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Daily Status --></label>
+        <name>Daily_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Date Reviewed --></label>
+        <name>Date_Reviewed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- EEID --></label>
+        <name>EEID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email Address --></label>
+        <name>Email_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Full Name --></label>
+        <name>Full_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hire Date --></label>
+        <name>Hire_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hours Spent --></label>
+        <name>Hours_Spent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Location --></label>
+        <name>Location__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager Id --></label>
+        <name>Manager_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager --></label>
+        <name>Manager__c</name>
+    </fields>
+    <fields>
+        <label><!-- OPEIU Graveyard/Swing --></label>
+        <name>OPEIU_Graveyard_Swing__c</name>
+    </fields>
+    <fields>
+        <label><!-- Review Notes --></label>
+        <name>Review_Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Review Status --></label>
+        <name>Review_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reviewed By --></label>
+        <name>Reviewed_By__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reviewed --></label>
+        <name>Reviewed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Term Date --></label>
+        <name>Term_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Title --></label>
+        <name>Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- UniqueId --></label>
+        <name>UniqueId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Week End Date --></label>
+        <name>Week_End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Week Start Date --></label>
+        <name>Week_Start_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Weekly Status --></label>
+        <name>Weekly_Status__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

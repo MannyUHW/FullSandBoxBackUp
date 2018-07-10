@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>UHW Asset</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>UHW Assets</value>
+    </caseValues>
+    <fields>
+        <label><!-- Lost/Stolen/Recycled/Donated Date --></label>
+        <name>Asset_Exit_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Asset Id --></label>
+        <name>Asset_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Asset Type --></label>
+        <name>Asset_Type__c</name>
+        <picklistValues>
+            <masterLabel>Aircard/Hotspot</masterLabel>
+            <translation><!-- Aircard/Hotspot --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Audio</masterLabel>
+            <translation><!-- Audio --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Camera</masterLabel>
+            <translation><!-- Camera --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Cell Phone</masterLabel>
+            <translation><!-- Cell Phone --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Copier</masterLabel>
+            <translation><!-- Copier --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>DVD Player</masterLabel>
+            <translation><!-- DVD Player --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>DVD Writer</masterLabel>
+            <translation><!-- DVD Writer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>GPS</masterLabel>
+            <translation><!-- GPS --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>IT/Other</masterLabel>
+            <translation><!-- IT/Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Laptop</masterLabel>
+            <translation><!-- Laptop --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Monitor</masterLabel>
+            <translation><!-- Monitor --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Operations/Other</masterLabel>
+            <translation><!-- Operations/Other --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>PC</masterLabel>
+            <translation><!-- PC --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Printer</masterLabel>
+            <translation><!-- Printer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Projector</masterLabel>
+            <translation><!-- Projector --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Scanner</masterLabel>
+            <translation><!-- Scanner --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Server</masterLabel>
+            <translation><!-- Server --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Smartphone</masterLabel>
+            <translation><!-- Smartphone --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tablet</masterLabel>
+            <translation><!-- Tablet --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Assigned to Member Employer --></label>
+        <name>Assigned_to_Member_Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned to Member --></label>
+        <name>Assigned_to_Member__c</name>
+        <relationshipLabel><!-- UHW Assets --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Computer Name --></label>
+        <name>Computer_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Corporation --></label>
+        <name>Corporation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Department --></label>
+        <name>Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- Depreciated Value --></label>
+        <name>Depreciated_Value__c</name>
+    </fields>
+    <fields>
+        <label><!-- Depreciation Annual --></label>
+        <name>Depreciation_Annual__c</name>
+    </fields>
+    <fields>
+        <label><!-- Depreciation Life --></label>
+        <name>Depreciation_Life__c</name>
+    </fields>
+    <fields>
+        <label><!-- Disposition Add Info --></label>
+        <name>Disposition_Add_Info__c</name>
+    </fields>
+    <fields>
+        <label><!-- Disposition --></label>
+        <name>Disposition__c</name>
+        <picklistValues>
+            <masterLabel>Assigned to Member</masterLabel>
+            <translation><!-- Assigned to Member --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Assigned to Office Location (See Add Info)</masterLabel>
+            <translation><!-- Assigned to Office Location (See Add Info) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Assigned to User</masterLabel>
+            <translation><!-- Assigned to User --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lease Returned</masterLabel>
+            <translation><!-- Lease Returned --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lost</masterLabel>
+            <translation><!-- Lost --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Other (See Disposition Add Info)</masterLabel>
+            <translation><!-- Other (See Disposition Add Info) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Recycled</masterLabel>
+            <translation><!-- Recycled --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Stolen</masterLabel>
+            <translation><!-- Stolen --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Storage</masterLabel>
+            <translation><!-- Storage --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unknown</masterLabel>
+            <translation><!-- Unknown --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Warranty Exchanged</masterLabel>
+            <translation><!-- Warranty Exchanged --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Lease End Date --></label>
+        <name>Lease_End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Make --></label>
+        <name>Make__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager --></label>
+        <name>Manager__c</name>
+    </fields>
+    <fields>
+        <label><!-- Model --></label>
+        <name>Model__c</name>
+    </fields>
+    <fields>
+        <label><!-- Office Assigned --></label>
+        <name>Office_Assigned__c</name>
+    </fields>
+    <fields>
+        <label><!-- User Office --></label>
+        <name>Office_User__c</name>
+    </fields>
+    <fields>
+        <label><!-- Own/Lease? --></label>
+        <name>Own_Lease__c</name>
+        <picklistValues>
+            <masterLabel>Borrowed</masterLabel>
+            <translation><!-- Borrowed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lease</masterLabel>
+            <translation><!-- Lease --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Own</masterLabel>
+            <translation><!-- Own --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Permit Expiration Date --></label>
+        <name>Permit_Expiration_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Phone --></label>
+        <name>Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Provisioning Team --></label>
+        <name>Provisioning_Team__c</name>
+        <picklistValues>
+            <masterLabel>IT</masterLabel>
+            <translation><!-- IT --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Operations</masterLabel>
+            <translation><!-- Operations --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Purchase Cost --></label>
+        <name>Purchase_Cost__c</name>
+    </fields>
+    <fields>
+        <label><!-- Purchase Date --></label>
+        <name>Purchase_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Purchase Order Id --></label>
+        <name>Purchase_Order_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Return Due Date --></label>
+        <name>Return_Due_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Salvage Value --></label>
+        <name>Salvage_Value__c</name>
+    </fields>
+    <fields>
+        <label><!-- See Attachments on Other Asset --></label>
+        <name>See_Attachments_on_Other_Asset__c</name>
+        <relationshipLabel><!-- UHW Assets --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Serial Number --></label>
+        <name>Serial_Number__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Campaign --></label>
+        <name>UHW_Campaign__c</name>
+        <relationshipLabel><!-- UHW Assets --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- User Active? --></label>
+        <name>User_Active__c</name>
+    </fields>
+    <fields>
+        <label><!-- User --></label>
+        <name>User__c</name>
+        <relationshipLabel><!-- UHW Assets --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Vendor --></label>
+        <name>Vendor__c</name>
+    </fields>
+    <layouts>
+        <layout>UHW Asset Layout</layout>
+        <sections>
+            <label><!-- Accounting --></label>
+            <section>Accounting</section>
+        </sections>
+        <sections>
+            <label><!-- Assignments --></label>
+            <section>Assignments</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Specifications --></label>
+            <section>Specifications</section>
+        </sections>
+    </layouts>
+    <startsWith>Vowel</startsWith>
+</CustomObjectTranslation>

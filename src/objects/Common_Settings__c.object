@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>List</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>BHAT_Update_End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>BHAT Update End Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>BHAT_Update_Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>BHAT Update Start Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Exclude_Login_for_BAR__c</fullName>
+        <externalId>false</externalId>
+        <label>Exclude Login for BAR</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>HospitalCode__c</fullName>
+        <description>Access for for uhw.force.com/HospitalRouteList</description>
+        <externalId>false</externalId>
+        <label>HospitalCode</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>KaiserCode__c</fullName>
+        <description>Access code for uhw.force.com/KaiserRouteList</description>
+        <externalId>false</externalId>
+        <label>KaiserCode</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>KrlEboardExceptions__c</fullName>
+        <description>Kaiser Route List Seats codes that are exceptions, meaning they appear on the Eboard tab for individual management.</description>
+        <externalId>false</externalId>
+        <label>KrlEboardExceptions</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Common Settings</label>
+    <visibility>Protected</visibility>
+</CustomObject>

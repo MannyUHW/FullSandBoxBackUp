@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>LeaderOutreach</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>LeaderOutreach</value>
+    </caseValues>
+    <fields>
+        <label><!-- Answer1 --></label>
+        <name>Answer1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Answer2 --></label>
+        <name>Answer2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Answer3 --></label>
+        <name>Answer3__c</name>
+    </fields>
+    <fields>
+        <label><!-- Answer4 --></label>
+        <name>Answer4__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpId --></label>
+        <name>EmpId__c</name>
+    </fields>
+    <fields>
+        <label><!-- LeaderFirstName --></label>
+        <name>LeaderFirstName__c</name>
+    </fields>
+    <fields>
+        <label><!-- LeaderLastName --></label>
+        <name>LeaderLastName__c</name>
+    </fields>
+    <fields>
+        <label><!-- MemberCellPhone --></label>
+        <name>MemberCellPhone__c</name>
+    </fields>
+    <fields>
+        <label><!-- MemberDepartment --></label>
+        <name>MemberDepartment__c</name>
+    </fields>
+    <fields>
+        <label><!-- MemberEmail --></label>
+        <name>MemberEmail__c</name>
+    </fields>
+    <fields>
+        <label><!-- MemberEmployeeId --></label>
+        <name>MemberEmployeeId__c</name>
+    </fields>
+    <fields>
+        <label><!-- MemberFirstName --></label>
+        <name>MemberFirstName__c</name>
+    </fields>
+    <fields>
+        <label><!-- MemberLastName --></label>
+        <name>MemberLastName__c</name>
+    </fields>
+    <layouts>
+        <layout>LeaderOutreach Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

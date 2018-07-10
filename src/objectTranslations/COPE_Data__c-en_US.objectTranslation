@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>COPE Data</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>COPE Data</value>
+    </caseValues>
+    <fields>
+        <label><!-- COPECountPerSeat_12 --></label>
+        <name>COPECountPerSeat_12__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountPerSeat_1 --></label>
+        <name>COPECountPerSeat_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountPerSeat_2 --></label>
+        <name>COPECountPerSeat_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountPerSeat_3 --></label>
+        <name>COPECountPerSeat_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountPerSeat_4 --></label>
+        <name>COPECountPerSeat_4__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountPerSeat_5 --></label>
+        <name>COPECountPerSeat_5__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountPerSeat_6 --></label>
+        <name>COPECountPerSeat_6__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountPerSeat_9 --></label>
+        <name>COPECountPerSeat_9__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountPerSeat --></label>
+        <name>COPECountPerSeat__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat_12 --></label>
+        <name>COPECountTenPlusPerSeat_12__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat_1 --></label>
+        <name>COPECountTenPlusPerSeat_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat_2 --></label>
+        <name>COPECountTenPlusPerSeat_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat_3 --></label>
+        <name>COPECountTenPlusPerSeat_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat_4 --></label>
+        <name>COPECountTenPlusPerSeat_4__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat_5 --></label>
+        <name>COPECountTenPlusPerSeat_5__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat 6 --></label>
+        <name>COPECountTenPlusPerSeat_6__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat_9 --></label>
+        <name>COPECountTenPlusPerSeat_9__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPECountTenPlusPerSeat --></label>
+        <name>COPECountTenPlusPerSeat__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEIncreaseCountPerSeat --></label>
+        <name>COPEIncreaseCountPerSeat__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEIncreaseTotalPerSeat --></label>
+        <name>COPEIncreaseTotalPerSeat__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen_12 --></label>
+        <name>COPEPercentTen_12__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen_1 --></label>
+        <name>COPEPercentTen_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen_2 --></label>
+        <name>COPEPercentTen_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen_3 --></label>
+        <name>COPEPercentTen_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen_4 --></label>
+        <name>COPEPercentTen_4__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen_5 --></label>
+        <name>COPEPercentTen_5__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen_6 --></label>
+        <name>COPEPercentTen_6__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen_9 --></label>
+        <name>COPEPercentTen_9__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercentTen --></label>
+        <name>COPEPercentTen__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent_12 --></label>
+        <name>COPEPercent_12__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent_1 --></label>
+        <name>COPEPercent_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent_2 --></label>
+        <name>COPEPercent_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent_3 --></label>
+        <name>COPEPercent_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent_4 --></label>
+        <name>COPEPercent_4__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent_5 --></label>
+        <name>COPEPercent_5__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent_6 --></label>
+        <name>COPEPercent_6__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent_9 --></label>
+        <name>COPEPercent_9__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPEPercent --></label>
+        <name>COPEPercent__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat_12 --></label>
+        <name>COPETotalPerSeat_12__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat_1 --></label>
+        <name>COPETotalPerSeat_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat_2 --></label>
+        <name>COPETotalPerSeat_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat_3 --></label>
+        <name>COPETotalPerSeat_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat_4 --></label>
+        <name>COPETotalPerSeat_4__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat_5 --></label>
+        <name>COPETotalPerSeat_5__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat_6 --></label>
+        <name>COPETotalPerSeat_6__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat_9 --></label>
+        <name>COPETotalPerSeat_9__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPETotalPerSeat --></label>
+        <name>COPETotalPerSeat__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cell1Class --></label>
+        <name>Cell1Class__c</name>
+    </fields>
+    <fields>
+        <label><!-- CommitteeMbrFirstName --></label>
+        <name>CommitteeMbrFirstName__c</name>
+    </fields>
+    <fields>
+        <label><!-- CommitteeMbrLastName --></label>
+        <name>CommitteeMbrLastName__c</name>
+    </fields>
+    <fields>
+        <label><!-- CommitteeMbrName --></label>
+        <name>CommitteeMbrName__c</name>
+    </fields>
+    <fields>
+        <label><!-- CoordName --></label>
+        <name>CoordName__c</name>
+    </fields>
+    <fields>
+        <label><!-- CoordinatorFirstName --></label>
+        <name>CoordinatorFirstName__c</name>
+    </fields>
+    <fields>
+        <label><!-- CoordinatorLastName --></label>
+        <name>CoordinatorLastName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Current Month --></label>
+        <name>Current_Month__c</name>
+    </fields>
+    <fields>
+        <label><!-- District --></label>
+        <name>District__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- EboardNames --></label>
+        <name>EboardNames__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat_12 --></label>
+        <name>EmpCountPerSeat_12__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat_1 --></label>
+        <name>EmpCountPerSeat_1__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat_2 --></label>
+        <name>EmpCountPerSeat_2__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat_3 --></label>
+        <name>EmpCountPerSeat_3__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat_4 --></label>
+        <name>EmpCountPerSeat_4__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat_5 --></label>
+        <name>EmpCountPerSeat_5__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat_6 --></label>
+        <name>EmpCountPerSeat_6__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat_9 --></label>
+        <name>EmpCountPerSeat_9__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmpCountPerSeat --></label>
+        <name>EmpCountPerSeat__c</name>
+    </fields>
+    <fields>
+        <label><!-- EmployerId --></label>
+        <name>EmployerId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldRepFirstName --></label>
+        <name>FieldRepFirstName__c</name>
+    </fields>
+    <fields>
+        <label><!-- FieldRepLastName --></label>
+        <name>FieldRepLastName__c</name>
+    </fields>
+    <fields>
+        <label><!-- NewCOPECount --></label>
+        <name>NewCOPECount__c</name>
+    </fields>
+    <fields>
+        <label><!-- NewCOPETotal --></label>
+        <name>NewCOPETotal__c</name>
+    </fields>
+    <fields>
+        <label><!-- OrgName --></label>
+        <name>OrgName__c</name>
+    </fields>
+    <fields>
+        <label><!-- OutputColumn1 --></label>
+        <name>OutputColumn1__c</name>
+    </fields>
+    <fields>
+        <label><!-- SeatID --></label>
+        <name>SeatID__c</name>
+    </fields>
+    <fields>
+        <label><!-- SeatName --></label>
+        <name>SeatName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Table Row Id --></label>
+        <name>Table_Row_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- UWG --></label>
+        <name>UWG__c</name>
+    </fields>
+    <fields>
+        <label><!-- eBoardFirstName --></label>
+        <name>eBoardFirstName__c</name>
+    </fields>
+    <fields>
+        <label><!-- eBoardLastName --></label>
+        <name>eBoardLastName__c</name>
+    </fields>
+    <fields>
+        <label><!-- rowId --></label>
+        <name>rowId__c</name>
+    </fields>
+    <layouts>
+        <layout>COPE Data Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,104 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>Test Mbr Ldr Permissions</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+
+<script src="/soap/ajax/37.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/37.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>   
+</head>
+
+<body>
+
+<apex:iframe src="https://10az.online.tableau.com/t/seiuunitedhealthcareworkerswestjacobdecker/views/BarsandBubbles/RSBar?:embed=y&:showAppBanner=false&:showShareOptions=false&:display_count=no&:showVizHome=no&Organizer=Carlos%20Zaragoza&Employer=Kaiser-Lamc%20Hospital&tabs=no&toolbars=no&filter=false&filters=no&legend=false" height="640px" width="910px" scrolling="false"/>
+
+<script type='text/javascript' src='https://10az.online.tableau.com/javascripts/api/viz_v1.js'></script>
+
+<!--
+<div class='tableauPlaceholder' style='width: 939px; height: 476px;'>
+  <object class='tableauViz' width='939' height='476' style='display:none;'>
+    <param name='host_url' value='https%3A%2F%2F10az.online.tableau.com%2F' />
+    <param name='site_root' value='&#47;t&#47;seiuunitedhealthcareworkerswestjacobdecker' />
+    <param name='name' value='BarsandBubbles&#47;RSBar' />
+    <param name='tabs' value='no' /><param name='toolbar' value='yes' />
+    <param name='showAppBanner' value='false' />
+    <param name='showShareOptions' value='true' />
+  </object>
+</div>
+-->
+
+<div id="mainDiv" align="center">
+
+</div>
+<br/>&nbsp;<br/>
+<div id="debugDiv" align="center">
+
+</div>
+
+
+<script language="JavaScript">
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+</script>
+
+
+</body>
+</html>
+
+
+</apex:page>

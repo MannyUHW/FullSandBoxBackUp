@@ -1,0 +1,421 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+<div align="center">
+
+
+  <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MO_Search_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+  
+
+
+
+<br>&nbsp;</br>
+  <h1 id="h1Title">Signatures Dashboard</h1>
+<br>&nbsp;</br>
+
+
+<table border="0" cellpadding="10">
+<tr valign="top">
+<td align="center">
+
+
+<div id="leaderDiv"></div>
+
+
+<script language="JavaScript">
+    var emids =  localStorage.getItem("mo_sync_emids");
+    var emnames =  localStorage.getItem("mo_sync_emnames");
+    var emsfids =  localStorage.getItem("mo_sync_emsfids");
+    var syncTs = localStorage.getItem("mo_last_sync");
+    var currentTs = (new Date()).getTime();
+    if (emnames == null || emnames == "" || emsfids == null || emsfids == "") {
+      navigateTo('{! $Page.MO_Choose_Page}');
+    } else if (currentTs - syncTs > (24 * 60 * 60 * 1000)) {
+      navigateTo('{! $Page.MO_Sync_Page}?emids=' + emids);
+    }
+
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+
+var emidArray = emids.replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnameArray = emnames.replace("[", "").replace("]","").replace("\"", "").split(",");
+var emNameIdMap = new Array();
+var emIdNameMap = new Array();
+for (var i = 0; i < emidArray.length; i++ ) { 
+  emNameIdMap[emnameArray[i].toLowerCase()] = emidArray[i];
+  emIdNameMap[emidArray[i]] = emnameArray[i];  
+}
+
+var qpopulated = false;
+
+
+var fidNameMap = new Array();
+var fidDeptMap = new Array();
+var fidEboardMap = new Array();
+var fidEmployerMap = new Array();
+var sortMap = new Array();
+var sortList = new Array();    
+var pcountMap = new Array();
+var scountMap = new Array();
+var hMap = new Array();
+var allCount = 0;
+var eboardCount = 0;
+var allLeaders = 0;
+var leaderMap = new Array();
+var unattachedCount = 0;
+
+try{ 
+
+    
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var query = "SELECT Id, FID__c, Name, Account.Name, Department FROM Contact where EBoard__c = true and (";
+    var emArray = emids.split(",");
+    for (var emdex = 0; emdex < emArray.length; emdex++) {
+          if (emdex > 0) {
+            query = query + " OR ";
+          }
+          query = query + " account.employer_id__c='" + emArray[emdex] + "' ";         
+    }
+    query += ")";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i<records1.length;i++){ 
+      var fid = records1[i].FID__c;
+      fidEboardMap[fid] = true;
+      pcountMap[fid] = 0;
+      scountMap[fid] = 0;      
+      hMap[fid] = new Array();
+      if (records1[i].Department == null) {
+        fidDeptMap[fid] = "Unknown"; 
+      } else {
+        fidDeptMap[fid] = records1[i].Department;
+      }
+      fidNameMap[fid] = records1[i].Name;      
+      fidEmployerMap[fid] = records1[i].Account.Name;
+      eboardCount++;
+    } 
+    //alert("eboard count = " + records1.length);
+    
+        
+    var query = "SELECT Collected_By_Name__c, Collected_By__c, Collected_By__r.FID__c,  Collected_By__r.Account.Name, Collected_By__r.Department, FID__c, Contact_Name__c, Alt_Person_Type__c, Employer_Name__c, Contact__c, Contact__r.Department, Question_Name__c,Response_Value__c, Add_Info__c FROM Survey_Response__c where Survey_Code__c=\'P15\' and (Contact__c != null OR Alt_Person_Type__c = 'Member') ";
+    query += " and (";
+    for (var emdex = 0; emdex < emArray.length; emdex++) {
+      var emName = emIdNameMap[emArray[emdex]];
+      emName = emName.toUpperCase();
+      if (emdex  > 0) {
+        query += " OR "
+      }
+      //query += " Employer_Name__c = \'" + emName + "\' ";
+      query += " Contact__r.Account.Employer_ID__c = \'" + emArray[emdex] + "\' ";
+    }
+    query += ") ";
+    
+    //alert("query=" + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var nonzeroList = new Array();
+    for(var i=0;i<records1.length;i++){ 
+      if (i == 0) {
+        //alert(records1[i]);
+      }
+      var fid = "NO_FID_" + records1[i].Contact_Name__c;
+      if (records1[i].FID__c != null) {
+        fid = records1[i].FID__c;
+      }
+ 
+      var cfid = null;
+      if (records1[i].Collected_By__c != null) {
+        cfid = records1[i].Collected_By__r.FID__c;
+        leaderMap[fid] = cfid;        
+      }
+      
+            
+      //if EBoard, they are there own owners
+      if (fidEboardMap[fid] != null) {
+        cfid = fid;
+        leaderMap[fid] = cfid;        
+      }
+      
+      
+      var pcount = 0;
+      var scount = 0;      
+      
+      var rfidList = new Array();
+      if (cfid != null && scountMap[cfid] != null) {
+        scount = scountMap[cfid];
+        rfidList = hMap[cfid];
+      }
+      
+      
+      if (records1[i].Contact__c == null) {
+        fidDeptMap[fid] = records1[i].Alt_Person_Type__c;
+      } else if (records1[i].Contact__r.Department == null) {
+        fidDeptMap[fid] = "Unknown";
+      } else {
+        fidDeptMap[fid] = records1[i].Contact__r.Department;
+      }
+
+      
+      if (cfid != null && records1[i].Collected_By__c != null) {
+        fidNameMap[cfid] = records1[i].Collected_By_Name__c;            
+        fidEmployerMap[cfid] = records1[i].Collected_By__r.Account.Name;
+      }
+       
+      fidNameMap[fid] = records1[i].Contact_Name__c;            
+      fidEmployerMap[fid] = records1[i].Employer_Name__c;
+      
+      var signatures = parseInt(records1[i].Add_Info__c);
+      pcount = pcount + signatures;
+      scount = scount + signatures;
+      allCount = allCount + signatures;
+
+      
+      rfidList.push(fid);
+      if (pcount > 0) {
+        pcountMap[fid] = pcount;
+        allLeaders++;
+      }
+      if (cfid != null) {
+        scountMap[cfid] = scount;      
+        hMap[cfid] = rfidList;
+      } else {
+        unattachedCount = unattachedCount + signatures;
+      }      
+    }
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+if (eboardCount == 0) {
+  eboardCount = 1;
+}
+
+    //sort by count
+    for (fid in pcountMap) {
+      var sortKey = "" + (9999999 - pcountMap[fid]) + fid;
+      sortMap[sortKey] = fid;
+      sortList.push(sortKey);
+    }
+    sortList.sort();
+    var s = "";
+    s+= "<h3>Overall Goals</h3>\n";
+    s+= "<table border=\"0\" cellpadding=\"7\">\n";
+    s+= "<tr>\n";
+    s+= "<td width=\"25%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">Goal</font></td>\n";  
+        
+    s+= "<td width=\"25%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">\n";    
+    s+= "Count";    
+    s+= "</font></td>\n\n";
+    s+= "<td width=\"25%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">\n";    
+    s+= "Goal";
+    s+= "</font></td>\n\n";
+        
+    s+= "<td width=\"25%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">\n";    
+    s+= "Progress</font>";    
+    s+= "</td>\n\n";    
+    s+= "</tr>\n";
+
+    //
+    //Signatures
+    //
+    s+= "<tr>\n";
+    s+= "<td align=\"center\">Signatures</td>\n";        
+    
+    s+= "<td align=\"center\">\n";        
+    s+= "" + allCount;
+    s+= "</td>\n";        
+    s+= "<td align=\"center\">\n";        
+    s+= "" + (eboardCount * 250);
+    s+= "</td>\n";        
+
+    s+= "<td align=\"center\">\n";        
+    s+= "" + Math.round(allCount * 100 / (eboardCount * 250)) + "%";
+    s+= "</td>\n";        
+
+    s+= "</tr>\n";    
+    
+    
+    //
+    //Leaders
+    //
+    s+= "<tr>\n";
+    s+= "<td align=\"center\">Leaders</td>\n";        
+    
+    s+= "<td align=\"center\">\n";        
+    s+= "" + allLeaders;
+    s+= "</td>\n";        
+    s+= "<td align=\"center\">\n";        
+    s+= "" + (eboardCount * 6);
+    s+= "</td>\n";        
+
+    s+= "<td align=\"center\">\n";        
+    s+= "" + Math.round(allLeaders* 100 / (eboardCount * 6)) + "%";
+    s+= "</td>\n";        
+
+    s+= "</tr>\n";    
+
+    
+    s+="</table>\n\n\n<br>&nbsp;</br>\n\n";
+    
+    
+        
+    //alert("start output");
+    //output
+    s+= "<h3>Leaders</h3>\n";    
+    s+= "<table border=\"0\" cellpadding=\"5\">\n";
+    s+="<tr valign=\"bottom\">\n";
+    s+= "<td width=\"15%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">\n";     
+    s+="EBoard";
+    s+= "</font></td>\n\n";
+    
+    s+= "<td width=\"65%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">\n";     
+    s+="Leader";
+    s+= "</font></td>\n\n";
+    
+    s+= "<td width=\"20%\" bgcolor=\"#481C60\" align=\"center\"><font color=\"white\">\n";     
+    s+="Count";
+    s+= "</font></td>\n\n";    
+        
+    s+="</tr>\n";
+    
+    for (lfid in scountMap) {
+      s+= "<tr valign=\"top\">\n";
+      s+= "<td colspan=\"2\" align=\"left\">";
+      s+= "<b>" + toProperCase(fidNameMap[lfid]) + "</b>";
+
+      if (fidEboardMap[lfid] != null && fidEboardMap[lfid] == true) {
+          s+= "&nbsp;&#x2713";      
+      }
+      
+      s+= "</td>";      
+      s+= "<td align=\"center\">";
+      s+= "<b>" + scountMap[lfid] + "</b>";
+      s+= "</td>";            
+      s+= "</tr>";      
+
+      for (fid in pcountMap) {
+        if (leaderMap[fid] == lfid && pcountMap[fid] != 0) {
+          s+= "<tr valign=\"top\">\n";
+          s+= "<td align=\"left\">&nbsp;</td>";     
+          s+= "<td align=\"left\">";
+          if (fid.indexOf("NO_FID_") == 0) {
+            s+= toProperCase(fidNameMap[fid]);
+            s+= "<font size=\"-1\"><br/>&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(fidEmployerMap[fid]) + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(fidDeptMap[fid]) + "<br/>\n";              
+          } else {
+             s+="<a href=\"javascript:navigateTo(\'{! $Page.MO_Contact_Page}?fid=" + fid + "\');\">" + toProperCase(fidNameMap[fid]) + "</a><br/><font size=\"-1\">&nbsp;<br/>\n";
+             var emname = fidEmployerMap[fid];
+             var emid = emNameIdMap[emname.trim().toLowerCase()];
+             s+= "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"javascript:navigateTo(\'{! $Page.MO_List_Page}?emid=" + emid + "&dept=" + encodeURIComponent(fidDeptMap[fid]) + "\');\">" + toProperCase(fidEmployerMap[fid]) + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;<nobr>" + toProperCase(fidDeptMap[fid]) + "</nobr></a><br/>&nbsp;<br/>\n";      
+          }
+          s+= "&nbsp;<br/>&nbsp;</font></td>";      
+          s+= "<td align=\"center\">";
+          s+= pcountMap[fid];
+          s+= "</td>";            
+          s+= "</tr>";   
+        }   
+      }
+     
+            
+    }
+    
+    //Unattached
+    s+= "<tr valign=\"top\">\n";
+    s+= "<td colspan=\"2\" align=\"left\">";
+    s+= "<b>Not Attached to an EBoard Mbr</b>";
+
+      
+    s+= "</td>";      
+    s+= "<td align=\"center\">";
+    s+= "<b>" + unattachedCount + "</b>";
+    s+= "</td>";            
+    s+= "</tr>";      
+
+    for (fid in pcountMap) {
+        if (leaderMap[fid] == null && pcountMap[fid] != 0) {
+          s+= "<tr valign=\"top\">\n";
+          s+= "<td align=\"left\">&nbsp;</td>";     
+          s+= "<td align=\"left\">";
+          if (fid.indexOf("NO_FID_") == 0) {
+            s+= toProperCase(fidNameMap[fid]);
+            s+= "<font size=\"-1\"><br/>&nbsp;<br/>&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(fidEmployerMap[fid]) + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;" + toProperCase(fidDeptMap[fid]) + "<br/>\n";              
+          } else {
+             s+="<a href=\"javascript:navigateTo(\'{! $Page.MO_Contact_Page}?fid=" + fid + "\');\">" + toProperCase(fidNameMap[fid]) + "</a><br/><font size=\"-1\">&nbsp;<br/>\n";
+             var emname = fidEmployerMap[fid];
+             var emid = emNameIdMap[emname.trim().toLowerCase()];
+             s+= "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"javascript:navigateTo(\'{! $Page.MO_List_Page}?emid=" + emid + "&dept=" + encodeURIComponent(fidDeptMap[fid]) + "\');\">" + toProperCase(fidEmployerMap[fid]) + "<br/>&nbsp;&nbsp;&nbsp;&nbsp;<nobr>" + toProperCase(fidDeptMap[fid]) + "</nobr></a><br/>&nbsp;<br/>\n";      
+          }
+          s+= "&nbsp;<br/>&nbsp;</font></td>";      
+          s+= "<td align=\"center\">";
+          s+= pcountMap[fid];
+          s+= "</td>";            
+          s+= "</tr>";   
+        }   
+    }
+     
+         
+    s+="</table>\n\n\n<br>&nbsp;</br>\n\n";
+    //alert("done");
+    $("#leaderDiv").html(s);
+    
+    
+
+  qpopulated = true;
+
+</script>
+
+<br>&nbsp;</br>
+
+<a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+
+</td>
+</tr>
+</table>
+
+</div>
+</apex:page>

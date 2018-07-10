@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Petition Ledger</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Petition Ledger</value>
+    </caseValues>
+    <fields>
+        <label><!-- Bad Signatures --></label>
+        <name>Bad_Signatures__c</name>
+    </fields>
+    <fields>
+        <label><!-- Circulator Alt Relation --></label>
+        <name>Circulator_Alt_Relation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Circulator Alt --></label>
+        <name>Circulator_Alt__c</name>
+    </fields>
+    <fields>
+        <label><!-- Comments --></label>
+        <name>Comments__c</name>
+    </fields>
+    <fields>
+        <label><!-- County --></label>
+        <name>County__c</name>
+        <picklistValues>
+            <masterLabel>Alameda</masterLabel>
+            <translation><!-- Alameda --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Alpine</masterLabel>
+            <translation><!-- Alpine --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Amador</masterLabel>
+            <translation><!-- Amador --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Butte</masterLabel>
+            <translation><!-- Butte --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Calaveras</masterLabel>
+            <translation><!-- Calaveras --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Colusa</masterLabel>
+            <translation><!-- Colusa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Contra Costa</masterLabel>
+            <translation><!-- Contra Costa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Del Norte</masterLabel>
+            <translation><!-- Del Norte --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>El Dorado</masterLabel>
+            <translation><!-- El Dorado --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Fresno</masterLabel>
+            <translation><!-- Fresno --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Glenn</masterLabel>
+            <translation><!-- Glenn --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Humboldt</masterLabel>
+            <translation><!-- Humboldt --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Imperial</masterLabel>
+            <translation><!-- Imperial --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Inyo</masterLabel>
+            <translation><!-- Inyo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Kern</masterLabel>
+            <translation><!-- Kern --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Kings</masterLabel>
+            <translation><!-- Kings --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lake</masterLabel>
+            <translation><!-- Lake --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Lassen</masterLabel>
+            <translation><!-- Lassen --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Los Angeles</masterLabel>
+            <translation><!-- Los Angeles --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Madera</masterLabel>
+            <translation><!-- Madera --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Marin</masterLabel>
+            <translation><!-- Marin --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mariposa</masterLabel>
+            <translation><!-- Mariposa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mendocino</masterLabel>
+            <translation><!-- Mendocino --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Merced</masterLabel>
+            <translation><!-- Merced --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Modoc</masterLabel>
+            <translation><!-- Modoc --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Mono</masterLabel>
+            <translation><!-- Mono --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Monterey</masterLabel>
+            <translation><!-- Monterey --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Napa</masterLabel>
+            <translation><!-- Napa --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Nevada</masterLabel>
+            <translation><!-- Nevada --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>No County Assigned</masterLabel>
+            <translation><!-- No County Assigned --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Orange</masterLabel>
+            <translation><!-- Orange --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Placer</masterLabel>
+            <translation><!-- Placer --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Plumas</masterLabel>
+            <translation><!-- Plumas --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Riverside</masterLabel>
+            <translation><!-- Riverside --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sacramento</masterLabel>
+            <translation><!-- Sacramento --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Benito</masterLabel>
+            <translation><!-- San Benito --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Bernardino</masterLabel>
+            <translation><!-- San Bernardino --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Diego</masterLabel>
+            <translation><!-- San Diego --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Francisco</masterLabel>
+            <translation><!-- San Francisco --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Joaquin</masterLabel>
+            <translation><!-- San Joaquin --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Luis Obispo</masterLabel>
+            <translation><!-- San Luis Obispo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>San Mateo</masterLabel>
+            <translation><!-- San Mateo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Santa Barbara</masterLabel>
+            <translation><!-- Santa Barbara --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Santa Clara</masterLabel>
+            <translation><!-- Santa Clara --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Santa Cruz</masterLabel>
+            <translation><!-- Santa Cruz --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Shasta</masterLabel>
+            <translation><!-- Shasta --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sierra</masterLabel>
+            <translation><!-- Sierra --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Siskiyou</masterLabel>
+            <translation><!-- Siskiyou --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Solano</masterLabel>
+            <translation><!-- Solano --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sonoma</masterLabel>
+            <translation><!-- Sonoma --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Stanislaus</masterLabel>
+            <translation><!-- Stanislaus --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Sutter</masterLabel>
+            <translation><!-- Sutter --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tehama</masterLabel>
+            <translation><!-- Tehama --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Trinity</masterLabel>
+            <translation><!-- Trinity --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tulare</masterLabel>
+            <translation><!-- Tulare --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Tuolumne</masterLabel>
+            <translation><!-- Tuolumne --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Ventura</masterLabel>
+            <translation><!-- Ventura --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yolo</masterLabel>
+            <translation><!-- Yolo --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Yuba</masterLabel>
+            <translation><!-- Yuba --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- From Coordinator --></label>
+        <name>From_Coordinator__c</name>
+        <relationshipLabel><!-- Petition Ledger (From Coordinator) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- From Division --></label>
+        <name>From_Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- From Regional Director --></label>
+        <name>From_Regional_Director__c</name>
+        <relationshipLabel><!-- Petition Ledger (From Regional Director) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Petition Quantity --></label>
+        <name>Quantity__c</name>
+    </fields>
+    <fields>
+        <label><!-- To Coordinator --></label>
+        <name>To_Coordinator__c</name>
+        <relationshipLabel><!-- Petition Ledger (To Coordinator) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- To Division --></label>
+        <name>To_Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- To Regional Director --></label>
+        <name>To_Regional_Director__c</name>
+        <relationshipLabel><!-- Petition Ledger (To Regional Director) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Transfer Date --></label>
+        <name>Transfer_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Transfer Type --></label>
+        <name>Transfer_Type__c</name>
+        <picklistValues>
+            <masterLabel>A. Sent to Audit</masterLabel>
+            <translation><!-- A. Sent to Audit --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>M. Member Leader Check-Out</masterLabel>
+            <translation><!-- M. Member Leader Check-Out --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>O. Check-In to Operations</masterLabel>
+            <translation><!-- O. Check-In to Operations --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>P. Printed Petitions Delivered To</masterLabel>
+            <translation><!-- P. Printed Petitions Delivered To --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>R. Returned Blank to Operations</masterLabel>
+            <translation><!-- R. Returned Blank to Operations --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>S. Staff Check-Out</masterLabel>
+            <translation><!-- S. Staff Check-Out --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>X. Burned</masterLabel>
+            <translation><!-- X. Burned --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Transferred From --></label>
+        <name>Transferred_From__c</name>
+        <relationshipLabel><!-- Petition Ledger --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Transferred To --></label>
+        <name>Transferred_To__c</name>
+        <relationshipLabel><!-- Petition Ledger (Transferred To) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Turf Key --></label>
+        <name>Turf_Key__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Campaign --></label>
+        <name>UHW_Campaign__c</name>
+        <relationshipLabel><!-- Petition Ledger --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Valid Signatures --></label>
+        <name>Valid_Signatures__c</name>
+    </fields>
+    <layouts>
+        <layout>Petition Ledger Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Check-ins and audit records must have a valid county assigned. --></errorMessage>
+        <name>County_Assignment</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- After printing, all Petition Ledger records must have a To and a From person. --></errorMessage>
+        <name>Must_Have_From</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Do not put anyone in Transfer To for audits and burns. --></errorMessage>
+        <name>No_To_For_Burn_and_Audit</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Quantity must be 1 petition or greater. --></errorMessage>
+        <name>Quantity_Not_Zero</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Valid and bad signature counts should only be on check-ins and audit records. --></errorMessage>
+        <name>Valid_Signatures_for_CheckIn_and_Audit</name>
+    </validationRules>
+</CustomObjectTranslation>

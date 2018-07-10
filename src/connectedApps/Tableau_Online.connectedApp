@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ConnectedApp xmlns="http://soap.sforce.com/2006/04/metadata">
+    <canvasConfig>
+        <accessMethod>Post</accessMethod>
+        <canvasUrl>https://10az.online.tableau.com</canvasUrl>
+        <locations>Visualforce</locations>
+        <samlInitiationMethod>IdpInitiated</samlInitiationMethod>
+    </canvasConfig>
+    <contactEmail>mdalmacio@seiu-uhw.org</contactEmail>
+    <label>Tableau Online</label>
+    <samlConfig>
+        <acsUrl>https://sso.online.tableau.com/public/sp/SSO?alias=31a9a628-2efc-491f-bbf9-ba1cfb6dc2c1</acsUrl>
+        <certificate>MIIDKDCCApGgAwIBAgIGAVZcq8WFMA0GCSqGSIb3DQEBCwUAMG4xPTA7BgNVBAsMNGNvbS50YWJsZWF1c29mdHdhcmUuc2l0ZXNhbWwud2ViYXBwLnV0aWwuQ3J5cHRvVXRpbHMxLTArBgNVBAMMJDMxYTlhNjI4LTJlZmMtNDkxZi1iYmY5LWJhMWNmYjZkYzJjMTAeFw0xNjA4MDQyMTQ2MTZaFw0yNjA4MDUyMTQ2MTZaMG4xPTA7BgNVBAsMNGNvbS50YWJsZWF1c29mdHdhcmUuc2l0ZXNhbWwud2ViYXBwLnV0aWwuQ3J5cHRvVXRpbHMxLTArBgNVBAMMJDMxYTlhNjI4LTJlZmMtNDkxZi1iYmY5LWJhMWNmYjZkYzJjMTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEA2ht8vdZ+IuSzKQgUCfgrkSx13ykv3eBW2iadNtqbloVI5SfMvdg128yb5ybQmNsaM+OibDh9llqhHcypXkoRIS/sq3Hzc5p1W+sy+MWS2MsB2cRa+0VYtI7zgFaK/Z7QVtDJOYwbb2XIVxVCkJkbcncwvqOPpDuCF+ds6vZvk5MCAwEAAaOB0DCBzTAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBShtUDPdAJUximGQw3soRXGidGJjDCBnQYDVR0jBIGVMIGSgBShtUDPdAJUximGQw3soRXGidGJjKFypHAwbjE9MDsGA1UECww0Y29tLnRhYmxlYXVzb2Z0d2FyZS5zaXRlc2FtbC53ZWJhcHAudXRpbC5DcnlwdG9VdGlsczEtMCsGA1UEAwwkMzFhOWE2MjgtMmVmYy00OTFmLWJiZjktYmExY2ZiNmRjMmMxggYBVlyrxYUwDQYJKoZIhvcNAQELBQADgYEALeLvtJwpnh5m5EJx5IYzL99+ZbBm+8diqwrAX/Gy+g71WQnSFLAur51YdHSnIAcQ7074nQMDioR8iNYfykhCoIsmdfrctNi5QYHlysDt7TK+tteGdgW9COhH2dnZNuRtJVS8O2+zpTS30aahP22jLpMslwkpupG5DIfbm2ZLCdg=</certificate>
+        <encryptionType>AES_128</encryptionType>
+        <entityUrl>https://sso.online.tableau.com/public/sp/metadata?alias=31a9a628-2efc-491f-bbf9-ba1cfb6dc2c1</entityUrl>
+        <issuer>https://uhw.my.salesforce.com</issuer>
+        <samlNameIdFormat>EmailAddress</samlNameIdFormat>
+        <samlSubjectType>Username</samlSubjectType>
+    </samlConfig>
+</ConnectedApp>

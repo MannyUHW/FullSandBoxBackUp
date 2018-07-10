@@ -1,0 +1,666 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>MO: Enter Survey</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.zipCodeGeoMap)}"/>
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css"/>
+<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+
+
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+</head>
+
+  <body>
+  <div align="center">
+
+  <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  </tr>
+  </table>
+
+  
+  <table border="0"> 
+  <tr valign="top">
+  <td align="center">
+
+    <br></br>
+  <h4>Enter Survey</h4>
+
+
+  <table width="100%">  
+  <tr valign="middle">
+  <td>  
+  Contact:
+  </td>
+  <td width="50%" align="center">
+  <div id="contactDiv">No Contact Selected</div>
+  </td>
+  <td>
+  <a href="javascript:searchForContact();">&nbsp;&nbsp;&nbsp;&nbsp;
+  <img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;</a>
+  <br></br>
+  </td>
+  </tr>
+  
+  <tr valign="middle">
+  <td>  
+  <div id="collectorLabel">EBoard/<br/>Collected <br/>By:</div>&nbsp;
+  </td>
+  <td  width="50%"  align="center">
+  <div id="collectorDiv">No Collector Selected</div>  
+  </td>
+  <td>
+  <a href="javascript:searchForCollector();">&nbsp;&nbsp;&nbsp;&nbsp;
+  <img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;</a>
+  </td>
+  </tr>
+  
+    <tr valign="top">
+  <td colspan="3">  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  </tr>
+  
+  <tr valign="top">
+  <td>  
+  Survey:
+  </td>
+  <td colspan="2" align="center">
+  <select id="qselect" onchange="populateResponses()">
+  </select>
+  </td>
+  </tr>
+    <tr valign="top">   
+  <td colspan="3" align="center">
+  <br>&nbsp;</br>
+  
+  <div id="CollectedDateDiv">
+    <div id="CollectedDateLabelDiv">Collected Date:</div>
+    <input type="text" id="datepicker"/><br>&nbsp;</br>
+  </div>
+    
+  <div id="SupplementDiv">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+  <br>&nbsp;</br>
+  </td>
+  </tr>
+  <tr valign="top">
+
+  
+  <td> 
+  Response:
+  </td>
+  <td colspan="2" align="center">
+  <select id="rselect">
+  </select>
+  <div id="SupplementDiv2"></div>
+
+  </td>    
+  </tr>
+
+  </table>
+  <br>&nbsp;</br>
+
+<button class="btn btn-lg btn-primary" type="submit" onclick="submitSurvey()">  
+
+  &nbsp;&nbsp;
+  Submit Survey
+  &nbsp;&nbsp;
+  </button><br></br>  
+
+  <br>&nbsp;</br>
+  <br>&nbsp;</br>
+  <br>&nbsp;</br>
+
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <div align="center">
+  <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </div>
+</td>
+</tr>
+  </table>
+  <br>&nbsp;</br>
+        &copy; 2016 SEIU-UHW. All rights reserved.
+  </div>
+  
+<script language="JavaScript">
+  var prevResponseMap = new Array();
+  var prevAddInfoMap = new Array();  
+  
+  sessionStorage.setItem("mo_last_page", "MO_Enter_Survey_Page");
+
+  var lastQid = "";
+  var addInfo = "";
+  
+        sforce.connection.sessionId = "{!$Api.Session_ID}";
+  
+  var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+  var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+  var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+    
+  var emsfids = localStorage.getItem("mo_sync_emsfids").replace("[", "").replace("]","").replace("\"", "").split(",");
+  var emids = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").split(",");  
+  var emidSfidMap = new Array();
+  for (var i = 0; i < emids.length; i++) {
+    emidSfidMap[emids[i]] = emsfids[i];
+  }        
+    
+  //populate questions
+  var qselect = document.getElementById("qselect");
+  var qidQcodeMap = new Array();
+  var qcodeQidMap = new Array();  
+  for (var i = 0; i < qids.length; i++) {
+    qselect.options[i] = new Option(questions[i], qids[i]);
+    if (localStorage.getItem("mo_enter_survey_qselect") != null && localStorage.getItem("mo_enter_survey_qselect") == qids[i]) {
+      qselect.options[i].selected = true; 
+    }
+    qidQcodeMap[qids[i]] = qcodes[i];
+    qcodeQidMap[qcodes[i]] = qids[i];
+  }
+
+    
+  document.getElementById('qselect').addEventListener('click', populateResponses());
+  document.getElementById('qselect').addEventListener('onchange', populateResponses());  
+
+  //populateResponses();
+  if (sessionStorage.getItem("mo_enter_survey_rselect") != null) {
+      //alert("found session value rselect = _" + sessionStorage.getItem("mo_enter_survey_rselect"));
+      //document.getElementById("rselect").value = sessionStorage.getItem("mo_enter_survey_rselect");
+      $("#rselect").val(sessionStorage.getItem("mo_enter_survey_rselect"));
+  }
+  
+  //contact
+  var cid1 = null;
+  var fid1 = "{!$CurrentPage.parameters.fid1}";
+
+  var altlast = "{!$CurrentPage.parameters.altlast}";
+  var altmiddle = "{!$CurrentPage.parameters.altmiddle}";
+  var altfirst = "{!$CurrentPage.parameters.altfirst}";    
+  var altemid = "{!$CurrentPage.parameters.altemid}";      
+  var altfull =  toProperCase("" + altlast + ", " + altfirst + " " + altmiddle).trim();
+  var altptype = "{!$CurrentPage.parameters.altptype}";     
+  var altphone = "{!$CurrentPage.parameters.altphone}";     
+  var altemail = "{!$CurrentPage.parameters.altemail}";  
+  var altrid = "{!$CurrentPage.parameters.altrid}";
+  
+
+  
+    //alert("altlast="  + altlast + "\nfid1=" + fid1 + "\nsession alt last=" + sessionStorage.getItem("mo_enter_survey_altlast") + "\nsession fid1=" + sessionStorage.getItem("mo_enter_survey_fid1"));
+         
+  if ((fid1 == null || fid1 == "" || fid1 == "null") && sessionStorage.getItem("mo_enter_survey_fid1") != null && sessionStorage.getItem("mo_enter_survey_fid1") != "" && sessionStorage.getItem("mo_enter_survey_fid1") != "null") {
+    //alert("getting FID1 from sessionStorage.");
+    fid1 = sessionStorage.getItem("mo_enter_survey_fid1");
+  } else if ( (fid1 == null || fid1 == "" || fid1 == "null") && (altlast == null || altlast == "" || altlast == "null") && sessionStorage.getItem("mo_enter_survey_altlast") != null) {
+    //alert("getting alt contact from sessionStorage.");
+    altlast = sessionStorage.getItem("mo_enter_survey_altlast");
+    altmiddle = sessionStorage.getItem("mo_enter_survey_altmiddle");
+    altfirst =  sessionStorage.getItem("mo_enter_survey_altfirst"); 
+    altemid = sessionStorage.getItem("mo_enter_survey_altemid"); 
+    altptype = sessionStorage.getItem("mo_enter_survey_altptype");     
+    altphone = sessionStorage.getItem("mo_enter_survey_phone");   
+    altemail = sessionStorage.getItem("mo_enter_survey_email");  
+    altfull =  toProperCase("" + altlast + ", " + altfirst + " " + altmiddle).trim(); 
+    altrid =  sessionStorage.getItem("mo_enter_survey_rid");  
+  } else {
+    //alert("putting FID1 in sessionStorage.");
+    sessionStorage.setItem("mo_enter_survey_fid1", fid1);
+  }
+  
+
+  
+  if (fid1 != null && fid1 != "" && fid1 != "null" && (altlast == null || altlast.trim() == "" || altlast.trim() == "null")) {
+    //var crecord1 = JSON.parse(localStorage.getItem("mo_fid_" + fid1));
+    var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + fid1));
+      console.log(compressedContactArray);
+    var crecord1 = uncompressContact(compressedContactArray);
+
+    var lastname = crecord1.LastName;
+    var firstname = crecord1.FirstName;
+    var middlename = crecord1.MiddleName;     
+    cid1 = crecord1.Id;
+    if (middlename == null || middlename == "null") {
+        middlename = "";
+    }     
+    var fullname1 = toProperCase(lastname + ", " + firstname + " " + middlename).trim();
+    document.getElementById("contactDiv").innerHTML = fullname1; 
+    
+  } else if (altfull.length > 1 && altfull.toLowerCase().indexOf("null") != 0 && altemid != null && altemid != "" && altemid != "null") {
+    document.getElementById("contactDiv").innerHTML = altfull + "<br/>[" + altptype  +"]";
+  }
+  
+  //populateResponses();
+  
+  //alert("alt full = " + altfull);
+  
+  //collector
+  var fid2 = "{!$CurrentPage.parameters.fid2}";
+  var cid2 = null;
+  if ((fid2 == null || fid2 == "" || fid2 == "null") && sessionStorage.getItem("mo_enter_survey_fid2") != null) {
+    fid2 = sessionStorage.getItem("mo_enter_survey_fid2");
+  } else {
+    sessionStorage.setItem("mo_enter_survey_fid2", fid2);
+  }
+  if (fid2 != null && fid2 != "" && fid2 != "null" && fid2 != "0" && localStorage.getItem("mo_fid_" + fid2)!=null && localStorage.getItem("mo_fid_" + fid2)!="") {
+    //var crecord2 = JSON.parse(localStorage.getItem("mo_fid_" + fid2));
+    var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + fid2));
+    var crecord2 = uncompressContact(compressedContactArray);
+
+    var lastname = crecord2.LastName;
+    var firstname = crecord2.FirstName;
+    var middlename = crecord2.MiddleName;  
+    cid2 = crecord2.Id;     
+    if (middlename == null || middlename == "null") {
+        middlename = "";
+    }     
+    var fullname2 = toProperCase(lastname + ", " + firstname + " " + middlename).trim();
+    document.getElementById("collectorDiv").innerHTML = fullname2;
+  }
+  
+
+  
+  
+  function populateResponses() {
+    //alert("populateResponses");
+    var qid = document.getElementById("qselect").value;
+    if (lastQid == qid) {
+      return;
+    }
+    try{ 
+      // query Salesforce using SOQL
+      //get previous responses, add to prevResponseMap
+      var fid1 = "{!$CurrentPage.parameters.fid1}";
+      if (fid1 == null || fid1 == "" || fid1 == "null") {
+        fid1 = sessionStorage.getItem("mo_enter_survey_fid1");
+      }
+      if (fid1 != null && fid1 != "" && fid1 != "null") {
+        var query = "SELECT FID__c, Survey_Code__c, Response_Value__c, Add_Info__c FROM Survey_Response__c where FID__c = \'" + fid1 + "\' and Survey_Question__c= \'"+ qid + "\'";
+          console.log(query);
+        var records = sforce.connection.query(query); 
+        var records0 = records.getArray('records');  
+        for(var i=0;i<records0.length;i++){ 
+          prevResponseMap[records0[i].Survey_Code__c] = records0[i].Response_Value__c;
+          prevAddInfoMap[records0[i].Survey_Code__c] = records0[i].Add_Info__c;      
+          //alert("adding to prev add info map : " + records0[i].Survey_Code__c + " = " + records0[i].Add_Info__c);
+        }   
+      }
+      var query = "Select Allowed_Responses__c, Add_Info_Type__c, Add_Info_Control__c, MO_Show_Collected_Date__c, MO_Show_Collected_Date_Label__c, Collected_By_Label__c FROM Survey_Question__c where Id='" + qid + "'";
+          console.log(query);
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      
+      var rselect = document.getElementById("rselect");
+      var rlength = rselect.options.length;
+      
+      var addInfoType = "";
+      var addInfoControl = "";
+      var moShowCollectedDate = "";      
+      var moShowCollectedDateLabel = "";            
+      
+
+      
+      var qcode = qidQcodeMap[qid];
+      
+      for (i = 0; i < rlength; i++) {
+        rselect.options[0] = null;
+      }
+      for(var i=0;i<records1.length;i++){ 
+        if (i == 0) {
+          //alert(records1[i]);
+        }
+        var response = records1[i].Allowed_Responses__c;
+        addInfoType = records1[i].Add_Info_Type__c;
+        addInfoControl = records1[i].Add_Info_Control__c;
+        moShowCollectedDate = records1[i].MO_Show_Collected_Date__c;
+        moShowCollectedDateLabel = records1[i].MO_Show_Collected_Date_Label__c;         
+        if (records1[i].Collected_By_Label__c != null && records1[i].Collected_By_Label__c != "") {
+          document.getElementById("collectorLabel").innerHTML = records1[i].Collected_By_Label__c;         
+          document.getElementById("collectorDiv").innerHTML = "No " + records1[i].Collected_By_Label__c + " Selected";                   
+        }
+        var rarray = response.trim().split("\n");
+        for (var j = 0; j < rarray.length; j++) {
+          rselect.options[j] = new Option(rarray[j].trim(), rarray[j].trim());
+        }
+      }
+    
+      lastQid = qid;
+      
+      //
+      //START SUPPLEMENTAL INFORMATION
+      //
+      document.getElementById("SupplementDiv").innerHTML="";
+      document.getElementById("SupplementDiv2").innerHTML="";      
+      
+      if (moShowCollectedDate == null || moShowCollectedDate == false || moShowCollectedDate.toLowerCase().trim() == "false") {
+        document.getElementById("CollectedDateDiv").innerHTML="";       
+      } else if (moShowCollectedDateLabel != null && moShowCollectedDateLabel.trim() != "") {
+        document.getElementById("CollectedDateLabelDiv").innerHTML = moShowCollectedDateLabel  + ":";       
+      }
+
+      populateAddInfoType(qcode, addInfoType , addInfoControl);      
+ 
+
+      $(function() {
+        $( "#datepicker" ).datepicker();
+      });
+
+                 
+    } catch(e) { 
+       alert('An Error has Occured. Error:' +e); 
+    }
+  } 
+  
+
+  
+  function populateAddInfoType(pKey, pAddInfoType, pAddInfoControl) {
+    if (pAddInfoType != null && pAddInfoType.trim().toLowerCase() == 'numeric additive') {
+      var addLabel = "Signatures";
+      if (pAddInfoControl != null && pAddInfoControl != "") {
+        addLabel = pAddInfoControl;
+      }
+      var numAddString= "<div align=\"center\">" + addLabel + " Previous Count: ";
+      
+      //alert("prev add info map = " + JSON.stringify(prevAddInfoMap));
+      if (prevAddInfoMap != null && prevAddInfoMap[pKey] != null) {
+        numAddString += prevAddInfoMap[pKey ] + "<br>&nbsp</br>";      
+      } else {
+        numAddString += "0";
+      }
+      numAddString += "</div>\n";      
+      document.getElementById("SupplementDiv").innerHTML = numAddString;
+      var numAddString2 = "<br>&nbsp;</br><div align=\"center\">New " + addLabel + " Count: <br/>";
+      numAddString2 += "<input style=\"align: center;text-align: center;\" id=\"NumAddAddInfo\" type=\"number\" size=\"6\">";
+      numAddString2 += "<input type=\"hidden\" id=\"NumAddLabel\" value=\"" + addLabel  + "\">";    
+      document.getElementById("SupplementDiv2").innerHTML = numAddString2;
+    } else if (pAddInfoType != null && pAddInfoType.trim().toLowerCase() == 'picklist') {
+      var pickListDivWriter = "";
+      pickListDivWriter = "Options: <select id=\"addInfoSelect\">";
+      //
+      //Phase 6 Picket
+      //
+      if (qcodes.indexOf("6A3") >= 0) {
+
+        var query6 = "select Id, Name, Employer_ID__c, Phase_6_Picket__c from Account where ";
+        for (var i6 = 0; i6 < emids.length; i6++) {
+          if (i6 > 0) {
+            query6 += " OR ";
+          }
+          query6 += " Employer_ID__c = \'" + emids[i6] + "\' ";
+        }
+        var results6 = sforce.connection.query(query6); 
+        var records6 = results6.getArray('records');       
+        var addedPickets = [];
+        for (var i6 = 0; i6 < records6.length; i6++) {
+          var picketWriter = "";
+
+          if (records6[i6].Phase_6_Picket__c == null || records6[i6].Phase_6_Picket__c == "" || records6[i6].Phase_6_Picket__c == "null") {
+            picketWriter += "No picket scheduled for facility " + toProperCase(records6[i6].Name) + "";            
+            pickListDivWriter += "<option value=\"" + picketWriter  + "\">" + picketWriter + "</option>\n";          
+          } else {
+            var picketOptions = records6[i6].Phase_6_Picket__c.split("\n");
+            for (var pk6 = 0; pk6 < picketOptions.length; pk6++) {
+              var picketWriter = picketOptions[pk6];
+              if (picketWriter.trim() != "") {
+                if (addedPickets.indexOf(picketWriter) < 0) { 
+                  pickListDivWriter += "<option value=\"" + picketWriter  + "\">" + picketWriter + "</option>\n";                        
+                  addedPickets.push(picketWriter);
+                }
+              }
+            }
+          }       
+
+        }
+      }  else {    
+        var pickValueArray = pAddInfoControl.split("\n");
+        for (var px = 0; px < pickValueArray.length; px++) {
+          pickListDivWriter += "<option value=\""+ pickValueArray[px] + "\">" + pickValueArray[px] + "</option>\n";
+        }
+      }
+      pickListDivWriter += "</select>";
+      
+      document.getElementById("SupplementDiv").innerHTML = pickListDivWriter ;     
+      $("#SupplementDiv").show(); 
+    }
+  }
+  
+
+
+  function searchForContact() {
+    return searchFor("contact");  
+  }
+
+  function searchForCollector() {
+    return searchFor("collector");
+  }
+   
+
+  function searchFor(pMode) {
+    if (fid1 != null && fid1 != "" && fid1 != "null") {
+      //alert("saving fid1. "+ fid1); 
+      sessionStorage.setItem("mo_enter_survey_fid1", fid1);
+    } else if (altlast != null  && altlast != "") {
+      //alert("saving alt info. " + altlast); 
+      sessionStorage.setItem("mo_enter_survey_altlast", altlast);
+      sessionStorage.setItem("mo_enter_survey_altfirst", altfirst);
+      sessionStorage.setItem("mo_enter_survey_altmiddle", altmiddle);
+      sessionStorage.setItem("mo_enter_survey_altemid", altemid);                  
+      sessionStorage.setItem("mo_enter_survey_altptype", altptype );     
+      sessionStorage.setItem("mo_enter_survey_phone", altphone );   
+      sessionStorage.setItem("mo_enter_survey_email", altemail ); 
+      sessionStorage.setItem("mo_enter_survey_rid", altrid );       
+    }
+    sessionStorage.setItem("mo_enter_survey_fid2", fid2);
+    localStorage.setItem("mo_enter_survey_qselect", document.getElementById("qselect").value); 
+    sessionStorage.setItem("mo_enter_survey_rselect", document.getElementById("rselect").value);    
+    //window.location="MO_Search_Page?mode=" + pMode;
+    navigateTo('{! $Page.MO_Search_Page}?mode=' + pMode);
+  }   
+  
+  function submitSurvey() {
+    //add insert/push
+    try { 
+      var responses = []; 
+      var response = new sforce.SObject("Survey_Response__c"); 
+      response.Contact__c = cid1;
+        console.log(response);
+      if (cid1 == null) {
+        if (altfull.length > 1 && altfull.toLowerCase().indexOf("null") != 0 && altemid != null && altemid != "" && altemid != "null") {
+          response.Alt_Last_Name__c = altlast;
+          response.Alt_First_Name__c = altfirst;
+          response.Alt_Middle_Name__c = altmiddle;                 
+          response.Alt_Employer__c = emidSfidMap[altemid];
+          response.Alt_Email__c = altemail;        
+          response.Alt_Phone__c = altphone;                            
+          response.Alt_Person_Type__c = altptype;                    
+          //response.Alt_Related_Member__c = altrid;
+          //response.Add_Info__c = addInfo;
+          //alert(JSON.stringify(response));
+        } else {
+          alert("You must select a Contact to submit a Survey Response.");
+        }
+      }
+      var qid = document.getElementById("qselect").value;
+      response.Survey_Question__c = qid;
+      var qcode = qidQcodeMap[qid];
+      
+      if (cid2 != null) {
+        response.Collected_By__c = cid2;
+      }
+      if (document.getElementById("datepicker") == null || document.getElementById("datepicker").value.trim() == "") {
+        response.Collected_Datetime__c = sforce.connection.getServerTimestamp()["timestamp"];
+      } else {
+        var dstring = document.getElementById("datepicker").value;
+        dstring = dstring.substring(6) + "-" + dstring.substring(0, 2) + "-" + dstring.substring(3, 5) + "T19:00:00.000Z";
+        response.Collected_Datetime__c = dstring;
+      }
+      
+      response.Response_Value__c = document.getElementById("rselect").value;
+      
+      //for Numeric Additive Add Information Surveys
+      if (document.getElementById("NumAddAddInfo") != null) {
+        var addLabel = "Signatures";
+        if (document.getElementById("NumAddLabel").value != null && document.getElementById("NumAddLabel").value.trim() != "") {
+          addLabel = document.getElementById("NumAddLabel").value;
+        }
+        var oldValue = parseInt(prevAddInfoMap[qcode]) || 0;
+        var newValue = parseInt(document.getElementById("NumAddAddInfo").value) || 0;       
+        response.Add_Info__c = oldValue + newValue; 
+        //alert("response = " + oldValue + "\n" + newValue + "\n" + JSON.stringify(response.Add_Info__c));        
+        
+        var addNumConfirm = confirm("Previous " + addLabel + " Count = " + oldValue + "\nNew " + addLabel + " Count= " + newValue + "\nTotal " + addLabel + " Count = " + (oldValue+newValue) + "\n\nSubmit?");
+        if (addNumConfirm == false) {
+          return false;
+        }
+      } else if (document.getElementById("addInfoSelect") != null) {
+        response.Add_Info__c = document.getElementById("addInfoSelect").value;
+      }
+      responses.push(response); 
+
+    
+      var results = null;
+      //alert("creating...");
+      results = sforce.connection.create(responses); 
+      //alert("results = " + results);
+      if (results[0].getBoolean("success")) { 
+        alert("Response submitted successfully."); 
+        sessionStorage.setItem("mo_enter_survey_fid1", null);
+        sessionStorage.setItem("mo_enter_survey_fid2", null);
+        sessionStorage.setItem("mo_enter_survey_altlast", null);        
+        sessionStorage.setItem("mo_enter_survey_altfirst", null);        
+        sessionStorage.setItem("mo_enter_survey_altmiddle", null);        
+        sessionStorage.setItem("mo_enter_survey_altlast", null);                               
+        sessionStorage.setItem("mo_enter_survey_altemid", null);     
+        sessionStorage.setItem("mo_enter_survey_altptype", null);     
+        sessionStorage.setItem("mo_enter_survey_phone", null);   
+        sessionStorage.setItem("mo_enter_survey_email", null); 
+        localStorage.setItem("mo_enter_survey_qselect", document.getElementById("qselect").value); 
+        if (fid1 == null || fid1 == "" || fid1 == "null"  || fid1 == "0") {
+          
+            navigateTo('{! $Page.MO_Main_Page}');
+
+        } else {
+          if (qcodes.indexOf("D02") >= 0 || qcodes.indexOf("501") >= 0 || qcodes.indexOf("6A2") >= 0) {
+            if (cid2 != null) {     
+              var query3 = "select Id from Contact where (Executive_Body_Title__c = \'Executive Board\' OR Mbr_Ldr_App_Tier__c = \'Tier 1\' ) AND Id=\'" + cid2.trim() + "\'";
+              var records3 = sforce.connection.query(query3); 
+              var records3a = records3.getArray('records');      
+              if (records3a.length == 0) {
+                alert("Warning: For Consolidated Leaders, only EBoard/Tier 1 Leaders in the Collected By will change the Leader's EBoard assignment.");
+              } else {
+                var responses = []; 
+                var cturf = new sforce.SObject("Contact"); 
+                cturf.Id = cid1;            
+                cturf.Tier_1_Leader__c = cid2;  
+                responses.push(cturf);    
+                var results = null;                  
+                results = sforce.connection.update(responses); 
+                if (!results[0].getBoolean("success")) {                             
+                    console.log(responses);
+                  alert("failed to assign Tier 1 Leader for " + fid1 + ".  Please contact Data Group." + JSON.stringify(results));
+                }
+                var query4 = "select Id from Mbr_Ldr_App_Permissions__c where Team_Mbr__c = \'" + cid1 + "\' and Team_Account__c = \'" + crecord1.Account.Id + "\' ";
+               console.log(query4);
+                var records4 = sforce.connection.query(query4); 
+                var records4 = records4.getArray('records');      
+                if (records4.length > 0) {
+                  var responses = [];
+                  var didArray = [];
+                  for (var didDex = 0; didDex < response.length; didDex++) {
+                    didArray.push(records4[didDex].Id);
+                  }
+                  var delResult = sforce.connection.deleteIds([didArray]);
+                  if (!results[0].getBoolean("success")) {                             
+                    alert("failed to delete previous Mbr Ldr App Permissions for " + fid1 + ".  Please contact Data Group." + JSON.stringify(results));
+                  }                   
+                }
+                
+                var responses = []; 
+                var cperm = new sforce.SObject("Mbr_Ldr_App_Permissions__c"); 
+                cperm.Mbr_Ldr__c = cid2;
+                cperm.Team_Mbr__c = cid1;
+                cperm.Team_Account__c = crecord1.Account.Id;  
+                responses.push(cperm);    
+                var results = null;
+                results = sforce.connection.create(responses); 
+                if (!results[0].getBoolean("success")) {                             
+                  alert("failed to assign Mbr Ldr App Permissions for " + fid1 + ".  Please contact Data Group." + JSON.stringify(results));
+                } 
+              }               
+            } 
+            if (sessionStorage.getItem("mo_from_manage_teams") == "yes") {
+              navigateTo('{! $Page.MO_Manage_Teams}');                          
+            } else {
+              navigateTo('{! $Page.MO_Contact_Page}?fid=' + fid1);            
+            }
+          } else {
+            navigateTo('{! $Page.MO_Contact_Page}?fid=' + fid1);
+          }
+        } 
+      } else { 
+        alert("failed to create Survey Response " + results[0]); 
+      } 
+    } catch(e) { 
+         alert('An Error has Occured. Error:' +e); 
+    }
+  }
+  
+  
+  
+</script>
+  
+    </body>
+</html>
+
+
+</apex:page>

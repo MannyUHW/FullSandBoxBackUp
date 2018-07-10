@@ -1,0 +1,58 @@
+<apex:page sidebar="false" showHeader="false">>
+<div align="center">
+<font size="+2">MCL Notes, Tips, and Tricks</font>
+
+</div>
+<font size="+1">
+<ul>
+
+
+<li>To force a table row to have the correct vertical align in the record template, go to &quot;Tools&quot; and &quot;Source Code&quot;.
+Change &quot;&lt;tr&gt;&quot; to &quot;&lt;tr valign=&quot;top&quot;&gt;&quot;.
+</li>
+<br>&nbsp;</br>
+
+<li>Check to make sure your table in the record template does not have the &quot;float&quot; style.  Go to &quot;Table Properties&quot;, &quot;Advanced&quot; and make sure the &quot;Style&quot; field is empty.
+</li>
+<br>&nbsp;</br>
+
+<li>When you clone an MCL intended for a different Employer, make sure to clear out the Departments, BU, and Job Class fields as the new Employer will have different values.  Just set these to blank.
+</li>
+<br>&nbsp;</br>
+
+<li>You can display a Survey Response long value (meaning the full reponse and not just the first letter is shown) or the Additional Information field by adding a ":long" or a ".Add_Info__c" to the tag in the template.  E.g. "{{sq:PAL:long}}", "{{sq:PAL:Add_Info__c}}".
+</li>
+<br>&nbsp;</br>
+
+
+<li>Avoid putting punctuation like periods or apostrophes in key fields like Employer or Department.
+</li>
+<br>&nbsp;</br>
+
+
+<li>when specifying width of tables or cells, do not forget to include the "%" sign.  "100" means 100 pixels which is likely less than the full width of a column.  Use "100%".
+</li>
+<br>&nbsp;</br>
+
+<li>don't ever apply formatting to part of a field tag.  You'll see something in the source code like &quot;{{&lt;strong&gt;FirstName&lt;/strong&gt;}}&quot;.  Correct is &quot;&lt;strong&gt;{{FirstName}}&lt;/strong&gt;&quot;.
+</li>
+<br>&nbsp;</br>
+
+<li>watch out for extra white space at the end of a record.  If you have a table, go to the source code and erase any content after the table close tag (&quot;&lt;/table&gt;&quot;).
+</li>
+<br>&nbsp;</br>
+
+<li>Go to &quot;Insert&quot;, &quot;Non-Breaking Space&quot; to force spaces to be recognized in the report.
+</li>
+<br>&nbsp;</br>
+
+<li>Prevent a field from breaking into multiple line by going to the HTML source, and surrounding the field with &quot;&lt;span style=&quot;white-space: nowrap&quot;&gt;&quot; and &quot;&lt;/span&gt;".
+</li>
+<br>&nbsp;</br>
+
+<li>When you click the &quot;Print&quot; button and the records don't show up, open the MCL in Firefox, click the "hamburger" (three horizontal lines towards the top right of the browser window), choose &quot;Developer&quot; and then choose &quot;Web Console&quot;.  Send the contents of that to the Data Team.
+</li>
+
+</ul>
+</font>
+</apex:page>

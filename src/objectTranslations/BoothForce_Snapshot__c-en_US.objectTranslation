@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BoothForce Snapshot</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BoothForce Snapshot</value>
+    </caseValues>
+    <fields>
+        <label><!-- Area --></label>
+        <name>Area__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned To Division --></label>
+        <name>Assigned_To_Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned To Manager --></label>
+        <name>Assigned_To_Manager__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned To Other - FID --></label>
+        <name>Assigned_To_Other_FID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned To Other - Facility --></label>
+        <name>Assigned_To_Other_Facility__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned To Other --></label>
+        <name>Assigned_To_Other__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned To Title --></label>
+        <name>Assigned_To_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned To User Id --></label>
+        <name>Assigned_To_User_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned To --></label>
+        <name>Assigned_To__c</name>
+    </fields>
+    <fields>
+        <label><!-- Assigned to Users Manager --></label>
+        <name>Assigned_to_Users_Manager__c</name>
+    </fields>
+    <fields>
+        <label><!-- BoothForce Event --></label>
+        <name>BoothForce_Event__c</name>
+    </fields>
+    <fields>
+        <label><!-- Booth Description --></label>
+        <name>Booth_Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Booth ID --></label>
+        <name>Booth_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Booth Name --></label>
+        <name>Booth_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Booth Type --></label>
+        <name>Booth_Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Staffed Non-UHW --></label>
+        <name>Is_Staffed_Non_UHW__c</name>
+    </fields>
+    <fields>
+        <label><!-- Is Staffed --></label>
+        <name>Is_Staffed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager_Id --></label>
+        <name>Manager_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Remaining Shifts to be Staffed --></label>
+        <name>Remaining_Shifts_to_be_Staffed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Date --></label>
+        <name>Shift_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift End Time --></label>
+        <name>Shift_End_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Start Time --></label>
+        <name>Shift_Start_Time__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Time Friendly Name --></label>
+        <name>Shift_Time_Friendly_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Time Remain Shifts to be Staffed --></label>
+        <name>Shift_Time_Remain_Shifts_to_be_Staffed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Time Total Shifts Staffed --></label>
+        <name>Shift_Time_Total_Shifts_Staffed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Shift Time Total Shifts to be Staffed --></label>
+        <name>Shift_Time_Total_Shifts_to_be_Staffed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Staffing Assignment ID --></label>
+        <name>Staffing_Assignment_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Staffing Assignment # --></label>
+        <name>Staffing_Assignment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Shifts Staffed --></label>
+        <name>Total_Shifts_Staffed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Shifts to be Staffed --></label>
+        <name>Total_Shifts_to_be_Staffed__c</name>
+    </fields>
+    <fields>
+        <label><!-- User Booth Staffing Roles Allowed --></label>
+        <name>User_Booth_Staffing_Roles_Allowed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Zone --></label>
+        <name>Zone__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

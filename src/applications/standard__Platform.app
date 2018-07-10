@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>standard-Contact</defaultLandingTab>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <tabs>standard-Contact</tabs>
+    <tabs>standard-Chatter</tabs>
+    <tabs>UHW_Asset__c</tabs>
+    <tabs>Dignity_Photo_and_Picket_Activity</tabs>
+    <tabs>Sign_In_G</tabs>
+    <tabs>Cope_History__c</tabs>
+    <tabs>Sign_in_counts</tabs>
+    <tabs>Sign_In_Counts_By_Coord</tabs>
+    <tabs>UnpaidInternsSurvey</tabs>
+    <tabs>Unpaid_Internship_Report_Data2</tabs>
+    <tabs>Leader_Outreach</tabs>
+    <tabs>MCL_Duplicator</tabs>
+    <tabs>Mbr_District_Survey_Finder</tabs>
+    <tabs>Mbr_Ldr_App_Permissions__c</tabs>
+    <tabs>Kaiser_Route_List</tabs>
+    <tabs>Hospital_Route_List</tabs>
+    <tabs>Banner__c</tabs>
+    <tabs>Response_Summary</tabs>
+    <tabs>ThreeTouch</tabs>
+    <tabs>Petition_Ledger__c</tabs>
+    <tabs>GOTV_CC</tabs>
+    <tabs>Petition_Ledger_Entry</tabs>
+    <tabs>CommunityRouteList</tabs>
+    <tabs>Phase_6</tabs>
+    <tabs>NEO_Facility_Audit__c</tabs>
+    <tabs>GOTV_Mobile</tabs>
+    <tabs>COPE_HD</tabs>
+    <tabs>Mobile_Responder</tabs>
+    <tabs>Mobile_Responder_Debug</tabs>
+</CustomApplication>

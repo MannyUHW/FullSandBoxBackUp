@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Bhat Activity Reminder Sender List</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Bhat Activity Reminder Sender List</value>
+    </caseValues>
+    <fields>
+        <label><!-- Division Head Login --></label>
+        <name>Division_Head_Login__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division Head Name --></label>
+        <name>Division_Head_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

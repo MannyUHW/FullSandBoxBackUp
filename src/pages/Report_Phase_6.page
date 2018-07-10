@@ -1,0 +1,2696 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/38.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/38.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+<apex:includeScript value="//ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.js"/>
+<link rel="stylesheet" href="{!URLFOR($Resource.mo_assets, '/mo_assets/css/tablesorter/tablesorter_blue_style.css')}" type="text/css" id="" media="print, projection, screen" />
+<style type="text/css" media="screen,print">
+   .page-breaker {
+     display: block;
+     page-break-after: always;
+     border :1px solid black
+   }
+</style>
+<div align="center" ng-controller="rptCtrl"  ng-app="app">
+<font size="+2"><div id="titleDiv">Phase 6 Report</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+<font color="green"><div id="filterDiv" align="center"></div></font><br/>
+<div id="progressDiv" align="center">Calculating, please wait...</div>&nbsp;<br/>
+
+<div id="jumpDiv">
+<a href="#regionAnchor">Jump to Regional Directors</a><br/>
+<a href="#coordinatorAnchor">Jump to Coordinators</a><br/>
+<a href="#organizerAnchor">Jump to Organizers</a><br/>
+<a href="#employerAnchor">Jump to Employers</a><br/>
+&nbsp;<br/>
+</div>
+<div id="countDiv" align="center">
+&nbsp;<br/>
+<font size="+1">Divisions</font><br/>
+&nbsp;<br/>
+
+<table cellspacing="0" border="1" cellpadding="7">
+
+<tr valign="bottom">
+
+<td bgcolor="#481C60" width="7%" align="center"><font size="-2"  color="white">Division</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">BU</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">CRE Goal</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">CRE Attend</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Pct to Goal</font></td>
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Picket Goal</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">All Ldrs</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">All Supporters</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Covered Commits</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Uncovered Commits</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Commit Pct to Goal</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Confirm</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Remind</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Covered Attends</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Uncovered Attends</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Attend Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New Ldrs Completed (Picket + Dialysis)</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New Supporters Completed</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New Supporter Completd Goal (10% BU)</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">New Supporter Pct to Goal</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Starting Cover</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Current Cover</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Cover Increase Pct</font></td>
+
+</tr>
+
+<tr>
+
+</tr>
+
+<tbody class="divisionRowTemplate" >
+<tr valign="top" ng-repeat="row in divTable | filter:filter">
+    <td align="center"><a href="?mode={{mode}}&filter={{row.div}}">{{row.div}}</a></td>
+    <td align="center">{{row.buCount}}</td>
+    
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center">{{row.creGoal}}</td> 
+    <td align="center">{{row.creAttend}}</td>       
+    <td align="center">{{row.crePct}}</td>      
+    
+    <td bgcolor="#481C60" align="center"></td>    
+
+    <td align="center">{{row.picketGoal}}</td>     
+    <td align="center">{{row.leaderCount}}</td> 
+    <td align="center">{{row.supporterCount}}</td>      
+    <td align="center">{{row.coveredCommits}}</td>      
+    <td align="center">{{row.uncoveredCommits}}</td>            
+    <td align="center">{{row.commitPct}}</td>   
+    <td align="center">{{row.confirmCount}}</td>    
+    <td align="center">{{row.remindCount}}</td>     
+    <td align="center">{{row.attendCount}}</td> 
+    <td align="center">{{row.uncoveredAttendCount}}</td> 
+    <td align="center">{{row.attendPct}}</td>       
+
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center">{{row.newLdrsCompleted}}</td>    
+    <td align="center">{{row.newSupportersCompleted}}</td>      
+    <td align="center">{{row.newSupportersGoal}}</td> 
+    <td align="center">{{row.newSupportersPct}}</td> 
+    <td align="center">{{row.startingCover}}</td>     
+    <td align="center">{{row.currentCover}}</td>         
+    <td align="center">{{row.coverDelta}}</td>             
+</tr>
+</tbody>
+</table>
+</div>
+
+<a name="regionAnchor"></a>
+<div id="regionDiv" align="center">
+&nbsp;<br/>
+<font size="+1">Regional Directors</font><br/>
+&nbsp;<br/>
+
+ 
+
+<table cellspacing="0" border="1" cellpadding="7">
+
+<tr valign="bottom">
+
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Division</font></td>
+<td bgcolor="#481C60" width="7%" align="center"><font size="-2"  color="white">Regional<br/>Director</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">BU</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">CRE Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">CRE Attend</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Picket Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">All Ldrs</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">All Supporters</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Covered Commits</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Uncovered Commits</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Commit Pct to Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Confirm</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Remind</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Covered Attends</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Uncovered Attends</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Attend Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Ldrs Completed (Picket + Dialysis)</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporters Completed</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporter Completd Goal (10% BU)</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporter Pct to Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Starting Cover</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Current Cover</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Cover Increase Pct</font></td>
+
+</tr>
+
+<tr>
+
+</tr>
+
+<tbody class="regionRowTemplate" >
+<tr valign="top" ng-repeat="row in rdTable | filter:filter">
+    <td align="center"><a href="?mode={{mode}}&filter={{row.div}}">{{row.div}}</a></td>
+    <td align="center"><a href="?mode={{mode}}&filter={{row.regionalDirector}}">{{row.regionalDirector}}</a></td>
+    <td align="center">{{row.buCount}}</td>
+    
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center">{{row.creGoal}}</td> 
+    <td align="center">{{row.creAttend}}</td>       
+    <td align="center">{{row.crePct}}</td>      
+    
+    <td bgcolor="#481C60" align="center"></td>    
+
+    <td align="center">{{row.picketGoal}}</td>     
+    <td align="center">{{row.leaderCount}}</td> 
+    <td align="center">{{row.supporterCount}}</td>      
+    <td align="center">{{row.coveredCommits}}</td>      
+    <td align="center">{{row.uncoveredCommits}}</td>            
+    <td align="center">{{row.commitPct}}</td>   
+    <td align="center">{{row.confirmCount}}</td>    
+    <td align="center">{{row.remindCount}}</td>     
+    <td align="center">{{row.attendCount}}</td> 
+    <td align="center">{{row.uncoveredAttendCount}}</td> 
+    <td align="center">{{row.attendPct}}</td>       
+
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center">{{row.newLdrsCompleted}}</td>    
+    <td align="center">{{row.newSupportersCompleted}}</td>      
+    <td align="center">{{row.newSupportersGoal}}</td> 
+    <td align="center">{{row.newSupportersPct}}</td> 
+    <td align="center">{{row.startingCover}}</td>     
+    <td align="center">{{row.currentCover}}</td>         
+    <td align="center">{{row.coverDelta}}</td>             
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<a name="coordinatorAnchor"></a>
+<div id="coordinatorDiv" align="center">
+&nbsp;<br/>
+<font size="+1">Coordinators</font><br/>
+&nbsp;<br/>
+
+ 
+
+<table cellspacing="0" border="1" cellpadding="7">
+
+<tr valign="bottom">
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Division</font></td>
+<td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Regional<br/>Director</font></td>
+<td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Coordinator</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">BU</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">CRE Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">CRE Attend</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Picket Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">All Ldrs</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">All Supporters</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Covered Commits</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Uncovered Commits</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Commit Pct to Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Confirm</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Remind</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Covered Attends</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Uncovered Attends</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Attend Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Ldrs Completed (Picket + Dialysis)</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporters Completed</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporter Completd Goal (10% BU)</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporter Pct to Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Starting Cover</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Current Cover</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Cover Increase Pct</font></td>
+
+</tr>
+
+<tr>
+
+</tr>
+
+<tbody class="coordinatorRowTemplate" >
+<tr valign="top" ng-repeat="row in cdTable | filter:filter">
+    <td align="center"><a href="?mode={{mode}}&filter={{row.div}}">{{row.div}}</a></td>
+    <td align="center"><a href="?mode={{mode}}&filter={{row.regionalDirector}}">{{row.regionalDirector}}</a></td>
+    <td align="center"><a href="?mode={{mode}}&filter={{row.coordinator}}">{{row.coordinator}}</a></td>
+    <td align="center">{{row.buCount}}</td>    
+    
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center">{{row.creGoal}}</td> 
+    <td align="center">{{row.creAttend}}</td>       
+    <td align="center">{{row.crePct}}</td>      
+    
+    <td bgcolor="#481C60" align="center"></td>    
+
+    <td align="center">{{row.picketGoal}}</td>     
+    <td align="center">{{row.leaderCount}}</td> 
+    <td align="center">{{row.supporterCount}}</td>      
+    <td align="center">{{row.coveredCommits}}</td>      
+    <td align="center">{{row.uncoveredCommits}}</td>            
+    <td align="center">{{row.commitPct}}</td>   
+    <td align="center">{{row.confirmCount}}</td>    
+    <td align="center">{{row.remindCount}}</td>     
+    <td align="center">{{row.attendCount}}</td> 
+    <td align="center">{{row.uncoveredAttendCount}}</td> 
+    <td align="center">{{row.attendPct}}</td>       
+
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center">{{row.newLdrsCompleted}}</td>    
+    <td align="center">{{row.newSupportersCompleted}}</td>      
+    <td align="center">{{row.newSupportersGoal}}</td> 
+    <td align="center">{{row.newSupportersPct}}</td> 
+    <td align="center">{{row.startingCover}}</td>     
+    <td align="center">{{row.currentCover}}</td>         
+    <td align="center">{{row.coverDelta}}</td>             
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<a name="organizerAnchor"></a>
+<div id="organizerDiv" align="center">
+&nbsp;<br/>
+<font size="+1">Organizers</font><br/>
+&nbsp;<br/>
+
+ 
+
+<table cellspacing="0" border="1" cellpadding="7">
+
+<tr valign="bottom">
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Division</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Regional<br/>Director</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Coordinator</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Organizer</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">BU</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">CRE Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">CRE Attend</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Picket Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">All Ldrs</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">All Supporters</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Covered Commits</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Uncovered Commits</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Commit Pct to Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Confirm</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Remind</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Covered Attends</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Uncovered Attends</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Attend Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Ldrs Completed (Picket + Dialysis)</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporters Completed</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporter Completd Goal (10% BU)</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporter Pct to Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Starting Cover</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Current Cover</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Cover Increase Pct</font></td>
+
+</tr>
+
+<tr>
+
+</tr>
+
+<tbody class="organizerRowTemplate" >
+<tr valign="top" ng-repeat="row in orgTable | filter:filter">
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.div}}">{{row.div}}</a></font></td>
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.regionalDirector}}">{{row.regionalDirector}}</a></font></td>
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.coordinator}}">{{row.coordinator}}</a></font></td>
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.organizer}}">{{row.organizer}}</a></font></td>      
+    <td align="center"><font size="-1">{{row.buCount}}</font></td>
+    
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center"><font size="-1">{{row.creGoal}}</font></td> 
+    <td align="center"><font size="-1">{{row.creAttend}}</font></td>       
+    <td align="center"><font size="-1">{{row.crePct}}</font></td>      
+    
+    <td bgcolor="#481C60" align="center"></td>    
+
+    <td align="center"><font size="-1">{{row.picketGoal}}</font></td>     
+    <td align="center"><font size="-1">{{row.leaderCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.supporterCount}}</font></td>      
+    <td align="center"><font size="-1">{{row.coveredCommits}}</font></td>      
+    <td align="center"><font size="-1">{{row.uncoveredCommits}}</font></td>            
+    <td align="center"><font size="-1">{{row.commitPct}}</font></td>   
+    <td align="center"><font size="-1">{{row.confirmCount}}</font></td>    
+    <td align="center"><font size="-1">{{row.remindCount}}</font></td>     
+    <td align="center"><font size="-1">{{row.attendCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.uncoveredAttendCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.attendPct}}</font></td>       
+
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center"><font size="-1">{{row.newLdrsCompleted}}</font></td>    
+    <td align="center"><font size="-1">{{row.newSupportersCompleted}}</font></td>      
+    <td align="center"><font size="-1">{{row.newSupportersGoal}}</font></td> 
+    <td align="center"><font size="-1">{{row.newSupportersPct}}</font></td> 
+    <td align="center"><font size="-1">{{row.startingCover}}</font></td>     
+    <td align="center"><font size="-1">{{row.currentCover}}</font></td>         
+    <td align="center"><font size="-1">{{row.coverDelta}}</font></td>             
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<a name="employerAnchor"></a>
+<div id="employerDiv" align="center">
+&nbsp;<br/>
+<font size="+1">Employers</font><br/>
+&nbsp;<br/>
+
+ 
+
+<table cellspacing="0" border="1" cellpadding="7">
+
+<tr valign="bottom">
+
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Division</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Regional<br/>Director</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Coordinator</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Organizer</font></td>
+<td bgcolor="#481C60" width="6%" align="center"><font size="-2"  color="white">Employer</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">BU</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">CRE Goal</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">CRE Attend</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Picket Goal</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">All Ldrs</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">All Supporters</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Covered Commits</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Uncovered Commits</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Commit Pct to Goal</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Confirm</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Remind</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Covered Attends</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Uncovered Attends</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Attend Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">New Ldrs Completed (Picket + Dialysis)</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">New Supporters Completed</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">New Supporter Completd Goal (10% BU)</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">New Supporter Pct to Goal</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Starting Cover</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Current Cover</font></td>
+<td bgcolor="#481C60" width="3%" align="center"><font size="-2"  color="white">Cover Increase Pct</font></td>
+
+</tr>
+
+<tr>
+
+</tr>
+
+<tbody class="employerRowTemplate" >
+<tr valign="top" ng-repeat="row in empTable  | filter:filter">
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.div}}">{{row.div}}</a></font></td>
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.regionalDirector}}">{{row.regionalDirector}}</a></font></td>
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.coordinator}}">{{row.coordinator}}</a></font></td>
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.organizer}}">{{row.organizer}}</a></font></td>      
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.organizer}}">{{row.employer}}</a></font></td>
+    <td align="center"><font size="-1">{{row.buCount}}</font></td>
+    
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center"><font size="-1">{{row.creGoal}}</font></td> 
+    <td align="center"><font size="-1">{{row.creAttend}}</font></td>       
+    <td align="center"><font size="-1">{{row.crePct}}</font></td>      
+    
+    <td bgcolor="#481C60" align="center"></td>    
+
+    <td align="center"><font size="-1">{{row.picketGoal}}</font></td>     
+    <td align="center"><font size="-1">{{row.leaderCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.supporterCount}}</font></td>      
+    <td align="center"><font size="-1">{{row.coveredCommits}}</font></td>      
+    <td align="center"><font size="-1">{{row.uncoveredCommits}}</font></td>            
+    <td align="center"><font size="-1">{{row.commitPct}}</font></td>   
+    <td align="center"><font size="-1">{{row.confirmCount}}</font></td>    
+    <td align="center"><font size="-1">{{row.remindCount}}</font></td>     
+    <td align="center"><font size="-1">{{row.attendCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.uncoveredAttendCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.attendPct}}</font></td>       
+
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center"><font size="-1">{{row.newLdrsCompleted}}</font></td>    
+    <td align="center"><font size="-1">{{row.newSupportersCompleted}}</font></td>      
+    <td align="center"><font size="-1">{{row.newSupportersGoal}}</font></td> 
+    <td align="center"><font size="-1">{{row.newSupportersPct}}</font></td> 
+    <td align="center"><font size="-1">{{row.startingCover}}</font></td>     
+    <td align="center"><font size="-1">{{row.currentCover}}</font></td>         
+    <td align="center"><font size="-1">{{row.coverDelta}}</font></td>             
+</tr>
+</tbody>
+</table>
+</div>
+
+
+
+<div id="leaderDiv" align="center">
+&nbsp;<br/>
+<font size="+1">Leaders</font><br/>
+&nbsp;<br/>
+
+ 
+
+<table cellspacing="0" border="1" cellpadding="7">
+
+<tr valign="bottom">
+
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Division</font></td>
+<td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">Regional<br/>Director</font></td>
+<td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">Coordinator</font></td>
+<td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">Organizer</font></td>
+<td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">Employer</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="12%" align="center"><font size="-2"  color="white">Ldr Name</font></td>
+
+<td bgcolor="#481C60" ng-show="showcontactInfoCols" width="6%" align="center"><font size="-2"  color="white">FID</font></td>
+<td bgcolor="#481C60" ng-show="showcontactInfoCols"  width="6%" align="center"><font size="-2"  color="white">Cell</font></td>
+<td bgcolor="#481C60" ng-show="showcontactInfoCols"  width="10%" align="center"><font size="-2"  color="white">Email</font></td>
+<td bgcolor="#481C60" ng-show="showcontactInfoCols"  width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New/<br/>Uncovrd?</font></td>
+<td bgcolor="#481C60" width="12%" align="center"><font size="-2"  color="white">Department</font></td>
+<td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">Status</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Supprts</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Commit</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Confirm</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Remind</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Attend</font></td>
+<td bgcolor="#481C60" width="5%" align="center"><font size="-2"  color="white">Dialysis/<br/>Barg Survs</font></td>
+
+</tr>
+
+<tr>
+
+</tr>
+
+<tbody class="leaderRowTemplate" >
+<tr valign="top" ng-repeat="row in ldrTable  | filter:filter">
+    <td align="center"><font size="-2"><a href="?mode={{mode}}&filter={{row.div}}">{{row.div}}</a></font></td>
+    <td align="center"><font size="-2"><a href="?mode={{mode}}&filter={{row.regionalDirector}}">{{row.regionalDirector}}</a></font></td>
+    <td align="center"><font size="-2"><a href="?mode={{mode}}&filter={{row.coordinator}}">{{row.coordinator}}</a></font></td>    
+    <td align="center"><font size="-2"><a href="?mode={{mode}}&filter={{row.organizer}}">{{row.organizer}}</a></font></td>      
+    <td align="center"><font size="-1"><a href="?mode={{mode}}&filter={{row.employer}}">{{row.employer}}</a></font></td>      
+    
+    <td bgcolor="#481C60" align="center"></td>    
+   
+      
+    <td align="center"><font size="-1"><a href="/{{row.cid}}">{{row.ldrName}}</a></font></td>    
+    <td ng-show="showcontactInfoCols" align="center"><font size="-2">{{row.ldrFid}}</font></td>    
+    <td ng-show="showcontactInfoCols" align="center"><font size="-2">{{row.mobile}}</font></td>                
+    <td ng-show="showcontactInfoCols" align="center"><font size="-2">{{row.email}}</font></td>    
+    <td bgcolor="#481C60" ng-show="showcontactInfoCols"  width="1%" align="center"><font size="-2"  color="white"></font></td>        
+    
+    <td align="center" ng-bind-html="row.newLeader | unsafe"></td>     
+    <td align="center"><font size="-2">{{row.department}}</font></td>    
+    <td align="center" ng-bind-html="row.status | unsafe"></td>      
+    <td align="center"><font size="-1">{{row.supporters}}</font></td>      
+    <td align="center"><font size="-1">{{row.commitCount}}</font></td>     
+    <td align="center"><font size="-1">{{row.confirmCount}}</font></td>        
+    <td align="center"><font size="-1">{{row.remindCount}}</font></td>    
+    <td align="center"><font size="-1">{{row.attendCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.dialysisCount}}</font></td>       
+
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<a name="ecommAnchor"></a>
+<div id="ecommDiv" align="center">
+&nbsp;<br/>
+<font size="+1">Executive Committee</font><br/>
+&nbsp;<br/>
+
+ 
+
+<table cellspacing="0" border="1" cellpadding="7">
+
+<tr valign="bottom">
+
+<td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">District</font></td>
+<td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">Coordinator</font></td>
+<td bgcolor="#481C60" width="8%" align="center"><font size="-2"  color="white">EComm</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">BU</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">CRE Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">CRE Attend</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Picket Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">All Ldrs</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">All Supporters</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Covered Commits</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Uncovered Commits</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Commit Pct to Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Confirm</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Remind</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Attends</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Attend Pct to Goal</font></td>
+
+<td bgcolor="#481C60" width="1%" align="center"><font size="-2"  color="white"></font></td>
+
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Ldrs Completed (Picket + Dialysis)</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporters Completed</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporter Completd Goal (10% BU)</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">New Supporter Pct to Goal</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Starting Cover</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Current Cover</font></td>
+<td bgcolor="#481C60" width="4%" align="center"><font size="-2"  color="white">Cover Increase Pct</font></td>
+
+</tr>
+
+<tr>
+
+</tr>
+
+<tbody class="ecommRowTemplate" >
+<tr valign="top" ng-repeat="row in ecmTable   | filter:filter">
+    <td align="center"><font size="-2">{{row.district}}</font></td>
+    
+    <td align="center"><font size="-2"><a href="?mode={{mode}}&filter={{row.coordinator}}">{{row.coordinator}}</a></font></td>    
+    <td align="center"><font size="-1">{{row.ecomm}}</font></td>      
+    <td align="center"><font size="-1">{{row.buCount}}</font></td>
+    
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center"><font size="-1">{{row.creGoal}}</font></td> 
+    <td align="center"><font size="-1">{{row.creAttend}}</font></td>       
+    <td align="center"><font size="-1">{{row.crePct}}</font></td>      
+    
+    <td bgcolor="#481C60" align="center"></td>    
+
+    <td align="center"><font size="-1">{{row.picketGoal}}</font></td>     
+    <td align="center"><font size="-1">{{row.leaderCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.supporterCount}}</font></td>      
+    <td align="center"><font size="-1">{{row.coveredCommits}}</font></td>      
+    <td align="center"><font size="-1">{{row.uncoveredCommits}}</font></td>            
+    <td align="center"><font size="-1">{{row.commitPct}}</font></td>   
+    <td align="center"><font size="-1">{{row.confirmCount}}</font></td>    
+    <td align="center"><font size="-1">{{row.remindCount}}</font></td>     
+    <td align="center"><font size="-1">{{row.attendCount}}</font></td> 
+    <td align="center"><font size="-1">{{row.attendPct}}</font></td>       
+
+    <td bgcolor="#481C60" align="center"></td>    
+    
+    <td align="center"><font size="-1">{{row.newLdrsCompleted}}</font></td>    
+    <td align="center"><font size="-1">{{row.newSupportersCompleted}}</font></td>      
+    <td align="center"><font size="-1">{{row.newSupportersGoal}}</font></td> 
+    <td align="center"><font size="-1">{{row.newSupportersPct}}</font></td> 
+    <td align="center"><font size="-1">{{row.startingCover}}</font></td>     
+    <td align="center"><font size="-1">{{row.currentCover}}</font></td>         
+    <td align="center"><font size="-1">{{row.coverDelta}}</font></td>             
+</tr>
+</tbody>
+</table>
+</div>
+
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+
+<script language="JavaScript">
+var app = angular.module('app', []);
+    
+    app.filter('percentage', ['$filter', function ($filter) {
+      return function (input, decimals) {
+        return $filter('number')(input * 100, decimals) + '%';
+      };
+    }]);
+
+    app.filter('unsafe', function($sce) {
+        return function(val) {
+            return $sce.trustAsHtml(val);
+        };
+    });
+var BASE_DATE = moment("2018-01-22", "YYYY-MM-DD").toDate();
+
+$("#mainDiv").hide();
+
+//
+//  definie constants for Survey Codes
+//
+
+var CODE_DIALYSIS = "6A1";
+var CODE_LEADER = "6A2";
+var CODE_PICKET = "6A3";
+var CODE_KCRE = "6A4";
+var CODE_SUTTER_SURVEY = "X01";
+var CODE_SUTTER_LEADER = "X03";
+var CODE_PUBLIC_HOSPITAL = "P05";
+var CODE_ENLOE = "E14";
+
+var COMPLETED = "COMPLETED";
+
+var PICKET_GOAL_HOSPITAL = 0.5;
+var PICKET_GOAL_KAISER = 0.15;
+
+var TAG_COVERED_LDR = "PreP6CoveredLdr";
+var TAG_COVERED_SUPP = "PreP6CoveredSupp";
+
+var TAG_UNCOVERED_LDR = "PreP6NotCoveredLdr";
+var TAG_UNCOVERED_SUPP = "PreP6NotCoveredSupp";
+
+var UNCOVERED = "UNCOVERED";
+
+var LEADER = "LEADER";
+ 
+var ALL = "ALL";
+var KAISER = "KAISER";
+var HOSPITAL = "HOSPITAL";
+var BU = "BU";
+var DIVISION = "DIVISION";
+var DIV = DIVISION;
+var REGIONAL_DIRECTOR = "REGIONAL_DIRECTOR";
+var COORDINATOR = "COORDINATOR";
+var ORGANIZER = "ORGANIZER";
+var EMPLOYER = "EMPLOYER";
+var TURF = "TURF";
+var DIGNITY = "DIGNITY";
+var BU_PICKET = "BU_PICKET";
+var ENLOE = "ENLOE";
+var SUTTER = "SUTTER";
+
+var DISTRICT= "DISTRICT";
+
+var divArray = ['HOSPITAL', 'KAISER', ALL];
+
+
+
+//
+//  countMap and getCounter and incrementCounter are for counting records at various hierarchy levels.
+//
+var countMap = {};
+
+
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+//
+//  populates templates with variable values; 
+//
+function processTemplate(pTemplate) {
+  var templateVars = pTemplate.match(/{{([^{}]+)}}/g);
+  var newWriter = pTemplate;
+  for (var q = 0; q < templateVars.length; q++) {  
+   //alert("processing: _" + templateVars[q] + "_"); 
+   var evalCode = templateVars[q].substring(2, templateVars[q].length -2);
+   var evalValue = eval(evalCode);
+   newWriter = newWriter.replace(templateVars[q], evalValue);
+  } 
+  return newWriter;
+}
+
+var debugWriter = "";
+var debugWriter2 = "";
+var debugWriter3 = "";
+var debugString = "";
+
+//
+//  various parameters include mode, corporation, filter control what information is displayed.
+//
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == null || mode == "null" || mode == "") {
+  mode = "summary"; 
+}
+mode = mode.toLowerCase();
+
+var corporation = "{!$CurrentPage.parameters.corporation}";
+if (corporation == null || corporation == "null" || corporation == "") {
+  corporation = null; 
+} else {
+  corporation = corporation.toLowerCase();
+}
+
+var filter = "{!$CurrentPage.parameters.filter }";
+if (filter == null || filter == "null" || filter == "") {
+  filter = null; 
+} else {
+  $("#filterDiv").html("Filter = " + toProperCase(filter));
+}
+
+// the cinfo parameter controls whether Leader phone and email are displayed.
+var cinfo = "{!$CurrentPage.parameters.cinfo}";
+if (cinfo == null || cinfo == "null" || cinfo == "") {
+  cinfo = null; 
+} else {
+  cinfo = cinfo.toLowerCase().trim();
+}
+
+
+//
+//  some data structures
+//
+var Turf = {};
+var districtSet = [];
+var seatSet = [];
+var districtEcommMap = {};
+
+
+
+// 
+//  Leader data structures
+//
+var xset = [];
+var ldrSet = [];
+var leaderMap = {};
+var statusMap = {};
+var eboardMap = {};
+var ecommSortSet = [];
+// a mapping of Ldr FIDs to an array/set of Supporter FIDs
+var ldrSuppSetMap = [];
+var suppCompletedSet = [];
+
+var lastRecord = null;
+app.controller('rptCtrl', function($scope,$rootScope) {
+        $scope.safeApply = function(fn) {
+          var phase = this.$root.$$phase;
+          if(phase == '$apply' || phase == '$digest') {
+            if(fn && (typeof(fn) === 'function')) {
+              fn();
+            }
+          } else {
+            this.$apply(fn);
+          }
+        }
+    $scope.divTable = [];
+    $scope.rdTable = [];
+    $scope.cdTable = [];
+    $scope.orgTable = [];
+    $scope.empTable = [];
+    $scope.ldrTable = [];
+    $scope.ecmTable = [];
+if(filter!= null){
+    $scope.filter = filter;
+}
+$scope.mode = mode;
+//try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    //
+    //  get the User, determine if they are Coordinator or Organizer for Kaiser/Hospital Div
+    //
+    var user = sforce.connection.getUserInfo();
+    var userName = user.userName;
+    var query = "SELECT ID, Name, Division, Title from User WHERE User.username=\'" + userName + "\'";
+    console.log(query);
+    //debugWriter += query + "<br/>\n";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length != 1) throw "unable to find user";
+    uid = records[0].Id;
+    userFullName = records[0].Name;
+    title = records[0].Title;
+    division = records[0].Division;
+    var division2 = division.toLowerCase();
+    
+    var isOrganizer = false;
+    var isCoordinator = false;    
+    var isOrganizer2 = false;
+    var isCoordinator2 = false;    
+    var isKaiser = false;
+    var isHospital = false;    
+    if (division2.indexOf("kaiser") >= 0 || division2.indexOf("hosp") >= 0) {
+      if (title.toLowerCase().indexOf("organizer") >= 0 || title.toLowerCase().indexOf("rep/org") >= 0) {
+        //alert(" is an organizer!");
+        if (userFullName.toLowerCase().indexOf("manuel hernandez") >= 0) {
+          isOrganizer = true;
+        } else {
+          isOrganizer = true;
+        }
+      }
+      if (title.toLowerCase().indexOf("coordinator") >= 0) {
+        if (userFullName.toLowerCase().indexOf("corson") < 0 && userFullName.toLowerCase().indexOf("guardado") < 0 && userFullName.toLowerCase().indexOf("carlos hernandez") < 0 && userFullName.toLowerCase().indexOf("chante barnes") < 0) {
+          isCoordinator = true;
+        }
+        //alert(" is a coordinator!");        
+      }
+      if (division2.indexOf("kaiser") >= 0) {
+        isKaiser = true;
+        if (isCoordinator == false && isOrganizer == false) {
+          //filter = "kaiser";
+        }
+      } else {
+        isHospital = true;
+        if (isCoordinator == false && isOrganizer == false) {
+          //filter = "hospital";
+        }        
+      }
+    }
+    
+    if(isCoordinator || isOrganizer){
+        //console.log(userFullName);
+        if(userFullName.indexOf("Pearson") > -1){
+        }
+        else{
+            $scope.filter = userFullName;
+        }
+    }
+    debugWriter3 += "queried user record - " + (new Date()).toLocaleString() + "<br/>"; 
+
+    // covered Leaders and Supporters
+    coveredSuppSet = [];
+    coveredLdrSet = [];
+    
+    
+    //
+    //  START query Account/Employers for Turf 
+    //
+    var emCorpMap = {};
+        
+    var query = "select Id, Name, Employer_Id__c, Region__c, Account_Group__c, Regional_Director__r.Name, Coordinator__r.Name, Organizer_1__r.Name, District_2017__r.ConstituencyName__c , Constituency__r.ConstituencyName__c , Hospital_System__c, Phase_6_Picket__c  from Account where (MO_Active__c = true AND (NOT Name like \'pomona valley%\') AND (NOT Name like \'parkview%\') AND ( Account_Group__c = \'KAISER\' OR Account_Group__c = \'HOSPITAL\' ) AND Regional_Director__c != null AND Regional_Director__r.Name != \'jason capell\' ";
+    if (isOrganizer) {
+       query += " AND (Organizer_1__c = \'" + uid + "\' OR Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+        if (uid.indexOf("005i0000008MgCC") > -1 && corporation.indexOf("verity") > -1){
+        }
+        else{
+          query += " AND (Coordinator__c = \'" + uid + "\' ) ";    
+        }
+    }
+        query += " ) ";
+    if (isKaiser) {
+      //query += " AND Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account_Group__c like \'HOSPITAL%\' ";
+    } 
+    if (corporation != null) {
+      query += " AND Hospital_System__c like \'" + corporation + "%\' ";
+    }    
+    var emSet = [];
+    //debugWriter += query + "<br/>\n";
+    //alert("account query =  " + query);
+    var records = sforce.connection.query(query); 
+    console.log(query);
+    var records1 = records.getArray('records'); 
+    
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      
+      if (1 == 1) {
+
+        emCorpMap[records1[i].Name.toLowerCase()] = records1[i].Hospital_System__c;
+      
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+        Turf[records1[i].Name].RegionalDirector = "Vacant";
+        if (records1[i].Regional_Director__r != null) {    
+          Turf[records1[i].Name].RegionalDirector = records1[i].Regional_Director__r.Name;         
+        } else {
+          Turf[records1[i].Name].RegionalDirector = "Vacant";         
+        }
+        
+        Turf[records1[i].Name].Organizer = "Vacant";
+        if (records1[i].Organizer_1__r != null) {         
+          Turf[records1[i].Name].Organizer = records1[i].Organizer_1__r.Name;
+        }
+        Turf[records1[i].Name].Coordinator = "Vacant";
+        if (records1[i].Coordinator__r != null) {         
+          Turf[records1[i].Name].Coordinator = records1[i].Coordinator__r.Name;
+        }
+        
+        if (filter != null) {
+          if (!isCoordinator && Turf[records1[i].Name].Organizer.toLowerCase() == filter) {
+            isOrganizer2 = true;
+          } else if (Turf[records1[i].Name].Coordinator.toLowerCase() == filter) {
+            isCoordinator2 = true;
+          }
+        }
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+      
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+        Turf[records1[i].Name].Picket = records1[i].Phase_6_Picket__c;
+        if (emSet.indexOf(records1[i].Name) < 0) {
+          emSet.push(records1[i].Name);
+        }
+        Turf[records1[i].Name].District = records1[i].District_2017__r.ConstituencyName__c ;        
+        if (records1[i].District_2017__r != null && districtSet.indexOf(records1[i].District_2017__r.ConstituencyName__c ) < 0) {
+          districtSet.push(records1[i].District_2017__r.ConstituencyName__c ); 
+        }
+        Turf[records1[i].Name].Seat = records1[i].Constituency__r.ConstituencyName__c ;          
+        if (records1[i].Constituency__r != null && seatSet.indexOf(records1[i].Constituency__r.ConstituencyName__c ) < 0) {
+          seatSet.push(records1[i].Constituency__r.ConstituencyName__c );
+        } 
+      }
+    }
+    
+    var query = "select Account.Name, Count(Id) from Contact where (Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND (Account.Account_Group__c = \'KAISER\' OR Account.Account_Group__c = \'HOSPITAL\' ) and In_Current_BU__c = true "
+    if (isOrganizer) {
+       query += " AND (Account.Organizer_1__c = \'" + uid + "\' OR Account.Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+        if (uid.indexOf("005i0000008MgCC") > -1 && corporation.indexOf("verity") > -1){
+        }
+        else{
+          query += " AND (Account.Coordinator__c = \'" + uid + "\' ) ";    
+        }
+    }
+    if (isKaiser) {
+      //query += " AND Account.Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      //query += " AND Account.Account_Group__c like \'HOSPITAL%\' ";
+    }     
+    query += " AND Account.Regional_Director__r.Name != \'Jason Capell\' ";    
+    query += " ) "
+    if (corporation != null) {
+        //exception for pearson woods to view verity accounts.
+        if (uid.indexOf("005i0000008MgCC") > -1 && corporation.indexOf("verity") > -1){
+            query += " OR Hospital_System__c like \'" + corporation + "%\' ";
+        }
+        else{
+          query += " AND Hospital_System__c like \'" + corporation + "%\' ";
+        }
+    }
+    query += " group by Account.Name";
+    //debugWriter += query + "<br/>\n";   
+    //alert("bu query = " + query);
+    console.log(query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0; i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      //alert(records1[i].Name + "=" + records1[i].expr0); 
+      
+      if (Turf[records1[i].Name] != null) {
+        
+        Turf[records1[i].Name].BU_Count = records1[i].expr0;
+      
+        var organizer = Turf[records1[i].Name].Organizer;
+        var coordinator = Turf[records1[i].Name].Coordinator;
+        var regionalDirector = Turf[records1[i].Name].RegionalDirector;   
+        var div = Turf[records1[i].Name].Division;
+        var district = Turf[records1[i].Name].District;
+        debugWriter3 += records1[i].Name + " - _" + district + "_ = " + Turf[records1[i].Name].BU_Count + "<br/>\n";
+        incrementCounter([ALL, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([DIVISION, div, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([DIVISION, "ALL", BU], parseFloat(records1[i].expr0));           
+        incrementCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU], parseFloat(records1[i].expr0));           
+        incrementCounter([COORDINATOR, div, regionalDirector, coordinator, BU], parseFloat(records1[i].expr0));          
+        incrementCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU], parseFloat(records1[i].expr0));                 
+        incrementCounter([EMPLOYER, records1[i].Name, BU],  parseFloat(records1[i].expr0));
+        incrementCounter([DISTRICT, district, BU],  parseFloat(records1[i].expr0));
+      }
+    }    
+    var employerSortSet = new Array();
+    var turfSortSet = new Array();
+    var coorSortSet = new Array();    
+    var regDirSortSet = new Array();  
+    var ldrSortSet = new Array();
+
+    
+    for (var emName in Turf) {
+        var turfa = Turf[emName];
+        //alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer]);
+        var employerKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer, emName]);
+
+        employerSortSet.push(employerKey);        
+        var div = turfa.Division.toLowerCase().trim();
+        if (turfSortSet.indexOf(turfKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          incrementCounter([DIVISION, div, TURF], 1.0);
+          incrementCounter([DIVISION, "ALL", TURF], 1.0);          
+          incrementCounter([REGIONAL_DIRECTOR, div, turfa.RegionalDirector, TURF], 1.0);
+          incrementCounter([COORDINATOR, div, turfa.RegionalDirector, turfa.Coordinator, TURF], 1.0);
+          incrementCounter([ORGANIZER, div, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer, TURF], 1.0);                    
+          turfSortSet.push(turfKey);
+        }
+        
+        var coorKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator]);
+        if (coorSortSet.indexOf(coorKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant" && turfa.Coordinator.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            coorSortSet.push(coorKey);
+          }
+        }    
+        
+        var regDirKey = JSON.stringify([turfa.Division, turfa.RegionalDirector]);
+        if (regDirSortSet.indexOf(regDirKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            regDirSortSet.push(regDirKey);
+          }
+        }   
+        
+    }
+    employerSortSet.sort();
+    turfSortSet.sort();
+    coorSortSet.sort();
+    regDirSortSet.sort();
+    //
+    //  END TURF QUERY
+    //
+    debugWriter3 += "queried turf - " + (new Date()).toLocaleString() + "<br/>"; 
+    
+    //
+    //  query to get a mapping of Constituency Seat to EComm Member
+    //
+    var query = "select FID__c, Account.District_2017__r.ConstituencyName__c from Contact where Executive_Body_Title__c = \'Executive Committee\' ";
+    //alert("district ecomm query = " + query);
+    var records = sforce.connection.query(query); 
+    console.log(query);
+    var records1 = records.getArray('records');         
+    //alert("found ecomms = " + records1.length); 
+    for ( var i=0; i < records1.length; i++) {     
+      districtEcommMap[records1[i].Account.District_2017__r.ConstituencyName__c] = records1[i].FID__c;
+    }
+    debugWriter3 += "queried eboard - " + (new Date()).toLocaleString() + "<br/>"; 
+    
+
+   
+      //
+      //   START SURVEY RESPONSE QUERY
+      //
+      var query = "select Id, Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, ";
+      query += "      Department__c, Contact__r.Shift__c, Contact__r.Age_Range__c, Question_Name__c, Survey_Code__c, Response_Value__c, ";
+      query += "      Add_Info_Numeric__c, Collected_By__c, Collected_By_Name__c, Collected_By_Employer_Name__c,  ";
+      query += "      Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, ";
+      query += "      Contact__r.COPE_Pledge__c, Contact__r.COPE_Baseline_Pledge__c  , Add_Info__c,  ";
+      query += "      Collected_By__r.Department, Contact__r.In_Current_BU__c, Collected_By__r.Age_Range__c, Collected_By__r.Shift__c, ";
+      query += "      Collected_By__r.In_Current_BU__c, Survey_How_Old__c, Report_Group__c, Contact__r.Tier_Staff__c, ";
+      query += "      Collected_By__r.Tier_Staff__c, Collected_By__r.FID__c, LastModifiedBy.Name, ";
+      query += "      Contact__r.Stretch_Leader__r.FID__c, ";      
+      query += "      Contact__r.Stretch_EBoard_Team__c, Contact__r.Tier_1_Leader__r.FID__c,";
+      query += "      Contact__r.Report_Tags__c, ";      
+      query += "      Contact__r.Stretch_Leader__r.Report_Tags__c, ";            
+      query += "      Contact__r.Stretch_Team_Intake_Phase__c, ";
+      query += "      Contact__r.Account.Name ";
+      query += "   from Survey_Response__c where CreatedDate >= 2018-01-20T04:04:00Z AND (";
+      query += " (NOT Employer_Name__c like \'pomona valley%\') AND (NOT Employer_Name__c like \'parkview%\')  ";
+      query += " ) ";       
+      query += " AND ((Survey_Code__c = \'" + CODE_DIALYSIS + "\' AND Collected_Datetime__c >= 2018-01-21T17:40:07.311-08:00) ";
+      query += " OR Survey_Code__c = \'" + CODE_LEADER + "\' OR Survey_Code__c = \'" + CODE_PICKET + "\' OR Survey_Code__c = \'" + CODE_KCRE + "\' ";
+      query += " OR Survey_Code__c = \'" + CODE_SUTTER_SURVEY + "\' ";        
+      query += " OR Survey_Code__c = \'" + CODE_SUTTER_LEADER + "\' "; 
+      query += " OR Survey_Code__c = \'" + CODE_PUBLIC_HOSPITAL + "\' ";         
+      query += " OR Survey_Code__c = \'" + CODE_ENLOE + "\' ";         
+      query += " )  ";
+    /*
+        if (filter != null) {
+          query += " AND (Collected_By__r.Account.Account_Group__c = \'" + filter + "\' OR ";
+          query += " Contact__r.Account.Account_Group__c = \'" + filter + "\' OR ";          
+          query += " Collected_By__r.Account.Regional_Director__r.Name=\'" + filter + "\' OR ";
+          query += " Regional_Director__c =\'" + filter + "\' OR ";
+          if (filter.indexOf("vacant") == 0) {
+            query += " Collected_By__r.Account.Coordinator__c.Name=null OR ";
+            query += " Coordinator__c = null OR ";
+            query += " Collected_By__r.Account.Organizer_1__c.Name=null OR ";
+            query += " Organizer_1__c.Name=null OR ";                    
+          } else {
+            query += " Collected_By__r.Account.Coordinator__r.Name =\'" + filter + "\' OR ";
+            query += " Coordinator__c =\'" + filter + "\' OR ";
+            query += " Collected_By__r.Account.Organizer_1__r.Name =\'" + filter + "\' OR ";
+            query += " Organizer_1__c =\'" + filter + "\' OR ";                    
+          }
+          query += " Collected_By__r.Account.Name =\'" + filter + "\'  OR ";
+          query += " Employer_Name__c =\'" + filter + "\'  ";        
+          query += ") ";
+        }
+*/
+        if (isCoordinator || isOrganizer) {
+          query += " AND ( ";
+          for (var j = 0; j < emSet.length; j++) {
+            if (j > 0) {
+              query += " OR ";
+            }
+            query += " Employer_Name__c = \'" + emSet[j] + "\' ";
+          }        
+          query += " ) ";
+        }    
+        if (corporation != null) {
+          query += " AND Contact__r.Account.Hospital_System__c like \'" + corporation + "%\' ";
+        }        
+          
+        //alert("" + p + " = " + query);
+        
+        debugWriter += query + "<br/>\n";
+        //alert("sr query = "+ query);
+        console.log(query)
+        var result = sforce.connection.query(query); 
+        console.log(query);
+
+        var queryMore = true; 
+        debugString += query + " - " + records1.length + "<br/>";
+
+        
+        while (queryMore) {
+
+          var records1 = result.getArray('records'); 
+          for(var i=0;i < records1.length; i++) {   
+            //alert(JSON.stringify(records1[i]));
+  
+            lastRecord = records1[i];
+            var a = records1[i];
+            var organizer = "Vacant";
+            var coordinator = "Vacant";
+            var regionalDirector = "Vacant"; 
+            var div = records1[i].Division__c;   
+            var emName =   "";
+            if(records1[i].Contact__r != null && records1[i].Contact__r.Account != null){
+                emName = records1[i].Contact__r.Account.Name;
+            }            
+            var district = "";
+            var seat = ""; 
+            records1[i].DebugStep = "0";
+            records1[i].LeaderFID = "0000-000000000";
+            if (records1[i].FID__c != null) {         
+              records1[i].LeaderFID = records1[i].FID__c;            
+            }
+            
+            var fid = a.FID__c;
+            
+            var ldrFid = null;
+            if (a.Contact__r != null && a.Contact__r.Stretch_Leader__r != null && a.Contact__r.Stretch_Leader__r.FID__c != null) {
+              ldrFid = a.Contact__r.Stretch_Leader__r.FID__c;
+              if (ldrSet.indexOf(fid) < 0) {
+                 ldrSet.push(fid);
+              }          
+            } else if (a.Collected_By__r != null && a.Collected_By__r.FID__c != null) {
+              ldrFid = a.Collected_By__r.FID__c;            
+              if (ldrSet.indexOf(fid) < 0) {
+                 ldrSet.push(fid);
+              }              
+            } else {
+              ldrFid = fid;
+            }
+
+            
+            records1[i].DebugStep = "1";
+            if (records1[i].Collected_By_Employer_Name__c != null && records1[i].Collected_By_Employer_Name__c != "" && Turf[records1[i].Collected_By_Employer_Name__c ] != null) {
+                /*
+                organizer = Turf[records1[i].Collected_By_Employer_Name__c ].Organizer;
+                coordinator = Turf[records1[i].Collected_By_Employer_Name__c ].Coordinator;
+                regionalDirector = Turf[records1[i].Collected_By_Employer_Name__c ].RegionalDirector;                      
+                emName =  records1[i].Collected_By_Employer_Name__c;              
+                district = Turf[records1[i].Collected_By_Employer_Name__c ].District;
+                seat = Turf[records1[i].Collected_By_Employer_Name__c ].Seat;   
+                */
+                records1[i].DebugStep = "1b";
+                
+            } 
+            if (records1[i].Collected_By__r != null && records1[i].Collected_By__r.FID__c != null) {
+              records1[i].LeaderFID = records1[i].Collected_By__r.FID__c;
+            }
+            if (Turf[emName] != null) {
+                organizer = Turf[emName].Organizer;
+                coordinator = Turf[emName].Coordinator;
+                regionalDirector = Turf[emName].RegionalDirector;              
+                district = Turf[emName].District;
+                seat = Turf[emName].Seat;   
+            }  
+            records1[i].DebugStep = "3";
+            if (records1[i].Contact__r != null && records1[i].Contact__r.Stretch_Leader__r != null && records1[i].Contact__r.Stretch_Leader__r.FID__c != null) {
+              records1[i].LeaderFID = records1[i].Contact__r.Stretch_Leader__r.FID__c;                           
+            }
+                     
+            var employer = emName;
+               
+            var response = records1[i].Response_Value__c.trim().substring(0,1).toLowerCase();
+            var srCode = records1[i].Survey_Code__c;
+            var reportGroup = records1[i].Report_Group__c;
+
+            var regDirector = regionalDirector;
+
+            records1[i].Employer = emName ;
+            records1[i].Organizer = organizer;
+            records1[i].Coordinator = coordinator;
+            records1[i].RegionalDirector = regionalDirector;
+            records1[i].Division = div; 
+            records1[i].CID = records1[i].Contact__c;
+
+            records1[i].DebugStep = "7";
+            if (records1[i].Contact__r != null && records1[i].Contact__r.Stretch_Leader__r != null && records1[i].Contact__r.Stretch_Leader__r.FID__c != null) {
+              records1[i].LeaderFID = records1[i].Contact__r.Stretch_Leader__r.FID__c; 
+            }            
+
+            var supporterType = TAG_UNCOVERED_SUPP;
+            if (records1[i].Contact__r != null && records1[i].Contact__r.Report_Tags__c != null && (records1[i].Contact__r.Report_Tags__c.toLowerCase().indexOf(TAG_COVERED_SUPP.toLowerCase()) >= 0 || records1[i].Contact__r.Report_Tags__c.toLowerCase().indexOf(TAG_COVERED_LDR.toLowerCase()) >= 0)) {
+              supporterType = TAG_COVERED_SUPP;
+            }
+            var leaderType = TAG_UNCOVERED_LDR;
+            if (records1[i].Contact__r != null && records1[i].Contact__r.Stretch_Leader__r != null && records1[i].Contact__r.Stretch_Leader__r.Report_Tags__c != null && records1[i].Contact__r.Stretch_Leader__r.Report_Tags__c.toLowerCase().indexOf(TAG_COVERED_LDR.toLowerCase()) >= 0) {
+              leaderType = TAG_COVERED_LDR;
+            }
+            
+            
+            if (srCode == CODE_LEADER || srCode == CODE_SUTTER_LEADER) {
+              records1[i].DebugStep = "11";
+              records1[i].LeaderName = records1[i].Contact_Name__c;              
+              if (response != "x" && response != "n") {
+                leaderMap[records1[i].FID__c] = records1[i];
+                if (ldrSet.indexOf(fid) < 0) {
+                  ldrSet.push(fid);
+                }
+                statusMap[records1[i].FID__c] = response;
+              } else if (response == "x") {
+                xset.push(records1[i].FID__c);
+              }      
+              if (response == "a" || response == "o") {
+                incrementCounter([DIVISION, ALL, LEADER, COMPLETED], 1.0);              
+                incrementCounter([DIVISION, div, LEADER, COMPLETED], 1.0);    
+                incrementCounter([REGIONAL_DIRECTOR, div, regDirector, LEADER, COMPLETED], 1.0);  
+                incrementCounter([COORDINATOR, div, regDirector, coordinator, LEADER, COMPLETED], 1.0);  
+                incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, LEADER, COMPLETED], 1.0);  
+                incrementCounter([EMPLOYER, employer, LEADER, COMPLETED], 1.0);
+                incrementCounter([DISTRICT, district, LEADER, COMPLETED], 1.0);
+              }
+            } else if (srCode == CODE_KCRE && response == "y") {
+              incrementCounter([DIVISION, ALL, CODE_KCRE], 1.0);              
+              incrementCounter([DIVISION, div, CODE_KCRE], 1.0);    
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, CODE_KCRE], 1.0);  
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, CODE_KCRE], 1.0);  
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, CODE_KCRE], 1.0);  
+              incrementCounter([EMPLOYER, employer, CODE_KCRE], 1.0);
+              incrementCounter([DISTRICT, district, CODE_KCRE], 1.0); 
+            } else if (srCode == CODE_PICKET) {
+              incrementCounter([DIVISION, ALL, supporterType, CODE_PICKET, response], 1.0);              
+              incrementCounter([DIVISION, div, supporterType , CODE_PICKET, response], 1.0);    
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, supporterType , CODE_PICKET, response], 1.0);  
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, supporterType , CODE_PICKET, response], 1.0);  
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, supporterType , CODE_PICKET, response], 1.0);  
+              incrementCounter([EMPLOYER, employer, supporterType , CODE_PICKET, response], 1.0);   
+              incrementCounter([DISTRICT, district, supporterType , CODE_PICKET, response], 1.0);                 
+              incrementCounter([LEADER, ldrFid, CODE_PICKET, response], 1.0);   
+              if (response == "a" || response == "b" || response == "d" ) {
+                if (suppCompletedSet.indexOf(fid) < 0) {
+                  incrementCounter([LEADER, COMPLETED, supporterType, ldrFid], 1.0); 
+                  suppCompletedSet.push(fid);
+                }
+              }
+            } else if ((srCode == CODE_DIALYSIS || srCode == CODE_SUTTER_SURVEY || srCode == CODE_PUBLIC_HOSPITAL || srCode == CODE_ENLOE) && response == "y" && ldrFid != null) {
+              incrementCounter([LEADER, ldrFid, CODE_DIALYSIS, response], 1.0);   
+              if (suppCompletedSet.indexOf(fid) < 0) {
+                incrementCounter([LEADER, COMPLETED, supporterType, ldrFid], 1.0);
+                suppCompletedSet.push(fid);
+              } 
+            }
+          }
+        if (result.getBoolean("done")) {
+            queryMore = false;
+        } else {
+            result = sforce.connection.queryMore(result.queryLocator);
+        }          
+      }     
+      //alert("completed set = " + completedSet.length);
+      // 
+      //   END SURVEY RESPONSE QUERY
+      //    
+    debugWriter3 += "queried survey responses - " + (new Date()).toLocaleString() + "<br/>"; 
+ 
+    
+    
+
+    //
+    // START CONTACTS QUERY AND COUNTS
+    //
+    var cqmDex = 0; 
+    
+    
+    var alreadyCountedLeaderSet = [];
+    var leaderHasWorkingSupporterSet = [];
+          
+    var records1 = [];
+
+
+    var selectContact = "select Id, Account.District_2017__r.ConstituencyName__c, Stretch_Leader__r.Account.Name, Stretch_Leader__r.Account.Regional_Director__r.Name, FID__c, Account.Name, Department, Stretch_Leader__r.FID__c, Stretch_EBoard_Team__c, Tier_1_Leader__r.FID__c, Executive_Body_Title__c, Name, Report_Tags__c, LastName, FirstName, Department_Mod__c, MobilePhone, Email ";
+    selectContact += " from Contact ";
+    
+    for (var partition = 0 ; partition < 100; partition++) {
+
+        var query = selectContact;
+        query += " where Account.MO_Active__c = true AND (NOT Account.Name like \'pomona valley%\') AND (NOT Account.Name like \'parkview%\') AND  (In_Current_BU__c = true OR In_Current_BU_Override__c >= LAST_N_MONTHS:6 ) AND ";
+        query += " Account.Regional_Director__c != null  " ;
+        //query += " AND Account.District_2017__c != null ";
+        //query += " AND ((Stretch_Same_Facility__c = true AND Stretch_Leader__c != null AND (NOT Stretch_Team_Intake_Phase__c like \'%phase 4%\')) OR Stretch_Ldr_Promotion_Status__c = \'Promoted\' OR Executive_Body_Title__c = \'Executive Board\' OR Executive_Body_Title__c = \'Executive Committee\' OR Stretch_EBoard_Team__c = TRUE ) ";
+        //query += " AND (Stretch_Leader__c = null OR Stretch_Leader__r.Account.Regional_Director__c != null) AND Account.Regional_Director__c != null ";
+        /*
+        if (filter != null) {
+          query += " AND (Stretch_Leader__r.Account.Account_Group__c = \'" + filter + "\' OR ";
+          query += " Account.Account_Group__c = \'" + filter + "\' OR ";          
+          query += " Stretch_Leader__r.Account.Regional_Director__r.Name=\'" + filter + "\' OR ";
+          query += " Account.Regional_Director__r.Name=\'" + filter + "\' OR ";
+          if (filter.indexOf("vacant") == 0) {
+            query += " Stretch_Leader__r.Account.Coordinator__r.Name=null OR ";
+            query += " Account.Coordinator.Name=null OR ";
+            query += " Stretch_Leader__r.Account.Organizer_1__r.Name=null OR ";
+            query += " Account.Organizer_1__r.Name=null OR ";                    
+          } else {
+            query += " Stretch_Leader__r.Account.Coordinator__r.Name=\'" + filter + "\' OR ";
+            query += " Account.Coordinator__r.Name=\'" + filter + "\' OR ";
+            query += " Stretch_Leader__r.Account.Organizer_1__r.Name=\'" + filter + "\' OR ";
+            query += " Account.Organizer_1__r.Name=\'" + filter + "\' OR ";                    
+          }
+          query += " Stretch_Leader__r.Account.Name =\'" + filter + "\'  OR ";
+          query += " Account.Name =\'" + filter + "\'  ";        
+          query += ") ";       
+          query += " AND (Report_Tags__c like \'%PreP6Covered%\' OR Executive_Body_Title__c != null OR Stretch_Leader__c != null) ";               
+        }      
+        */
+        if (corporation != null) {
+          query += " AND Account.Hospital_System__c like \'" + corporation + "%\' ";
+        } 
+        if (partition < 10) {  
+          query += " AND FID__c like \'%0" + partition + "\' ";
+        } else {
+          query += " AND FID__c like \'%" + partition + "\' ";
+        }
+        
+        //debugWriter += query + "<br/>\n";        
+        //alert ("contact query = " + query);
+        var queryMore = true;
+        var result = sforce.connection.query(query); 
+        console.log(query);
+        while (queryMore) {  
+          var records1 = result.getArray('records');
+          debugWriter3 += "partititon " + partition + " with " + records1.length + " records, done at - " + (new Date()).toLocaleString() + "<br/>";
+          for  (var j = 0 ; j < records1.length; j++){
+
+            var a = records1[j];
+            lastRecord = a;
+
+            var tags = a.Report_Tags__c;
+            if (tags != null) {
+              tags = tags.toLowerCase();
+            } else {
+              tags = "";
+            }
+
+            var division = "HOSPITAL";
+            if (a.Account.Name.toLowerCase().indexOf("kaiser") == 0) {
+              division = "KAISER";
+            }
+            var div = division;
+            var employer = a.Account.Name;
+
+
+
+            
+            var fid = a.FID__c;              
+             
+            var ldrFid =  null;               
+        
+
+
+            
+            var followerCategory = "N";
+            var district = "Unknown District";
+            var seat = "Unknown Seat";
+            if (Turf[a.Account.Name] != null) {
+              district = Turf[a.Account.Name].District;
+              seat = Turf[a.Account.Name].Seat;
+            }
+          
+            if (a.Account.District_2017__r != null && a.Account.District_2017__r.ConstituencyName__c != null) {
+              district = a.Account.District_2017__r.ConstituencyName__c;
+            }
+          
+            if (a.Executive_Body_Title__c == "Executive Board" || a.Executive_Body_Title__c == "Executive Committee") {
+              eboardMap[a.FID__c] = a;
+              if (a.Executive_Body_Title__c == "Executive Board") {
+                var ecommFid = districtEcommMap[district];
+                var ecSortKey = JSON.stringify([district, seat, a.Account.Name, a.FID__c, ecommFid]);
+                ecommSortSet.push(ecSortKey);
+              }
+            }
+          
+            var employer = a.Account.Name;
+            var fid = a.FID__c;
+            
+            var supporterType = UNCOVERED;
+            var leaderType = UNCOVERED;
+
+            var ldrFid = null;
+            if (a.Stretch_Leader__r != null && a.Stretch_Leader__r.Account.Regional_Director__r != null) {
+                employer = a.Stretch_Leader__r.Account.Name;
+                ldrFid = a.Stretch_Leader__r.FID__c;
+                var suppSet = [];
+                if (ldrSuppSetMap[ldrFid] != null) {
+                  suppSet = ldrSuppSetMap[ldrFid];
+                } 
+                suppSet.push(fid);
+                ldrSuppSetMap[ldrFid] = suppSet;
+                if (ldrSet.indexOf(fid) < 0) {
+                   ldrSet.push(ldrFid);
+                }                 
+            }
+            var regDirector = "Vacant";
+            var coordinator = "Vacant";
+            var organizer = "Vacant";          
+            if (Turf[employer] != null) {
+              regDirector = Turf[employer].RegionalDirector;
+            
+              if (Turf[employer].Coordinator != null) {
+                coordinator = Turf[employer].Coordinator;
+              }
+              
+              if (Turf[employer].Organizer != null) {
+                organizer = Turf[employer].Organizer;
+              }            
+            }
+            
+            if (tags != null && tags.trim().length > 1) {
+              //alert("tags for fid " + fid + " = _" + tags + "_");
+            }
+
+            if (xset.indexOf(fid) < 0 && ldrSet.indexOf(fid) >= 0) {
+              var ldrKey = JSON.stringify([div, regDirector, coordinator, organizer, employer, a.LastName, a.FirstName, fid, a.Department_Mod__c, a.Id]);
+              ldrSortSet.push(ldrKey);
+              leaderMap[fid] = a;
+            }
+            
+            
+            if (tags.indexOf(TAG_COVERED_LDR.toLowerCase()) >= 0 && xset.indexOf(fid) < 0) {
+              
+              coveredLdrSet.push(fid);
+              incrementCounter([DIVISION, ALL, TAG_COVERED_LDR], 1.0);              
+              incrementCounter([DIVISION, div, TAG_COVERED_LDR], 1.0);    
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, TAG_COVERED_LDR], 1.0);  
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, TAG_COVERED_LDR], 1.0);  
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, TAG_COVERED_LDR], 1.0);  
+              incrementCounter([EMPLOYER, employer, TAG_COVERED_LDR], 1.0); 
+              incrementCounter([DISTRICT, district, TAG_COVERED_LDR], 1.0); 
+                            
+              incrementCounter([DIVISION, ALL, TAG_COVERED_SUPP], 1.0);              
+              incrementCounter([DIVISION, div, TAG_COVERED_SUPP], 1.0);    
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, TAG_COVERED_SUPP], 1.0);  
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, TAG_COVERED_SUPP], 1.0);  
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, TAG_COVERED_SUPP], 1.0);  
+              incrementCounter([EMPLOYER, employer, TAG_COVERED_SUPP], 1.0);  
+              incrementCounter([DISTRICT, district, TAG_COVERED_SUPP], 1.0); 
+                            
+              var uncoveredComplete = getCounter([LEADER, COMPLETED, TAG_UNCOVERED_SUPP, fid]);
+              // increment complete uncovered supporters for COVERED LEADERS
+              incrementCounter([DIVISION, ALL, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );              
+              incrementCounter([DIVISION, div, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );    
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );  
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );  
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );  
+              incrementCounter([EMPLOYER, employer, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );
+              incrementCounter([DISTRICT, district, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );              
+                              
+            } else if (getCounter([LEADER, COMPLETED, TAG_UNCOVERED_SUPP, fid]) >= 10 || (statusMap[fid] != null && statusMap[fid] == "o")) {
+              var uncoveredComplete = getCounter([LEADER, COMPLETED, TAG_UNCOVERED_SUPP, fid]);
+              // increment complete supporters for UNCOVERED LEADERS
+              incrementCounter([DIVISION, ALL, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );              
+              incrementCounter([DIVISION, div, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );    
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );  
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );  
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );  
+              incrementCounter([EMPLOYER, employer, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );
+              incrementCounter([DISTRICT, district, TAG_UNCOVERED_SUPP, COMPLETED], uncoveredComplete );
+              
+              // increment completed leaders
+              incrementCounter([DIVISION, ALL, TAG_UNCOVERED_LDR, COMPLETED], 1.0 );              
+              incrementCounter([DIVISION, div, TAG_UNCOVERED_LDR, COMPLETED], 1.0 );              
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, TAG_UNCOVERED_LDR, COMPLETED], 1.0 );              
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, TAG_UNCOVERED_LDR, COMPLETED], 1.0 );              
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, TAG_UNCOVERED_LDR, COMPLETED], 1.0 );              
+              incrementCounter([EMPLOYER, employer, TAG_UNCOVERED_LDR, COMPLETED], 1.0 );              
+              incrementCounter([DISTRICT, district, TAG_UNCOVERED_LDR, COMPLETED], 1.0 ); 
+                            
+            } else if (tags.indexOf(TAG_COVERED_SUPP.toLowerCase()) >= 0) {
+              // the Pre P6 Covered universes
+              coveredSuppSet.push(fid);
+              incrementCounter([DIVISION, ALL, TAG_COVERED_SUPP], 1.0);              
+              incrementCounter([DIVISION, div, TAG_COVERED_SUPP], 1.0);    
+              incrementCounter([REGIONAL_DIRECTOR, div, regDirector, TAG_COVERED_SUPP], 1.0);  
+              incrementCounter([COORDINATOR, div, regDirector, coordinator, TAG_COVERED_SUPP], 1.0);  
+              incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, TAG_COVERED_SUPP], 1.0);  
+              incrementCounter([EMPLOYER, employer, TAG_COVERED_SUPP], 1.0);     
+              incrementCounter([DISTRICT, district, TAG_COVERED_SUPP], 1.0);                                          
+            }
+            
+            if (Turf[a.Account.Name] != null) {
+              var picket = Turf[a.Account.Name].Picket;
+              if (picket != null && picket != "") {
+                incrementCounter([DIVISION, ALL, BU_PICKET], 1.0);              
+                incrementCounter([DIVISION, div, BU_PICKET], 1.0);    
+                incrementCounter([REGIONAL_DIRECTOR, div, regDirector, BU_PICKET], 1.0);  
+                incrementCounter([COORDINATOR, div, regDirector, coordinator, BU_PICKET], 1.0);  
+                incrementCounter([ORGANIZER, div, regDirector, coordinator, organizer, BU_PICKET], 1.0);  
+                incrementCounter([EMPLOYER, employer, BU_PICKET], 1.0);              
+                incrementCounter([DISTRICT, district, BU_PICKET], 1.0);               
+              }
+            }
+
+
+            
+            //
+            // leader map add if not there
+            //
+            if (ldrFid != null && leaderMap[ldrFid] == null) {
+              a.Employer = employer;
+              a.Organizer = organizer;
+              a.Coordinator = coordinator;
+              a.RegionalDirector = regDirector;
+              a.Division = div;   
+              leaderMap[ldrFid] = a;
+              if (statusMap[ldrFid] == null) {
+                statusMap[ldrFid] = "N";
+              }
+            }
+                                 
+                            
+          }           
+          if (result.getBoolean("done")) {
+            queryMore = false;
+          } else {
+            result = sforce.connection.queryMore(result.queryLocator);
+          }
+          cqmDex++
+        }
+            
+     }
+
+     var missingSet = [];
+     for (var ldex = 0; ldex < ldrSet.length; ldex++) {
+       var ldrFid = ldrSet[ldex];
+       if (leaderMap[ldrFid] == null) {
+         missingSet.push(ldrFid);
+       }
+     }
+     debugWriter3 += "missingSet size = " + missingSet.length + " - " + (new Date()).toLocaleString() + "<br/>";
+     var mdex = 0;
+     for (var p = 0; p < (missingSet.length / 50); p++) {
+       var query = selectContact + " WHERE ";
+       var localDex = 0;
+       for (var mdex = p * 50; mdex < missingSet.length; mdex++) {
+         if (localDex > 0) {
+           query += " OR ";
+         }
+         var fid = missingSet[mdex];
+         query += " FID__c = \'" + fid + "\' ";
+         if (mdex >= ((p + 1) * 50)) {
+           break;
+         }
+         localDex++;
+       }
+       var result = sforce.connection.query(query); 
+        console.log(query);
+       var records1 = result.getArray('records');
+       for (var i = 0; i < records1.length; i++) {
+         lastRecord = records1[i];
+         var a = records1[i];
+         leaderMap[a.FID__c] = a;
+       }
+     }
+     
+     //alert("records1 length = " + records1.length);
+
+       
+        
+      
+
+          //alert("contacts (" + cqmDex +") = " + records1.length);                
+          
+      records1 = null;  
+
+         
+      //
+      //   END CONTACTS QUERY
+      //  
+        debugWriter3 += "queried contacts - " + (new Date()).toLocaleString() + "<br/>"; 
+    
+    
+    //alert("Building division summary....");
+    
+    //debugWriter += "\n<br/>&nbsp;<br/>\nBuilding Division Summary...<br/>\n";
+    
+    var divTemplate = $(".divisionRowTemplate").html();
+    var regionTemplate = $(".regionRowTemplate").html();
+    var coordinatorTemplate = $(".coordinatorRowTemplate").html();
+    var organizerTemplate = $(".organizerRowTemplate").html();
+    var employerTemplate = $(".employerRowTemplate").html();    
+    var ecommTemplate = $(".ecommRowTemplate").html();        
+    var leaderTemplate = $(".leaderRowTemplate").html();
+    
+    //debugWriter += "\n<br/>div template = " + divTemplate; 
+     
+    //var templateVars = divTemplate.match(/{{([^{}]+)}}/g);
+    //debugWriter += "\n<br/>&nbsp;<br/>\nTemplate Vars = " + JSON.stringify(templateVars) + "<br/>\n";
+    
+    var rowCounter = 0;
+    
+    
+    //alert("Anne Arroyo completeds = " + getCounter([LEADER, COMPLETED, TAG_UNCOVERED_SUPP, "5144-000043216"] ));   
+
+    
+    //
+    //  Division Counts
+    //
+    var newWriter = "";
+    for (var ddex = 0; ddex < divArray.length; ddex++) {
+      var division = divArray[ddex];
+      var thisrow = new Object();
+      debugWriter += "division = " + division + "<br/>";
+      var div = toProperCase(division);
+      thisrow.div = div;
+      if (filter == null || division.toLowerCase() == filter.toLowerCase()) {            
+        if (corporation == null || division.toLowerCase() == "hospital") {
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var buCount = getCounter([DIV, div, BU]);
+          thisrow.buCount = buCount;
+          var picketUniverse = getCounter([DIV, div, BU_PICKET]);
+          var creGoal = picketUniverse * 0.3;
+          if (div.toLowerCase() == "hospital")  {
+            creGoal = 0;
+          } else if (div.toLowerCase() == "all")  {
+            picketUniverse = getCounter([DIV, KAISER, BU_PICKET]);
+            creGoal = picketUniverse * 0.3;
+          }
+          var creAttend = getCounter([DIV, div, CODE_KCRE]);
+          thisrow.creAttend = creAttend;
+          var crePct = "" + (100.0 * getCounter([DIV, div, CODE_KCRE]) / (parseFloat(creGoal) + 0.001)).toFixed(0) + "%";
+          thisrow.crePct = crePct;
+    
+          var picketGoal = picketUniverse * PICKET_GOAL_KAISER ;
+          if (div.toLowerCase() == "hospital")  {
+            picketGoal = picketUniverse * PICKET_GOAL_HOSPITAL ;
+          } else if (div.toLowerCase() == "all")  {
+            picketUniverse = getCounter([DIV, KAISER, BU_PICKET]) + getCounter([DIV, HOSPITAL, BU_PICKET]) ;
+            picketGoal = (PICKET_GOAL_KAISER  * getCounter([DIV, KAISER, BU_PICKET])) + (PICKET_GOAL_HOSPITAL  * getCounter([DIV, HOSPITAL, BU_PICKET])) ;
+          }
+          thisrow.picketUniverse = picketUniverse;
+          
+          creGoal = creGoal.toFixed(0);
+          thisrow.creGoal = creGoal;
+          picketGoal = picketGoal.toFixed(0);
+          thisrow.picketGoal = picketGoal;
+          
+          var leaderCount = getCounter([DIVISION, div, TAG_COVERED_LDR]);
+          
+          //alert("leader count for div " + div + " = " + leaderCount);
+          
+          var supporterCount = getCounter([DIVISION, div, TAG_COVERED_SUPP]);
+          var coveredCommits = 0;      
+          var uncoveredCommits = 0;
+          var commitPct = 0;  
+          var confirmCount = 0;
+          var remindCount = 0;
+          var attendCount = 0;
+          var uncoveredAttendCount = 0;
+          var attendPct = 0;      
+          var newLdrsCompleted = getCounter([DIVISION, div, TAG_UNCOVERED_LDR, COMPLETED]);   
+          thisrow.newLdrsCompleted = newLdrsCompleted;
+          var newSupportersCompleted = getCounter([DIVISION, div, TAG_UNCOVERED_SUPP, COMPLETED]);
+          thisrow.newSupportersCompleted = newSupportersCompleted;
+          
+          var commitArray = ["m", "b", "d", "a"];        
+          var coveredCommits = 0;
+          var uncoveredCommits = 0;
+
+          var commitPct = 0;  
+          var attendCount = getCounter([DIV, div, TAG_COVERED_SUPP, CODE_PICKET, "a"]);
+          uncoveredAttendCount = getCounter([DIV, div, TAG_UNCOVERED_SUPP, CODE_PICKET, "a"]);
+          var remindCount = attendCount + getCounter([DIV, div, TAG_COVERED_SUPP, CODE_PICKET, "d"]);
+          var confirmCount = remindCount + getCounter([DIV, div, TAG_COVERED_SUPP, CODE_PICKET, "b"]);
+          thisrow.attendCount = attendCount;
+          thisrow.remindCount = remindCount;
+          thisrow.confirmCount = confirmCount;
+          thisrow.uncoveredAttendCount = uncoveredAttendCount;
+
+          //alert("attends = " + attendCount + "; picket goal = " + picketGoal + "; picket universe = " + picketUniverse );
+
+          var attendPct = "" + (100.0 * (attendCount + uncoveredAttendCount) / (0.001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.attendPct = attendPct;
+                    
+          for (var ci = 0 ; ci < commitArray.length; ci++) {
+            coveredCommits += getCounter([DIV, div, TAG_COVERED_SUPP, CODE_PICKET, commitArray[ci]]);
+            uncoveredCommits += getCounter([DIV, div, TAG_UNCOVERED_SUPP, CODE_PICKET, commitArray[ci]]);            
+          }
+          thisrow.coveredCommits = coveredCommits;
+          thisrow.uncoveredCommits = uncoveredCommits;
+
+          
+          commitPct = "" + (100.0 * (coveredCommits + uncoveredCommits) / (0.001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.commitPct = commitPct;
+          
+          //
+          // TEST LOGIC, REMOVE/COMMENT OUT
+          //
+          //if (div.toLowerCase() == "kaiser") {
+            //newSupportersCompleted += 567;
+          //}
+          
+          var newSupportersGoal = (buCount * 0.1).toFixed(0);
+          thisrow.newSupportersGoal = newSupportersGoal;
+          var newSupportersPct = "" + (100 * newSupportersCompleted / (parseFloat(newSupportersGoal) + 0.0001)).toFixed(0) + "%";
+          thisrow.newSupportersPct = newSupportersPct;
+
+          var startingCover =  "" + (100.0 * (supporterCount) / buCount).toFixed(1) + "%";
+          thisrow.startingCover = startingCover;
+          var currentCover = "" + (100.0 * (supporterCount + newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          thisrow.currentCover = currentCover;
+          var coverDelta = "" + (100.0 * (newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          thisrow.coverDelta = coverDelta;
+          
+          //add New Completed Leaders to Leader Count
+          leaderCount += newLdrsCompleted ;
+          thisrow.leaderCount = leaderCount;
+          //add New Completed Leaders Supporters to Supporters Count
+          supporterCount += newSupportersCompleted ;
+          thisrow.supporterCount = supporterCount;
+                  
+          //divTemplate = $(".divisionRowTemplate").html(); 
+          //var processedWriter = processTemplate(divTemplate);  
+          //if (division.toUpperCase() == "ALL") {
+          //     processedWriter = processedWriter.replace(">All<", "> <b>All</b> <");
+          //}      
+          //newWriter += processedWriter;
+          rowCounter++;
+          $scope.divTable.push(thisrow);
+        }
+      }
+    }
+    //$(".divisionRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isCoordinator || isOrganizer) {
+      $("#countDiv").hide();
+    }
+
+    debugWriter3 += "divisions processed - " + (new Date()).toLocaleString() + "<br/>";
+
+    var rowCounter = 0;
+    
+    //
+    //  Region Counts
+    //
+    var newWriter = "";
+    var rowCounter = 0;    
+    for (var rdex = 0; rdex < regDirSortSet.length; rdex++) {
+      var division = JSON.parse(regDirSortSet[rdex])[0];
+      var regionalDirector = JSON.parse(regDirSortSet[rdex])[1];      
+      var div = toProperCase(division);
+      thisrow = new Object();
+      thisrow.div = div;
+      thisrow.regionalDirector = regionalDirector;
+      if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase() == filter.toLowerCase()) {                        
+        if (corporation == null || division.toLowerCase() == "hospital") {
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regDirLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var buCount = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU]);
+          var picketUniverse = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, BU_PICKET]);
+          thisrow.buCount = buCount;
+          thisrow.picketUniverse = picketUniverse;
+          var creGoal = picketUniverse * 0.3;
+          if (div.toLowerCase() == "hospital")  {
+            creGoal = 0;
+          } 
+                    
+          var creAttend = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_KCRE]);
+          var crePct = "" + (100.0 * getCounter([REGIONAL_DIRECTOR, div, regionalDirector, CODE_KCRE]) / (creGoal + 0.001)).toFixed(0) + "%";
+          thisrow.creAttend = creAttend;
+          thisrow.crePct = crePct;
+    
+          var picketGoal = picketUniverse * PICKET_GOAL_KAISER;
+          if (div.toLowerCase() == "hospital")  {
+            picketGoal = picketUniverse * PICKET_GOAL_HOSPITAL ;
+          }
+          
+          creGoal = creGoal.toFixed(0);
+          picketGoal = picketGoal.toFixed(0);
+          thisrow.creGoal = creGoal;
+          thisrow.picketGoal = picketGoal;
+          
+          var leaderCount = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_COVERED_LDR]);
+          
+          //alert("leader count for div " + div + " = " + leaderCount);
+          
+          var supporterCount = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_COVERED_SUPP]);
+          var coveredCommits = 0;      
+          var uncoveredCommits = 0;
+          var commitPct = 0;  
+          var confirmCount = 0;
+          var remindCount = 0;
+          var attendCount = 0;
+          var attendPct = 0;      
+          var newLdrsCompleted = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_UNCOVERED_LDR, COMPLETED]);    
+          var newSupportersCompleted = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_UNCOVERED_SUPP, COMPLETED]);
+          thisrow.newLdrsCompleted = newLdrsCompleted;
+          thisrow.newSupportersCompleted = newSupportersCompleted;
+          
+          var commitArray = ["m", "b", "d", "a"];        
+          var coveredCommits = 0;
+          var uncoveredCommits = 0;
+
+          var commitPct = 0;  
+          var attendCount = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_COVERED_SUPP, CODE_PICKET, "a"]);
+          var uncoveredAttendCount = getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_UNCOVERED_SUPP, CODE_PICKET, "a"]);
+          var remindCount = attendCount + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_COVERED_SUPP, CODE_PICKET, "d"]);
+          var confirmCount = remindCount + getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_COVERED_SUPP, CODE_PICKET, "b"]);
+          thisrow.attendCount = attendCount;
+          thisrow.uncoveredAttendCount = uncoveredAttendCount;
+          thisrow.remindCount = remindCount;
+          thisrow.confirmCount = confirmCount;
+
+          var attendPct = "" + (100.0 * (attendCount + uncoveredAttendCount) / (0.001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.attendPct = attendPct;
+                    
+          for (var ci = 0 ; ci < commitArray.length; ci++) {
+            coveredCommits += getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_COVERED_SUPP, CODE_PICKET, commitArray[ci]]);
+            uncoveredCommits += getCounter([REGIONAL_DIRECTOR, div, regionalDirector, TAG_UNCOVERED_SUPP, CODE_PICKET, commitArray[ci]]);            
+          }
+          thisrow.coveredCommits = coveredCommits;
+          thisrow.uncoveredCommits = uncoveredCommits;
+          
+          commitPct = "" + (100.0 * (coveredCommits + uncoveredCommits) / (0.001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.commitPct = commitPct;
+          
+          var newSupportersGoal = (buCount * 0.1).toFixed(0);
+          var newSupportersPct = "" + (100 * newSupportersCompleted / newSupportersGoal ).toFixed(0) + "%";
+          thisrow.newSupportersGoal = newSupportersGoal;
+          thisrow.newSupportersPct = newSupportersPct;
+
+          var startingCover =  "" + (100.0 * (supporterCount) / buCount).toFixed(1) + "%";
+          var currentCover = "" + (100.0 * (supporterCount + newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          var coverDelta = "" + (100.0 * (newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          thisrow.startingCover = startingCover;
+          thisrow.currentCover = currentCover;
+          thisrow.coverDelta = coverDelta;
+          
+          //add New Completed Leaders to Leader Count
+          leaderCount += newLdrsCompleted ;
+          //add New Completed Leaders Supporters to Supporters Count
+          supporterCount += newSupportersCompleted ;
+          thisrow.leaderCount = leaderCount;
+          thisrow.supporterCount = supporterCount;
+
+          //var processedWriter = processTemplate(regionTemplate);  
+
+          //newWriter += processedWriter;
+          rowCounter++;
+          $scope.rdTable.push(thisrow);
+        }
+      }
+    }
+    //$(".regionRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isCoordinator || isOrganizer) {
+      //alert("not showing Region Div.  rowCounter = " + rowCounter + ", isCoordinator = " + isCoordinator + ", isOrganizer = " + isOrganizer);
+      $("#regionDiv").hide();
+    }
+    debugWriter3 += "regions processed - " + (new Date()).toLocaleString() + "<br/>";
+
+
+    //
+    //  Coordinator Counts
+    //
+    var newWriter = "";
+    var rowCounter = 0;
+    for (var rdex = 0; rdex < coorSortSet.length; rdex++) {
+      var division = JSON.parse(coorSortSet[rdex])[0];
+      var regionalDirector = JSON.parse(coorSortSet[rdex])[1];      
+      var coordinator = JSON.parse(coorSortSet[rdex])[2];        
+      var div = toProperCase(division);
+      var div = toProperCase(division);
+      thisrow = new Object();
+      thisrow.div = div;
+      thisrow.regionalDirector = regionalDirector;
+      thisrow.coordinator = coordinator;
+      if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase() == filter.toLowerCase() || coordinator.toLowerCase() == filter.toLowerCase()) {            
+        if (corporation == null || division.toLowerCase() == "hospital") {
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regDirLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var buCount = getCounter([COORDINATOR, div, regionalDirector, coordinator, BU]);
+          var picketUniverse = getCounter([COORDINATOR, div, regionalDirector, coordinator, BU_PICKET]);
+          thisrow.buCount = buCount;
+          thisrow.picketUniverse = picketUniverse;
+          var creGoal = picketUniverse * 0.3;
+          if (div.toLowerCase() == "hospital")  {
+            creGoal = 0;
+          }
+          var creAttend = getCounter([COORDINATOR, div, regionalDirector, coordinator, CODE_KCRE]);
+          var crePct = "" + (100.0 * getCounter([COORDINATOR, div, regionalDirector, coordinator,  CODE_KCRE]) / (creGoal + 0.001)).toFixed(0) + "%";
+          thisrow.creAttend = creAttend;
+          thisrow.crePct = crePct;
+    
+          var picketGoal = picketUniverse * PICKET_GOAL_KAISER;
+          if (div.toLowerCase() == "hospital")  {
+            picketGoal = picketUniverse * PICKET_GOAL_HOSPITAL ;
+          }
+          
+          creGoal = creGoal.toFixed(0);
+          picketGoal = picketGoal.toFixed(0);
+          thisrow.creGoal = creGoal;
+          thisrow.picketGoal = picketGoal;
+          
+          var leaderCount = getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_COVERED_LDR]);
+          
+          //alert("leader count for div " + div + " = " + leaderCount);
+          
+          var supporterCount = getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_COVERED_SUPP]);
+          var coveredCommits = 0;      
+          var uncoveredCommits = 0;
+          var commitPct = 0;  
+          var confirmCount = 0;
+          var remindCount = 0;
+          var attendCount = 0;
+          var attendPct = 0;      
+          var newLdrsCompleted = getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_UNCOVERED_LDR, COMPLETED]);    
+          var newSupportersCompleted = getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_UNCOVERED_SUPP, COMPLETED]);
+          thisrow.newLdrsCompleted = newLdrsCompleted;
+          thisrow.newSupportersCompleted = newSupportersCompleted;
+          
+          var commitArray = ["m", "b", "d", "a"];        
+          var coveredCommits = 0;
+          var uncoveredCommits = 0;
+
+          var commitPct = 0;  
+          var attendCount = getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_COVERED_SUPP, CODE_PICKET, "a"]);
+          var uncoveredAttendCount = getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_UNCOVERED_SUPP, CODE_PICKET, "a"]);
+          var remindCount = attendCount + getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_COVERED_SUPP, CODE_PICKET, "d"]);
+          var confirmCount = remindCount + getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_COVERED_SUPP, CODE_PICKET, "b"]);
+          thisrow.attendCount = attendCount;
+          thisrow.uncoveredAttendCount = uncoveredAttendCount;
+          thisrow.remindCount = remindCount;
+          thisrow.confirmCount = confirmCount;
+
+          var attendPct = "" + (100.0 * (attendCount + uncoveredAttendCount) / (0.001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.attendPct = attendPct;
+                    
+          for (var ci = 0 ; ci < commitArray.length; ci++) {
+            coveredCommits += getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_COVERED_SUPP, CODE_PICKET, commitArray[ci]]);
+            uncoveredCommits += getCounter([COORDINATOR, div, regionalDirector, coordinator, TAG_UNCOVERED_SUPP, CODE_PICKET, commitArray[ci]]);            
+          }
+          thisrow.coveredCommits = coveredCommits;
+          thisrow.uncoveredCommits = uncoveredCommits;
+          
+          commitPct = "" + (100.0 * (coveredCommits + uncoveredCommits) / (0.0001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.commitPct = commitPct;
+          
+          var newSupportersGoal = (buCount * 0.1).toFixed(0);
+          var newSupportersPct = "" + (100 * newSupportersCompleted / newSupportersGoal ).toFixed(0) + "%";
+          thisrow.newSupportersGoal = newSupportersGoal;
+          thisrow.newSupportersPct = newSupportersPct;
+
+          var startingCover =  "" + (100.0 * (supporterCount) / buCount).toFixed(1) + "%";
+          var currentCover = "" + (100.0 * (supporterCount + newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          var coverDelta = "" + (100.0 * (newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          thisrow.startingCover = startingCover;
+          thisrow.currentCover = currentCover;
+          thisrow.coverDelta = coverDelta;
+          
+          //add New Completed Leaders to Leader Count
+          leaderCount += newLdrsCompleted ;
+          //add New Completed Leaders Supporters to Supporters Count
+          supporterCount += newSupportersCompleted ;
+          thisrow.leaderCount = leaderCount;
+          thisrow.supporterCount = supporterCount;
+
+          //var processedWriter = processTemplate(coordinatorTemplate);  
+                  
+          //newWriter += processedWriter;
+          rowCounter++;
+          $scope.cdTable.push(thisrow);
+        }
+      }
+    }
+    //$(".coordinatorRowTemplate").html(newWriter);
+    if (rowCounter == 0 || isCoordinator || isOrganizer) {
+      $("#coordinatorDiv").hide();
+    }
+    debugWriter3 += "coordinators processed - " + (new Date()).toLocaleString() + "<br/>";
+
+    //
+    //  Organizer Counts
+    //
+    var newWriter = "";
+    var rowCounter = 0;    
+    for (var rdex = 0; rdex < turfSortSet.length; rdex++) {
+      var division = JSON.parse(turfSortSet[rdex])[0];
+      var regionalDirector = JSON.parse(turfSortSet[rdex])[1];      
+      var coordinator = JSON.parse(turfSortSet[rdex])[2];        
+      var organizer = JSON.parse(turfSortSet[rdex])[3];        
+      var div = toProperCase(division);
+      var thisrow = new Object();
+      thisrow.div = div;
+      thisrow.regionalDirector = regionalDirector;
+      thisrow.coordinator = coordinator;
+      thisrow.organizer = organizer;
+      if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase() == filter.toLowerCase() || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) {            
+        if (corporation == null || division.toLowerCase() == "hospital") {
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regDirLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var orgLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer) + "\">" + organizer + "</a>";                    
+          var buCount = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU]);
+          var picketUniverse = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, BU_PICKET]);
+          var creGoal = picketUniverse * 0.3;
+          if (div.toLowerCase() == "hospital")  {
+            creGoal = 0;
+          }
+          var creAttend = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, CODE_KCRE]);
+          var crePct = "" + (100.0 * getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer,  CODE_KCRE]) / (creGoal + 0.001)).toFixed(0) + "%";
+          thisrow.buCount = buCount;
+          thisrow.picketUniverse = picketUniverse;
+          thisrow.creAttend = creAttend;
+          thisrow.crePct = crePct;
+    
+          var picketGoal = picketUniverse * PICKET_GOAL_KAISER;
+          if (div.toLowerCase() == "hospital")  {
+            picketGoal = picketUniverse * PICKET_GOAL_HOSPITAL ;
+          }
+          
+          creGoal = creGoal.toFixed(0);
+          picketGoal = picketGoal.toFixed(0);
+          thisrow.creGoal = creGoal;
+          thisrow.picketGoal = picketGoal;
+          
+          var leaderCount = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_COVERED_LDR]);
+          
+          //alert("leader count for div " + div + " = " + leaderCount);
+          
+          var supporterCount = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_COVERED_SUPP]);
+          var coveredCommits = 0;      
+          var uncoveredCommits = 0;
+          var commitPct = 0;  
+          var confirmCount = 0;
+          var remindCount = 0;
+          var attendCount = 0;
+          var attendPct = 0;      
+          var newLdrsCompleted = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_UNCOVERED_LDR, COMPLETED]);    
+          var newSupportersCompleted = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_UNCOVERED_SUPP, COMPLETED]);
+          thisrow.newLdrsCompleted = newLdrsCompleted;
+          thisrow.newSupportersCompleted = newSupportersCompleted;
+          
+          var commitArray = ["m", "b", "d", "a"];        
+          var coveredCommits = 0;
+          var uncoveredCommits = 0;
+
+          var commitPct = 0;  
+          var attendCount = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_COVERED_SUPP, CODE_PICKET, "a"]);
+          var uncoveredAttendCount = getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_UNCOVERED_SUPP, CODE_PICKET, "a"]);
+          var remindCount = attendCount + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_COVERED_SUPP, CODE_PICKET, "d"]);
+          var confirmCount = remindCount + getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_COVERED_SUPP, CODE_PICKET, "b"]);
+          thisrow.attendCount = attendCount;
+          thisrow.uncoveredAttendCount = uncoveredAttendCount;
+          thisrow.remindCount = remindCount;
+          thisrow.confirmCount = confirmCount;
+
+          var attendPct = "" + (100.0 * (attendCount + uncoveredAttendCount) / (0.001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.attendPct  = attendPct;
+                    
+          for (var ci = 0 ; ci < commitArray.length; ci++) {
+            coveredCommits += getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_COVERED_SUPP, CODE_PICKET, commitArray[ci]]);
+            uncoveredCommits += getCounter([ORGANIZER, div, regionalDirector, coordinator, organizer, TAG_UNCOVERED_SUPP, CODE_PICKET, commitArray[ci]]);            
+          }
+          thisrow.coveredCommits  = coveredCommits;
+          thisrow.uncoveredCommits  = uncoveredCommits;
+          
+          commitPct = "" + (100.0 * (coveredCommits + uncoveredCommits) / (0.0001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.commitPct  = commitPct;
+          
+          var newSupportersGoal = (buCount * 0.1).toFixed(0);
+          var newSupportersPct = "" + (100 * newSupportersCompleted / (0.001 + parseFloat(newSupportersGoal)) ).toFixed(0) + "%";
+          thisrow.newSupportersGoal  = newSupportersGoal;
+          thisrow.newSupportersPct  = newSupportersPct;
+
+          var startingCover =  "" + (100.0 * (supporterCount) / buCount).toFixed(1) + "%";
+          var currentCover = "" + (100.0 * (supporterCount + newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          var coverDelta = "" + (100.0 * (newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          thisrow.startingCover  = startingCover;
+          thisrow.currentCover  = currentCover;
+          thisrow.coverDelta  = coverDelta;
+          
+          //add New Completed Leaders to Leader Count
+          leaderCount += newLdrsCompleted ;
+          //add New Completed Leaders Supporters to Supporters Count
+          supporterCount += newSupportersCompleted ;
+          thisrow.leaderCount = leaderCount;
+          thisrow.supporterCount = supporterCount;
+
+          //var processedWriter = processTemplate(organizerTemplate);  
+                  
+          //newWriter += processedWriter;
+          rowCounter++;
+          $scope.orgTable.push(thisrow);
+        }
+      }
+    }
+    //$(".organizerRowTemplate").html(newWriter);
+    if (rowCounter == 0) {
+      $("#organizerDiv").hide();
+    }
+    debugWriter3 += "organizers processed - " + (new Date()).toLocaleString() + "<br/>";
+    
+    //
+    //  Employer Counts
+    //
+    var newWriter = "";
+    var rowCounter = 0;
+    for (var rdex = 0; rdex < employerSortSet.length; rdex++) {
+      var division = JSON.parse(employerSortSet[rdex])[0];
+      var regionalDirector = JSON.parse(employerSortSet[rdex])[1];      
+      var coordinator = JSON.parse(employerSortSet[rdex])[2];        
+      var organizer = JSON.parse(employerSortSet[rdex])[3];        
+      var employer = toProperCase(JSON.parse(employerSortSet[rdex])[4]);      
+      var div = toProperCase(division);
+      var thisrow = new Object();
+      thisrow.div = div;
+      thisrow.regionalDirector = regionalDirector;
+      thisrow.coordinator = coordinator;
+      thisrow.organizer = organizer;
+      thisrow.employer = employer;      
+      if (filter == null || division.toLowerCase() == filter.toLowerCase() || regionalDirector.toLowerCase() == filter.toLowerCase() || coordinator.toLowerCase() == filter.toLowerCase() || organizer.toLowerCase() == filter.toLowerCase()) {            
+        if (corporation == null || division.toLowerCase() == "hospital") {
+          var divLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(div) + "\">" + div + "</a>";
+          var regDirLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(regionalDirector) + "\">" + regionalDirector + "</a>";
+          var coorLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(coordinator) + "\">" + coordinator + "</a>";          
+          var orgLink = "<a href=\"?mode=" + mode + "&filter=" + encodeURIComponent(organizer) + "\">" + organizer + "</a>";                    
+          var buCount = getCounter([EMPLOYER, employer, BU]);
+          thisrow.buCount = buCount;
+          var picketUniverse = getCounter([EMPLOYER, employer, BU_PICKET]);
+          thisrow.picketUniverse = picketUniverse;
+          var creGoal = picketUniverse * 0.3;
+          if (div.toLowerCase() == "hospital")  {
+            creGoal = 0;
+          }
+          var creAttend = getCounter([EMPLOYER, employer, CODE_KCRE]);
+          var crePct = "" + (100.0 * getCounter([EMPLOYER, employer,  CODE_KCRE]) / (creGoal + 0.001)).toFixed(0) + "%";
+          thisrow.creAttend = creAttend;
+          thisrow.crePct  = crePct;
+    
+          var picketGoal = picketUniverse * PICKET_GOAL_KAISER;
+          if (div.toLowerCase() == "hospital")  {
+            picketGoal = picketUniverse * PICKET_GOAL_HOSPITAL ;
+          }
+          
+          creGoal = creGoal.toFixed(0);
+          picketGoal = picketGoal.toFixed(0);
+          thisrow.creGoal = creGoal;         
+          thisrow.picketGoal  = picketGoal;         
+
+          var leaderCount = getCounter([EMPLOYER, employer, TAG_COVERED_LDR]);
+          
+          //alert("leader count for div " + div + " = " + leaderCount);
+          
+          var supporterCount = getCounter([EMPLOYER, employer, TAG_COVERED_SUPP]);
+          var coveredCommits = 0;      
+          var uncoveredCommits = 0;
+          var commitPct = 0;  
+          var confirmCount = 0;
+          var remindCount = 0;
+          var attendCount = 0;
+          var attendPct = 0;      
+          var newLdrsCompleted = getCounter([EMPLOYER, employer, TAG_UNCOVERED_LDR, COMPLETED]);    
+          var newSupportersCompleted = getCounter([EMPLOYER, employer, TAG_UNCOVERED_SUPP, COMPLETED]);
+          thisrow.newLdrsCompleted = newLdrsCompleted;
+          thisrow.newSupportersCompleted = newSupportersCompleted;
+          
+          var commitArray = ["m", "b", "d", "a"];        
+          var coveredCommits = 0;
+          var uncoveredCommits = 0;
+
+          var commitPct = 0;  
+          var attendCount = getCounter([EMPLOYER, employer, TAG_COVERED_SUPP, CODE_PICKET, "a"]);
+          var uncoveredAttendCount = getCounter([EMPLOYER, employer, TAG_UNCOVERED_SUPP, CODE_PICKET, "a"]);
+          var remindCount = attendCount + getCounter([EMPLOYER, employer, TAG_COVERED_SUPP, CODE_PICKET, "d"]);
+          var confirmCount = remindCount + getCounter([EMPLOYER, employer, TAG_COVERED_SUPP, CODE_PICKET, "b"]);
+          thisrow.attendCount = attendCount;
+          thisrow.uncoveredAttendCount = uncoveredAttendCount;
+          thisrow.remindCount = remindCount;
+          thisrow.confirmCount = confirmCount;
+
+          var attendPct = "" + (100.0 * (attendCount + uncoveredAttendCount) / (0.001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.attendPct = attendPct;
+                    
+          for (var ci = 0 ; ci < commitArray.length; ci++) {
+            coveredCommits += getCounter([EMPLOYER, employer, TAG_COVERED_SUPP, CODE_PICKET, commitArray[ci]]);
+            uncoveredCommits += getCounter([EMPLOYER, employer, TAG_UNCOVERED_SUPP, CODE_PICKET, commitArray[ci]]);            
+          }
+          thisrow.coveredCommits = coveredCommits;
+          thisrow.uncoveredCommits = uncoveredCommits;
+          
+          commitPct = "" + (100.0 * (coveredCommits + uncoveredCommits) / (0.0001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.commitPct = commitPct;
+          
+          var newSupportersGoal = (buCount * 0.1).toFixed(0);
+          var newSupportersPct = "" + (100 * newSupportersCompleted / newSupportersGoal ).toFixed(0) + "%";
+          thisrow.newSupportersGoal = newSupportersGoal;
+          thisrow.newSupportersPct = newSupportersPct;
+
+          var startingCover =  "" + (100.0 * (supporterCount) / buCount).toFixed(1) + "%";
+          var currentCover = "" + (100.0 * (supporterCount + newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          var coverDelta = "" + (100.0 * (newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          thisrow.startingCover = startingCover;
+          thisrow.currentCover = currentCover;
+          thisrow.coverDelta = coverDelta;
+          
+          //add New Completed Leaders to Leader Count
+          leaderCount += newLdrsCompleted ;
+          //add New Completed Leaders Supporters to Supporters Count
+          supporterCount += newSupportersCompleted ;
+          thisrow.leaderCount = leaderCount;
+          thisrow.supporterCount  = supporterCount ;
+
+          //var processedWriter = processTemplate(employerTemplate);  
+                  
+          //newWriter += processedWriter;
+          rowCounter++;
+          $scope.empTable.push(thisrow);
+        }
+      }
+    }
+    //$(".employerRowTemplate").html(newWriter);
+    if (rowCounter == 0) {
+      $("#employerDiv").hide();
+    }
+    debugWriter3 += "employers processed - " + (new Date()).toLocaleString() + "<br/>";
+
+
+    //
+    //  EComm Counts
+    //
+    var newWriter = "";
+    var rowCounter = 0;
+    districtSet.sort();
+    console.log(Turf);
+    for (var rdex = 0; rdex < districtSet.length; rdex++) {
+      var district = districtSet[rdex];
+      var fid = districtEcommMap[district];
+      var ecomm = "Vacant";
+      var coordinator = "Vacant";
+      var div = "HOSPITAL";
+      
+      if (district.toLowerCase().indexOf("kaiser") >= 0) {
+        div = "KAISER";
+      }
+      if (fid != null && eboardMap[fid] != null) {
+        console.log(fid);
+        console.log(eboardMap[fid]);        
+        ecomm = eboardMap[fid].Name;
+        employer = eboardMap[fid].Account.Name;
+        if(Turf[employer] !== undefined){
+            div = Turf[employer].Division;
+            coordinator = Turf[employer].Coordinator;
+        }
+      } else {
+        // figure out the Coordinator by looking at biggest BU in Turf object
+        /*
+        var topBU = 0;
+        var topEmployer = "";
+        for (var emName2 in Turf) {
+          if (Turf[emName2].District == district) {
+            //alert("found employer " + emName2 + " in  District " + district + ", BU = " + Turf[emName2].BU_Count );
+            if (parseFloat(Turf[emName2].BU_Count) > parseFloat(topBU)) { 
+              employer = emName2;
+              coordinator = Turf[emName2].Coordinator;
+              topBU = Turf[emName2].BU_Count;
+              topEmployer = emName2;
+            }
+          }
+        }
+        */
+        //alert("top for district " + district + " is " + topEmployer + " with BU = " + topBU);
+      }       
+      var thisrow = new Object();
+      thisrow.district = district;
+      thisrow.coordinator = coordinator;
+      thisrow.ecomm = ecomm;
+      
+      if (district != null) {            
+        if (1 == 1) {
+                            
+          var buCount = getCounter([DISTRICT, district, BU]);
+          var picketUniverse = getCounter([DISTRICT, district, BU_PICKET]);
+          thisrow.buCount = buCount;
+          thisrow.picketUniverse = picketUniverse;
+          var creGoal = picketUniverse * 0.3;
+          if (div.toLowerCase() == "hospital")  {
+            creGoal = 0;
+          }
+          var creAttend = getCounter([DISTRICT, district, CODE_KCRE]);
+          var crePct = "" + (100.0 * getCounter([DISTRICT, district,  CODE_KCRE]) / (creGoal + 0.001)).toFixed(0) + "%";
+          thisrow.creAttend = creAttend;
+          thisrow.crePct = crePct;
+    
+          var picketGoal = picketUniverse * PICKET_GOAL_KAISER;
+          if (div.toLowerCase() == "hospital")  {
+            picketGoal = picketUniverse * PICKET_GOAL_HOSPITAL ;
+          }
+          
+          creGoal = creGoal.toFixed(0);
+          picketGoal = picketGoal.toFixed(0);
+          thisrow.picketGoal = picketGoal;
+          thisrow.creGoal = creGoal;
+          
+          var leaderCount = getCounter([DISTRICT, district, TAG_COVERED_LDR]);
+  
+          
+          //alert("leader count for div " + div + " = " + leaderCount);
+          
+          var supporterCount = getCounter([DISTRICT, district, TAG_COVERED_SUPP]);
+          var coveredCommits = 0;      
+          var uncoveredCommits = 0;
+          var commitPct = 0;  
+          var confirmCount = 0;
+          var remindCount = 0;
+          var attendCount = 0;
+          var attendPct = 0;      
+          var newLdrsCompleted = getCounter([DISTRICT, district, TAG_UNCOVERED_LDR, COMPLETED]);    
+          var newSupportersCompleted = getCounter([DISTRICT, district, TAG_UNCOVERED_SUPP, COMPLETED]);
+          thisrow.newLdrsCompleted = newLdrsCompleted;
+          thisrow.newSupportersCompleted = newSupportersCompleted;
+          
+          var commitArray = ["m", "b", "d", "a"];        
+          var coveredCommits = 0;
+          var uncoveredCommits = 0;
+
+          var commitPct = 0;  
+          var attendCount = getCounter([DISTRICT, district, TAG_COVERED_SUPP, CODE_PICKET, "a"]);
+          var uncoveredAttendCount = getCounter([DISTRICT, district, TAG_UNCOVERED_SUPP, CODE_PICKET, "a"]);
+          var remindCount = attendCount + getCounter([DISTRICT, district, TAG_COVERED_SUPP, CODE_PICKET, "d"]);
+          var confirmCount = remindCount + getCounter([DISTRICT, district, TAG_COVERED_SUPP, CODE_PICKET, "b"]);
+          thisrow.attendCount = attendCount;
+          thisrow.uncoveredAttendCount = uncoveredAttendCount;
+          thisrow.remindCount = remindCount;
+          thisrow.confirmCount = confirmCount;
+
+          var attendPct = "" + (100.0 * (attendCount + uncoveredAttendCount) / (0.001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.attendPct = attendPct;
+                    
+          for (var ci = 0 ; ci < commitArray.length; ci++) {
+            coveredCommits += getCounter([DISTRICT, district, TAG_COVERED_SUPP, CODE_PICKET, commitArray[ci]]);
+            uncoveredCommits += getCounter([DISTRICT, district, TAG_UNCOVERED_SUPP, CODE_PICKET, commitArray[ci]]);            
+          }
+          thisrow.coveredCommits = coveredCommits;
+          thisrow.uncoveredCommits = uncoveredCommits;
+          
+          commitPct = "" + (100.0 * (coveredCommits + uncoveredCommits) / (0.0001 + parseFloat(picketGoal))).toFixed(0) + "%";
+          thisrow.commitPct = commitPct;
+          
+          var newSupportersGoal = (buCount * 0.1).toFixed(0);
+          var newSupportersPct = "" + (100 * newSupportersCompleted / newSupportersGoal ).toFixed(0) + "%";
+          thisrow.newSupportersGoal = newSupportersGoal;
+          thisrow.newSupportersPct = newSupportersPct;
+
+          var startingCover =  "" + (100.0 * (supporterCount) / buCount).toFixed(1) + "%";
+          var currentCover = "" + (100.0 * (supporterCount + newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          var coverDelta = "" + (100.0 * (newSupportersCompleted ) / buCount).toFixed(1) + "%";
+          thisrow.startingCover = startingCover;
+          thisrow.currentCover = currentCover;
+          thisrow.coverDelta = coverDelta;
+          
+          //add New Completed Leaders to Leader Count
+          leaderCount += newLdrsCompleted ;
+          //add New Completed Leaders Supporters to Supporters Count
+          supporterCount += newSupportersCompleted ;
+          thisrow.leaderCount = leaderCount;
+          thisrow.supporterCount = supporterCount;
+
+          //var processedWriter = processTemplate(ecommTemplate);  
+                  
+          //newWriter += processedWriter;
+          rowCounter++;
+          $scope.ecmTable.push(thisrow);
+        }
+      }
+    }
+    //$(".ecommRowTemplate").html(newWriter);
+    if (rowCounter == 0) {
+      $("#ecommDiv").hide();
+    }
+    debugWriter3 += "ecomm processed - " + (new Date()).toLocaleString() + "<br/>";
+
+    //
+    //  Leaders
+    //
+    ldrSortSet.sort();
+    var newWriter = "";
+    var rowCounter = 0;
+    for (var di = 0; di < ldrSortSet.length; di++) {
+      var darray = JSON.parse(ldrSortSet[di]);
+      var fid = darray[7];
+      var ldrFid = fid;
+      var thisrow = new Object();
+      thisrow.ldrFid = ldrFid;      
+      if (xset.indexOf(fid) < 0 && ldrSuppSetMap[fid] != null && ldrSuppSetMap[fid].length >= 2) {
+        var supporters = ldrSuppSetMap[fid].length + 1;
+        var division = darray[0];
+        var regionalDirector = darray[1];
+        var coordinator = darray[2];      
+        var organizer = darray[3];            
+        var employer = toProperCase(darray[4]);            
+        var leaderName = "<a target=\"_BLANK\" href=\"/" + cid + "\">" + darray[6] + " " + darray[5] + "</a>"  ;  
+        thisrow.div = division;
+        thisrow.regionalDirector = regionalDirector;
+        thisrow.coordinator = coordinator;
+        thisrow.organizer = organizer;
+        thisrow.employer = employer;
+        thisrow.ldrName = darray[6] + " " + darray[5];
+        thisrow.supporters = supporters;
+
+        var crecord = leaderMap[fid];
+        var cellPhone = crecord.MobilePhone;
+        if (cellPhone == null) {
+          cellPhone = "";
+        }
+        thisrow.mobile = cellPhone;
+        var email = crecord.Email;
+        if (email == null) {
+          email = "";
+        }
+        thisrow.email = email;
+                
+        var newLeader = "";
+        if (coveredLdrSet.indexOf(fid) < 0) {
+          newLeader = "<font size=\"+2\">&#x2714;</font>";
+        }        
+        thisrow.newLeader = newLeader;
+        var cid = darray[9];
+        thisrow.cid = cid;
+        
+        var status = statusMap[fid];
+        if (status == null) {
+          status = "N";
+        }
+        var response = status.toLowerCase().substring(0, 1);
+        if (response == "m") {
+          status = "M. Nominated Not Engaged Yet";
+        } else if (response == "w") {
+          status = "W. Nominated Leader Working";
+        } else if (response == "a") {          
+          status = "A. Nominated Leader Achieved Goals";
+        } else if (response == "o") {                    
+          status = "A. Nominated Leader Achieved Goals";        
+        } else if (response == "n") {                    
+          status = "N. Not Marked";
+        } else if (response == "r"){
+          status = "R. Already a Reach Leader";
+        }
+        
+        var status = "<a target=\"_BLANK\" href=\"/apex/Enter_Survey_Response?qcode=6A2&cid=" + cid + "\">" + status + "</a>";
+                
+        var attendCount = getCounter([LEADER, ldrFid, CODE_PICKET, "A"]);
+        var remindCount = attendCount + getCounter([LEADER, ldrFid, CODE_PICKET, "D"]); 
+        var confirmCount = remindCount + getCounter([LEADER, ldrFid, CODE_PICKET, "B"]); 
+        var commitCount = confirmCount + getCounter([LEADER, ldrFid, CODE_PICKET, "M"]) + confirmCount; 
+        var dialysisCount = getCounter([LEADER, ldrFid, CODE_DIALYSIS, "Y"]);
+        thisrow.attendCount = attendCount;
+        thisrow.remindCount = remindCount;
+        thisrow.confirmCount = confirmCount;
+        thisrow.commitCount = commitCount;
+        thisrow.dialysisCount = dialysisCount;
+        
+        if (dialysisCount > 0) {
+          //alert("dialysis collected by " +  darray[6] + " " + darray[5] + " = " + dialysisCount);
+        }
+        
+        if ((dialysisCount + confirmCount) >= 10 && response != "a") {
+           status += "<br/>&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"blue\" size=\"+1\">PLZ UPDATE STATUS</font>";
+        } else if ((response == "a") && (dialysisCount + confirmCount) < 10) {
+           status += "<br/>&nbsp;&nbsp;&nbsp;&nbsp;<font color=\"red\" size=\"+2\">TOO FEW COMPLETIONS</font>";
+        }  
+        thisrow.status = status;
+        
+        var department = darray[8];
+        thisrow.department = department;
+        
+        //var processedWriter = processTemplate(leaderTemplate);  
+                  
+        //newWriter += processedWriter;
+        rowCounter++;
+        $scope.ldrTable.push(thisrow);
+      } else {
+        if (ldrSuppSetMap[fid] != null) {
+          //alert("Not outputing leader.  Supporters = " + ldrSuppSetMap[fid].length);
+        }
+      }
+    }
+    //alert("leaders = " + rowCounter);
+    //$(".leaderRowTemplate").html(newWriter);
+    if (rowCounter == 0) {
+      $("#leaderDiv").hide();
+    }
+    debugWriter3 += "leaders processed - " + (new Date()).toLocaleString() + "<br/>";
+
+    if (isOrganizer2) {
+      $("#coordinatorDiv").hide();
+    }
+
+    $("#ecommDiv").hide();      
+          
+    if (mode.indexOf("override") >= 0 || mode.indexOf("toofew") >= 0 ) {
+      $("#countDiv").hide();
+      $("#regionDiv").hide();
+      $("#coordinatorDiv").hide();
+      $("#organizerDiv").hide();                  
+      $("#ecommDiv").hide();                        
+      $("#employerDiv").hide();                  
+      $("#jumpDiv").hide();               
+    } else if (mode.indexOf("ecomm") == 0) {
+      $("#countDiv").hide();
+      $("#regionDiv").hide();
+      $("#coordinatorDiv").hide();
+      $("#organizerDiv").hide();                  
+      $("#leaderDiv").hide();   
+      $("#employerDiv").hide();       
+      $("#ecommDiv").show();    
+      $("#jumpDiv").hide();               
+      $("#titleDiv").html($("#titleDiv").html() + " - Executive Committee");                    
+    }      
+
+    
+//} catch(e) { 
+// console.log('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+// alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+// debugWriter += "<br/><br/>" + "An Error has Occured. Error:" +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord); 
+//}    
+
+    debugWriter3 += "done proccessing templates - " + (new Date()).toLocaleString() + "<br/>"; 
+
+  document.getElementById("progressDiv").innerHTML = ""; 
+  $("#mainDiv").show();
+  
+  //removed this when it started screwing the formatting.
+  //not even sure how it is supposed to be used
+
+  if (cinfo != null) {
+    $scope.showcontactInfoCols = true;
+    $(".contactInfoCol").show();
+  } else {
+    $scope.showcontactInfoCols = false;
+    $(".contactInfoCol").hide();  
+  }
+  
+  //$( ".goalCols" ).hide();
+   
+  if (mode == "leaders") {
+    $("#countDiv").hide();
+      $("#regionDiv").hide(); 
+      $("#coordinatorDiv").hide();
+      $("#organizerDiv").hide();                  
+      $("#ecommDiv").hide();                         
+      $("#employerDiv").hide();                  
+      $("#jumpDiv").hide();  
+    $("#leaderDiv").show(); 
+  } else {
+    if (isCoordinator || isOrganizer || (filter != null && filter != "" && filter != "kaiser" && filter != "hospital")) {
+      $("#leaderDiv").show();
+    } else {
+      $("#leaderDiv").hide();    
+    }
+  }
+  //$("#leaderDiv").hide();    
+  //debugWriter += JSON.stringify(countMap);
+  
+  //document.getElementById("debugDiv").innerHTML = debugWriter3 ; 
+   
+  //alert("done!");
+  //console.log(countMap);
+});
+</script> 
+  
+</apex:page>

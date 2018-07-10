@@ -1,0 +1,789 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<div align="center">
+<font size="+2"><div id="titleDiv">UHW Q2 2016 Member Leader List</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+<br></br>
+</div>
+ 
+
+<br>&nbsp;</br>
+
+<font color="green">
+<div align="center" id="filterDiv"></div>
+</font>
+
+<br>&nbsp;</br>
+
+<div align="center" id="countDiv"></div>
+
+<font size="+2"><div align="center" id="progressDiv">0%</div></font>
+
+<br>&nbsp;</br>
+
+<div align="center" id="leaderDiv"></div>
+
+<script language="JavaScript">
+var debugString = "";
+
+var lastRecord = null;
+
+var ALL = "ALL";
+
+var CODE_EXEC_COMP = "P6S";
+var CODE_MIN_WAGE = "P15";
+var CODE_LEADER_ASSESS = "L16";
+var CODE_COOL = "CL6";
+
+var TEAM_LEADER = "TEAM_LEADER";
+var MEMBER_LEADER = "MEMBER_LEADER";
+
+
+var DISTRICT = "DISTRICT";
+var SEAT = "SEAT";
+var EMPLOYER = "EMPLOYER";
+var EBOARD = "EBOARD";
+var LEADERS = "LEADERS";
+var SIGNATURES = "SIGNATURES";
+var TURF = "TURF";
+var COORDINATOR = "COORDINATOR";
+
+var TEAM = "TEAM";
+var KCOORDINATOR = "KCOORDINATOR";
+var KREGIONAL = "KREGIONAL";
+
+var REGIONAL_DIRECTOR = "REGIONAL_DIRECTOR";
+var DIVISION = "DIVISION";
+
+var OVERRIDE = "OVERRIDE";
+var GOAL = "GOAL";
+
+var BU = "BU";
+
+var LDRLDR = "LDRLDR";
+ 
+
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == null || mode == "null" || mode == "") {
+  mode = "all";
+}
+mode = mode.toLowerCase();
+
+
+var tier = "{!$CurrentPage.parameters.tier}";
+if (tier == null || tier == "null" || tier == "") {
+  tier = "all";
+}
+tier = tier.toLowerCase();
+
+
+var Turf = {};
+var EBoard = new Array();
+
+var div = "{!$CurrentPage.parameters.div}";
+if (div == null || div == "null" || div == "") {
+  div = "Hospital";
+}
+
+
+var staff = "{!$CurrentPage.parameters.staff}";
+if (staff == null || staff == "null" || staff== "") {
+  staff = null;
+} else {
+  staff = staff.toLowerCase().trim();
+  document.getElementById("filterDiv").innerHTML = "Filter by " + staff + "<br/><a href=\"Report_Leader_List\">Clear Filters</a>";
+}
+//alert("staff = " + staff);
+  
+
+div = toProperCase(div);
+
+var turfAccountIdMap = new Array();
+var turfUserIdMap = new Array();
+var divisionSet = new Array();
+
+var districtSet = new Array();
+var emDistrictMap = {};
+var emSeatMap = {};
+var seatDistrictMap = {};
+var emCaseMap = {};
+var fidNameMap = {};
+
+var contactMap = {};
+
+
+var coolMap = {};
+
+
+var evalDataMap = {};
+
+var tierCount = 0;
+
+//manual entry for Kaiser OC
+//seatDistrictMap["KS7D"] = ("kaiser: south la");
+   
+//manual entry for Tri City Tech
+emDistrictMap[("Tri-City Medical Center-Tech Worker Unit").toLowerCase()] = ("District 1: Orange, San Diego, San Bernardino, Riverside");
+emDistrictMap[("KAISER-ORANGE COUNTY NORTH").toLowerCase()] = ("Kaiser: South LA");
+var District = new Array();
+var emIdSet = new Array();
+var emIdNameMap = {};
+
+var sortSet = new Array();
+
+var uid = null;
+var userFullName = null;
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    var user = sforce.connection.getUserInfo();
+    var userName = user.userName;
+    var query = "SELECT ID, Name, Division, Title from User WHERE User.username=\'" + userName + "\'";
+    var result = sforce.connection.query(query);
+    var records = result.getArray("records");
+    if (records.length != 1) throw "unable to find user";
+    uid = records[0].Id;
+    userFullName = records[0].Name;
+    title = records[0].Title;
+    division = records[0].Division;
+    var division2 = division.toLowerCase();
+    
+    var isOrganizer = false;
+    var isCoordinator = false;    
+    var isKaiser = false;
+    var isHospital = false;    
+    if (division2.indexOf("kaiser") >= 0 || division2.indexOf("hosp") >= 0) {
+      if (title.toLowerCase().indexOf("organizer") >= 0 || title.toLowerCase().indexOf("rep/org") >= 0) {
+        isOrganizer = true;
+        //alert(" is an organizer!");
+      }
+      if (title.toLowerCase().indexOf("coordinator") >= 0) {
+        isCoordinator = true;
+        //alert(" is a coordinator!");        
+      }
+      if (division2.indexOf("kaiser") >= 0) {
+        isKaiser = true;
+      } else {
+        isHospital = true;
+      }
+    }
+    
+    var query = "select Id, Name, Region__c, Employer_ID__c, Account_Group__c from Account where (Account_Group__c like \'KAISER%\' or Account_Group__c like \'HOSPITAL%\') and MO_Active__c = true ";
+    if (isOrganizer) {
+       query += " AND (Organizer_1__c = \'" + uid + "\' OR Organizer_2__c = \'" + uid + "\') ";
+    } else if (isCoordinator ) {
+       query += " AND (Coordinator__c = \'" + uid + "\' ) ";    
+    }
+    if (isKaiser) {
+      query += " AND Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+      query += " AND Account_Group__c like \'HOSPITAL%\' ";
+    } 
+    var emSet = [];
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      
+      if (1 == 1) {
+
+      
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+        Turf[records1[i].Name].RegionalDirector = "Vacant";        
+        Turf[records1[i].Name].Organizer = "Vacant";
+        Turf[records1[i].Name].Coordinator = "Vacant";
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+      
+        if (divisionSet.indexOf(records1[i].Account_Group__c) < 0) {
+          divisionSet.push(records1[i].Account_Group__c);
+        }
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+        turfAccountIdMap[records1[i].Id] = records1[i].Name;
+        if (emSet.indexOf(records1[i].Name) < 0) {
+          emSet.push(records1[i].Name);
+        }
+      }
+    }
+    if (isOrganizer || isCoordinator) {
+      //alert(" employers = " + JSON.stringify(emSet));
+    }
+    //alert("retrieving users");
+    
+    var query = "select Id, Name from User where IsActive = true";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+      lastRecord = records1[i];    
+      turfUserIdMap[records1[i].Id] = records1[i].Name;
+    }
+    
+    //alert("got users");
+
+
+    
+    var roleArray = ["director", "coordinator", "organizer"];   
+    for (var r = 0; r < roleArray.length; r++) { 
+      var query = "select ACCOUNTID, USERID, TEAMMEMBERROLE from AccountTeamMember where teammemberrole like \'%" + roleArray[r] + "%\' order by USERID";
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+
+    
+      for(var i=0;i < records1.length; i++){  
+        lastRecord = records1[i];    
+
+        //debugString += JSON.stringify(lastRecord) + "<br/>";
+
+        var emName = turfAccountIdMap[records1[i].AccountId];
+        if (emName != null &&  turfUserIdMap[records1[i].UserId] != null) {
+          var userName = turfUserIdMap[records1[i].UserId];
+          var role = records1[i].TeamMemberRole;
+
+          //debugString += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + userName + "<br/>";
+        
+          if (role.toLowerCase().indexOf("organizer") >= 0) {
+            var organizers = "";
+            if (Turf[emName].Organizer != null && Turf[emName].Organizer != "Vacant") {
+              organizers = Turf[emName].Organizer + ", ";
+            }
+            organizers += userName;
+            Turf[emName].Organizer = organizers;
+          } else if (role.toLowerCase().indexOf("coordinator") >= 0) {
+            Turf[emName].Coordinator = userName;      
+          } else if (role.toLowerCase().indexOf("regional director") >= 0 && Turf[emName].Division.toLowerCase() == "kaiser") {
+            Turf[emName].RegionalDirector = userName;      
+          } else if (role.toLowerCase().indexOf("assistant director") >= 0 && Turf[emName].Division.toLowerCase().indexOf("hospital") >= 0) {
+            Turf[emName].RegionalDirector = userName;      
+          }  
+        }    
+      } 
+    } 
+    
+    var turfSortSet = new Array();
+    var coorSortSet = new Array();    
+    var regDirSortSet = new Array();  
+    
+    for (var emName in Turf) {
+        var turfa = Turf[emName];
+        //alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator, turfa.Organizer]);
+        var div = turfa.Division.toLowerCase().trim();
+        if (turfSortSet.indexOf(turfKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          turfSortSet.push(turfKey);
+        }
+        
+        var coorKey = JSON.stringify([turfa.Division, turfa.RegionalDirector, turfa.Coordinator]);
+        if (coorSortSet.indexOf(coorKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant" && turfa.Coordinator.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            coorSortSet.push(coorKey);
+          }
+        }    
+        
+        var regDirKey = JSON.stringify([turfa.Division, turfa.RegionalDirector]);
+        if (regDirSortSet.indexOf(regDirKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0)) {
+          if (turfa.RegionalDirector.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            regDirSortSet.push(regDirKey);
+          }
+        }   
+        
+        if (turfa.RegionalDirector.toLowerCase().indexOf("schneider") >= 0 &&   turfa.Coordinator.toLowerCase().indexOf("vacant") >= 0 &&   turfa.Organizer.toLowerCase().indexOf("vacant") >= 0) {
+          //alert("vacant vacant = " + emName );
+        }
+    }
+    
+    //alert("got Account Team");
+   
+    var tier1Count = 0;
+    var tier2Count = 0;    
+    var tierNCount = 0;        
+ 
+    var ccSet = [];
+
+    //
+    //  get Survey Responses for Min Wage and Exec Comp
+    //
+    var leaderAssessMap = {};
+    
+    for (a = 0; a < 10; a++) { 
+ 
+      document.getElementById("progressDiv").innerHTML = "" + ((a+1) * 9) + "%";
+
+      var query = "select Contact__c, FID__c, Contact_Name__c, Division__c, Employer_Name__c, Department__c, Question_Name__c, Survey_Code__c, Response_Value__c, Add_Info_Numeric__c, Collected_By__c, Collected_By_Employer_Name__c, Contact__r.Ethnicity__c, Contact__r.Age__c, Contact__r.Gender__c, Contact__r.County__c, Contact__r.Executive_Body_Title__c, Contact__r.COPE_Pledge__c, Add_Info__c from Survey_Response__c where (";
+      if (a ==0) {
+        query += " FID__c = null OR ";
+      }
+      query += " FID__c like \'%" + a + "\' ) ";
+      query += " AND ( (Survey_Code__c = \'P15\' AND Add_Info_Numeric__c > 0) OR (Survey_Code__c = \'P6S\'  AND Add_Info_Numeric__c > 0) OR Survey_Code__c = \'L16\' OR Survey_Code__c = \'CL6\') AND (Division__c like \'HOSP%\' OR Division__c like \'KAISER\' ) ";
+      if (isCoordinator || isOrganizer) {
+        query += " AND ( ";
+        for (var j = 0; j < emSet.length; j++) {
+          if (j > 0) {
+            query += " OR ";
+          }
+          query += " Employer_Name__c = \'" + emSet[j] + "\' ";
+        }        
+        query += " ) ";
+      }
+      if (isKaiser) {
+        query += " AND Division__c like \'KAISER%\' ";
+      } else if (isHospital) {
+        query += " AND Division__c like \'HOSPITAL%\' ";
+      }       
+      
+      
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+
+      debugString += query + " - " + records1.length + "<br/>";
+
+      for(var i=0;i < records1.length; i++){ 
+        //alert(JSON.stringify(records1[i]));
+        lastRecord = records1[i];
+        var organizer = "Vacant";
+        var coordinator = "Vacant";
+        var regionalDirector = "Vacant";            
+        if (Turf[records1[i].Employer_Name__c] != null) {
+            organizer = Turf[records1[i].Employer_Name__c].Organizer;
+            coordinator = Turf[records1[i].Employer_Name__c].Coordinator;
+            regionalDirector = Turf[records1[i].Employer_Name__c].RegionalDirector;              
+        }
+        
+        if (records1[i].Survey_Code__c == CODE_LEADER_ASSESS && records1[i].Contact__c != null) {
+          leaderAssessMap[records1[i].Contact__c] = records1[i].Response_Value__c;
+          evalDataMap[records1[i].Contact__c] = records1[i].Add_Info__c;
+          if (staff == null || (staff == regionalDirector.toLowerCase().trim() || staff == coordinator.toLowerCase().trim() || staff == organizer.toLowerCase().trim())) {
+                 var respChar = records1[i].Response_Value__c.substring(0, 1);
+                 
+                   if (respChar == "1") {
+                     tier1Count++;
+                   } else if (respChar == "2") {
+                     tier2Count++;
+                   } else if (respChar == "N") {
+                     tierNCount++;
+                   } 
+       
+          }
+        } else if (records1[i].Survey_Code__c == CODE_COOL && records1[i].Contact__c != null) {
+          coolMap[records1[i].Contact__c] = records1[i].Response_Value__c;        
+        } else {
+          if (records1[i].Contact__c != null) {
+            incrementCounter([MEMBER_LEADER, SIGNATURES, records1[i].Survey_Code__c, records1[i].Contact__c], parseInt(records1[i].Add_Info_Numeric__c) );
+            contactMap[records1[i].Contact__c] = records1[i];
+          }
+          if (records1[i].Add_Info_Numeric__c > 0 && records1[i].Collected_By__c != null) {
+            incrementCounter([TEAM_LEADER, SIGNATURES, records1[i].Survey_Code__c, records1[i].Collected_By__c ], parseInt(records1[i].Add_Info_Numeric__c) );        
+            incrementCounter([TEAM_LEADER, LEADERS, records1[i].Survey_Code__c, records1[i].Collected_By__c ], 1);   
+            var organizer2 = "Vacant";
+            var coordinator2 = "Vacant";
+            var regionalDirector2 = "Vacant";            
+            if (Turf[records1[i].Collected_By_Employer_Name__c] != null) {
+              organizer2 = Turf[records1[i].Collected_By_Employer_Name__c].Organizer;
+              coordinator2 = Turf[records1[i].Collected_By_Employer_Name__c].Coordinator;
+              regionalDirector2 = Turf[records1[i].Collected_By_Employer_Name__c].RegionalDirector;              
+            }            
+            if (staff == null || (staff == regionalDirector2.toLowerCase().trim() || staff == coordinator2.toLowerCase().trim() || staff == organizer2.toLowerCase().trim())) {
+              if (ccSet.indexOf(records1[i].Collected_By__c) < 0) {
+                ccSet.push(records1[i].Collected_By__c);
+              }
+            }
+            
+          }
+
+
+
+          if (records1[i].Contact__c != null) {
+            if (staff == null || (staff == regionalDirector.toLowerCase().trim() || staff == coordinator.toLowerCase().trim() || staff == organizer.toLowerCase().trim())) {
+              var leaderKey = JSON.stringify([records1[i].Division__c, regionalDirector, coordinator, organizer, records1[i].Contact_Name__c, records1[i].Contact__c]);
+              //alert(leaderKey);
+              if (sortSet.indexOf(leaderKey) < 0) {
+                 sortSet.push(leaderKey);
+              }
+            }
+          }
+        }
+      }
+    }
+    var lookupCcSet = [];
+    for (var i = 0; i < ccSet.length; i++) {
+      if (contactMap[ccSet[i]] == null) {
+        lookupCcSet.push(ccSet[i]);
+      }
+    }
+    //
+    //  make sure all Executive Board people are in there
+    //
+    var query = "select Id, FID__c, LastName, FirstName, MiddleName, Account.Account_Group__c, Account.Name, Department, County__c, Executive_Body_Title__c, COPE_Pledge__c from Contact where Executive_Body_Title__c != null ";
+    if (isCoordinator || isOrganizer) {
+        query += " AND ( ";
+        for (var j = 0; j < emSet.length; j++) {
+          if (j > 0) {
+            query += " OR ";
+          }
+          query += " Account.Name = \'" + emSet[j] + "\' ";
+        }        
+        query += " ) ";
+      }
+    if (isKaiser) {
+        query += " AND Account.Account_Group__c like \'KAISER%\' ";
+    } else if (isHospital) {
+        query += " AND Account.Account_Group__c like \'HOSPITAL%\' ";
+    }  else {
+        query += " AND (Account.Account_Group__c like 'KAISER%' or Account.Account_Group__c like 'HOSPITAL%') ";
+    }        
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records');  
+    //alert("EBoard count = " + records1.length);   
+    for(var i=0;i < records1.length; i++){ 
+      lastRecord = records1[i];   
+      if (contactMap[records1[i].Id] == null) {
+        var cr = records1[i];      
+        var organizer = "Vacant";
+        var coordinator = "Vacant";
+        var regionalDirector = "Vacant";            
+        if (Turf[cr.Account.Name] != null) {
+            organizer = Turf[cr.Account.Name].Organizer;
+            coordinator = Turf[cr.Account.Name].Coordinator;
+            regionalDirector = Turf[cr.Account.Name].RegionalDirector;              
+        }
+        cr.Contact_Name__c = cr.LastName + ", " + cr.FirstName;
+        if (cr.MiddleName != null) {
+          cr.Contact_Name__c += " " + cr.MiddleName;
+        }
+        cr.Contact__c = cr.Id;
+        cr.Employer_Name__c = cr.Account.Name;
+        cr.Department__c = cr.Department;
+        cr.Contact__r = cr;
+        if (staff == null || (staff == regionalDirector.toLowerCase().trim() || staff == coordinator.toLowerCase().trim() || staff == organizer.toLowerCase().trim())) {
+          var leaderKey = JSON.stringify([cr.Account.Account_Group__c, regionalDirector, coordinator, organizer,cr.Contact_Name__c, cr.Contact__c]);      
+          if (sortSet.indexOf(leaderKey) < 0) {
+            sortSet.push(leaderKey);
+          }        
+          contactMap[cr.Id] =  cr; 
+        }
+      }
+    }
+    //
+    //  get Leaders who were only Collectors, not direct signature gatherers
+    //
+    for (var i = 0 ; i < lookupCcSet.length; i++) {
+      if (contactMap[lookupCcSet[i]] == null) {    
+      var query = "select Id, FID__c, LastName, FirstName, MiddleName, Account.Account_Group__c, Account.Name, Department, County__c, Executive_Body_Title__c, COPE_Pledge__c from Contact where  Id=\'" + lookupCcSet[i] + "\' ";    
+      if (isCoordinator || isOrganizer) {
+        query += " AND ( ";
+        for (var j = 0; j < emSet.length; j++) {
+          if (j > 0) {
+            query += " OR ";
+          }
+          query += " Account.Name = \'" + emSet[j] + "\' ";
+        }        
+        query += " ) ";
+      }      
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      if (records1.length > 0) {
+          var cr = records1[0];      
+          var organizer = "Vacant";
+          var coordinator = "Vacant";
+          var regionalDirector = "Vacant";            
+          if (Turf[cr.Account.Name] != null) {
+              organizer = Turf[cr.Account.Name].Organizer;
+              coordinator = Turf[cr.Account.Name].Coordinator;
+              regionalDirector = Turf[cr.Account.Name].RegionalDirector;              
+          }
+          cr.Contact_Name__c = cr.LastName + ", " + cr.FirstName;
+          if (cr.MiddleName != null) {
+            cr.Contact_Name__c += " " + cr.MiddleName;
+          }
+          cr.Contact__c = cr.Id;
+          cr.Employer_Name__c = cr.Account.Name;
+          cr.Department__c = cr.Department;
+          cr.Contact__r = cr;
+          if (staff == null || (staff == regionalDirector.toLowerCase().trim() || staff == coordinator.toLowerCase().trim() || staff == organizer.toLowerCase().trim())) {
+            var leaderKey = JSON.stringify([cr.Account.Account_Group__c, regionalDirector, coordinator, organizer,cr.Contact_Name__c, cr.Contact__c]);      
+            if (sortSet.indexOf(leaderKey) < 0) {
+              sortSet.push(leaderKey);
+            }        
+            contactMap[cr.Id] =  cr; 
+          }
+        }
+      }         
+    }
+
+    //alert("sortSet = " + sortSet.length);
+    
+    sortSet.sort();
+    
+    
+    var countWriter = "<table border=\"0\"><tr valign=\"middle\"><td width=\"40%\" align=\"right\">All Exec Comp and<br/> Min Wage Leaders</td><td colspan=\"2\" align=\"center\">" + sortSet.length + "</td></tr>\n";
+    countWriter += "<tr valign=\"middle\"><td align=\"right\">Evaled as Tier 1 / <br/>Team Leaders</td><td width=\"30%\" align=\"center\">" + tier1Count + "</td><td width=\"30%\" align=\"center\">" + (tier1Count * 100 /sortSet.length).toFixed(1) + "%</td></tr>\n";
+    countWriter += "<tr valign=\"middle\"><td align=\"right\">Evaled as Tier 2 / <br/>Mbr Leaders</td><td align=\"center\">" + tier2Count + "</td><td align=\"center\">" + (tier2Count * 100 /sortSet.length).toFixed(1) + "%</td></tr>\n";
+    countWriter += "<t valign=\"middle\"r><td align=\"right\">Evaled as <br/>Not Leaders</td><td align=\"center\">" + tierNCount + "</td><td align=\"center\">" + (tierNCount * 100 /sortSet.length).toFixed(1) + "%</td></tr>\n";    
+    var unevalCount = (sortSet.length - (tier1Count + tier2Count + tierNCount));
+    countWriter += "<tr valign=\"middle\"><td align=\"right\">Not Yet<br/> Evaluated</td><td align=\"center\">" + unevalCount  + "</td><td align=\"center\">" + (unevalCount * 100 /sortSet.length).toFixed(1) + "%</td></tr>\n";
+    countWriter += "</table>";        
+  
+    document.getElementById("countDiv").innerHTML = countWriter;
+                
+    var leaderWriter = "";
+    
+    leaderWriter += "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n";
+    leaderWriter += "<tr valign=\"bottom\">\n";    
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leader Name</font></td>";   
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"7%\" align=\"center\"><font color=\"white\">Employer</font></td>";   
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"7%\" align=\"center\"><font color=\"white\">Department</font></td>";         
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"4%\" align=\"center\"><font color=\"white\">COPE</font></td>";             
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"4%\" align=\"center\"><font color=\"white\">COOL</font></td>";     
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>";        
+    leaderWriter += "  <td bgcolor=\"#481C60\" width=\"9%\" align=\"center\"><font color=\"white\">Ldrshp Q2 2016 Assess</font></td>";    
+    if (mode == "evaldata") {
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Ethnicities</font></td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"5%\" align=\"center\"><font color=\"white\">Age Range</font></td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"5%\" align=\"center\"><font color=\"white\">Gender</font></td>";          
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"5%\" align=\"center\"><font color=\"white\">Convene Team as Group?</font></td>";                
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"5%\" align=\"center\"><font color=\"white\">Continue<br/>To Be<br/>Tier 1 / Team <br/>Leader?</font></td>";                
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"5%\" align=\"center\"><font color=\"white\">Develop<br/>Into<br/>Tier 1 / Team <br/>Leader?</font></td>";                
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"5%\" align=\"center\"><font color=\"white\">Should be at<br/>Leader<br/>Level</font></td>";                
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">Next Campaigns</font></td>";                                        
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"10%\" align=\"center\"><font color=\"white\">County</font></td>";                                              
+    } else {
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>";        
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Min Wage Sig Count</font></td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Min Wage Ldrs Recruited</font></td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Min Wage Ldrs Sig Count</font></td>";          
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>";              
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Exec Comp Sig Count</font></td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Exec Comp Ldrs Recruited</font></td>";    
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Exec Comp Ldrs Sig Count</font></td>";   
+      leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>";                    
+      if (!isOrganizer) {             
+        if (!isCoordinator) {             
+          leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Asst/Reg<br/>Director</font></td>";        
+          leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Coordinator</font></td>";    
+        }
+        leaderWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Organizer</font></td>";    
+      }
+    }
+    leaderWriter += "</tr>\n";     
+    for (var i = 0; i < sortSet.length; i++) {
+      var leaderKey = sortSet[i];
+      var aarray = JSON.parse(leaderKey);
+      var contactId = aarray[aarray.length - 1];
+      var cr = contactMap[contactId];
+      
+      var ldrAssess = "0. Not Evaluated";
+      var shortAssess = 0;      
+      if (leaderAssessMap[cr.Contact__c] != null) {
+        ldrAssess = leaderAssessMap[cr.Contact__c];
+        shortAssess = ldrAssess.substring(0, 1);
+      } 
+
+      if (tier == "all" || (tier.indexOf(shortAssess) >= 0)) {
+        tierCount++;
+        
+        leaderWriter += "<tr valign=\"middle\">\n";    
+      
+        var eboardMark = "";
+        if (cr.Contact__r != null && cr.Contact__r.Executive_Body_Title__c != null) {
+          if (cr.Contact__r.Executive_Body_Title__c.trim().toLowerCase().indexOf("executive comm") == 0) {
+            eboardMark = "(EC)";
+          } else {
+            eboardMark = "(EB)";      
+          }
+        }
+        leaderWriter += "  <td align=\"center\"><a target=\"_BLANK\" href=\"/" + cr.Contact__c + "\">" + toProperCase(cr.Contact_Name__c) + "</a>&nbsp;&nbsp;" + eboardMark + "</td>\n";   
+        leaderWriter += "  <td  align=\"center\">" + toProperCase(cr.Employer_Name__c) + "</td>\n";   
+        leaderWriter += "  <td  align=\"center\">" + toProperCase(cr.Department__c) + "</td>\n";    
+        //leaderWriter += "  <td  align=\"center\">" + cr.Contact__c + "</td>\n";    
+
+
+        
+        //
+        // format COPE
+        //
+        var copeString = "$0";
+        if (cr.Contact__r.COPE_Pledge__c != null) {
+          copeString = "$" + parseInt(cr.Contact__r.COPE_Pledge__c);
+        }      
+        leaderWriter += "  <td  align=\"center\">" + copeString  + "</td>";  
+      
+        //
+        // Are they a COOL Leader?
+        //
+        var coolString = "";
+        if (coolMap[cr.Contact__c] != null) {
+          coolString = coolMap[cr.Contact__c].substring(0,1);
+          if (coolString != "1" && coolString != "2") {
+            coolString = "";
+          }
+        }
+        leaderWriter += "  <td  align=\"center\">" + coolString + "</td>";        
+           
+        leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>"; 
+      
+
+        leaderWriter += "  <td  align=\"center\"><a target=\"_BLANK\" href=\"Enter_Leader_Assess?cid=" + cr.Contact__c + "\"><div id=\"ldr_eval_q2_2016-" + cr.Contact__c + "\">"  + ldrAssess  + "</div></a></td>";         
+        localStorage.removeItem("ldr_eval_q2_2016-" + cr.Contact__c, null);
+              
+        if (mode == "evaldata") {
+          if (evalDataMap[cr.Contact__c] != null) { 
+            //alert(evalDataMap[cr.Contact__c]);
+            var evalObject = JSON.parse(   evalDataMap[cr.Contact__c] );
+            leaderWriter += "  <td align=\"center\">" + evalObject["ethn"] + "</td>";    
+            var ageKey = evalObject["ager"];
+            var ageString = "Over 65";
+            if (ageKey = "age18") {
+              ageString = "18 to 25";
+            } else if (ageKey = "age26") {
+              ageString = "26 to 35";
+            } else if (ageKey = "age36") {
+              ageString = "36 to 45";
+            } else if (ageKey = "age46") {
+              ageString = "46 to 55";
+            } else if (ageKey = "age56") {
+              ageString = "56 to 65";
+            }
+            leaderWriter += "  <td align=\"center\">" + ageString  + "</td>";    
+            var gender = cr.Contact__r.Gender__c;
+            if (evalObject["gend"] != null) {
+              gender = evalObject["gend"] ; 
+            }
+            leaderWriter += "  <td align=\"center\">" + gender  + "</td>";          
+            leaderWriter += "  <td align=\"center\">" + evalObject["conv"] + "</td>";                
+            leaderWriter += "  <td align=\"center\">" + evalObject["cont_t1"] + "</td>";                
+            leaderWriter += "  <td align=\"center\">" + evalObject["dev_t1"] + "</td>";                
+            leaderWriter += "  <td align=\"center\">" + evalObject["should_lvl"] + "</td>";                
+            leaderWriter += "  <td align=\"center\">" + evalObject["nextcamps"] + "</td>";                            
+            leaderWriter += "  <td align=\"center\">" + cr.Contact__r.County__c + "</td>";            
+          } else {
+            for (var xm = 0; xm < 9; xm++) {
+              leaderWriter += "  <td></td>\n";
+            }
+          }
+        } else {      
+      
+          leaderWriter += "  <td bgcolor=\"#481C60\" style=\"height:65px\" width=\"1%\" align=\"center\">&nbsp;</td>"; 
+             
+          leaderWriter += "  <td align=\"center\">" + getCounter([MEMBER_LEADER, SIGNATURES, CODE_MIN_WAGE, cr.Contact__c]) + "</td>";    
+          leaderWriter += "  <td align=\"center\">" + getCounter([TEAM_LEADER, LEADERS, CODE_MIN_WAGE, cr.Contact__c]) + "</td>";    
+          leaderWriter += "  <td align=\"center\">" + getCounter([TEAM_LEADER, SIGNATURES, CODE_MIN_WAGE, cr.Contact__c]) + "</td>";          
+          leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>";              
+
+          leaderWriter += "  <td align=\"center\">" + getCounter([MEMBER_LEADER, SIGNATURES, CODE_EXEC_COMP, cr.Contact__c]) + "</td>";    
+          leaderWriter += "  <td align=\"center\">" + getCounter([TEAM_LEADER, LEADERS, CODE_EXEC_COMP, cr.Contact__c]) + "</td>";    
+          leaderWriter += "  <td align=\"center\">" + getCounter([TEAM_LEADER, SIGNATURES, CODE_EXEC_COMP, cr.Contact__c]) + "</td>";          
+
+          leaderWriter += "  <td bgcolor=\"#481C60\" width=\"1%\" align=\"center\"> </td>";              
+            
+
+          var organizer = "Vacant";
+          var coordinator = "Vacant";
+          var regionalDirector = "Vacant";            
+          if (Turf[cr.Employer_Name__c] != null) {
+            organizer = Turf[cr.Employer_Name__c].Organizer;
+            coordinator = Turf[cr.Employer_Name__c].Coordinator;
+            regionalDirector = Turf[cr.Employer_Name__c].RegionalDirector;              
+          }
+          if (!isOrganizer) {             
+            if (!isCoordinator) {             
+              leaderWriter += "  <td align=\"center\"><a href=\"Report_Leader_List?staff=" + encodeURIComponent(regionalDirector.trim().toLowerCase()) + "\">" + regionalDirector + "</a></td>";        
+              leaderWriter += "  <td align=\"center\"><a href=\"Report_Leader_List?staff=" + encodeURIComponent(coordinator.trim().toLowerCase()) + "\">" + coordinator + "</td>";    
+            }
+            leaderWriter += "  <td align=\"center\"><a href=\"Report_Leader_List?staff=" + encodeURIComponent(organizer.trim().toLowerCase()) + "\">" + organizer + "</td>";          
+          }
+        }
+        leaderWriter += "</tr>\n"; 
+      
+      }
+           
+    }
+    leaderWriter += "</table>";
+    document.getElementById("leaderDiv").innerHTML = leaderWriter; 
+  
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="confidentialDiv" align="center"><i>CONFIDENTIAL</i></div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+
+<script language="JavaScript">
+   
+  document.getElementById("progressDiv").innerHTML = ""; 
+  //document.getElementById("debugDiv").innerHTML = debugString; 
+  
+  if (tier != "all") {
+    var tierString = "";
+    for (var xt = 0; xt < tier.length; xt++) {
+      if (xt > 0) {
+        tierString += ", ";
+      }
+      tierString += tier[xt];
+    }
+    tierString = tierString.toUpperCase();
+    document.getElementById("filterDiv").innerHTML = document.getElementById("filterDiv").innerHTML + "<br/>Filter by Tiers " +  tierString;   
+    document.getElementById("countDiv").innerHTML = "Count = " + tierCount;
+  }
+  if (mode == "evaldata") {
+    document.getElementById("titleDiv").innerHTML = document.getElementById("titleDiv").innerHTML + " - Evaluation Data";
+  }
+  
+  function focusBack() {
+    //alert("focusBack start!");
+    //alert("local storage length = " + localStorage.length);
+    for (var rr = 0; rr < localStorage.length; rr++) {
+      var ssKey = localStorage.key(rr);
+      if (ssKey.indexOf("ldr_eval_q2_2016-") == 0) {
+        //alert("found session key = " + ssKey + " = " + localStorage.getItem(ssKey));
+        document.getElementById(ssKey).innerHTML = localStorage.getItem(ssKey);
+      }
+    }
+  }
+
+  setInterval(focusBack, 5000);     
+    
+</script> 
+  
+</apex:page>

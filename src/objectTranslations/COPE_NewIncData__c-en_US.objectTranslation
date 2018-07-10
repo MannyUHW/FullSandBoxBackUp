@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>COPE New or Inc Data</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>COPE New or Inc Data</value>
+    </caseValues>
+    <fields>
+        <label><!-- COPE # --></label>
+        <name>COPECountPerSeat__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE $ --></label>
+        <name>COPETotalPerSeat__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE Increased Count --></label>
+        <name>COPE_Increased_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE Increased Total --></label>
+        <name>COPE_Increased_Total__c</name>
+    </fields>
+    <fields>
+        <label><!-- Cell1Class --></label>
+        <name>Cell1Class__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- NewCOPECount --></label>
+        <name>NewCOPECount__c</name>
+    </fields>
+    <fields>
+        <label><!-- NewCOPETotal --></label>
+        <name>NewCOPETotal__c</name>
+    </fields>
+    <fields>
+        <label><!-- OutputColumn1 --></label>
+        <name>OutputColumn1__c</name>
+    </fields>
+    <fields>
+        <label><!-- SeatID --></label>
+        <name>SeatID__c</name>
+    </fields>
+    <fields>
+        <label><!-- TableRowId --></label>
+        <name>Table_Row_Id__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

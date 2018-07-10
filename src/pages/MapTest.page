@@ -1,0 +1,46 @@
+<apex:page >
+
+ <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <style type="text/css">
+      #map-canvas { 
+        width: 1400px; 
+        height: 700px
+        }
+      #ml {
+        font-size: 14px;
+        color:blue;
+      }
+    </style>
+
+    <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBR9ZnGGQwbNFLR9t1DXknBwIZfe2gFD-Q">
+    </script>
+
+  </head>
+
+  <body>
+    <label id="ml">Map Test</label>
+    <div id="map-canvas" style=""></div>
+
+    <script type="text/javascript">
+      function initialize() {
+        
+        // var mapOptions = {
+        //   center: new google.maps.LatLng(37.8098045,-122.2708655),
+        //   zoom: 19
+        // };
+        
+        const uhwHome = {lat:  37.8098045, lng: -122.2708655};
+        const mapDiv  = document.getElementById('map-canvas');
+        const map     = new google.maps.Map(mapDiv, {zoom: 19, center: uhwHome});
+
+        //let map    = new google.maps.Map(mapDiv,mapOptions);
+        // var map = new google.maps.Map(document.getElementById("map-canvas"),mapOptions);
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+
+  </body>
+
+</apex:page>

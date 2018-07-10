@@ -1,0 +1,4 @@
+<apex:page >
+<apex:outputLink value="https://uhw.my.salesforce.com/00Oi0000006Kn4g" id="theLink1"> Public Hospital Membership Signup </apex:outputLink>
+
+</apex:page>

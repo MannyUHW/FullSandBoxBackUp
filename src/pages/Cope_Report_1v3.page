@@ -1,0 +1,387 @@
+<apex:page controller="COPEController1v3" readOnly="true"  sidebar="false" docType="html-5.0" standardStylesheets="false" >
+    <html>
+    <head>
+        <apex:includeScript value="{!$Resource.jquery_2_1_3_min}"/>
+        <apex:includeScript value="{!$Resource.treetable}"/>
+        <apex:includeScript value="{!$Resource.FileSaver}"/>
+        <apex:stylesheet value="{!$Resource.COPEcss}"  />
+
+        <script type='text/javascript'>
+
+            var $j = $.noConflict(true);
+
+            function ok() {
+                var copeTable;
+                var test = "none";
+                var rbgButtons = document.getElementsByName("showWhat");
+                var rowPtr;
+
+                var selector = $j("#CopeTableDivEmp");
+                for (var i = 0; i < rbgButtons.length; i++) {
+                    if (rbgButtons[i].checked) {
+                        test = rbgButtons[i].value;
+                    }
+                }
+
+                if( test.length > 0) {
+                    copeTable = document.getElementById("CopeTableDivEmp");
+
+                    if(test == 'current')  {
+                        copeTable.className = 'treetable std-screen';
+                        var priorMonths  = document.getElementById('CopeTableDivEmp').getElementsByClassName('prior');
+                        for(rowPtr=0; rowPtr<priorMonths.length;rowPtr++) {
+                            priorMonths[rowPtr].className = 'prior hide';
+                        }
+                        var currentMonths = document.getElementById('CopeTableDivEmp').getElementsByClassName('current');
+                        for(rowPtr=0; rowPtr<currentMonths.length;rowPtr++) {
+                            currentMonths[rowPtr].className = 'current';
+                        }
+                    }
+                    if(test == 'prior')  {
+                        copeTable.className = 'treetable std-screen';
+                        var priorMonths  = document.getElementById('CopeTableDivEmp').getElementsByClassName('prior');
+                        for(rowPtr=0; rowPtr<priorMonths.length;rowPtr++) {
+                            priorMonths[rowPtr].className = 'prior';
+                        }
+                        var currentMonths = document.getElementById('CopeTableDivEmp').getElementsByClassName('current');
+                        for(rowPtr=0; rowPtr<currentMonths.length;rowPtr++) {
+                            currentMonths[rowPtr].className = 'current hide';
+                        }
+                    }
+
+                    if(test == 'both')  {
+                        copeTable.className = 'treetable full-screen';
+                        var priorMonths  = document.getElementById('CopeTableDivEmp').getElementsByClassName('prior');
+                        for(rowPtr=0; rowPtr<priorMonths.length;rowPtr++) {
+                            priorMonths[rowPtr].className = 'prior';
+                        }
+                        var currentMonths = document.getElementById('CopeTableDivEmp').getElementsByClassName('current');
+                        for(rowPtr=0; rowPtr<currentMonths.length;rowPtr++) {
+                            currentMonths[rowPtr].className = 'current';
+                        }
+                    }
+                }
+            }
+
+            function adjustTableRows(copeTableId) {
+                var copeTable;
+                var copeTableLength;
+                var tableRow;
+                var tRNodeName;
+                var tRNodeValue;
+                var rowAtt1Value;
+                var rowAtt2Value;
+                var parentStringStartPos;
+                var rowPtr;
+
+                copeTable        = document.getElementById(copeTableId);
+                copeTableLength  = copeTable.rows.length;
+
+                for(rowPtr=0; rowPtr<copeTableLength;rowPtr++) {
+                    tableRow   = copeTable.getElementsByTagName("tr")[rowPtr];
+                    for(var i = 0; i < tableRow.attributes.length; i++) {
+                        tRNodeName  = tableRow.attributes[i].nodeName;
+                        tRNodeValue = tableRow.attributes[i].value;
+                        if (tRNodeName == 'data-tt-id') {
+                            parentStringStartPos = tRNodeValue.indexOf('data-tt-parent-id=');
+                            if (parentStringStartPos > 0) {
+                                rowAtt1Value = tRNodeValue.slice(0, parentStringStartPos - 1);
+                                rowAtt2Value = tRNodeValue.slice(parentStringStartPos + 18);
+                                tableRow.setAttribute('data-tt-parent-id', rowAtt2Value);
+                            }
+                            else
+                                rowAtt1Value = tRNodeValue;
+                            tableRow.attributes[0].value = rowAtt1Value;
+                        }
+                    }
+                }
+            }
+
+
+            function exportData(pTable) {
+                var now;
+                var localDateTime;
+                var nowDate;
+                var output;
+                var cell;
+                var copeTable;
+                var copeTableLength;
+                var colCount;
+                var rowCount;
+                var rowPtr;
+                var colPtr;
+
+                now           = new Date();
+                localDateTime = (now.toLocaleTimeString());
+                nowDate       = (now.toDateString());
+                copeTable = document.getElementById(pTable);
+
+                switch(pTable) {
+                    case "CopeTableDivEmp" :
+                        output  = 'COPE contributions by Division/Employer \n';
+                        break;
+
+                    case "CopeTableDivPodEboard" :
+                        output  = 'COPE contributions by Division/Committee Mbr/Eboard Mbr \n';
+                        break;
+
+                    case "CopeTableDivCoordRep" :
+                        output  = 'COPE contributions by Division/Coordinator/Field Rep \n';
+                        break;
+                }
+
+                copeTable        = document.getElementById(pTable);
+                copeTableLength  = copeTable.rows.length;
+                output += 'Data as of ' + nowDate + ", " + localDateTime + "\n\n";
+                output += 'Facility\tDues #\tCOPE #\tCOPE $\t% of Dues\tCOPE $10+ #\t $10+ % of Dues\t UWG %\n';
+                colCount = 8;
+                rowCount = copeTableLength;
+
+                for(rowPtr=1;rowPtr<rowCount;rowPtr++) {
+                    for(colPtr=0;colPtr<colCount;colPtr++) {
+                        cell = copeTable.rows[rowPtr].cells[colPtr].textContent;
+                        cell = cell.trim();
+                        if(cell)
+                            output += cell + '\t';
+                        else
+                            output += '\t';
+                    }
+                    output += '\n';
+                }
+                output += '\n\n';
+
+                var blob = new Blob([output], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, "COPE by Division+Employer.tab");
+
+            }
+
+            function exportClickListener(event) {
+                var target = event.target;
+                exportData('CopeTableDivEmp');
+            }
+
+            var exportButton;
+
+            $j(function() {
+
+                adjustTableRows("CopeTableDivEmp");
+                adjustTableRows("NewPayerTable");
+                adjustTableRows("IncPayerTable");
+
+                var priorMonths  = document.getElementById('CopeTableDivEmp').getElementsByClassName('prior');
+                for(rowPtr=0; rowPtr<priorMonths.length;rowPtr++) {
+                    priorMonths[rowPtr].className = 'prior hide';
+                }
+
+                $j("#CopeTableDivEmp").treetable({ expandable: true,clickableNodeNames:true });
+                $j("#NewPayerTable").treetable({ expandable: true,clickableNodeNames:true });
+                $j("#IncPayerTable").treetable({ expandable: true,clickableNodeNames:true });
+
+                var showFs   = document.getElementById("fs");
+                showFs.addEventListener('change', ok, false);
+
+                exportButton     = document.getElementById("ExportButton");
+                exportButton.addEventListener("click",exportClickListener, false);
+
+            });
+
+        </script>
+    </head>
+
+    <body>
+    <apex:variable value="{!1}" var="rowNum"/>
+    <apex:pageBlock title="All COPE contributions by Division/Employer ({!CurrentMonth})">
+        <table  border="4" id="CopeTableDivEmp" class="treetable">
+            <tr class = "CopeTableheaderRow">
+                <th id="OutputColumn1">
+                    <fieldset id="fs" class="radiogroup">
+                        <input type="radio"
+                               name="showWhat"
+                               id="showCurrent"
+                               value="current" checked = "checked"/>
+                        <label id="labCurrent" for="showCurrent">Current Month</label>
+
+                        <input type="radio"
+                               name="showWhat"
+                               id="showPrior"
+                               value="prior"  />
+                        <label id="labPrior" for="showPrior">Prior Months</label>
+
+                        <input type="radio"
+                               name="showWhat"
+                               id="showBoth"
+                               value="both"      />
+                        <label id="labBoth" for="showBoth">Both</label>
+                    </fieldset>
+
+                </th>
+                <th id="thDues">Dues #</th>
+                <th id="thCOPECOUNT">COPE #</th>
+                <th id="thCOPETotal">COPE $</th>
+                <th class="current" id="thPCDues">% of Dues #</th>
+                <th class="current" id="thCOPECOUNTTEN">COPE $10+ #</th>
+                <th class="current" id="thPCTen">$10+ % of Dues #</th>
+                <th class="current" id="thUWG">UWG %</th>
+                <th class="prior" id="thCOPETotal3">COPE $ 3M</th>
+                <th class="prior" id="thCOPETotal6">COPE $ 6M</th>
+                <th class="prior" id="thCOPETotal9">COPE $ 9M</th>
+                <th class="prior" id="thCOPETotal12">COPE $12M</th>
+            </tr>
+
+            <apex:repeat value="{!byDivEmp}" var="cd">
+                <tr data-tt-id='{!cd.Table_Row_Id__c}'>
+                    <td class='{!cd.Cell1Class__c}'>
+                        {!cd.OutputColumn1__c}
+                    </td>
+                    <td>
+                        <apex:outputText value="{0,number,###,###}">
+                            <apex:param value="{!cd.EmpCountPerSeat__c}" />
+                        </apex:outputText>
+                    </td>
+
+                    <td>
+                        <apex:outputText value="{0,number,###,###}">
+                            <apex:param value="{!cd.COPECountPerSeat__c}" />
+                        </apex:outputText>
+                    </td>
+
+                    <td>
+                        <apex:outputText value="{0,number,$#,###,###.00}">
+                            <apex:param value="{!cd.COPETotalPerSeat__c}" />
+                        </apex:outputText>
+                    </td>
+
+
+                    <td class="current">
+                        <apex:outputText value="{0,number,###,###.00}">
+                            <apex:param value="{!Round(cd.COPEPercent__c,2)}" />
+                        </apex:outputText>
+                    </td>
+
+                    <td class="current">
+                        <apex:outputText value="{0,number,###,###}">
+                            <apex:param value="{!cd.COPECountTenPlusPerSeat__c}" />
+                        </apex:outputText>
+                    </td>
+
+                    <td class="current">
+                        <apex:outputText value="{0,number,###,###.00}">
+                            <apex:param value="{!Round(cd.COPEPercentTen__c,2)}" />
+                        </apex:outputText>
+                    </td>
+
+                    <td class="current">
+                        <apex:outputText value="{0,number,###.00}">
+                            <apex:param value="{!cd.UWG__c}" />
+                        </apex:outputText>
+                    </td>
+
+                    <td class="prior">
+                        <apex:outputText value="{0,number,$#,###,###.00}">
+                            <apex:param value="{!cd.COPETotalPerSeat_3__c}" />
+                        </apex:outputText>
+                    </td>
+
+                    <td class="prior">
+                        <apex:outputText value="{0,number,$#,###,###.00}">
+                            <apex:param value="{!cd.COPETotalPerSeat_6__c}"  />
+                        </apex:outputText>
+                    </td>
+
+                    <td class="prior">
+                        <apex:outputText value="{0,number,$#,###,###.00}">
+                            <apex:param value="{!cd.COPETotalPerSeat_9__c}"   />
+                        </apex:outputText>
+                    </td>
+
+                    <td class="prior">
+                        <apex:outputText value="{0,number,$#,###,###.00}">
+                            <apex:param value="{!cd.COPETotalPerSeat_12__c}"   />
+                        </apex:outputText>
+                    </td>
+                </tr>
+            </apex:repeat>
+        </table>
+
+        <input id="ExportButton" type="Button" value="Export"></input>
+
+    </apex:pageBlock>
+
+    <apex:pageBlock title="New COPE contributors (compared to last month) - by Division/Employer ({!CurrentMonth})">
+        <table cellspacing="4" cellpadding="4" border="4" id="NewPayerTable" class="treetable">
+            <tr class = "headerRow">
+                <th id="OutputColumn1"></th>
+                <th id="thSeatId">Seat</th>
+                <th id="thNewTotal">New $</th>
+                <th id="thNewCount">New #</th>
+            </tr>
+            <apex:repeat value="{!newPayers}" var="cd1">
+                <tr data-tt-id='{!(cd1.Table_Row_Id__c)}' >
+                    <td class='{!cd1.Cell1Class__c}'>
+                        {!cd1.OutputColumn1__c}
+                    </td>
+                    <td> {!cd1.SeatID__c} </td>
+                    <td>
+                        <apex:outputText value="{0,number,###,###.00}">
+                            <apex:param value="{!cd1.NewCOPETotal__c}" />
+                        </apex:outputText>
+                    </td>
+                    <td>
+                        <apex:outputText value="{0,number,###,###}">
+                            <apex:param value="{!cd1.NewCOPECount__c}" />
+                        </apex:outputText>
+                    </td>
+                </tr>
+            </apex:repeat>
+        </table>
+    </apex:pageBlock>
+
+    <apex:pageBlock title="Increased COPE contributions (compared to last month) - by Division/Employer ({!CurrentMonth})">
+        <table cellspacing="4" cellpadding="4" border="4" id="IncPayerTable" class="treetable">
+            <tr class = "headerRow">
+                <th id="OutputColumn1"></th>
+                <th id="thSeatId">Seat</th>
+                <th id="thIncTotal">Inc $</th>
+                <th id="thIncCount">Inc #</th>
+            </tr>
+            <apex:repeat value="{!IncPayers}" var="cd2">
+                <tr data-tt-id='{!(cd2.Table_Row_Id__c)}' >
+                    <td class='{!cd2.Cell1Class__c}'>
+                        {!cd2.OutputColumn1__c}
+                    </td>
+                    <td> {!cd2.SeatID__c} </td>
+                    <td>
+                        <apex:outputText value="{0,number,###,###.00}">
+                            <apex:param value="{!cd2.COPE_Increased_Total__c}" />
+                        </apex:outputText>
+                    </td>
+                    <td>
+                        <apex:outputText value="{0,number,###,###}">
+                            <apex:param value="{!cd2.COPE_Increased_Count__c}" />
+                        </apex:outputText>
+                    </td>
+                </tr>
+            </apex:repeat>
+        </table>
+    </apex:pageBlock>
+
+    <apex:pageBlock Title="Cope Revenue for last 12 months">
+        <apex:chart data="{!chartData}" height="500" width="1200" theme="Salesforce">
+            <apex:legend position="right"/>
+            <apex:axis type="Numeric"  title="Monthly $ Donations" position="left"   fields="currentTotal"  grid="true" dashSize="2"> </apex:axis>
+            <apex:axis type="Category" title="Division"          position="bottom" fields="division"> </apex:axis>
+            <apex:barSeries orientation="vertical" axis="left" stacked="false"  xField="division" yField="currentTotal,total3,total6,total9,total12" title="Current month,3 months ago,6 months ago, 9 months ago, 12 months ago">
+                <apex:chartTips height="20" width="140"/>
+            </apex:barSeries>
+        </apex:chart>
+    </apex:pageBlock>
+
+
+    <apex:pageBlock >
+        <apex:outputPanel id="disclaim" layout="block" style="color:red;font-size:1.2em;"><h1>Disclaimer:  The program that produced this output is a beta release, meaning there could be bugs.  The data has not had any auditing or cross-referencing performed on it whatsoever. Whilst I believe the numbers to be correct, I urge you not to trust them until the data has undergone some form of verification.
+            <p>If you do spot mistakes, or have names for people where I did not, please contact me at gsmith@seiu-uhw.org.</p></h1>
+        </apex:outputPanel>
+    </apex:pageBlock>
+    </body>
+    </html>
+</apex:page>

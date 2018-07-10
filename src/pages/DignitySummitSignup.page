@@ -1,0 +1,1070 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+    <head>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <apex:includeScript value="{!$Resource.agGridEnterprise10}"/>
+        <apex:includeScript value="{!$Resource.FileSaver}"/>
+        <style>
+
+            #Title {
+                text-align: center;
+                font-size: 22px;
+                font-weight: bold;
+                padding-top: 6px;
+                color: blue;
+            }
+
+           .row-type1 {
+                background-color:#7049EE;
+                padding-left: 5px;
+                color: white;
+           }
+
+           .row-type1-div {
+                background-color:#7049EE;
+                display: inline-block;
+                color: yellow;
+                font-weight: bold;
+                width: 100%;
+                text-align: right;
+                padding-right: 5px;
+           }
+
+           .row-type2 {
+                background-color:#966EEF;
+                padding-left: 15px;
+           }
+           .row-type2-div {
+                background-color:#966EEF;
+                display: inline-block;
+                color: yellow;
+                font-weight: bold;
+                width: 100%;
+                text-align: right;
+                padding-right: 5px;
+           }
+
+           .row-type3 {
+               background-color:#FCE0FA;
+               padding-left: 25px;
+           }
+           .row-type3-div {
+                background-color:#FCE0FA;
+                display: inline-block;
+                color: blue;
+                width: 100%;
+                text-align: right;
+                padding-right: 5px;
+           }           
+
+           .row-type4 {
+               padding-left: 4px;
+           }
+           .row-type4-div {
+                background-color:#FCE0FA;
+                display: inline-block;
+                color: blue;
+                font-weight: bold;
+                width: 100%;
+                text-align: right;
+                padding-right: 5px;
+           } 
+
+           .row-type5 {
+                color: blue;
+                padding-left: 230px;
+            }
+
+           .row-type5-div {
+                display: inline-block;
+                color: blue;
+                width: 100%;
+                text-align: right;
+                padding-right: 5px;
+           }
+
+           .row-type6 {
+                background-color:indianred;
+                color: white;
+                font-weight: bold;
+                padding-left: 10px;
+            }
+           .row-type6-div {
+                display: inline-block;
+                color: indianred;
+                width: 100%;
+           }
+
+           .row-type7 {
+                color: indianred;
+                background-color:white;
+                padding-left: 10px;
+            }
+           .row-type7-div {
+                display: inline-block;
+                color: indianred;
+                background-color:white;                
+                text-align: right;
+                width: 100%;
+           }
+
+           .row-type8 {
+                background-color:white;
+                color: indianred;
+                padding-left: 10px;
+            }
+           .row-type8-div {
+                display: inline-block;
+                background-color:white;
+                color: indianred;
+                text-align: right;
+                width: 100%;
+           }
+
+           .row-type9 {
+                background-color:#51606B;
+                padding-left: 5px;
+                color: #edd581;
+                font-weight: bold;
+           }
+
+           .row-type9-div {
+                background-color:#51606B;
+                display: inline-block;
+                color: #edd581;
+                font-weight: bold;
+                width: 100%;
+                text-align: right;
+                padding-right: 5px;
+           }
+
+            .ContentDivNoGoal {
+                width: 460px;
+                border:1px solid blue;
+            }
+
+            .ContentDivWithGoal {                
+                width: 663px;
+                border:1px solid blue;
+            }
+
+            .right-align {
+                text-align: right;
+                padding-right:5px !important;
+            }
+
+            #MinimalGrid {
+                height: 900px;
+                width:  380px;
+                padding: 5px;
+            }
+
+            #ResponseGrid {
+                height: 600px;
+                width:  860px;
+                padding: 5px;
+            }
+
+            .GridDivNoGoal {
+                height: 800px;
+                width:  450px;
+                padding: 5px;
+            }
+
+            .GridDivWithGoal {
+                height: 800px;
+                width:  650px;
+                padding: 5px;
+            }
+
+            #Title {
+                text-align: center;
+            }
+
+            .hdr-region {
+                color:red;
+                display: inline-block;
+                width: 280px;
+            }
+
+            .hdr-emp {
+                color:red;
+                display: inline-block;
+                width: 280px;
+            }
+
+            .hdr-bu {
+                color:blue;
+                display: inline-block;                
+            }
+
+            .hdr-org1 {
+                color:rebeccapurple;
+                display: inline-block;                
+                width: 111px;
+            }
+
+            .hdr-response {
+                color:blue;
+                display: inline-block;                
+                margin-left: 5px;
+                margin-right: 5px;
+                width:90px;
+            }
+
+            .hdr-count {
+                color:blue;
+                display: inline-block;                
+                text-align: right;
+                width: 30px;
+            }
+
+            .no-show {
+                display:none;
+            }
+
+            .show {
+                display:block;
+            }
+
+           .modalDialog {
+                position: fixed;
+                font-family: Arial, Helvetica, sans-serif;
+                top: 9px;
+                left: 15px;
+                width: 450px;
+                height: 90%;
+                background: rgba(0, 0, 0, 0.7);
+                z-index: 99999;
+                opacity: 0.7;
+                pointer-events: none;
+            }
+
+            .modalDialog > div {
+                color: rebeccapurple;
+                width: 300px;
+                position: relative;
+                margin: 10% auto;
+                padding: 5px 15px 13px 50px;
+                border-radius: 10px;
+                background: #fff;
+                background: -moz-linear-gradient(#fff, #999);
+                background: -webkit-linear-gradient(#fff, #999);
+                background: -o-linear-gradient(#fff, #999);
+            }
+
+            #SaveAsCsvButton {
+                color: white;
+                margin-left: 30%;
+                padding-top: 4px;
+                padding-bottom: 4px;
+                font-size: 1.1em;
+                background-color: blue;
+            }
+
+            #SaveAsCsvButton:hover {
+                background-color: white;
+                color:rgba(0,0,255,0.6);
+            }
+
+        </style>
+    </head>
+    <body>
+
+    <div id="Content">
+        <div id="ModalLoadingDiv" class="modalDialog no-show">
+            <div>
+                <h2>Loading data...</h2>
+            </div>
+        </div>
+        <div id="Title"></div>
+        <hr/>
+        <div id="GridDiv"      class="ag-fresh"></div>
+        <div id="SaveAsDiv" class="no-show">
+            <input id="SaveAsCsvButton" type="Button" value="Save As .csv"></input>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        'use strict';
+
+         function showLoadingMsg(show) {
+            if(show) // modal window fake
+                modalLoadingDiv.setAttribute('class', 'modalDialog');
+            else {
+                modalLoadingDiv.setAttribute('class', 'no-show');
+                saveAsDiv.setAttribute('class', 'show');
+            }
+        }
+
+        function toProperCase(s) {
+            // My version - handles hyphenated names correctly :)
+            let s1;
+            if(s == null)
+                s1 = 'Missing';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function loadGoals(){
+            let query,queryResults;
+            query = `SELECT Goal__c,Type__c,User__r.Id,User__r.Name,User__r.Title,User__r.Division,User__r.ActingTitle__c,User__r.ActingDivision__c FROM Response_Goals__c WHERE Survey_Question__r.Survey_Code__c = '${codeParam}' And Type__c = '${goalParam}' ORDER BY User__r.Title,User__r.Lastname,User__r.Firstname`;
+            console.log(query);
+            try {
+                queryResults = sforce.connection.query(query);
+                processGoals(queryResults);
+            }
+            catch(e) {alert('An error occurred retrieving Goals: ' + e.faultstring);}
+        }
+
+        function processGoals(goalResults) {
+            let len,i,goalRecords,goalRec,userId,userName,userRegion,goal,actingTitle,title,titleToUse,actingDivision,division,divisionToUse;
+            goalMap       = {};
+            regionGoalMap = {};
+            goalRecords = goalResults.getArray('records');
+            if(goalRecords.length > 0) {
+                len = goalRecords.length-1;
+                for (i = 0; i <= len; i++) {
+                    goalRec        = goalRecords[i];
+                    userId         = goalRec.User__r.Id;
+                    division       = goalRec.User__r.Division; 
+                    actingDivision = goalRec.User__r.ActingDivision__c;
+                    title          = goalRec.User__r.Title; 
+                    actingTitle    = goalRec.User__r.ActingTitle__c;
+
+                    if (actingTitle)
+                        titleToUse = toProperCase(actingTitle);
+                    else
+                        titleToUse = toProperCase(title);
+
+                    if (actingDivision)
+                        divisionToUse = actingDivision;
+                    else
+                        divisionToUse = division;
+
+                    userId     = goalRec.User__r.Id;
+                    userName   = toProperCase(goalRec.User__r.Name);
+
+                    if(userMap[userId]) {
+                        userRegion = userMap[userId].Region;
+                        goal       = parseInt(goalRec.Goal__c);
+                        if(titleToUse.substr(0, 5) == 'Coord') {
+                            if(!regionGoalMap[userRegion]) {
+                                regionGoalMap[userRegion] = {Goal:goal}
+                            }
+                            else {
+                                regionGoalMap[userRegion].Goal += goal;
+                            }
+                        }
+
+                        if(!goalMap[userId]) {
+                            if(userMap[userId]) {
+                                goalMap[userId] = {UserId: userId, Name:userName, Region:userRegion, Goal:goal, Division:divisionToUse, Title:titleToUse};
+                                console.log(' *** ', goalMap[userId]);
+                            }
+                            else {
+                                console.log(`Hmmm...found userId '${userId}' from Response_Goals__c that is not in userMap`);
+                            }
+                        }
+                    }
+                    else {
+                        console.log(`${userId} not in userMap!`);
+                    }
+                }
+
+                for(let regionKey in regionGoalMap) {
+                    console.log('Region Goals...', regionKey, regionGoalMap[regionKey].Goal);
+                    goalGrandTotal += regionGoalMap[regionKey].Goal;
+                }
+            }
+            else {
+                console.log('goalParam is false!');
+                goalParam = false;
+            }
+        }
+
+        function loadAccounts(){
+            let query,queryResults;
+            if(digParam == 'true') {
+                query = `SELECT Id, Region__c, Name, BU_Count__c, Coordinator__r.Id, Coordinator__r.Name, Organizer_1__r.Id, Organizer_1__r.Name FROM Account WHERE Active__c = 'Yes' AND Hospital_System__c LIKE 'Dignity%' ORDER BY Coordinator__r.Id,Organizer_1__r.Id`;
+            }
+            else {
+                query = `SELECT Id, Region__c, Name, BU_Count__c, Coordinator__r.Id, Coordinator__r.Name, Organizer_1__r.Id, Organizer_1__r.Name FROM Account WHERE Active__c = 'Yes' ORDER BY Coordinator__r.Id,Organizer_1__r.Id`;
+            }
+            console.log(query);
+            try {
+                queryResults = sforce.connection.query(query);
+                processAccounts(queryResults);
+            }
+            catch(e) {alert('An error occurred retrieving Accounts: ' + e.faultstring);}
+        }
+
+        function processAccounts(accountResults) {
+            let accountRec,accountRecords,len,i;
+            let accountId,accountName,buCnt,region,coordId,org1Id,coordName,org1Name;
+
+            accountRecords    = accountResults.getArray('records');
+            len = accountRecords.length-1;
+
+            for (i = 0; i <= len; i++) {
+                coordId = org1Id = coordName = org1Name = '';
+                accountRec  = accountRecords[i];
+                accountId   = accountRec.Id;
+                accountName = toProperCase(accountRec.Name);
+                buCnt       = parseInt(accountRec.BU_Count__c) ||  0;
+                region      = toProperCase(accountRec.Region__c);
+
+                if ('Coordinator__r' in accountRec) { 
+                    if(accountRec.Coordinator__r) {
+                        coordId   = accountRec.Coordinator__r.Id;
+                        coordName = accountRec.Coordinator__r.Name;
+                        if(!userMap[coordId])
+                            userMap[coordId] = {Name:coordName, Region:region};
+                    }
+                }
+
+                if ('Organizer_1__r' in accountRec) { 
+                    if(accountRec.Organizer_1__r) {
+                        org1Id   = accountRec.Organizer_1__r.Id;
+                        org1Name = accountRec.Organizer_1__r.Name;
+                        if(!userMap[org1Id])
+                            userMap[org1Id] = {Name:org1Name, Region:region};
+                    }
+                }
+                accountMap[accountId] = {AccountId: accountId, AccountName: accountName, BuCnt: buCnt, Region: region, CoordName:coordName, Org1Name: org1Name};
+            }
+        }
+
+        function loadResponses() {
+            let accounts,responseQuery, responseResults;
+            if(digParam == 'true') {
+                responseQuery = `SELECT Contact__r.Account.Id, Contact__r.Account.Name, Contact__r.Account.BU_Count__c, Contact__r.Account.Organizer_1__c, Contact__r.Account.Coordinator__c, Contact__r.Account.Region__c, Response_Value__c FROM Survey_Response__c WHERE Survey_Code__c = '${codeParam}' And Contact__r.Account.Active__c = 'Yes' AND Contact__r.Account.Hospital_System__c LIKE 'Dignity%'`;
+            }
+            else {
+                responseQuery = `SELECT Contact__r.Account.Id, Contact__r.Account.Name, Contact__r.Account.BU_Count__c, Contact__r.Account.Organizer_1__c, Contact__r.Account.Coordinator__c, Contact__r.Account.Region__c, Response_Value__c FROM Survey_Response__c WHERE Survey_Code__c = '${codeParam}' AND Contact__r.Account.Active__c = 'Yes' `;
+            }
+
+            try {
+                console.log(responseQuery);
+                responseResults = sforce.connection.query(responseQuery);
+                processResponses(responseResults);
+            }
+            catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processResponses(results) {
+            let i,l,rec,responseValue,response,cnt,buCnt,coordId,coordName,org1Id,org1Name,empId,accountId;
+            let records,processedAll = false;
+            let batCnt = 0, respCnt = 0, regionGoal, coordGoal, org1Goal;
+            let responseMap,region,regionMapKey,regionMap,coordMap,coordMapKey,org1Map,org1MapKey,empMapKey,empMap,empResponseMap,responseKey,accountName,regionTotal,coordTotal,org1Total;
+            let keyFound,goal,goalRec,goalKey,goalErrRec,goalErrorKey,coordKey,org1Key,title,name,probableAccessIssue;
+
+            responseMap = {};
+            while (!processedAll) {
+                records = results.getArray('records');
+                for (i = 0; i < records.length; i++) {
+                    rec= records[i];
+                    if('Contact__r' in rec) { 
+                       if(rec.Contact__r) {
+                            empId   = rec.Contact__r.Account.Id;
+                            buCnt   = parseInt(rec.Contact__r.Account.BU_Count__c)   ||  0;
+                            region  = toProperCase(rec.Contact__r.Account.Region__c) || 'n/a';
+                            coordId = rec.Contact__r.Account.Coordinator__c || '';
+                            org1Id  = rec.Contact__r.Account.Organizer_1__c || '';
+                        }
+                    }
+                    else {
+                        empId   = '001001001001001';
+                        region  = 'n/a';
+                    }
+                    responseValue = rec.Response_Value__c || '';
+                    response      = responseValue.substr(responseValue.indexOf('.') + 1).trim();
+
+                    countGrandTotal++;
+
+                    if(!responseMap[region])
+                        responseMap[region] = {};
+
+                    if(!responseMap[region][coordId])
+                        responseMap[region][coordId] = {};
+
+                    if(!responseMap[region][coordId][org1Id])
+                        responseMap[region][coordId][org1Id] = {};
+
+                    if(!responseMap[region][coordId][org1Id][empId])
+                        responseMap[region][coordId][org1Id][empId] = {};
+
+                    if(!responseMap[region][coordId][org1Id][empId][response])
+                        responseMap[region][coordId][org1Id][empId][response] = {Cnt:1};
+                    else
+                        responseMap[region][coordId][org1Id][empId][response].Cnt++;
+
+                    if(!regionTotalMap[region]) 
+                        regionTotalMap[region] = {Cnt:1, Goal: 0};
+                    else regionTotalMap[region].Cnt++;
+
+                    if(!coordTotalMap[coordId]) 
+                        coordTotalMap[coordId] = {Cnt:1, Region:region};
+                    else coordTotalMap[coordId].Cnt++;
+
+                    if(!org1TotalMap[org1Id]) 
+                        org1TotalMap[org1Id] = {Cnt:1, Region:region};
+                    else org1TotalMap[org1Id].Cnt++;
+
+                    if(goalParam) {
+                        if(!goalMap[coordId]) {
+                            errMap[coordId] = {Err: 'Coord response found without matching goal'};
+                        }
+
+                        if(!goalMap[org1Id]) {
+                            errMap[org1Id]  = {Err: 'Org1 response found without matching goal'};
+                        }
+                    }     
+                }
+                if (results.done == 'true') {
+                    processedAll = true;
+                }
+                else {
+                    batCnt++;
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+            }
+            console.log('Rec count:',results.size,'Bat count:',batCnt);
+            
+            if(goalParam) {
+                for(goalKey in goalMap) {
+                    keyFound = false;
+                    goalRec  = goalMap[goalKey];
+                    for(coordKey in coordTotalMap) {
+                        if(coordTotalMap[goalKey]) {
+                            keyFound = true;
+                            break;
+                        }
+                    }
+                    if(!keyFound) {
+                        for(org1Key in org1TotalMap) {
+                            if(org1TotalMap[goalKey]) {
+                                keyFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    if(!keyFound) {
+                        goalErrorMap[goalKey] = goalRec;
+                    }
+                }
+            }
+
+            regionGoal = 0;
+            probableAccessIssue = false;
+            for(regionMapKey in responseMap) {
+                regionTotal = regionTotalMap[regionMapKey].Cnt;
+                if(goalParam) {
+                    regionGoal = regionGoalMap[regionMapKey].Goal;
+                }
+                responseDataArray.push({All: {Type: 1, AccountName:'', Region:regionMapKey, RegionGoal:regionGoal, BuCnt:0, Coord:'', CoordGoal:0, Org1:'', Org1Goal:0, Response:'', Count:regionTotal }} );
+                regionMap = responseMap[regionMapKey];
+                for(coordMapKey in regionMap) {
+                    coordTotal = number_format(coordTotalMap[coordMapKey].Cnt,0);
+                    if(userMap[coordMapKey]) {
+                        coordName = userMap[coordMapKey].Name;
+                        if(goalParam && goalMap[coordMapKey]) {
+                            coordGoal = goalMap[coordMapKey].Goal;
+                        }
+                    } else {
+                        coordName = 'unknown';
+                        coordGoal = 0;
+                    }
+                    responseDataArray.push({All: {Type: 2, AccountName:'', Region:regionMapKey, RegionGoal:regionGoal, BuCnt:0, Coord:coordName, CoordGoal:coordGoal, Org1:'', Org1Goal:0, Response:'', Count:coordTotal}} );
+                    coordMap = regionMap[coordMapKey];
+                    for(org1MapKey in coordMap) {
+                        org1Total = number_format(org1TotalMap[org1MapKey].Cnt,0);
+                        if(userMap[org1MapKey]) {
+                            org1Name = userMap[org1MapKey].Name;
+                            if(goalParam && goalMap[org1MapKey]) {
+                                org1Goal = goalMap[org1MapKey].Goal;
+                            }
+                        } else {
+                            org1Name = 'unknown';
+                            org1Goal = 0;
+                        }
+                        
+                        responseDataArray.push({All: {Type: 3, AccountName:'', Region:regionMapKey, RegionGoal:regionGoal, BuCnt:0, Coord:coordName, CoordGoal:coordGoal, Org1:org1Name, Org1Goal:org1Goal, Response:'', Count:org1Total }} );
+                        org1Map = coordMap[org1MapKey];
+                        for(empMapKey in org1Map) {
+                            accountId   = empMapKey;
+                            if(accountMap[accountId]) {                           
+                                accountName = accountMap[accountId].AccountName;
+                                buCnt       = accountMap[accountId].BuCnt;
+                                responseDataArray.push({All: {Type: 4, AccountName:accountName, Region:regionMapKey, RegionGoal:regionGoal, BuCnt:buCnt, Coord:coordName, CoordGoal:coordGoal, Org1:org1Name, Org1Goal:org1Goal, Response:'', Count:0 }} );
+                                empResponseMap = org1Map[empMapKey];
+                                for(responseKey in empResponseMap) {
+                                    response = responseKey;
+                                    respCnt  = empResponseMap[responseKey].Cnt;
+                                    responseDataArray.push({All: {Type: 5, AccountName:accountName, Region:regionMapKey, RegionGoal:regionGoal, BuCnt:buCnt, Coord:coordName, CoordGoal:coordGoal, Org1:org1Name, Org1Goal:org1Goal, Response:response, Count:respCnt }} );
+                                }
+                            }
+                            else {
+                                probableAccessIssue = true;
+                            }                            
+                        }
+                    }
+                }
+            }
+
+            responseDataArray.push({All: {Type: 9, AccountName:'Grand Total', Region:'', RegionGoal:goalGrandTotal, BuCnt:0, Coord:'', CoordGoal:'', Org1:'', Org1Goal:0, Response:'', Count:countGrandTotal }} );
+
+            if(probableAccessIssue) alert(`There were responses to survey from Accounts that you don't have access to.  Contact your Salesforce Admin.`);
+
+            if(goalParam) {
+                if(goalErrorMap) {
+                    responseDataArray.push({All: {Type: 6, AccountName:'6', Region:'', BuCnt:0, Coord:name, CoordGoal:0,          Org1:'',  Org1Goal:0, Response:'', Count:0}} );                    
+                    for(goalErrorKey in goalErrorMap) {
+                        goalErrRec = goalErrorMap[goalErrorKey];
+                        title      = goalErrRec.Title;
+                        name       = goalErrRec.Name;
+                        goal       = goalErrRec.Goal;
+                        if(title.substr(0, 5) == 'Coord') 
+                            responseDataArray.push({All: {Type: 7, AccountName:'7', Region:'', BuCnt:0, Coord:name, CoordGoal:goal,   Org1:'',    Org1Goal:0, Response:'', Count:0}} );                    
+                        else
+                            responseDataArray.push({All: {Type: 8, AccountName:'8', Region:'', BuCnt:0,   Coord:'', CoordGoal:0,    Org1:name, Org1Goal:goal, Response:'', Count:0}} );                    
+                    }
+                }
+            }
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        function initAgGrid() {
+            let hdr,goalHr;
+            hdr = `${descParam} (${codeParam})`;
+            if(goalParam) {
+                goalHr = `${goalParam} Goal`;
+                columnDefs = [
+                    {headerName: hdr,      width: 340, field: 'All',      cellRenderer:MainCellRenderer},
+                    {headerName: 'Count',  width:  80, suppressMenu: true, cellRenderer:CountCellRenderer},
+                    {headerName: goalHr,   width: 100, suppressMenu: true, cellRenderer:GoalCellRenderer},
+                    {headerName: 'Goal %', width: 100, suppressMenu: true, cellRenderer:PercentCellRenderer}
+                ];
+            }
+            else {
+                columnDefs = [
+                    {headerName: hdr,      width: 340, field: 'All',      cellRenderer:MainCellRenderer},
+                    {headerName: 'Count',  width: 80, suppressMenu: true, cellRenderer:CountCellRenderer}
+                ];
+            }
+            agGrid.LicenseManager.setLicenseKey("SEIU-UWH_Site_1Devs7_February_2018__MTUxNzk2MTYwMDAwMA==f54417966e3979c429e6a1af033c1a9a");
+        }
+
+        function displayGrids() {
+
+            if(shownBefore) gridOptions.api.destroy();
+            else shownBefore = true;
+
+            if(goalParam) {
+                contentDiv.classList.add("ContentDivWithGoal");
+                gridDiv.classList.add("GridDivWithGoal");
+            }
+            else {
+                contentDiv.classList.add("ContentDivNoGoal");
+                gridDiv.classList.add("GridDivNoGoal");
+            }
+            gridOptions = {
+                columnDefs: columnDefs,
+                rowData: responseDataArray
+            };
+            new agGrid.Grid(gridDiv, gridOptions);
+        }
+
+        // function to act as a class
+        function MainCellRenderer () {}
+
+        // gets called once before the renderer is used
+        MainCellRenderer.prototype.init = function(params) {
+            // create the cell
+            this.eGui = document.createElement('div');
+            let type  = params.data.All.Type;
+            let emp   = params.data.All.AccountName;
+            let bu    = params.data.All.BuCnt;
+            let org1  = params.data.All.Org1;
+            let resp  = params.data.All.Response;
+            let cnt   = params.data.All.Count;
+            let reg   = params.data.All.Region;
+            let coord = params.data.All.Coord;
+
+            switch(type) {
+                case 1:
+                    this.eGui.innerHTML = `<div class="row-type1">${reg}</div>`;
+                    break;
+                case 2:
+                    this.eGui.innerHTML = `<div class="row-type2">${coord}</div>`;
+                    break;
+                case 3:
+                    this.eGui.innerHTML = `<div class="row-type3">${org1}</div>`;
+                    break;
+                case 4:
+                    this.eGui.innerHTML = `<div class="row-type4">${emp}</div>`;
+                    break;
+                case 5:
+                    this.eGui.innerHTML = `<div class="row-type5">${resp}</div>`;
+                    break;
+                case 6:
+                    this.eGui.innerHTML = `<div class="row-type6">Exceptions</div>`;
+                    break;
+                case 7:
+                    this.eGui.innerHTML = `<div class="row-type7">${coord}</div>`;
+                    break;
+                case 8:
+                    this.eGui.innerHTML = `<div class="row-type8">${org1}</div>`;
+                    break;
+                case 9:
+                    this.eGui.innerHTML = `<div class="row-type9">${emp}</div>`;        
+                    break;                    
+            }
+        };
+
+        // gets called once when grid ready to insert the element
+        MainCellRenderer.prototype.getGui = function() {
+            return this.eGui;
+        };
+
+        // gets called whenever the user gets the cell to refresh
+        MainCellRenderer.prototype.refresh = function(params) {
+            let type  = params.data.All.Type;
+            // set value into cell again
+                switch(type) {
+                case 1:
+                    this.eGui.innerHTML = `<div class="row-type1">${reg}</div>`;
+                    break;
+                case 2:
+                    this.eGui.innerHTML = `<div class="row-type2">${coord}</div>`;
+                    break;
+                case 3:
+                    this.eGui.innerHTML = `<div class="row-type3">${org1}</div>`;
+                    break;
+                case 4:
+                    this.eGui.innerHTML = `<div class="row-type4">${emp}</div>`;
+                    break;
+                case 5:
+                    this.eGui.innerHTML = `<div class="row-type5">${resp}</div>`;
+                    break;
+                case 6:
+                    this.eGui.innerHTML = `<div class="row-type6">Exceptions</div>`;
+                    break;
+                case 7:
+                    this.eGui.innerHTML = `<div class="row-type7">${coord}</div>`;
+                    break;
+                case 8:
+                    this.eGui.innerHTML = `<div class="row-type8">${org1}</div>`;
+                    break;                        
+                case 9:
+                    this.eGui.innerHTML = `<div class="row-type9">${emp}</div>`;        
+                    break;                    
+            }
+        };
+
+        // gets called when the cell is removed from the grid
+        MainCellRenderer.prototype.destroy = function() {
+        };
+        function CountCellRenderer () {}
+        CountCellRenderer.prototype.init = function(params) {
+            // create the cell
+            this.eGui = document.createElement('div');
+            let type  = params.data.All.Type;
+            let cnt   = params.data.All.Count;
+            let emp   = params.data.All.AccountName;
+            let org1  = params.data.All.Org1;
+            let coord = params.data.All.Coord;
+            let reg   = params.data.All.Region;
+            switch(type) {
+                case 1:
+                    this.eGui.innerHTML = `<div class="row-type1-div">${cnt}</div>`;
+                    break;
+                case 2:
+                    this.eGui.innerHTML = `<div class="row-type2-div">${cnt}</div>`;
+                    break;
+                case 3:
+                    this.eGui.innerHTML = `<div class="row-type3-div">${cnt}</div>`;
+                    break;
+                case 4:
+                    this.eGui.innerHTML = ``;                    
+                    break;
+                case 5:
+                    this.eGui.innerHTML = `<div class="row-type5-div">${cnt}</div>`;
+                    break;
+                case 7:
+                    this.eGui.innerHTML = `<div class="row-type7-div">${cnt}</div>`;
+                    break;                    
+                case 8:
+                    this.eGui.innerHTML = `<div class="row-type8-div">${cnt}</div>`;
+                    break;
+                case 9:
+                    this.eGui.innerHTML = `<div class="row-type9-div">${cnt}</div>`;
+                    break;
+            }
+        };
+        CountCellRenderer.prototype.getGui = function() {
+            return this.eGui;
+        };
+        CountCellRenderer.prototype.refresh = function(params) {
+            let type  = params.data.All.Type;
+            switch(type) {
+                case 1:
+                    this.eGui.innerHTML = `<div class="row-type1-div">${cnt}</div>`;
+                    break;
+                case 2:
+                    this.eGui.innerHTML = `<div class="row-type2-div">${cnt}</div>`;
+                    break;
+                case 3:
+                    this.eGui.innerHTML = `<div class="row-type3-div">${cnt}</div>`;
+                    break;
+                case 4:
+                    this.eGui.innerHTML = ``;                    
+                    break;
+                case 5:
+                    this.eGui.innerHTML = `<div class="row-type5">${cnt}</div>`;
+                    break;
+                case 7:
+                    this.eGui.innerHTML = `<div class="row-type7-div">${cnt}</div>`;
+                    break;                    
+                case 8:
+                    this.eGui.innerHTML = `<div class="row-type8-div">${cnt}</div>`;
+                    break;                    
+                case 9:
+                    this.eGui.innerHTML = `<div class="row-type9-div">${cnt}</div>`;
+                    break;
+            }
+        };
+        CountCellRenderer.prototype.destroy = function() {};
+        
+        function GoalCellRenderer() {}
+        GoalCellRenderer.prototype.init = function(params) {
+            // create the cell
+            this.eGui = document.createElement('div');
+            let type      = params.data.All.Type;
+            let regGoal   = params.data.All.RegionGoal;
+            let coordGoal = params.data.All.CoordGoal;
+            let org1Goal  = params.data.All.Org1Goal;
+            switch(type) {
+                case 1:
+                    this.eGui.innerHTML = `<div class="row-type1-div">${regGoal}</div>`;
+                    break;
+                case 2:
+                    this.eGui.innerHTML = `<div class="row-type2-div">${coordGoal}</div>`;
+                    break;
+                case 3:
+                    this.eGui.innerHTML = `<div class="row-type3-div">${org1Goal}</div>`;
+                    break;
+                case 7:
+                    this.eGui.innerHTML = `<div class="row-type7-div">${coordGoal}</div>`;
+                    break;                      
+                case 8:
+                    this.eGui.innerHTML = `<div class="row-type8-div">${org1Goal}</div>`;
+                    break;                      
+                case 9:
+                    this.eGui.innerHTML = `<div class="row-type9-div">${regGoal}</div>`;
+                    break;
+            }
+        };
+        GoalCellRenderer.prototype.getGui = function() {
+            return this.eGui;
+        };
+        GoalCellRenderer.prototype.refresh = function(params) {
+            let type      = params.data.All.Type;
+            let regGoal   = params.data.All.RegionGoal;
+            let coordGoal = params.data.All.CoordGoal;
+            let org1Goal  = params.data.All.Org1Goal;
+            switch(type) {
+                case 1:
+                    this.eGui.innerHTML = `<div class="row-type1-div">${regGoal}</div>`;
+                    break;
+                case 2:
+                    this.eGui.innerHTML = `<div class="row-type2-div">${coordGoal}</div>`;
+                    break;
+                case 3:
+                    this.eGui.innerHTML = `<div class="row-type3-div">${org1Goal}</div>`;
+                    break;
+                case 7:
+                    this.eGui.innerHTML = `<div class="row-type7-div">${coordGoal}</div>`;
+                    break;                      
+                case 8:
+                    this.eGui.innerHTML = `<div class="row-type8-div">${org1Goal}</div>`;
+                    break;                      
+                case 9:
+                    this.eGui.innerHTML = `<div class="row-type9-div">${regGoal}</div>`;
+                    break;
+            }
+        };
+        GoalCellRenderer.prototype.destroy = function() {};
+
+        function PercentCellRenderer() {}
+        PercentCellRenderer.prototype.init = function(params) {
+            this.eGui = document.createElement('div');
+            let type       = params.data.All.Type;
+            let cnt        = params.data.All.Count;
+            let regionGoal = params.data.All.RegionGoal
+            let coordGoal  = params.data.All.CoordGoal;
+            let org1Goal   = params.data.All.Org1Goal;
+            let pc = 0;
+            switch(type) {
+                case 1:
+                    if(cnt > 0 && regionGoal > 0) {
+                        pc = ((cnt / regionGoal) * 100).toFixed(2);
+                    }
+                    this.eGui.innerHTML = `<div class="row-type1-div">${pc}%</div>`;
+                    break;                
+                case 2:
+                    if(cnt > 0 && coordGoal > 0) {
+                        pc = ((cnt / coordGoal) * 100).toFixed(2);
+                    }
+                    this.eGui.innerHTML = `<div class="row-type2-div">${pc}%</div>`;
+                    break;
+                case 3:
+                    if(cnt > 0 && org1Goal > 0) {
+                        pc = ((cnt / org1Goal) * 100).toFixed(2);
+                    }
+                    this.eGui.innerHTML = `<div class="row-type3-div">${pc}%</div>`;
+                    break;
+                case 9:
+                    if(cnt > 0 && regionGoal > 0) {
+                        pc = ((cnt / regionGoal) * 100).toFixed(2);
+                    }
+                    this.eGui.innerHTML = `<div class="row-type9-div">${pc}%</div>`;
+                    break;
+            }
+        };
+        PercentCellRenderer.prototype.getGui = function() {
+            return this.eGui;
+        };
+        PercentCellRenderer.prototype.refresh = function(params) {
+            let type       = params.data.All.Type;
+            let cnt        = params.data.All.Count;     
+            let regionGoal = params.data.All.RegionGoal
+            let coordGoal  = params.data.All.CoordGoal;
+            let org1Goal   = params.data.All.Org1Goal;
+            let pc = 0;
+            switch(type) {
+                case 1:
+                    if(cnt > 0 && regionGoal > 0) {
+                        pc = ((cnt / regionGoal) * 100).toFixed(2);
+                    }
+                    this.eGui.innerHTML = `<div class="row-type1-div">${pc}%</div>`;
+                    break;                
+                case 2:
+                    if(cnt > 0 && coordGoal > 0) {
+                        pc = ((cnt / coordGoal) * 100).toFixed(2);
+                    }
+                    this.eGui.innerHTML = `<div class="row-type2-div">${pc}%</div>`;
+                    break;
+                case 3:
+                    if(cnt > 0 && org1Goal > 0) {
+                        pc = ((cnt / org1Goal) * 100).toFixed(2);
+                    }
+                    this.eGui.innerHTML = `<div class="row-type3-div">${pc}%</div>`;
+                    break;
+                case 9:
+                    if(cnt > 0 && regionGoal > 0) {
+                        pc = ((cnt / regionGoal) * 100).toFixed(2);
+                    }
+                    this.eGui.innerHTML = `<div class="row-type9-div">${pc}%</div>`;
+                    break;
+            }
+        };
+        PercentCellRenderer.prototype.destroy = function() {};
+
+        function saveAsCsv() {
+            let type,emp,bu,resp,cnt,reg,coord,org1,line,hdr,blob,output,outputArray = [];
+            let regGoal,coordGoal,org1Goal;
+            let fileName = `${descParam} (${codeParam}) data.csv`;
+
+            gridOptions.api.forEachNode(function(item) {
+                type  = item.data.All.Type;
+                if(type == 2 || type == 5) {
+                    emp   = item.data.All.AccountName;
+                    bu    = item.data.All.BuCnt;
+                    resp  = item.data.All.Response;
+                    cnt   = item.data.All.Count;
+                    reg   = item.data.All.Region;
+                    coord = item.data.All.Coord;
+                    org1  = item.data.All.Org1;
+                    if(goalParam) {
+                        regGoal   = item.data.All.RegionGoal;
+                        coordGoal = item.data.All.CoordGoal;
+                        org1Goal  = item.data.All.Org1Goal; 
+                        line = `${reg},${regGoal},${coord},${coordGoal},${org1},${org1Goal},${emp},${bu},${resp},${cnt}\n`;
+                    }
+                    else {
+                        line = `${reg},${coord},${org1},${emp},${bu},${resp},${cnt}\n`;
+                    }
+                    outputArray.push(line);
+                }
+            });
+            if(goalParam) {
+                hdr = `,Region,regionGoal,Coord,CoordGoal,Org1,Org1Goal,Employer,Bu,Response,Cnt\n`;
+            }
+            else {
+                hdr = `,Region,Coord,Org1,Employer,Bu,Response,Cnt\n`;
+            }
+            
+            output = hdr + ',' + outputArray.join(',');
+            blob   = new Blob([output], {type: "text/csv;charset=utf-8"});
+            saveAs(blob, fileName);
+        }
+
+        // ***************** Main Program Entry *****************
+        const codeParam       = "{!$CurrentPage.parameters.code}"    || 'D17';
+        const descParam       = "{!$CurrentPage.parameters.desc}"    || 'Dignity Summit';
+        const digParam        = "{!$CurrentPage.parameters.dignity}" || 'true';
+        var   goalParam       = "{!$CurrentPage.parameters.goal}"    || 'Signup';
+        const modalLoadingDiv = document.getElementById('ModalLoadingDiv');
+        const titleDiv        = document.getElementById('Title');
+        const contentDiv      = document.getElementById('Content');
+        const gridDiv         = document.getElementById('GridDiv');
+        const saveAsDiv       = document.getElementById('SaveAsDiv'); 
+        const saveAsCsvButton = document.getElementById('SaveAsCsvButton'); 
+
+        saveAsCsvButton.addEventListener("click", saveAsCsv, false);
+
+        var nodeCnt = 0, errMap = {}, goalMap = {}, goalErrorMap = {}, accountMap = {}, userMap = {}, regionGoalMap = {},  regionTotalMap = {}, coordTotalMap = {}, org1TotalMap = {};
+        var responseDataArray = [], shownBefore = false, goalGrandTotal = 0, countGrandTotal = 0, gridOptions,columnDefs;
+        sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+        titleDiv.innerHTML = descParam;
+        showLoadingMsg(true);
+        loadAccounts();
+        if(goalParam) loadGoals();
+        loadResponses();
+        showLoadingMsg(false);
+        initAgGrid();
+        displayGrids();
+    </script>
+    </body>
+</apex:page>

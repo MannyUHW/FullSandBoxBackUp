@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>43.0</apiVersion>
+    <availableInTouch>false</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Retrieves contacts who fall into one of 4 buckets:
+1. 80% Leader
+2. Cool Assessment
+3. Dialysis petition gatherers
+4. Phone Banking</description>
+    <label>Mbr Activity Report</label>
+</ApexPage>

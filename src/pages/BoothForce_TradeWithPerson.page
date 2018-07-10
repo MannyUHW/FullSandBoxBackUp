@@ -1,0 +1,28 @@
+<apex:page controller="BoothForce_TradeWithPersonController" showHeader="false" standardStylesheets="false">
+<script type="text/javascript" src="{!URLFOR($Resource.boothForce, 'jquery.js')}" ></script>
+
+  <div id="swapForm">
+  <apex:form >
+   <h3>Please select a boothshift replacement.</h3>
+    <div><h2>Current Staffer</h2><span>{!currentStafferName}</span></div>
+    <div><h2>Booth</h2><span>{!boothName}</span></div>
+    <div><h2>Shift</h2><span>{!timeSlot}</span></div>
+    <div><h2>Allowed Roles</h2><span>{!allowedRoles}</span></div>
+    <div><h2>New Staffer</h2><span><apex:inputField value="{!staffingAssignment.Assigned__c}"/></span></div>
+    <div><h2></h2><span>**only eligible users will be saved</span></div>
+    <div>
+      <apex:commandButton action="{!swap}" value="Trade" id="theButton" styleClass="btn btnPrimary"/>
+      <apex:outputPanel layout="none" rendered="{!!preventDrop}">
+        <a onclick="dropShift('{!staffingId}')" class="btn btnPrimary">Drop</a>
+      </apex:outputPanel>
+    </div>
+  </apex:form>
+  </div>
+  <script>
+    $(document).ready(function() {
+      if("{!validUser}" == "false"){
+        alert("ERROR: Selected user is not qualified. Please select an alternate.");
+      }
+    });
+  </script>
+</apex:page>

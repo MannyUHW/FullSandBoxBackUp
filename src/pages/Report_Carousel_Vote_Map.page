@@ -1,0 +1,373 @@
+<apex:page sidebar="false" showHeader="false">
+
+<!--<meta http-equiv="refresh" content="15"></meta>-->
+
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+      #panel {
+        position: absolute;
+        top: 50px;
+        left: 20%;
+        margin-left: -180px;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=visualization"></script>
+ <script src="/soap/ajax/33.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/33.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.zipCodeGeoMap)}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<script>
+
+var citySet = new Array();
+
+
+function initialize() {
+
+try {
+
+  sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+  var emid = "{!$CurrentPage.parameters.emid}";
+  if (emid == null || emid == "" || emid == "null") {
+    emid = "8817";
+  }
+  var query = "select MailingCity, count(Id) CityCount from Contact where Account.Employer_Id__c = \'" + emid + "\' and MailingCity != null and MailingPostalCode != null and MailingLatitude != null group by MailingCity ";
+  //removed for now (GOTV_Assessment__c like '1%' or GOTV_Assessment__c like '2%')  
+  var records = sforce.connection.query(query); 
+  var records0 = records.getArray('records'); 
+
+  for(var i=0;i<records0.length;i++){   
+    var city = toProperCase(records0[i].MailingCity).trim();
+    var cityCount = records0[i].CityCount;
+    if (citySet.indexOf(city) < 0 && cityCount >= 5) {
+      citySet.push(city);
+    }
+  }
+  citySet.sort();
+  var filters = "";  
+  var dex  = 0;
+  //alert("mapCarouselDex = _" + sessionStorage.getItem("mapCarouselDex") + "_");
+  if (sessionStorage.getItem("mapCarouselDex") != null && sessionStorage.getItem("mapCarouselDex") != "NaN" && sessionStorage.getItem("mapCarouselDex") != "" && sessionStorage.getItem("mapCarouselDex") != "null") {
+    dex = parseInt(sessionStorage.getItem("mapCarouselDex"));
+    if (dex > citySet.length) {
+      dex = 0;
+    }
+    if (dex > 0) {
+      filters = citySet[dex - 1];
+    }
+  }
+  //alert("dex = " + dex);
+  dex++;
+  sessionStorage.setItem("mapCarouselDex", "" + dex);  
+
+  //var filters = "{!$CurrentPage.parameters.filters}";
+  var filterList = new Array();
+  if (filters != null && filters != "" && filters != "null") {
+    filterList = filters.split(",");
+  }
+  for (var fi = 0; fi < filterList.length; fi++) {
+    filterList[fi] = toProperCase(filterList[fi]);
+  }
+
+
+    var query = "select Id, Name, ShippingLatitude, ShippingLongitude, BillingLatitude, BillingLongitude, GOTV_Organizer_Geolocations__c from Account where Employer_ID__c = \'" + emid + "\'";
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records'); 
+    var emname = "";
+    var emlat = 0.0;
+    var emlon = 0.0;
+    var emsfid = "";
+    var orgGeolocations = "";
+    for(var i=0;i<records0.length;i++){ 
+      emname = records0[i].Name;
+      emsfid = records0[i].Id;
+      orgGeolocations = records0[i].GOTV_Organizer_Geolocations__c ;
+      if (records0[i].BillingLatitude != null) {
+        emlat = records0[i].BillingLatitude;
+        emlon = records0[i].BillingLongitude;
+      } else {
+        emlat = records0[i].ShippingLatitude;
+        emlon = records0[i].ShippingLongitude;
+      }
+    }
+    emname = emname.replace("Hospital", "");
+    emname = emname.replace("Medical Center", "");
+    emname = emname.trim(); 
+    var centerLat = emlat;
+    var centerLon = emlon;
+        
+    var gzoom = 12;
+
+    if (filters != null && filters != "") {
+      //loop through zipCodeGeoMap JavaScript Library
+      for (var zip in zipCodeGeoMap) {
+        var zarray = zipCodeGeoMap[zip];
+        var city = toProperCase(zarray[2]).trim();
+         if (filters.toLowerCase().trim() == city.toLowerCase().trim()) {
+           centerLat = zarray[0];
+           centerLon = zarray[1];
+           break;
+         }
+      }
+    }
+    
+    var pzoom =  "{!$CurrentPage.parameters.zoom}";
+    if (pzoom != null && pzoom != "" && pzoom != "null") {
+      gzoom = parseInt(pzoom);
+    }
+    
+    
+
+  var mapOptions = {
+    zoom: gzoom,
+    center: new google.maps.LatLng(centerLat,centerLon),
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  //      
+  //add pin for Employer
+  //
+  var ccolor = "404040";
+  var markerImg = "http://chart.apis.google.com/chart?cht=d&chdp=mapsapi&chl=pin%27i%5c%27%5b" + "E" +"%27-2%27f%5chv%27a%5c%5dh%5c%5do%5c" + ccolor + "%27fC%5c000000%27tC%5c000000%27eC%5cLauto%27f%5c&ext=.png";
+  var pinImage = new google.maps.MarkerImage(markerImg,
+            new google.maps.Size(21, 34),
+            new google.maps.Point(0,0),
+            new google.maps.Point(10, 34));
+  var c = new google.maps.LatLng(emlat, emlon);            
+  var marker = new google.maps.Marker({
+          position: c,
+          map: map,
+          title:emname, 
+          icon: pinImage,
+          url: "/" + emsfid
+        });
+
+
+  //
+  // add markers for GOTV Outside Organizers
+  // 
+  if (orgGeolocations != null && orgGeolocations.trim() != "") {
+    var garray = orgGeolocations.split("\n");
+    for (var gi =  0; gi < garray.length; gi++) {
+      if (garray[gi].trim() != "") { 
+        var oarray = garray[gi].split(",");
+        var oname = oarray[0];
+        var olat = parseFloat(oarray[1]);
+        var olon = parseFloat(oarray[2]);
+        var ccolor = "A028B0";
+        var markerImg = "http://chart.apis.google.com/chart?cht=d&chdp=mapsapi&chl=pin%27i%5c%27%5b" + "S" +"%27-2%27f%5chv%27a%5c%5dh%5c%5do%5c" + ccolor + "%27fC%5c000000%27tC%5c000000%27eC%5cLauto%27f%5c&ext=.png";
+        var pinImage = new google.maps.MarkerImage(markerImg,
+            new google.maps.Size(21, 34),
+            new google.maps.Point(0,0),
+            new google.maps.Point(10, 34));
+        var c = new google.maps.LatLng(olat, olon);            
+        var marker = new google.maps.Marker({
+              position: c,
+              map: map,
+              title:oname, 
+              icon: pinImage,
+              url: "/"
+        });        
+      }
+    }
+  }
+    
+
+    
+    var query = "select Id, Name, FID__c, MailingLatitude, MailingLongitude, MailingCity, MailingPostalCode, GOTV_Assessment__c, Election_Day_Voted__c, Three_Touch_Count__c from Contact where Account.Employer_ID__c = \'" + emid + "\' ";
+    //removed for now (GOTV_Assessment__c like '1%' or GOTV_Assessment__c like '2%')
+    
+    
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records'); 
+    //var voted = 0;
+    var gotv1 = 0;
+    var gotv2 = 0;
+    var t0count = 0;
+    var t1count = 0;
+    var t1count = 0;
+    var t2count = 0;    
+    var t3count = 0;    
+    if (records0.length == 2000) {
+      alert("Maximum length of 2000 records reached.  Some markers may not be included on map.");
+    }
+    for(var j=0; j<records0.length; j++){ 
+      var filterOut = true;
+      if (filterList.length == 0) {
+        filterOut = false;
+      } else if  (records0[j].MailingLatitude != null && records0[j].MailingCity != null && records0[j].MailingPostalCode != null) {
+        var jCity = records0[j].MailingCity.toLowerCase().trim();
+        var jZip  = records0[j].MailingPostalCode.trim().substring(0,5);
+        for (var k=0; k < filterList.length; k++) {
+          if (jCity == filterList[k].toLowerCase().trim() || jZip == filterList[k]) {
+            filterOut = false;
+          }
+        }
+      }
+      if (filterOut == false && records0[j].MailingLatitude != null) {
+        var c = new google.maps.LatLng(records0[j].MailingLatitude,records0[j].MailingLongitude);
+        var ttcount = records0[j].Three_Touch_Count__c;
+        var ccolor = "FFFFFF";
+        var mtext = "0";
+
+        //new code from Mauricios requirements
+        if (records0[j].GOTV_Assessment__c != null) {
+          if (records0[j].GOTV_Assessment__c.indexOf("1") == 0) {   
+            gotv1++;
+          } else if (records0[j].GOTV_Assessment__c.indexOf("2") == 0) {
+            gotv2++;        
+          }   
+        }     
+        
+        if (ttcount == 0) {   
+          ccolor = "FF2020";
+          mtext = "0";          
+          t0count++;
+        } else if (ttcount == 1) {
+          ccolor = "FFFF20";
+          mtext = "1";          
+          t1count++;
+        } else if (ttcount == 2) {
+          ccolor = "20FF40";
+          mtext = "2";          
+          t2count++;
+        } else if (ttcount == 3) {
+          t3count++;
+        }
+        
+        if (ttcount < 3) {
+          var markerImg = "http://chart.apis.google.com/chart?cht=d&chdp=mapsapi&chl=pin%27i%5c%27%5b" + mtext +"%27-2%27f%5chv%27a%5c%5dh%5c%5do%5c" + ccolor + "%27fC%5c000000%27tC%5c000000%27eC%5cLauto%27f%5c&ext=.png";
+
+          //var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + ccolor,
+          var pinImage = new google.maps.MarkerImage(markerImg,
+              new google.maps.Size(21, 34),
+              new google.maps.Point(0,0),
+              new google.maps.Point(10, 34));
+        
+
+          var marker = new google.maps.Marker({
+            position: c,
+            map: map,
+            title:records0[j].Name, 
+            icon: pinImage,
+            url: "/" + records0[j].Id
+          });
+
+          google.maps.event.addListener(marker, 'click', function() {
+            //window.location.href = (this.url);
+            var newWindow = window.open(this.url, "_blank");          
+            newWindow.location;
+           });
+  
+          //marker.addListener('click', window.open("/" + records0[j].Id));
+        }
+      } else if (filterOut == false) {
+        //alert("no lat/lon = " + records0[j].Id +"\n" + records0[j].MailingCity);
+        if (records0[j].GOTV_Assessment__c != null) {
+          if (records0[j].GOTV_Assessment__c.indexOf("1") == 0) {   
+            gotv1++;
+          } else if (records0[j].GOTV_Assessment__c.indexOf("2") == 0) {
+            gotv2++;        
+          }
+        }
+        if (ttcount == 0) {     
+          t0count++;
+        } else if (ttcount == 1) { 
+          t1count++;
+        } else if (ttcount == 2) {
+          t2count++;
+        } else if (ttcount == 3) {
+          t3count++;
+        }        
+      } 
+    }
+    var summaryWriter = "<font size=\"+1\">" + emname + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font><br/>&nbsp;<br/>\n";
+    if (filterList.length > 0) {
+      summaryWriter += "Filters = " + JSON.stringify(filterList) + "<br/>&nbsp;<br/>";
+    }
+    summaryWriter += "GOTV 1s: " + gotv1 + "<br/>\n";
+    summaryWriter += "GOTV 2s: " + gotv2 + "<br/>\n";    
+    summaryWriter += "&nbsp;</br>\n";
+    summaryWriter += "Three Touch 0s (red): " + t0count + "<br/>\n";
+    summaryWriter += "Three Touch 1s (yellow): " + t1count + "<br/>\n";
+    summaryWriter += "Three Touch 2s (green): " + t2count + "<br/>\n";
+    summaryWriter += "Three Touch 3s (not shown): " + t3count + "<br/>\n";
+    summaryWriter += "<br>&nbsp;</br>";
+    var d = new Date();
+    summaryWriter += "<div align=\"center\">updated: " + d.toTimeString().substring(0,8) + "</div>";
+    summaryWriter += "<br/><div align=\"center\" id=\"playPauseDiv\">";
+    //var timeout = setTimeout("location.reload(true);", 15000);   
+    var timeout = setTimeout("if (sessionStorage.getItem(\"mapCarouselPlayStatus\") == null || sessionStorage.getItem(\"mapCarouselPlayStatus\").toLowerCase().trim() == \"true\") { location.reload(true); }", 15000);
+    //alert("sessionStorage.getItem(\"mapCarouselPlayStatus\") = " + sessionStorage.getItem("mapCarouselPlayStatus")); 
+    if (sessionStorage.getItem("mapCarouselPlayStatus") == null || sessionStorage.getItem("mapCarouselPlayStatus").toLowerCase().trim() == "true") {
+      summaryWriter += "Playing / <a href=\"javaScript:toggleStatus()\">Pause</a>";    
+    } else {
+      summaryWriter += "<a href=\"javaScript:toggleStatus()\">Play</a> / Paused"; 
+      clearTimeout(timeout);
+    }
+    summaryWriter += "</a></div><br/>&nbsp;";
+    summaryWriter += "<br/><div align=\"center\"><a href=\"javascript:goOverview()\">Overview Map</a></div>";
+    //"Voted: " + voted + "<br/>GOTV 1s Not Voted:" + gotv1 + "<br/>GOTV 2s Not Voted:" + gotv2;
+    summaryWriter += "<br/><div align=\"center\">Go to City:&nbsp;&nbsp;<select id=\"citySelect\" onchange=\"goCity()\"><option value=\"0\"></option>";
+    for (var cdex = 0; cdex < citySet.length; cdex++) {
+      summaryWriter += "<option value=\"" + (cdex + 1) + "\">" + citySet[cdex] + "</option>";
+    }
+     summaryWriter += "</select></div>";
+    document.getElementById("panel").innerHTML = summaryWriter ;
+
+  } catch(e) { 
+   alert('An Error has Occured. Error:' +e + "\n\n" + i + ""); 
+  }   
+      
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+    </script>
+
+
+    <div id="panel">
+    </div>
+    <div id="map-canvas"></div>
+    
+    <script language="JavaScript">
+    
+    function toggleStatus() {
+      var timeout = setTimeout("if (sessionStorage.getItem(\"mapCarouselPlayStatus\") == null || sessionStorage.getItem(\"mapCarouselPlayStatus\").toLowerCase().trim() == \"true\") { location.reload(true); }", 15000);
+      if (sessionStorage.getItem("mapCarouselPlayStatus") == null || sessionStorage.getItem("mapCarouselPlayStatus").toLowerCase().trim() == "true") {
+        document.getElementById("playPauseDiv").innerHTML = "<a href=\"javaScript:toggleStatus()\">Play</a> / Paused<br/>&nbsp;";
+        sessionStorage.setItem("mapCarouselPlayStatus", "false");
+        clearTimeout(timeout);        
+      } else {
+        document.getElementById("playPauseDiv").innerHTML = "Playing / <a href=\"javaScript:toggleStatus()\">Pause</a><br/>&nbsp;";                
+        sessionStorage.setItem("mapCarouselPlayStatus", "true");
+      }
+      //alert("sessionStorage.getItem(\"mapCarouselPlayStatus\") = " + sessionStorage.getItem("mapCarouselPlayStatus"));      
+    }
+
+    function goOverview() {
+      sessionStorage.setItem("mapCarouselDex", "0");
+      location.reload(true);
+    }
+
+    function goCity() {
+      var cdex = document.getElementById("citySelect").value;
+      sessionStorage.setItem("mapCarouselDex", cdex);
+      location.reload(true);
+    }
+
+    </script>
+
+</apex:page>

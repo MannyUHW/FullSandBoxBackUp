@@ -1,0 +1,155 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" >
+<meta name="viewport" content="width=device-width, initial-scale=0.75,minimum-scale=0.5, maximum-scale=1.5, user-scalable=yes"></meta>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<meta name="viewport" content="width=device-width, initial-scale=0.75"></meta>
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+
+<script language="JavaScript">
+var userName = "";
+var debugWriter = "";
+ 
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+
+</script>
+
+
+<a name="topofpage"></a>
+<div align="center">
+
+<table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MONO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MONO_Search}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+
+  <font size="+2"><div id="titleDiv">Settings</div></font>
+  
+<table>
+<tr valign="top">
+<td valign="left">
+<dl>
+    <dt>Organizing Mode</dt>
+  <dd>
+  <div align="center"  id="modeDiv">
+  <select id="modeSelect">
+    <option value="standard">New Org Standard</option>
+    <option value="ttob">Vote Observer</option>
+    <option value="ttst">Staff Three Touch</option>    
+  </select>
+  </div>
+  <br/>
+  </dd>    
+  <br></br>
+    <dt>Sort Order</dt>
+  <dd>
+  <div align="center"  id="sortDiv">
+  <select id="sortSelect">
+    <option value="last">Last Name, First Name</option>
+    <option value="first">First Name, Last Name</option> 
+  </select>
+  </div>
+  <br/>
+  </dd>   
+  
+   
+  </dl>
+
+  </td>
+</tr>
+</table>
+  
+  <button class="btn btn-primary" type="submit" onclick="saveSettings();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  Save Settings
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button>
+  
+<br>&nbsp;</br>
+
+
+<script language="JavaScript">
+
+if (localStorage.getItem("mono_settings_mode") != null) {
+  $('#modeSelect').val(localStorage.getItem("mono_settings_mode"));    
+} else {
+  $('#modeSelect').val("standard"); 
+}
+if (localStorage.getItem("mono_settings_sort") != null) {
+  $('#sortSelect').val(localStorage.getItem("mono_settings_sort"));    
+} else {
+  $('#sortSelect').val("last"); 
+} 
+    
+function saveSettings() {
+  var s = "";
+  var omode = $('#modeSelect').val();
+  //alert(omode);
+  if (omode != null && omode.length > 0) {
+    localStorage.setItem("mono_settings_mode", omode);
+    localStorage.setItem("mono_settings_modedesc", $('#modeSelect option:selected').text());
+  }
+  
+  var sortOrder = $('#sortSelect').val();
+  if (sortOrder != null && sortOrder.length > 0) {  
+    localStorage.setItem("mono_settings_sort", sortOrder );
+  }
+  
+  alert("Settings saved.");
+  navigateTo("{!$Page.MONO_Main_Page}");
+  return false; 
+}    
+    
+</script>
+ 
+
+
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+
+<script> 
+(function(){try{var a=navigator.userAgent;if((a.indexOf('Salesforce')!=-1)&&(a.indexOf('iPhone')!=-1||a.indexOf('iPad')!=-1)&&(a.indexOf('OS/8')!=-1||a.indexOf('OS 8')!=-1)&&(a.indexOf('Safari')==-1)){ 
+var s=document.createElement('style'); 
+s.innerHTML="html,html body{overflow: auto;-webkit-overflow-scrolling:touch;}body{position:absolute;left:0;right:0;top:0;bottom:0;}"; 
+document.getElementsByTagName('head')[0].appendChild(s);}}catch(e){}})(); 
+</script> 
+
+
+<div id="debugDiv"></div>
+<script> 
+//document.getElementById("debugDiv").innerHTML = debugWriter;
+
+</script>
+</apex:page>

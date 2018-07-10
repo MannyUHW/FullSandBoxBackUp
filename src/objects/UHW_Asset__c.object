@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Asset_Exit_Date__c</fullName>
+        <description>When did the asset exit from UHW due to lost/stolen/recycled/donated date?</description>
+        <externalId>false</externalId>
+        <label>Lost/Stolen/Recycled/Donated Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Asset_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Asset Id</label>
+        <length>18</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Asset_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Asset Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>true</sorted>
+                <value>
+                    <fullName>Aircard/Hotspot</fullName>
+                    <default>false</default>
+                    <label>Aircard/Hotspot</label>
+                </value>
+                <value>
+                    <fullName>Audio</fullName>
+                    <default>false</default>
+                    <label>Audio</label>
+                </value>
+                <value>
+                    <fullName>Camera</fullName>
+                    <default>false</default>
+                    <label>Camera</label>
+                </value>
+                <value>
+                    <fullName>Cell Phone</fullName>
+                    <default>false</default>
+                    <label>Cell Phone</label>
+                </value>
+                <value>
+                    <fullName>Copier</fullName>
+                    <default>false</default>
+                    <label>Copier</label>
+                </value>
+                <value>
+                    <fullName>DVD Player</fullName>
+                    <default>false</default>
+                    <label>DVD Player</label>
+                </value>
+                <value>
+                    <fullName>DVD Writer</fullName>
+                    <default>false</default>
+                    <label>DVD Writer</label>
+                </value>
+                <value>
+                    <fullName>GPS</fullName>
+                    <default>false</default>
+                    <label>GPS</label>
+                </value>
+                <value>
+                    <fullName>IT/Other</fullName>
+                    <default>false</default>
+                    <label>IT/Other</label>
+                </value>
+                <value>
+                    <fullName>Laptop</fullName>
+                    <default>false</default>
+                    <label>Laptop</label>
+                </value>
+                <value>
+                    <fullName>Monitor</fullName>
+                    <default>false</default>
+                    <label>Monitor</label>
+                </value>
+                <value>
+                    <fullName>Operations/Other</fullName>
+                    <default>false</default>
+                    <label>Operations/Other</label>
+                </value>
+                <value>
+                    <fullName>PC</fullName>
+                    <default>false</default>
+                    <label>PC</label>
+                </value>
+                <value>
+                    <fullName>Printer</fullName>
+                    <default>false</default>
+                    <label>Printer</label>
+                </value>
+                <value>
+                    <fullName>Projector</fullName>
+                    <default>false</default>
+                    <label>Projector</label>
+                </value>
+                <value>
+                    <fullName>Scanner</fullName>
+                    <default>false</default>
+                    <label>Scanner</label>
+                </value>
+                <value>
+                    <fullName>Server</fullName>
+                    <default>false</default>
+                    <label>Server</label>
+                </value>
+                <value>
+                    <fullName>Smartphone</fullName>
+                    <default>false</default>
+                    <label>Smartphone</label>
+                </value>
+                <value>
+                    <fullName>Tablet</fullName>
+                    <default>false</default>
+                    <label>Tablet</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Assigned_to_Member_Employer__c</fullName>
+        <externalId>false</externalId>
+        <formula>Assigned_to_Member__r.Account.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Assigned to Member Employer</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Assigned_to_Member__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Assigned to Member</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>UHW Assets</relationshipLabel>
+        <relationshipName>UHW_Assets</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Computer_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Computer Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Corporation__c</fullName>
+        <defaultValue>&quot;SEIU-UHW&quot;</defaultValue>
+        <externalId>false</externalId>
+        <label>Corporation</label>
+        <length>64</length>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Department__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(isblank(User__c),   
+  if( ISPICKVAL(Assigned_to_Member__r.Account.Account_Group__c, &quot;KAISER&quot;), &quot;Kaiser&quot;,
+    if( ISPICKVAL(Assigned_to_Member__r.Account.Account_Group__c, &quot;HOSPITAL&quot;), &quot;Hospital&quot;,
+      if( ISPICKVAL(Assigned_to_Member__r.Account.Account_Group__c, &quot;HOSPITALS&quot;), &quot;Hospital&quot;, &quot;Unknown&quot;)
+    )
+  ),
+User__r.Department)</formula>
+        <label>Department</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Depreciated_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(or(isblank( Purchase_Date__c ), isblank(  Purchase_Cost__c ),  ((TODAY() - Purchase_Date__c) / 365.25) &gt;Depreciation_Life__c), 0,
+if( ISPICKVAL( Own_Lease__c , &quot;Own&quot;), ((Purchase_Cost__c -  Salvage_Value__c) * (1 - ((TODAY() - Purchase_Date__c) / 365.25) /  Depreciation_Life__c)) + Salvage_Value__c, 0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Depreciated Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Depreciation_Annual__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(or(isblank( Purchase_Date__c ), isblank( Purchase_Cost__c ), ((TODAY() - Purchase_Date__c) / 365.25) &gt;Depreciation_Life__c ), 0, 
+if( ISPICKVAL( Own_Lease__c , &quot;Own&quot;), 
+(Purchase_Cost__c - Salvage_Value__c) * (1 / Depreciation_Life__c),
+0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Depreciation Annual</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Depreciation_Life__c</fullName>
+        <defaultValue>5</defaultValue>
+        <description>Years over which to depreciate the asset.</description>
+        <externalId>false</externalId>
+        <label>Depreciation Life</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Disposition_Add_Info__c</fullName>
+        <description>additional info about disposition</description>
+        <externalId>false</externalId>
+        <label>Disposition Add Info</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Disposition__c</fullName>
+        <externalId>false</externalId>
+        <label>Disposition</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Assigned to User</fullName>
+                    <default>false</default>
+                    <label>Assigned to User</label>
+                </value>
+                <value>
+                    <fullName>Assigned to Office Location (See Add Info)</fullName>
+                    <default>false</default>
+                    <label>Assigned to Office Location (See Add Info)</label>
+                </value>
+                <value>
+                    <fullName>Assigned to Member</fullName>
+                    <default>false</default>
+                    <label>Assigned to Member</label>
+                </value>
+                <value>
+                    <fullName>Storage</fullName>
+                    <default>false</default>
+                    <label>Storage</label>
+                </value>
+                <value>
+                    <fullName>Lost</fullName>
+                    <default>false</default>
+                    <label>Lost</label>
+                </value>
+                <value>
+                    <fullName>Stolen</fullName>
+                    <default>false</default>
+                    <label>Stolen</label>
+                </value>
+                <value>
+                    <fullName>Recycled</fullName>
+                    <default>false</default>
+                    <label>Recycled</label>
+                </value>
+                <value>
+                    <fullName>Warranty Exchanged</fullName>
+                    <default>false</default>
+                    <label>Warranty Exchanged</label>
+                </value>
+                <value>
+                    <fullName>Lease Returned</fullName>
+                    <default>false</default>
+                    <label>Lease Returned</label>
+                </value>
+                <value>
+                    <fullName>Other (See Disposition Add Info)</fullName>
+                    <default>false</default>
+                    <label>Other (See Disposition Add Info)</label>
+                </value>
+                <value>
+                    <fullName>Unknown</fullName>
+                    <default>false</default>
+                    <label>Unknown</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Lease_End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Lease End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Make__c</fullName>
+        <externalId>false</externalId>
+        <label>Make</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>User__r.SOS_Manager_Name__c</formula>
+        <label>Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Model__c</fullName>
+        <externalId>false</externalId>
+        <label>Model</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Office_Assigned__c</fullName>
+        <externalId>false</externalId>
+        <label>Office Assigned</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Office_User__c</fullName>
+        <description>Which office is the User based out of?</description>
+        <externalId>false</externalId>
+        <formula>User__r.Location__c</formula>
+        <label>User Office</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Own_Lease__c</fullName>
+        <externalId>false</externalId>
+        <label>Own/Lease?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Own</fullName>
+                    <default>false</default>
+                    <label>Own</label>
+                </value>
+                <value>
+                    <fullName>Lease</fullName>
+                    <default>false</default>
+                    <label>Lease</label>
+                </value>
+                <value>
+                    <fullName>Borrowed</fullName>
+                    <default>false</default>
+                    <label>Borrowed</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Permit_Expiration_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Permit Expiration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Phone__c</fullName>
+        <description>If cell or hotspot, what is the phone number?</description>
+        <externalId>false</externalId>
+        <label>Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Provisioning_Team__c</fullName>
+        <externalId>false</externalId>
+        <label>Provisioning Team</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>IT</fullName>
+                    <default>false</default>
+                    <label>IT</label>
+                </value>
+                <value>
+                    <fullName>Operations</fullName>
+                    <default>false</default>
+                    <label>Operations</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Purchase_Cost__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Purchase Cost</label>
+        <precision>11</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Purchase_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Purchase Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Purchase_Order_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Purchase Order Id</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Return_Due_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>UHW_Campaign__r.End_Date__c</formula>
+        <label>Return Due Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Salvage_Value__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Salvage Value</label>
+        <precision>11</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>See_Attachments_on_Other_Asset__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>See Attachments on Other Asset</description>
+        <externalId>false</externalId>
+        <label>See Attachments on Other Asset</label>
+        <referenceTo>UHW_Asset__c</referenceTo>
+        <relationshipLabel>UHW Assets</relationshipLabel>
+        <relationshipName>UHW_Assets</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Serial_Number__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>false</externalId>
+        <label>Serial Number</label>
+        <length>64</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Campaign__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>UHW Campaign</label>
+        <referenceTo>UHW_Campaign__c</referenceTo>
+        <relationshipLabel>UHW Assets</relationshipLabel>
+        <relationshipName>UHW_Assets</relationshipName>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>User_Active__c</fullName>
+        <externalId>false</externalId>
+        <formula>User__r.IsActive</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>User Active?</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>UHW_Assets</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Vendor__c</fullName>
+        <externalId>false</externalId>
+        <label>Vendor</label>
+        <length>40</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>UHW Asset</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Asset_Type__c</columns>
+        <columns>Make__c</columns>
+        <columns>Model__c</columns>
+        <columns>Serial_Number__c</columns>
+        <columns>User__c</columns>
+        <columns>Department__c</columns>
+        <columns>Office_User__c</columns>
+        <columns>Disposition__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>UHW Asset Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>UHW Assets</pluralLabel>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Asset_Id__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Asset_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Make__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Office_Assigned__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>MCL Sort Entry</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>MCL Sort Entries</value>
+    </caseValues>
+    <fields>
+        <label><!-- Contact Field Name --></label>
+        <name>Contact_Field_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Header --></label>
+        <name>Header__c</name>
+    </fields>
+    <fields>
+        <label><!-- MCL Report --></label>
+        <name>MCL_Report__c</name>
+        <relationshipLabel><!-- MCL Sort Entries --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Page Break --></label>
+        <name>Page_Break__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sort Level --></label>
+        <name>Sort_Level__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sort Order --></label>
+        <name>Sort_Order__c</name>
+        <picklistValues>
+            <masterLabel>Ascending</masterLabel>
+            <translation><!-- Ascending --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Descending</masterLabel>
+            <translation><!-- Descending --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Survey Question --></label>
+        <name>Survey_Question__c</name>
+        <relationshipLabel><!-- MCL Sort Entries --></relationshipLabel>
+    </fields>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Field name or survey question must be specified. --></errorMessage>
+        <name>Field_name_or_question_required</name>
+    </validationRules>
+</CustomObjectTranslation>

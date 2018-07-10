@@ -1,0 +1,245 @@
+<apex:page sidebar="false" showheader="false">
+ 
+ <script src="/soap/ajax/35.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/35.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+</script>
+
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<div align="center">
+<br>&nbsp;</br>
+  <font size="+2"><div id="h1Title">Progress -</div></font>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+
+    var staffId = "";
+
+    var partition = 0;
+     
+    var emids = "{!$CurrentPage.parameters.emids}";
+    //alert("emids=" + emids);
+try{ 
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    //alert("start");
+  
+    var partString = "{!$CurrentPage.parameters.partition}";
+    //alert("partString=_" + partString + "_");
+    if (partString != null && partString != "") {
+          partition = parseInt(partString);
+    } 
+    if (emids == null || emids == "") {
+      //default to Kaiser West Los Angeles
+      emids = "1784,1780";
+    }
+    if (partition == 0) {
+      //remove old records
+      var removeArray = new Array();
+      var rcount = 0;
+      for (var rr = 0; rr < localStorage.length; rr++) {
+        if (localStorage.key(rr).trim().indexOf("mo_") == 0 && localStorage.key(rr).trim() != "mo_enter_survey_qselect") {
+            removeArray[rcount]=localStorage.key(rr);
+            rcount++;
+        }
+      }
+      for (var rq = 0; rq < removeArray.length; rq++) {
+        localStorage.removeItem(removeArray[rq]);
+      }
+      
+      
+      
+      localStorage.setItem("mo_sync_emids", emids);
+      localStorage.setItem("mo_sync_emnames", "");
+      localStorage.setItem("mo_sync_emsfids", ""); 
+      localStorage.setItem("mo_sync_shifts_code", "");
+      localStorage.setItem("mo_last_sync", "" + (new Date()).getTime());
+      
+      var user = sforce.connection.getUserInfo();
+      var userName = user.userName;
+      var query = "SELECT ID, Name, Staff_Contact_Id__c, Title from User WHERE User.username=\'" + userName + "\' and Staff_Contact_Id__c != null";
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records');       
+
+      if (records1.length > 0) {
+        staffId = records1[0].Staff_Contact_Id__c;
+      }
+      
+      
+      
+      
+    }
+
+    //alert("partition=_" + partition + "_");
+  
+    var emNameList = new Array();
+
+    if (partition < 10) {
+        if (partition > 0) {
+          document.getElementById("h1Title").innerHTML = "Progress - " + partition + "0%";
+        } else {
+          document.getElementById("h1Title").innerHTML = "Progress - 0%";
+          var moPrefs = new Object();
+          var query = "Select Id, Name, MO_Prefs__c FROM User where Id='{!$User.Id}'";
+          var records = sforce.connection.query(query); 
+          var records1 = records.getArray('records'); 
+          for(var i=0;i<records1.length;i++){ 
+            if (i == 0) {
+              if (records1[i]["MO_Prefs__c"] != null && records1[i]["MO_Prefs__c"] != "" ) {
+                moPrefs = JSON.parse(records1[i]["MO_Prefs__c"]);
+              }
+            }
+          }
+          var camIds = moPrefs["mo_cams"];
+          localStorage.setItem("mo_sync_cams", JSON.stringify(moPrefs["mo_cams"]));
+          var query = "select Id, Name, Survey_Code__c, Linked_to_Recruits__c   from Survey_Question__c where (end_date__c = null OR end_date__c >= TODAY) AND (";
+          for (var g = 0; g < camIds.length; g++) {
+            if (g > 0) {
+              query += " OR ";
+            }
+            query += "UHW_Campaign__c=\'" + camIds[g] + "\'";
+          }
+          query += ")";
+          console.log(query);
+          var records = sforce.connection.query(query); 
+          var records1 = records.getArray('records'); 
+          //alert("survey question records(" + partition + ")=" + records1.length);
+          var questions = "";
+          var qids = "";
+          var qcodes = "";
+          var j = 0;
+          for(var i=0;i<records1.length;i++){ 
+            if (records1[i].Linked_to_Recruits__c  != null && (records1[i].Linked_to_Recruits__c  == true || records1[i].Linked_to_Recruits__c  == "true")) { 
+              localStorage.setItem("mo_sync_shifts_code", records1[i].Survey_Code__c);
+            } else {
+              if (j > 0) {
+                questions += ",";
+                qids += ",";
+                qcodes += ",";              
+              } else {
+                //alert(records1[i].toString());
+              }
+              qids += records1[i].Id;
+              qcodes += records1[i].Survey_Code__c;            
+              questions += records1[i]["Name"].replace(",", " ").replace(",", " ").replace("  ", " ").replace("  ", " ");
+              j++;
+            }
+          }    
+          localStorage.setItem("mo_sync_qids", qids);
+          localStorage.setItem("mo_sync_qcodes", qcodes);          
+          localStorage.setItem("mo_sync_questions", questions);
+        }
+        //
+        //do not change the order of this query without chnaging dgutils.js functions compressContact() and uncompressContact()
+        //
+        var query = "Select Id, LastName, FirstName, MiddleName, MailingStreet, MailingCity, MailingState, MailingPostalCode, MailingLatitude, MailingLongitude, Phone, MobilePhone, HomePhone, Email, Account.Name, Account.Id, Title, Department, AssistantName, Cope_Amount__c, MemberID__c, In_Current_BU__c, County__c, EBoard__c, Last_Dues_Paid_Date__c, Shift__c, FID__c, Employee_ID__c, Age__c, Worksite__c, BU__c, COPE_Pledge__c, Job_Paid_Status__c, Member_Status__c, Account.Account_Group__c, Owner_Name__c  FROM Contact ";        
+        query = query + " where ((In_Current_BU__c = true OR (In_Current_BU_Override__c  != null AND In_Current_BU_Override__c < NEXT_N_DAYS:180)) and (";
+        var emArray = emids.split(",");
+        for (var emdex = 0; emdex < emArray.length; emdex++) {
+          if (emdex > 0) {
+            query = query + " OR ";
+          }
+          query = query + " account.employer_id__c='" + emArray[emdex] + "' ";         
+        }
+        query = query + ") and FID__c like \'%" + partition + "\' )";
+        if (partition == 0) {
+          query += " OR Id=\'" + staffId + "\'";
+        }
+        
+        
+        //alert("query(" + partition + ")=" + query);
+        console.log(query);
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records'); 
+        //alert("records(" + partition + ")=" + records1.length);
+        for(var i=0;i<records1.length;i++){ 
+          if (i == 0) {
+            //alert(records1[i]);
+          }
+          if (records1[i].Department == null || records1[i].Department == "" || records1[i].Department == "null") {
+            records1[i].Department = "Unknown";
+            if (records1[i].Account.Account_Group__c != null && records1[i].Account.Account_Group__c.toLowerCase().indexOf("community") >= 0) {
+              //records1[i].Department = records1[i].Owner_Name__c;
+              if (records1[i].MailingCity != null && records1[i].MailingPostalCode != null && records1[i].MailingPostalCode.length >= 5) {
+                records1[i].Department = records1[i].MailingCity + " (" + records1[i].MailingPostalCode.substring(0,5) + ")";
+              } else {
+                records1[i].Department = "Unknown Location";
+              }
+            }
+          }
+          if (records1[i].Title == null || records1[i].Title == "" || records1[i].Title == "null") {
+            records1[i].Title= "Unknown";
+          }
+          if (records1[i].HomePhone == null || records1[i].HomePhone == "" || records1[i].HomePhone == "null") {
+            records1[i].HomePhone = records1[i].Phone;
+          }
+          
+          var crecord = records1[i];
+          var compressedContactArray = compressContact(crecord);
+          
+          localStorage.setItem("mo_fid_" + records1[i].FID__c, JSON.stringify(compressedContactArray));
+          
+          var contactArray = compressContact(records1[i]);
+          var contactObject = uncompressContact(records1[i]);
+          
+          var emNames = localStorage.getItem("mo_sync_emnames");
+          var emSfids = localStorage.getItem("mo_sync_emsfids");          
+          var emName = records1[i].Account.Name.replace(",", " ").replace("  ", " ");
+          var emSfid = records1[i].Account.Id;
+          if (i == 0) {
+            //alert("emname=" + emName);
+            //alert("emsfid=" + emSfid );            
+          }
+          if (emNames.indexOf(emName + "," ) < 0 && emName.toLowerCase().indexOf("seiu") < 0 && records1[i].Id != staffId) {
+            emNames += emName + ",";
+            emSfids += emSfid + ",";            
+            localStorage.setItem("mo_sync_emnames", emNames);
+            localStorage.setItem("mo_sync_emsfids", emSfids );            
+          }
+          
+        }
+        //window.location.href = location.pathname + "?partition=" + (partition + 1) + "&emids=" + emids;
+        navigateTo("MO_Sync_Page?partition=" + (partition + 1) + "&emids=" + emids);
+    } else {
+      var rcount = 0;
+      for (var rr = 0; rr < localStorage.length; rr++) {
+        if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+            rcount++;
+        }
+      }
+      localStorage.setItem("mo_sync_bu", rcount);
+      //alert("done = " + rcount);
+      document.getElementById("h1Title").innerHTML = "Done - " + rcount + " records";
+      navigateTo("MO_Main_Page");
+    }
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+
+
+</script>
+</div>
+</apex:page>

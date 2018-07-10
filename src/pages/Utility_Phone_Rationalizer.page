@@ -1,0 +1,209 @@
+<apex:page sidebar="false" >
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+ <script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+
+<script>
+
+  var DIGITS = "0123456789";
+
+  function formatPhone(pPhone) {
+      if (pPhone== null || pPhone== "" || pPhone== "null") {
+        return "";
+      } else {
+        var cleansedPhone ="";
+        for (var g = 0; g < pPhone.length; g++) {
+          if (DIGITS.indexOf(pPhone.substring(g, g+1)) >= 0) {
+            cleansedPhone += pPhone.substring(g, g+1);
+          }
+        }
+        if (cleansedPhone.length == 10) {
+            cleansedPhone = "(" + cleansedPhone.substring(0, 3) + ") " + cleansedPhone.substring(3, 6) + "-" + cleansedPhone.substring(6,10);
+        }         
+        return cleansedPhone;
+      }  
+  }
+
+  function rationalize() {
+    //alert("Rationalizing!");
+    var resultsWriter = "<table cellpadding=\"7\" width=\"100%\">\n";
+    resultsWriter += "<tr valign=\"bottom\">\n";
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"12%\" color=\"white\">Contact Id</font></td>\n";
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"20%\" color=\"white\">Name</font></td>\n";    
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"20%\" color=\"white\">Employer</font></td>\n";        
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"8%\" color=\"white\">Phone</font></td>\n";
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"8%\" color=\"white\">Home Phone</font></td>\n";
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"8%\" color=\"white\">Mobile Phone</font></td>\n";
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"8%\" color=\"white\">Other Phone 1</font></td>\n";
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"8%\" color=\"white\">Other Phone 2</font></td>\n";
+    resultsWriter += "<td bgcolor=\"#481C60\" align=\"center\"><font width=\"8%\" color=\"white\">Other Phone 3</font></td>\n";                        
+    resultsWriter += "</tr>\n"; 
+
+    sforce.connection.sessionId = "{!$Api.Session_ID}";    
+    var lineArray = document.getElementById("inputText").value.split("\n");
+    for (var i = 0; i < lineArray.length; i++) {
+      if (lineArray[i].trim().length > 15) {
+        var dataArray = lineArray[i].trim().split(",");
+        if (lineArray[i].trim().indexOf("\t") > 0) {
+          dataArray = lineArray[i].trim().split("\t");
+        }
+        if (dataArray.length > 7) {
+          alert("Phone Rationalizer only supports up to 6 phone numbers. " + lineArray[i]);
+        }
+        var query = "SELECT Id, Name, Account.Name, Phone, HomePhone, MobilePhone, OtherPhone FROM Contact where Id=\'" + dataArray[0].trim() + "\' ";
+        //alert(query);
+        var records = sforce.connection.query(query); 
+        var records1 = records.getArray('records');
+        resultsWriter += "<tr valign=\"top\">\n";        
+        if (records1.length == 0) {
+          resultsWriter += "<td align=\"center\">Not Found " + dataArray[0] + "</td>\n";
+          resultsWriter += "<td> </td>\n";
+          resultsWriter += "<td> </td>\n";
+          resultsWriter += "<td> </td>\n";
+          resultsWriter += "<td> </td>\n";
+          resultsWriter += "<td> </td>\n";
+          resultsWriter += "<td> </td>\n";
+          resultsWriter += "<td> </td>\n";
+          resultsWriter += "<td> </td>\n";
+        } else {
+          var allPhones = formatPhone(records1[0].Phone) + formatPhone(records1[0].HomePhone) + formatPhone(records1[0].MobilePhone) + formatPhone(records1[0].OtherPhone); 
+          var phone =  formatPhone(records1[0].Phone);
+          var homePhone =  formatPhone(records1[0].HomePhone);
+          var mobilePhone =  formatPhone(records1[0].MobilePhone);
+          var otherPhone =  formatPhone(records1[0].OtherPhone);
+          var otherPhone2 = "";
+          var otherPhone3 = "";
+          
+          resultsWriter += "<td align=\"center\">" + dataArray[0] + "</td>\n";          
+          resultsWriter += "<td align=\"left\">" + records1[0].Name + "</td>\n";                    
+          resultsWriter += "<td align=\"left\">" + records1[0].Account.Name + "</td>\n";                              
+          
+          var phone1 = formatPhone(dataArray[1]);          
+          if (allPhones.indexOf(phone1) < 0) {
+            if (records1[0].HomePhone == null || records1[0].HomePhone.trim() == "") {
+              homePhone = phone1;
+            } else if (records1[0].Phone == null || records1[0].Phone.trim() == "") {
+              phone = phone1;
+            } else if (records1[0].OtherPhone == null || records1[0].OtherPhone.trim() == "") {
+              otherPhone = phone1;
+            } else {
+              otherPhone2 = phone2;
+            }
+          }
+          var phone2 = formatPhone(dataArray[2]);          
+          if (allPhones.indexOf(phone2) < 0) {
+            if (records1[0].MobilePhone == null || records1[0].MobilePhone.trim() == "") {
+              homePhone = phone2;
+            } else if (phone == null || phone  == "") {
+              phone = phone2;
+            } else if (otherPhone == null || otherPhone.trim() == "") {
+              otherPhone = phone2;
+            } else if (otherPhone2 == null || otherPhone2.trim() == "") {
+              otherPhone2 = phone2;
+            } else {
+              otherPhone3 = phone2;
+            }
+          }          
+          var phone3 = formatPhone(dataArray[3]);          
+          if (allPhones.indexOf(phone3) < 0) {
+            if (otherPhone == null || otherPhone.trim() == "") {
+              otherPhone = phone3;
+            } else if (otherPhone2 == null || otherPhone2.trim() == "") {
+              otherPhone2 = phone3;
+            } else {
+              if (otherPhone3.trim().length > 0) {
+                otherPhone3 += ",";
+              }
+              otherPhone3 += phone3;
+            }
+          }          
+          var phone4 = formatPhone(dataArray[4]);          
+          if (allPhones.indexOf(phone4) < 0) {
+            if (otherPhone == null || otherPhone.trim() == "") {
+              otherPhone = phone4;
+            } else if (otherPhone2 == null || otherPhone2.trim() == "") {
+              otherPhone2 = phone4;
+            } else {
+              if (otherPhone3.trim().length > 0) {
+                otherPhone3 += ",";
+              }
+              otherPhone3 += phone4;
+            }
+          } 
+          var phone5 = formatPhone(dataArray[5]);          
+          if (allPhones.indexOf(phone5) < 0) {
+            if (otherPhone == null || otherPhone.trim() == "") {
+              otherPhone = phone5;
+            } else if (otherPhone2 == null || otherPhone2.trim() == "") {
+              otherPhone2 = phone5;
+            } else {
+              if (otherPhone3.trim().length > 0) {
+                otherPhone3 += ",";
+              }
+              otherPhone3 += phone5;
+            }
+          } 
+          var phone6 = formatPhone(dataArray[6]);          
+          if (allPhones.indexOf(phone6) < 0) {
+            if (otherPhone == null || otherPhone.trim() == "") {
+              otherPhone = phone6;
+            } else if (otherPhone2 == null || otherPhone2.trim() == "") {
+              otherPhone2 = phone6;
+            } else {
+              if (otherPhone3.trim().length > 0) {
+                otherPhone3 += ",";
+              }
+              otherPhone3 += phone6;
+            }
+          }                                         
+        }
+        resultsWriter += "<td align=\"center\">" + phone + "</td>\n";        
+        resultsWriter += "<td align=\"center\">" + homePhone + "</td>\n";        
+        resultsWriter += "<td align=\"center\">" + mobilePhone + "</td>\n";        
+        resultsWriter += "<td align=\"center\">" + otherPhone  + "</td>\n";        
+        resultsWriter += "<td align=\"center\">" + otherPhone2  + "</td>\n";        
+        resultsWriter += "<td align=\"center\">" + otherPhone3 + "</td>\n";                                                
+        resultsWriter += "</tr>\n";
+      }
+    }
+    resultsWriter += "</table>";
+    document.getElementById("resultsDiv").innerHTML = resultsWriter;
+    return false;
+  }
+
+</script>
+
+<div align="center">
+  <font size="+2" color="#481C60">Phone Rationalizer</font>
+</div>
+    
+<br>&nbsp;</br>
+    
+<table width="100%">
+<tr valign="top">
+  
+  <td  width="50%" align="center">
+    <br><font size="+1">Input</font></br>
+    <br>&nbsp;</br>    
+    Add a Salesforce Contact Id to each line followed by home phone, cell phone, other phone 1, other phone 2, other phone 3.  Comma or tab separated.
+    <br>&nbsp;</br>
+    <input type="button" value="Rationalize" onclick="rationalize()"></input>
+    <br>&nbsp;</br>
+    <textarea id="inputText" rows="25" cols="90" wrap="off">
+003i000000n8QeF,5109326750,5105551234,5105559876,5105554321,(510) 555-4444,510-555-7777
+003i000000n8QeL,8185551234
+    </textarea>
+  </td>
+  
+  <td width="50%" align="center">
+    <br><font size="+1">Results</font></br>
+    <br>&nbsp;</br>
+    <div id="resultsDiv">
+    Please add data to Input and then click &quot;Rationalize&quot;.
+    </div>    
+  </td>
+</tr>
+</table>
+</apex:page>

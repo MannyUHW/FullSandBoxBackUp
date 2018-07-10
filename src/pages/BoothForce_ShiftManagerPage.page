@@ -1,0 +1,64 @@
+<apex:page controller="BoothForce_ShiftManagerController" showHeader="false">
+
+<head>
+<link type="text/css" rel="stylesheet" href="{!$Page.BoothForce_css}" />
+</head>
+
+<body>
+<div id="shiftManagerView">
+  <apex:form id="AREAS">
+    <span>Area</span>
+    <apex:selectList value="{!area}" size="1">
+      <apex:selectOptions value="{!areas}"/>
+      <apex:actionSupport event="onchange" action="{!areaSelected}" rerender="ZONES, SHIFTTIMES, TABLE"/>
+    </apex:selectList>
+  </apex:form>
+  <apex:form id="ZONES">
+    <span>Zone</span>
+    <apex:selectList value="{!zone}" size="1">
+      <apex:selectOptions value="{!zones}"/>
+      <apex:actionSupport event="onchange" action="{!zoneSelected}" rerender="SHIFTTIMES, TABLE"/>
+    </apex:selectList>
+  </apex:form>
+  <apex:form id="SHIFTTIMES">
+    <span>Shift Time</span>
+    <apex:selectList value="{!shiftTime}" size="1">
+      <apex:selectOptions value="{!shiftTimes}"/>
+      <apex:actionSupport event="onchange" action="{!shiftTimeSelected}" rerender="TABLE"/>
+    </apex:selectList>
+  </apex:form>
+  
+  
+  <apex:outputPanel id="TABLE" layout="block">
+  <apex:outputPanel rendered="{!showTable}">
+  <div id="stafferTable">
+    <div><span>Area</span>{!areaName}</div>
+    <div><span>Zone</span>{!zone}</div>
+    <div><span>Shift Time</span>{!niceDate}</div>
+    <table cellspacing="0">
+      <tr>
+        <th>Booth</th>
+        <th>Assigned To</th>
+        <th>Email</th>
+        <th>Work</th>
+        <th>Cell</th>
+        <th>Manager</th>
+      </tr>
+      <apex:repeat value="{!staffingList}" var="sa" id="TABLEREPEAT">
+        <tr>
+          <td>{!sa.Booth__r.Name}</td>
+          <td>{!sa.Assigned__r.Name}</td>
+          <td><a href="mailto:{!sa.Assigned__r.Email}">{!sa.Assigned__r.Email}</a></td>
+          <td>{!sa.Assigned__r.Phone}</td>
+          <td>{!sa.Assigned__r.MobilePhone}</td>
+          <td>{!sa.Assigned__r.Manager.Name}</td>
+        </tr>
+      </apex:repeat>
+    </table>
+  </div>
+  </apex:outputPanel>
+  </apex:outputPanel>
+  
+</div>
+</body>
+</apex:page>

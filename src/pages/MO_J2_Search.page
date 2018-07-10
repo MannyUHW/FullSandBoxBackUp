@@ -1,0 +1,76 @@
+<apex:page sidebar="false" showHeader="false"  standardStylesheets="false">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"></meta>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.June2ndBusList)}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+
+
+<div align="center">
+
+  <font size="+2"><div id="titleDiv"></div></font>
+<br>&nbsp;</br>
+
+<input size="40" id="searchterms"></input>
+  <br>&nbsp;</br>
+
+  <button class="btn btn-primary" type="submit" onclick="search();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_small.png')}"></img>
+  &nbsp;&nbsp;
+  Search
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+
+
+
+<script language="JavaScript">
+
+var paramBusLocId = "{!$CurrentPage.parameters.busLocId}";
+var busLocId = 1;
+if (paramBusLocId == null || paramBusLocId == "" || paramBusLocId == "null") {
+  busLocId = 1;
+} else {
+  busLocId = parseInt(paramBusLocId);
+}
+
+
+function search() {
+  var terms = document.getElementById("searchterms").value.toLowerCase().trim();
+  if (terms == "") {
+    return;
+  }
+  window.location="MO_J2_Bus_Loc_List?busLocId=" + busLocId  + "&search=" + encodeURIComponent(terms);
+}
+
+
+
+var busLocation = numberBusMap[busLocId];
+document.getElementById("titleDiv").innerHTML = "Search Bus Loc "  + busLocation[0] + ". " + toProperCase(busLocation[1]);
+
+
+
+document.getElementById("searchterms").addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+        search();
+    }
+});
+  
+
+</script>
+
+<br>&nbsp;</br>
+
+<a href="javascript:window.history.back();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+
+<br>&nbsp;</br>
+
+<br>&nbsp;</br>
+        &copy; 2015 SEIU-UHW. All rights reserved.
+
+</div>
+
+</apex:page>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Census Tract</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Census Tracts</value>
+    </caseValues>
+    <fields>
+        <label><!-- African American Count --></label>
+        <name>African_American_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- African American Pct --></label>
+        <name>African_American_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- All Home Care Mbrs --></label>
+        <name>All_Home_Care_Mbrs__c</name>
+    </fields>
+    <fields>
+        <label><!-- Asian Pacific Count --></label>
+        <name>Asian_Pacific_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Asian Pacific Pct --></label>
+        <name>Asian_Pacific_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- County --></label>
+        <name>County__c</name>
+    </fields>
+    <fields>
+        <label><!-- Enrll Ldrs LT 2 Miles --></label>
+        <name>Enrll_Ldrs_LT_2_Miles__c</name>
+    </fields>
+    <fields>
+        <label><!-- Enrll Ldrs LT 5 Miles --></label>
+        <name>Enrll_Ldrs_LT_5_Miles__c</name>
+    </fields>
+    <fields>
+        <label><!-- Enrll Ldrs in Tract --></label>
+        <name>Enrll_Ldrs_in_Tract__c</name>
+    </fields>
+    <fields>
+        <label><!-- Enrollment Region --></label>
+        <name>Enrollment_Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Enrollment Targeting Score --></label>
+        <name>Enrollment_Targeting_Score__c</name>
+    </fields>
+    <fields>
+        <label><!-- Family Income LT 30K Count --></label>
+        <name>Family_Income_LT_30K_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Family Income LT 30K Pct --></label>
+        <name>Family_Income_LT_30K_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Family Income LT 48K Count --></label>
+        <name>Family_Income_LT_48K_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Family Income LT 48K Pct --></label>
+        <name>Family_Income_LT_48K_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Geolocation --></label>
+        <name>Geolocation__c</name>
+    </fields>
+    <fields>
+        <label><!-- Google Maps URL --></label>
+        <name>Google_Maps_URL__c</name>
+    </fields>
+    <fields>
+        <label><!-- Home Care Owner --></label>
+        <name>Home_Care_Owner__c</name>
+        <relationshipLabel><!-- Census Tracts --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Home Care Region --></label>
+        <name>Home_Care_Region__c</name>
+    </fields>
+    <fields>
+        <label><!-- Latino Count --></label>
+        <name>Latino_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Latino Pct --></label>
+        <name>Latino_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nearby Members --></label>
+        <name>Nearby_Members__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nearby Tracts and Scores --></label>
+        <name>Nearby_Tracts_and_Scores__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nearest City --></label>
+        <name>Nearest_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nearest Zip --></label>
+        <name>Nearest_Zip__c</name>
+    </fields>
+    <fields>
+        <label><!-- Numeric Name --></label>
+        <name>Numeric_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Static Map --></label>
+        <name>Static_Map__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Population --></label>
+        <name>Total_Population__c</name>
+    </fields>
+    <fields>
+        <label><!-- Trgt Short Hours --></label>
+        <name>Trgt_Short_Hours__c</name>
+    </fields>
+    <fields>
+        <label><!-- Trgt Chinese --></label>
+        <name>Trgt_Unsgnd_Home_Care_Chn_Cnt__c</name>
+    </fields>
+    <fields>
+        <label><!-- Trgt English --></label>
+        <name>Trgt_Unsgnd_Home_Care_Eng_Cnt__c</name>
+    </fields>
+    <fields>
+        <label><!-- Trgt Spanish --></label>
+        <name>Trgt_Unsgnd_Home_Care_Esp_Cnt__c</name>
+    </fields>
+    <fields>
+        <label><!-- Trgt Hmong --></label>
+        <name>Trgt_Unsgnd_Home_Care_Hmg_Cnt__c</name>
+    </fields>
+    <fields>
+        <label><!-- Trgt Russian --></label>
+        <name>Trgt_Unsgnd_Home_Care_Rus_Cnt__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Mbrs LT 2 Miles --></label>
+        <name>UHW_Mbrs_LT_2_Miles__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Mbrs LT 5 Miles --></label>
+        <name>UHW_Mbrs_LT_5_Miles__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Members in Tract --></label>
+        <name>UHW_Members_in_Tract__c</name>
+    </fields>
+    <fields>
+        <label><!-- Uninsured Count --></label>
+        <name>Uninsured_Count__c</name>
+    </fields>
+    <fields>
+        <label><!-- Uninsured Pct --></label>
+        <name>Uninsured_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Trgt Unsigned Home Care Mbrs --></label>
+        <name>Unsigned_Home_Care_Mbrs__c</name>
+    </fields>
+    <layouts>
+        <layout>Census Tract Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Demographic Information --></label>
+            <section>Demographic Information</section>
+        </sections>
+        <sections>
+            <label><!-- Geographic Information --></label>
+            <section>Geographic Information</section>
+        </sections>
+        <sections>
+            <label><!-- Healthcare Enrollment --></label>
+            <section>Healthcare Enrollment</section>
+        </sections>
+        <sections>
+            <label><!-- Home Care --></label>
+            <section>Home Care</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

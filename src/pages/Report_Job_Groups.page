@@ -1,0 +1,81 @@
+<apex:page sidebar="false" showHeader="false">
+<div align="center">
+
+<font size="+2">Job Group Report by Division, Employer</font>
+
+<script language="JavaScript">
+document.write("<div align=\"center\"><i>Generated " + (new Date()) + "</i></div>");
+</script>
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<br>&nbsp;</br>
+<div id="warningDiv"></div>
+<br>&nbsp;</br>
+<script language="JavaScript">
+
+ 
+ try{ 
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var query = "select Id, Name, Account_Group__c from Account where (Account_Group__c = \'New Organizing\' OR Account_Group__c like '\Hosp%\' OR Account_Group__c = \'Kaiser\' ) AND Employer_ID__c != null order by Account_Group__c, Name ";
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records'); 
+    var emMap = new Array();
+    var emCount = 0;
+    for(var i=0;i<records0.length;i++){ 
+      var emName = records0[i].Name;
+      emMap[emName] = new Object();
+      emMap[emName].Division = records0[i].Account_Group__c ;
+      emMap[emName].Id = records0[i].Id;
+      emCount++;
+    }
+    document.write("<table cellpadding=\"7\">\n");
+    document.write("<tr valign=\"bottom\">\n");        
+    document.write("<td bgcolor=\"#481C60\" align=\"center\"><font width=\"25%\" color=\"white\">Division</font></td>\n");
+    document.write("<td bgcolor=\"#481C60\" align=\"center\"><font width=\"25%\" color=\"white\">Employer</font></td>\n");
+    document.write("<td bgcolor=\"#481C60\" align=\"center\"><font width=\"25%\" color=\"white\">Job Class</font></td>\n");
+    document.write("<td bgcolor=\"#481C60\" align=\"center\"><font width=\"25%\" color=\"white\">Job Group</font></td>\n");            
+    document.write("</tr>\n");       
+    
+    var jCount = 0;
+    var iCount = 0; 
+    for (var emName in emMap) {
+      var query = "select Title, Job_Group__c from Contact where Account.Name = \'" + emName + "\' group by Title, Job_Group__c order by Job_Group__c";
+      var records = sforce.connection.query(query); 
+      var records0 = records.getArray('records'); 
+
+      for(var j=0;j<records0.length;j++){ 
+        if (records0[j].Title != null && records0[j].Title != "") {
+          document.write("<tr valign=\"top\">");
+          document.write("<td align=\"center\">" + emMap[emName].Division + "</td>");
+          document.write("<td align=\"center\">" + emName + "</td>");        
+          document.write("<td align=\"center\">" + records0[j].Title + "</td>");
+          document.write("<td align=\"center\">" + records0[j].Job_Group__c + "</td>");
+          document.write("</tr>");  
+        }
+        jCount++;               
+      }
+      iCount++;
+      document.getElementById("warningDiv").innerHTML = "Employer and Job Class Count = " +    jCount + "<br/>Complete = " + (100 * iCount / emCount).toFixed(1) +"%";       
+    }
+    document.write("</table>");
+
+ document.getElementById("warningDiv").innerHTML = "Employer and Job Class Count = " +    jCount + "<br/>Complete = 100%";       
+            
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n"); 
+}       
+
+</script>
+<br>&nbsp;</br>
+
+<div id="dupeDiv"></div>
+
+<br>&nbsp;</br>
+
+<i>CONFIDENTIAL</i></div>
+
+
+</apex:page>

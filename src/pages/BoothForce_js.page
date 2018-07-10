@@ -1,0 +1,644 @@
+<apex:page cache="false" showHeader="false" contentType="text/javascript">
+
+  jQuery(document).ready( function($){
+  
+      /*$('#myBoothsContainer').ajaxStart(function() {
+        $('.ajaxWho > div').text('Triggered ajaxStart handler.');
+      });
+      */
+    /** BoothForce Main Page **/
+    function loadMyBooths (){
+    
+      $('#myBoothsContainer').css('opacity', '.3');
+    
+      $('#myBoothsContainer').load(
+      
+        '{!$Page.BoothForce_MyBooths} #myBooths',  
+        function() {           
+          $('#myBoothsContainer').css('opacity', '1');
+        }
+      );
+    }
+
+    
+    
+    /** BoothForce Admin **/
+    
+    $('a#buttonDemandMatrix').click( function(){
+      $('span#magic').click();
+    });
+    
+    
+    /** Nav - BoothForce Admin **/
+    
+    $('span#magic').click( function(){
+      $('#boothForceGuide').hide();
+      $('#setupPage').show();
+      $(this).addClass('active');
+      $('span#instructions').removeClass('active');
+    });
+    
+    $('span#instructions').click( function() {
+      $('#setupPage').hide();
+      $('#boothForceGuide').show();
+      $(this).addClass('active');
+      $('span#magic').removeClass('active');
+    });
+    
+    
+    /** Nav - BoothForce Users **/
+    
+    $('span#myBooths').click( function(){
+      
+      $('#myBoothsContainer').show();
+      $('#managerViewContainer').hide();
+      $('#boothStaffingContainer').hide();
+      $('#shiftManagerContainer').hide();
+      
+      $('#nav span').each( function(){
+        $(this).removeClass('active');
+      });
+      $(this).addClass('active');
+      
+      loadMyBooths();
+    });
+    
+    $('span#managerView').click( function(){
+      $('#myBoothsContainer').hide();
+      $('#managerViewContainer').show();
+      $('#boothStaffingContainer').hide();
+      $('#shiftManagerContainer').hide();
+      
+      $('#nav span').each( function(){
+        $(this).removeClass('active');
+      });
+      $(this).addClass('active');
+      
+      loadManagerView();
+    });
+    
+    $('span#pickBooths').click( function() {
+      $('#myBoothsContainer').hide();
+      $('#managerViewContainer').hide();
+      $('#boothStaffingContainer').show();
+      $('#shiftManagerContainer').hide();
+      
+      $('#nav span').each( function(){
+        $(this).removeClass('active');
+      });
+      $(this).addClass('active');
+      
+      $('[id*=signUpAjax]:visible').each( function() {
+        getBoothSignup($(this).closest('.boothStaffing').attr('data-boothid'), 'false');
+      });
+    });
+    
+    
+    $('span#shiftManagerView').click( function(){
+      $('#myBoothsContainer').hide();
+      $('#managerViewContainer').hide();
+      $('#boothStaffingContainer').hide();
+      $('#shiftManagerContainer').show();
+      
+      $('#nav span').each( function(){
+        $(this).removeClass('active');
+      });
+      $(this).addClass('active');
+      
+    });  
+
+    /** Zone toggle view **/
+    
+    $('h4.zoneName').toggle(function(){
+      
+      $(this).parent().children('div.zoneDetail').slideDown(200);
+      getZoneMatrix( $(this).parent().attr("data-zoneid"));
+      
+      $(this).attr('data-view','true');
+      
+      //webkit force redraw $('.boothTitle').css('webkitTransform', 'scale(1)'); 
+    }, function(){
+      $(this).attr('data-view','false');
+      $(this).parent().children('div.zoneDetail').slideUp(200);
+    });
+      
+      /** setupShifts **/
+      
+      /*
+      var setupDays = [];
+    
+    $("#shiftTimes div").each( function(index){
+       setupDays[index] = ($(this).attr("data-setupday"));
+    });
+    var setupDaysUnique = $.unique(setupDays);
+      */
+
+
+    
+
+      
+    /** myBooths **/
+      
+      /*
+    var days = [];
+    $(".myShift").each( function(index){
+       days[index] = ($(this).attr("data-day"));
+    });
+    var daysUnique = $.unique(days);
+      
+      $.each(daysUnique, function(i, dateVal) {
+      $('div[data-day="' + dateVal + '"]').wrapAll('<div class="day' + dateVal + '" />');
+      $('.day' + dateVal).prepend('<h2>'+ $.datepicker.formatDate( 'DD mm/dd', $.datepicker.parseDate("yy-dd-mm", dateVal)) + '</h2>');
+    });
+    
+    */
+    
+    
+    /** Manager View **/
+    
+    var users = [];
+    var usersId = [];
+    var days2 = [];
+    $(".staffedBooth").each( function(index){
+      users[index] = ($(this).attr("data-user"));
+        usersId[index] = ($(this).attr("data-userid"));
+        days2[index] = ($(this).attr("data-day"))
+    });
+    var usersUnique = $.unique(users);
+    var userIdUnique = $.unique(usersId);
+    var days2Unique = $.unique(days2);
+    
+    
+    $.each(days2Unique, function(i, dayVal) {
+      $('div[data-day="' + dayVal + '"]').wrapAll('<div class="dayBlock' + dayVal +'" />');
+      $('.dayBlock' + dayVal).prepend('<h2>'+ $.datepicker.formatDate( 'DD mm/dd', $.datepicker.parseDate("yy-dd-mm", dayVal)) + '</h2>');
+      
+      
+      $('.staffedBooth[data-userid="' + usersIdUnique[i] + '"]').each( function(index){
+          days2[index] = ($(this).attr("data-day"));
+      });
+      
+      
+      $.each(usersIDUnique2, function(i, userVal) {
+        $('div[data-day="' + dayVal + '"][data-userid="' + usersIdUnique2[i] + '"]').wrapAll('<div class="day' + dateVal + '" />');
+        $('.userBlock' + usersIdUnique[i] + ' .day' + dateVal).prepend('<h2>'+ $.datepicker.formatDate( 'DD mm/dd', $.datepicker.parseDate("yy-dd-mm", dateVal)) + '</h2>');
+      });
+    });
+      
+    /** Booth Staffing **/
+    
+    
+    /*
+    var boothZone = [];
+    var boothZoneName = [];
+    $(".boothStaffing").each( function(index){
+       boothZone[index] = ($(this).attr("data-zoneid"));
+       boothZoneName[index] = ($(this).attr("data-zonename"));
+    });
+    
+    var boothZoneUnique = $.unique(boothZone);
+    var boothZoneNameUnique = $.unique(boothZoneName);
+      
+    $.each(boothZoneUnique, function(i, boothZoneVal) {
+      $('div[data-zoneid="' + boothZoneVal + '"]').wrapAll('<div class="zone' + boothZoneVal + '" />');
+      $('.zone' + boothZoneVal).before('<h2>'+ boothZoneNameUnique[i] + '</h2>');
+    });
+    */
+    
+    /**ADDED BY G **/    
+    var mvCheck = window.location.href;
+    if(mvCheck.indexOf('mvgls=hrarf') >0){
+      $('span#managerView').click();
+    }
+      
+      
+      
+    
+      
+  }); // END DOCUMENT.READY
+
+
+	    /* Sticky Matrix Headers */
+	    
+	    window.onscroll = function stickyHeaders () {
+	      $('.detail').each( function(){
+	        if(window.pageYOffset > $(this).offset().top){
+	          $(this).find('.shiftTimes').css('top',window.pageYOffset - $(this).offset().top + 'px');
+	        } else
+	        $(this).find('.shiftTimes').css('top', '0px');
+	      });
+	    }
+
+      function loadManagerView (){
+    
+      $('#managerViewContainer').css('opacity', '.3');
+    
+      $('#managerViewContainer').load(
+      
+        '{!$Page.BoothForce_ManagerView} #managerView',  
+        function() { 
+        
+          //alert('before overlay');
+          // Overlay for swap screen
+          //$("span[rel]").overlay({oneInstance: 'false', mask:'#000', zIndex:'1000'
+            <!-- onLoad: function() {
+              if ($.browser.msie && $.browser.version == 7.0) {
+                $('#exposeMask').hide();
+              }
+            }
+             -->
+         // });    
+          
+         // alert('before overlay');
+          $('#managerViewContainer').css('opacity', '1');
+        }
+      );
+    }
+
+
+
+
+  /** Booth Setup Page **/
+  function passZoneLookup(zoneName, zoneId){
+    $('.inputZone').val(zoneName);
+    $('#zoneId').val(zoneId);
+  }
+  
+  
+  /** Booth Staffing Page **/
+    function getBoothSignup(booth, slideBool){
+
+      $('#signUpAjax' + booth).css('opacity', '.3');
+
+      $('#signUpAjax' + booth).load(
+      
+        '/apex/BoothForce_BoothListingPage?id='+ booth + ' #boothListing', 
+        
+        function() { 
+          listingJS(booth);
+          $('#signUpAjax' + booth).css('opacity', '1');
+        }
+      );
+      
+      
+      
+      if (slideBool == 'true'){
+        $('#signUpAjax' + booth).slideToggle('fast');
+      }
+            
+      
+    };
+
+
+  /** Booth Listing Page (ajax) **/
+  
+  function listingJS(booth){
+ 
+    var currentBooth = '#' + $('#signUpAjax' + booth).attr('id');
+
+    var startTimes = _.sortBy( 
+      $('.dataCell', currentBooth).map( 
+        function() { return (parseFloat($(this).attr('data-startmintime')) + parseFloat($(this).attr('data-starthrtime')*60)) }
+      ), 
+      function(sTime) {return sTime;}
+    );
+    
+    /** TODO: will need to create more logic to only include endTimes > startTimes **/
+    var endTimes = _.sortBy(
+      $('.dataCell', currentBooth).map(
+        function() { return (parseFloat($(this).attr('data-endmintime'))+parseFloat($(this).attr('data-endhrtime')*60)) }
+      ),
+      function(eTime) {return eTime;}
+    );
+  
+    $(".rangeSlider", currentBooth).slider({range: true,
+      min: startTimes[0],
+      max: _.last(endTimes),
+      values: [startTimes[0], _.last(endTimes)],
+      step:15,
+      slide: function(event, ui) {
+        $(".filterRange", currentBooth).val(getTime(ui.values[0]) + ' - ' + getTime(ui.values[1]));
+        filterData(currentBooth);
+      },
+      stop: function(){
+        filterData(currentBooth);
+      }
+    });
+    
+    $(".filterRange", currentBooth).val( getTime($(".rangeSlider", currentBooth).slider("values", 0)) +' - ' + getTime($(".rangeSlider", currentBooth).slider("values", 1)));
+  }
+    
+
+
+  /** My Booths **/
+  function swapShift(staffingAssignment){
+  
+    $('#swapContainer div').css('opacity', '.3');
+  
+    $('#swapContainer div').load(
+      '/apex/BoothForce_TradeWithPerson?id='+ staffingAssignment + ' #swapForm', 
+      
+      function() {
+        $('#swapContainer div').css('opacity', '1');
+      }
+    );
+  }
+  
+  function swapShiftManager(staffingAssignment){
+  
+    $('#swapContainer div').css('opacity', '.3');
+  
+    $('#swapContainerManager div').load(
+      '/apex/BoothForce_TradeWithPerson?id='+ staffingAssignment + ' #swapForm', 
+      
+      function() {
+        $('#swapContainer div').css('opacity', '1');
+      }
+    );
+  }
+  
+  /** BoothForce Setup **/
+  
+  function getZoneMatrix(zoneId){
+
+    $('.zoneContainer[data-zoneid="'+zoneId+'"] > div.zoneDetail').css('opacity', '.3');
+  
+    $('.zoneContainer[data-zoneid="'+zoneId+'"] > div.zoneDetail').load(
+      '/apex/BoothForce_StaffingListPage?id=' + zoneId + ' #' + zoneId, 
+      
+      function() {
+        cleanMatrix(zoneId);
+        
+        // Turn On Overlays
+       // $("span[rel]").overlay({oneInstance: 'false', mask:'#000', zIndex:'1000'
+          <!-- onLoad: function() {
+            if ($.browser.msie && $.browser.version == 7.0) {
+              $('#exposeMask').hide();
+            }
+          }
+           -->
+        //});
+
+         
+        $('.zoneContainer[data-zoneid="'+zoneId+'"] > div.zoneDetail').css('opacity', '1');
+      }
+    );
+  }
+  
+  
+  // function to clean up the matrix; grouping by day 
+  // TODO: have this be taken care of before hitting the page >> apex
+      function cleanMatrix(zoneId){
+        var thisZone = $('.zoneContainer[data-zoneid="'+zoneId+'"] form.shiftZone');
+        
+        var setupDays = [];
+        var setupDaysFULL = [];
+        var clean = [];
+        var iST = 0;
+      
+        thisZone.find(".shiftTimes .times").each( function(index){
+         setupDays[index] = ($(this).attr("data-setupday"));
+         setupDaysFULL[index] = ($(this).attr("data-setupday"));
+         
+         //grouping shift times by day
+         if (index = 0) {
+            clean[0] = $(this).attr('data-setupday');
+         } else {
+           if( clean[iST - 1] != $(this).attr('data-setupday') ){
+                clean[iST] = $(this).attr('data-setupday');
+                iST++;
+            } else {
+            //    clean[iST] = $(this).attr('data-setupday');
+            //    alert('here');
+            }
+         }
+         
+         
+      });
+      var setupDaysUnique = $.unique(setupDays);
+      
+      // alert(setupDaysUnique + ' from index: ' + index + '. Here is the fullset: ' + setupDaysFULL + '/n/n iST: ' + clean);
+      
+      $.each(clean, function(i, dateVal) {
+            thisZone.find('.shiftTimes div[data-setupday="' + dateVal + '"]').wrapAll('<div class="shiftTimeDay" data-shiftday="' + dateVal + '"></div>');
+        
+        
+          thisZone.find('.shiftTimeDay[data-shiftday="' + dateVal +'"]').prepend(
+            '<div class="shiftTimeHeader"><div class="toggler btn btnPrimary" data-id="' + dateVal + '">-</div><div data-id="' + dateVal + '" class="dateCol dateOption">' + $.datepicker.formatDate( 'mm/dd', $.datepicker.parseDate("mmdd", dateVal)) + '</div>' + 
+            '<div class="dateTitle">' + $.datepicker.formatDate( 'DD', $.datepicker.parseDate("mmdd", dateVal)) + '</div></div>');
+      
+        /*
+          $.each(thisZone.find('.shiftTimes'), function(i, boothVal){
+          //  $(this).children().children('.' + dateVal + ':last').addClass('rightBorder');
+            $(this).children().children('.' + dateVal + ':first').before('<div class="dateCol firstCol" data-setupday="'+ dateVal + '"></div>');
+          });
+        */
+        
+        /* Add a spacer to the left of each booth column for date */
+          $.each(thisZone.find('.booth'), function(i, boothVal){
+            $(this).children('.' + dateVal + ':first').before('<div class="dateCol" data-date="'+ dateVal +'"></div>');
+          });
+          
+          thisZone.find('.shiftTimeDay [data-setupday="' + dateVal +'"]').wrapAll('<div class="shiftTimeDetail"></div>');
+        
+        //  thisZone.find('.shiftTimeDetail:last').children('.times:last').addClass('rightBorder');
+          
+        
+        });
+        
+  //      var zoneWidth = (thisZone.find('.booth').first().children().size()-1) * 90 - thisZone.find('.booth').first().find('.dateCol').size() * 39 + 121 + 'px';
+        var zoneWidth = (thisZone.find('.times').size()) * 90 + thisZone.find('.shiftTimeDay').size() * 51 + 181 + 'px';
+
+        thisZone.find('.detail').css('width', zoneWidth);
+        
+      }
+      
+
+// Ajax > Apex: Create Shift Time
+
+  function createShiftTime(shiftName, startTime, endTime, zoneId){
+  //input array need to ordered [name, start dateTime, end dateTime, zone Id]
+    var inputArray = [shiftName, startTime, endTime, zoneId];
+    sforce.apex.execute(
+      "BoothForce_SetupShiftsController", //controller
+      "addShift", //method
+      {shiftInfo : inputArray} //params
+    );
+  }
+
+// Ajax > Apex: Create Booth
+
+  function createBooth(inputArray){
+  //get inputs in array ordered [name, type, description, roles, zone Id]
+  alert(inputArray);
+    sforce.apex.execute(
+      "BoothForce_SetupShiftsController",//controller
+      "addBooth",//method
+      {shiftInfo : inputArray}//params
+    );
+  }
+    
+// ACTIONS    
+  $('span#createShiftTime').live('click', function(){
+  
+    var startTime = $('input[id*="startTime"]').val();
+    var endTime =  $('input[id*="endTime"]').val();
+  
+    createShiftTime( $('input[id*="shiftName"]').val(), startTime, endTime, $('input#zoneId').val());
+    
+    getZoneMatrix( $('input#zoneId').val() );
+    $('.close').click();
+    
+  });
+  
+  $('span[rel="#boothAddForm"]').live('dbclick', function(){
+  
+    if ( $(this).overlay().isOpened() ){
+    }
+    
+    else{
+      $(this).overlay().load();
+    }
+    
+  });
+  
+  $('span[rel="#shiftTimehAddForm"]').live('dbclick', function(){
+  
+    if ( $(this).overlay().isOpened() ){
+    }
+    
+    else{
+      $(this).overlay().load();
+    }
+    
+  });
+  
+  $('span#createBooth').live('click', function(){
+  
+    var richInstance = $('iframe[id*="boothDescription"]').attr('id');
+    var richArray = richInstance.split('__');
+    var richContent = FCKeditorAPI.GetInstance(richArray[0]).GetHTML(true) ;
+    var inputBoothArray = [];
+     
+    inputBoothArray[0] = $('input[id*="boothName"]').val();
+    inputBoothArray[1] = $('select[id*="boothType"]').val();
+    inputBoothArray[2] = richContent;
+    inputBoothArray[3] = [$('select[id*="boothRoles"]').val()];
+    inputBoothArray[4] = $('input#zoneId').val();
+    
+    createBooth( inputBoothArray );
+    
+    getZoneMatrix( $('input#zoneId').val() );
+    $('.close').click();
+    
+  });
+  
+  $('span#enableDropAll').live('click', function(){
+    sforce.apex.execute(
+      "BoothForce_SetupShiftsController",//controller
+      "makeAllDropable",//method
+      {}//params
+    );
+  });
+  
+  $('span#disableDropAll').live('click', function(){
+    sforce.apex.execute(
+      "BoothForce_SetupShiftsController",//controller
+      "makeAllNonDropable",//method
+      {}//params
+    );
+  });
+  
+  $('span.zone').live('click', function(){
+    if ($(this).attr('data-visible') == 'true'){
+      $(this).attr('data-visible', 'false');
+      $('.boothStaffing[data-zone="'+$(this).html()+'"]', 'div[data-areaid="'+$(this).parent().attr('data-areaid')+'"]').fadeOut(200);
+    }
+    else {
+      $(this).attr('data-visible', 'true');
+      $('.boothStaffing[data-zone="'+$(this).html()+'"]', 'div[data-areaid="'+$(this).parent().attr('data-areaid')+'"]').fadeIn(200);
+    }
+  });
+  
+  $('span.dropToggle').live('click', function(){
+  
+    if ( $(this).attr('data-value') == 'false') {
+  
+     $(this).attr('data-value', 'true');
+     $(this).html('NO');
+    
+	    sforce.apex.execute(
+	      "BoothForce_SetupShiftsController",//controller
+	      "toggleDrop",//method
+	      {zoneId: $(this).attr('data-zoneid')}//params
+	    );
+	    
+    }
+    else{
+      $(this).attr('data-value', 'false');
+      $(this).html('YES');
+      
+      sforce.apex.execute(
+        "BoothForce_SetupShiftsController",//controller
+        "toggleDrop",//method
+        {zoneId: $(this).attr('data-zoneid')}//params
+      );
+      
+    }
+  });
+  
+
+    $(".toggler").live('click', function(){
+
+      if ( $(this).html() == '-') {
+        numCells = $(this).closest('.detail').find('.booth').first().find('.'+$(this).attr("data-id")).size();
+        origWidth = $(this).closest('.detail').width();
+        
+        $(this).closest('.detail').find('.'+$(this).attr("data-id")).hide();
+        
+        // $(this).closest('.detail').animate({width:'-='+(numCells*90)});
+        $(this).closest('.detail').width(origWidth-(numCells*90));
+        
+        $(this).closest('.shiftTimeDay').find('.shiftTimeDetail').css('display', 'none');
+        $(this).removeClass('active');
+        $(this).html('+');
+    } else {
+        numCells = $(this).closest('.detail').find('.booth').first().find('.'+$(this).attr("data-id")).size();
+        origWidth = $(this).closest('.detail').width();
+        $(this).closest('.detail').width(origWidth+(numCells*90));
+        $(this).closest('.detail').find('.'+$(this).attr("data-id")).show();
+        $(this).addClass('active');
+        $(this).html('-');
+        $(this).find('span').fadeIn();
+        $(this).closest('.detail').find('div[data-shiftday="'+$(this).attr("data-id")+'"] .dateTitle').fadeIn();
+        $(this).closest('.shiftTimeDay').find('.shiftTimeDetail').css('display', 'block');
+    };
+    });
+    <!-- 
+    external js file now:
+    
+              $("span[rel]").live( 'click', function(e){
+                        
+                $(this).overlay({oneInstance: 'true', mask:'#000', zIndex:'1000',load: true
+                  
+                   onLoad: function() {
+                    if ($.browser.msie && $.browser.version == 7.0) {
+                      $('#exposeMask').hide();
+                    }
+                  }
+               
+               });
+             
+          });
+      -->     
+          
+/* Assign functionality */
+
+$('.assignButton').live( 'click', function(){
+  var said = $(this).attr("data-said");
+  var boothId = $(this).closest('.boothStaffing').attr('data-boothid');
+  $('#assignSave').attr("data-said", said);
+  $('#assignSave').attr("data-boothId", boothId);
+});
+    
+</apex:page>

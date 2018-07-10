@@ -1,0 +1,12 @@
+<apex:page standardController="Contact" extensions="campaignRosterController">
+    <apex:form >
+        <apex:pageBlock title="Campaign Members">
+            <apex:pageBlockTable value="{!campaignMembers}" var="member">
+                <apex:column value="{!member.Campaign.Name}" />
+                <apex:column value="{!member.Campaign.Startdate}" />
+                <apex:column value="{!member.Campaign.Type}" />
+
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

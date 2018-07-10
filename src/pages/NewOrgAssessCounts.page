@@ -1,0 +1,585 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1"></meta>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.jquery_2_1_3_min}"/>
+        <apex:includeScript value="{!URLFOR($Resource.jQueryUiMinZip2,'jquery-ui.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.agGridMinZip400,'ag-grid.min.js')}"/>
+
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.jQueryUiMinZip2, 'jquery-ui.theme.min.css')}"/>
+
+        <style>
+
+            #ResponseGridDiv {
+                float: left;
+                margin-left: 0px;
+                margin-right: 0px;
+                width: 100%;
+                background-color: linen;
+                height: 700px;
+                overflow-y: auto;
+                display:none;
+            }
+
+            #NewOrgGridDiv {
+                float: left;
+                margin-left: 0px;
+                margin-right: 0px;
+                width: 100%;
+                background-color: lightskyblue;
+                height: 700px;
+                overflow-y: auto;
+            }
+
+            #StatusDiv {
+                float: left;
+                min-height: 224px;
+                width: 20%;
+                background-color: #DDE9DD;
+                overflow-y: auto;
+            }
+
+            .center-align {
+                text-align: center;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+    <div id="title">
+        <h1>New Organizing Status Test</h1>
+        <hr/>
+        <h2>Step 1. Display New Organizing Accounts</h2>
+    </div>
+    <hr/>
+    <div id="StatusDiv1"></div>
+    <div id="StatusDiv2"></div>
+    <hr/>
+    <div id="ResponseGridDiv" class="ag-fresh"></div>
+    <div id="NewOrgGridDiv" class="ag-fresh"></div>
+
+    <script type="text/javascript">
+
+        function phoneFormat(s) {
+            var s1;
+            if(s == null || s == '')
+                s1 = 'n/a';
+            else
+                s1 = s.replace('-','');
+            s1 = s1.replace(' ','');
+            s1 = s1.replace('(','');
+            s1 = s1.replace(')','');
+            s1 = s1.substr(0,3) + '-' + s1.substr(3,3) + '-' + s1.substr(6);
+            return s1;
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = '';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function loadResponses() {
+
+            var responseQuery = "SELECT Contact__r.Account.Name, Contact__r.OwnerId, Contact_Name__c, Contact__c, Question_Name__c, Response_Value__c, Survey_Code__c, Survey_Question__c , Collected_By_CS__c, Collected_By_Is_EBoard__c, Collected_By_Name__c, Collected_By__c, Collected_Datetime__c " +
+                                "FROM Survey_Response__c WHERE Contact__r.Account.Id = '001i000001PTUkeAAH' ";
+            try {
+                var responseResults = sforce.connection.query(responseQuery);
+                processResponses(responseResults);
+            }
+            catch (e) {alert('An error occurred retrieving Survey Responses ' + e.faultstring);}
+        }
+
+        function processResponses(results) {
+            var records;
+            var collectedByCsId;
+            var collectedByIsEBoard;
+            var collectedByName;
+            var collectedById;
+            var collectedDatetime;
+
+            var accountName;
+            var contactOwnerRecord;
+            var contactOwnerId;
+            var contactName;
+            var contactOwnerName;
+            var contactId;
+            var response;
+            var surveyCode;
+
+            var questionName,responseValue,surveyCode,surveyQuestion;
+            var Question_Name__c,Response_Value__c,Survey_Code__c,Survey_Question__c;
+
+            var coordinator;
+            var coordinatorAttended;
+            var employerName;
+            var organizer;
+            var organizerAttended;
+            var sigCount;
+            var sigNum;
+            var processedAll = false;
+
+            responseMap        = {};
+            responseCnt        = 0;
+            responseBatchCount = 0;
+
+            while (!processedAll) {
+                records = results.getArray('records');
+                for (i = 0; i < records.length; i++) {
+                    collectedByCsId = collectedByIsEBoard = collectedByName = collectedById = collectedDatetime = accountName = contactOwnerId = contactName = contactId = response = surveyCode = '';
+                    responseCnt++;
+
+                    if(records[i].Collected_By__c)
+                        collectedById       = records[i].Collected_By__c;
+
+                    if(records[i].Collected_Datetime__c)
+                        collectedDatetime   = records[i].Collected_Datetime__c
+
+                    if(records[i].Collected_By_Name__c)
+                        collectedByName = toProperCase(records[i].Collected_By_Name__c);
+
+                    if(records[i].Contact__r) {
+                        if (records[i].Contact__r.Account.Name)
+                            accountName    = records[i].Contact__r.Account.Name;
+
+                        if(records[i].Contact__r.OwnerId)
+                            contactOwnerId = records[i].Contact__r.OwnerId;
+
+                        if(!contactOwnerIdMap[contactOwnerId])
+                            contactOwnerIdMap[contactOwnerId] = 'Y';
+                    }
+
+                    if(records[i].Contact_Name__c)
+                        contactName         = toProperCase(records[i].Contact_Name__c);
+
+                    if(records[i].Contact__c)
+                        contactId           = records[i].Contact__c;
+
+                    if(records[i].Response_Value__c)
+                        response            = records[i].Response_Value__c;
+
+                    if(records[i].Survey_Code__c)
+                        surveyCode          = records[i].Survey_Code__c;
+
+                    if(records[i].Question_Name__c)
+                        questionName   = records[i].Question_Name__c;
+
+                    if(records[i].Survey_Question__c)
+                        surveyQuestion = records[i].Survey_Question__c;
+
+                    responseDataArray.push( {
+                        AccountName         :  accountName,
+                        ContactOwnerId      :  contactOwnerId,
+                        ContactId           :  contactId,
+                        ContactName         :  contactName,
+                        QuestionName        :  questionName,
+                        SurveyCode          :  surveyCode,
+                        Response            :  response,
+                        CollectedByName     :  collectedByName,
+                        CollectedById       :  collectedById,
+                        CollectedByCsId     :  collectedByCsId,
+                        CollectedDatetime   :  collectedDatetime,
+                        CollectedByIsEBoard :  collectedByIsEBoard
+                    } );
+                }
+
+                if (results.done == 'true') {
+                    processedAll = true;
+                   statusDiv2.innerHTML = 'Total ResponseCnt: ' + responseCnt.toString() + ' (batch count: ' + responseBatchCount.toString() + ')';
+                }
+                else {
+                    responseBatchCount++;
+                    statusDiv2.innerHTML = 'Total ResponseCnt: ' + responseCnt.toString() + ' (batch count: ' + responseBatchCount.toString() + ')';
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+
+            }
+
+            loadContactRecordOwners();
+
+            for (i = 0; i < responseCnt; i++) {
+                contactOwnerId = responseDataArray[i].ContactOwnerId;
+                if(contactOwnerMap[contactOwnerId]) {
+                    contactOwnerRecord = contactOwnerMap[contactOwnerId];
+                    if(contactOwnerRecord.OwnerActive)
+                        responseDataArray[i].ContactOwnerName = contactOwnerRecord.OwnerName;
+                    else
+                        responseDataArray[i].ContactOwnerName = 'Inactive: ' +  contactOwnerRecord.OwnerName;
+                }
+                else
+                    responseDataArray[i].ContactOwnerName = 'Name: n/a';
+            }
+
+            responseGridOptions = {
+                debug:true,
+                columnDefs: responseColumnDefs,
+                rowData: responseDataArray,
+                enableSorting: true,
+                enableFilter: true
+            };
+
+            new agGrid.Grid(responseGridDiv, responseGridOptions);
+
+        }
+
+        function loadContactRecordOwners() {
+            var query;
+            var mapKey;
+            var contactOwnerList;
+            var contactOwnerIdArray = [];
+
+            for(mapKey in contactOwnerIdMap) {
+                contactOwnerIdArray.push("'" + mapKey + "'");
+            }
+
+            contactOwnerList = contactOwnerIdArray.join();
+            query = " SELECT Name,Title,Id,IsActive " +
+                    " FROM User " +
+                    " WHERE IsActive = False And Id IN ( " + contactOwnerList + ") ";
+
+            var queryResults = sforce.connection.query(query);
+            processContactRecordOwners(queryResults);
+        }
+
+        function processContactRecordOwners(results) {
+            var records;
+            var contactOwnerId;
+            var contactOwnerName;
+            var contactOwnerTitle;
+            var contactOwnerActive;
+
+            contactOwnerMap = {};
+
+            records = results.getArray('records');
+            for (i = 0; i < records.length; i++) {
+                contactOwnerId     = records[i].Id;
+                contactOwnerName   = records[i].Name;
+                contactOwnerTitle  = records[i].Title;
+                contactOwnerActive = records[i].IsActive;
+                contactOwnerMap[contactOwnerId] = {OwnerId: contactOwnerId, OwnerName: contactOwnerName, OwnerTitle:contactOwnerTitle, OwnerActive: contactOwnerActive}
+            }
+        }
+
+        function loadAssessments(accountId) {
+            // Note:  Chris/Christina use the In_BU flag as a quick way to filter out people who they know they don't want to include in their final pool of eligible voters.
+
+            // Christina 4/13/16:
+            //   A lot of times when organizers are building a list for a new facility that we’re organizing they may gather schedules for as many departments as they can get their hands on and include all the
+            //   people they can find. This leads to a very extensive list and often includes people that as the campaign progresses, they decide we are not going to organize. Instead of having to create every
+            //   report and list based on individual bargaining units, we have taken to just marking everyone they plan to include in the election bargaining units we file for, as “In Current BU”. This simplifies
+            //   creating lists and reports.
+
+            var assessmentQuery = "SELECT AccountId,Department,Employer__c,FID__c,FirstName,Id,BU__c,LastName,MobilePhone,Shift__c,Worksite__c, Card_Assessment__c,GOTV_Assessment__c,Verbal_Assessment__c " +
+                                  "FROM Contact Where In_Current_BU__c = true And AccountId = '" + accountId + "' ";
+//            try {
+                var assessmentResults = sforce.connection.query(assessmentQuery);
+                processAssessments(assessmentResults);
+//            }
+//            catch (e) {alert('An error occurred retrieving Assessments ' + e.faultstring);}
+        }
+
+        function processAssessments(results) {
+            var accountId;
+            var department;
+            var employer;
+            var fid;
+            var firstName;
+            var id;
+            var inCurrentBU;
+            var lastName;
+            var mobilePhone;
+            var shift;
+            var worksite;
+            var cardAssessment;
+            var gotvAssessment;
+            var verbalAssessment;
+
+            var key;
+            var processedAll;
+            var contactCnt;
+            var CATotal = 0;
+            var ca0 = ca1 = ca2 = ca3 = ca4 = ca5 = ca6 = ca7 = ca8 = ca9 = 0;
+
+            while (!processedAll) {
+                contactCnt = 0;
+                cardAssessmentMap   = {};
+                gotvAssessmentMap   = {};
+                verbalAssessmentMap = {};
+
+                records = results.getArray('records');
+                for (i = 0; i < records.length; i++) {
+                    accountId = cardAssessment = gotvAssessment = verbalAssessment = department = employer = fid = firstName = lastName = id = inCurrentBU = mobilePhone = shift = worksite = '';
+                    contactCnt++;
+                    accountId        = records[i].AccountId;
+                    cardAssessment   = records[i].Card_Assessment__c   || '0. No Entry';
+                    gotvAssessment   = records[i].GOTV_Assessment__c   || '0. No Entry';
+                    verbalAssessment = records[i].Verbal_Assessment__c || '0. No Entry';
+                    department       = records[i].Department;
+                    fid              = records[i].FID__c;
+                    firstName        = records[i].FirstName;
+                    lastName         = records[i].LastName;
+                    id               = records[i].Id;
+                    inCurrentBU      = records[i].In_Current_BU__c;
+                    mobilePhone      = records[i].MobilePhone;
+                    shift            = records[i].Shift__c;
+                    worksite         = records[i].Worksite__c;
+
+                    if(!cardAssessmentMap[accountId])
+                        cardAssessmentMap[accountId] = {};
+
+                    if(!cardAssessmentMap[accountId][cardAssessment])
+                        cardAssessmentMap[accountId][cardAssessment] = {Count: 1};
+                    else
+                        cardAssessmentMap[accountId][cardAssessment].Count++;
+
+                    if(!gotvAssessmentMap[accountId])
+                        gotvAssessmentMap[accountId] = {};
+
+                    if(!gotvAssessmentMap[accountId][gotvAssessment])
+                        gotvAssessmentMap[accountId][gotvAssessment] = {Count: 1};
+                    else
+                        gotvAssessmentMap[accountId][gotvAssessment].Count++;
+
+                    if(!verbalAssessmentMap[accountId])
+                        verbalAssessmentMap[accountId] = {};
+
+                    if(!verbalAssessmentMap[accountId][verbalAssessment])
+                        verbalAssessmentMap[accountId][verbalAssessment] = {Count: 1};
+                    else
+                        verbalAssessmentMap[accountId][verbalAssessment].Count++;
+                }
+
+                if (results.done == 'true') {
+                    processedAll = true;
+                }
+                else {
+                    contactBatchCount++;
+                    results = sforce.connection.queryMore(results.queryLocator);
+                }
+                statusDiv2.innerHTML = 'Contact count: ' + contactCnt.toString() + ' (batch count: ' + contactBatchCount.toString() + ')';
+
+            }
+
+            debugger;
+            for(mapKey in cardAssessmentMap) {
+                accountId =  mapKey;
+                cardAssessmenMap = cardAssessmentMap[accountId];
+                for(key in cardAssessmenMap) {
+                    switch(key) {
+                        case '1. SEIU-UHW Leader Producing' :
+                            ca1 = cardAssessmenMap[key].Count;
+                            break;
+                        case '2. SEIU-UHW Supporter' :
+                            ca2 = cardAssessmenMap[key].Count;
+                            break;
+                        case '3. Undecided' :
+                            ca3 = cardAssessmenMap[key].Count;
+                            break;
+                        case '4. Anti-Union' :
+                            ca4 = cardAssessmenMap[key].Count;
+                            break;
+                        case '6. Management Leader or activist' :
+                            ca6 = cardAssessmenMap[key].Count;
+                            break;
+                        case '9. Reported to be NLE' :
+                            ca9 = cardAssessmenMap[key].Count;
+                            break;
+                        default :
+                            // bad data check - shouldn't happen.
+                            ca0 = cardAssessmenMap[key].Count;
+                            break;
+                    }
+                }
+            }
+
+            ptr = 0;
+            for(i=0, l=newOrgDataArray.length;i<l;i++) {
+                if(newOrgDataArray[i].Id == accountId) {
+                    ptr = i;
+                    break;
+                }
+            }
+            newOrgDataArray[ptr].CA0 = ca0;
+            newOrgDataArray[ptr].CA1 = ca1;
+            newOrgDataArray[ptr].CA2 = ca2;
+            newOrgDataArray[ptr].CA3 = ca3;
+            newOrgDataArray[ptr].CA4 = ca4;
+            newOrgDataArray[ptr].CA5 = ca5;
+            newOrgDataArray[ptr].CA6 = ca6;
+            newOrgDataArray[ptr].CA7 = ca7;
+            newOrgDataArray[ptr].CA8 = ca8;
+            newOrgDataArray[ptr].CA9 = ca9;
+            newOrgDataArray[ptr].CATotal = ca0 + ca1 + ca2 + ca3 + ca4 + ca5 + ca6 + ca7 + ca8 + ca9;
+            newOrgGridOptions.api.refreshView();
+
+            debugger;
+//            CATotal : caTotal, CA0:ca0, CA1:ca1, CA2:ca2, CA3:ca3, CA4:ca4, CA5:ca5, CA6:ca6, CA7:ca7, CA8:ca8, CA9:ca9;
+        }
+
+        function setStatus(pSuffix,pLabel,pText) {
+            var statTField           = 'statusText'  + pSuffix;
+            var statLField           = 'statusLabel' + pSuffix;
+            var statTFieldId         = document.getElementById(statTField);
+            var statLFieldId         = document.getElementById(statLField);
+            statTFieldId.value       = pText;
+            statLFieldId.textContent = pLabel;
+        }
+
+        function initAgGrid() {
+
+            // Survey Response Fields not used: CollectedByCsId, CollectedByIsEBoard
+
+            responseColumnDefs = [
+                {headerName: 'AccountName',         field: 'AccountName',         width: 390, sortingOrder: ['asc','desc']},
+                {headerName: 'ContactOwnerId',      field: 'ContactOwnerId',      width: 180, sortingOrder: ['asc','desc']},
+                {headerName: 'ContactOwnerName',    field: 'ContactOwnerName',    width: 180, sortingOrder: ['asc','desc']},
+                {headerName: 'ContactId',           field: 'ContactId',           width: 180, sortingOrder: ['asc','desc']},
+                {headerName: 'ContactName',         field: 'ContactName',         width: 180, sortingOrder: ['asc','desc']},
+                {headerName: 'QuestionName',        field: 'QuestionName',        width: 180, sortingOrder: ['asc','desc']},
+                {headerName: 'SurveyCode',          field: 'SurveyCode',          width: 100, sortingOrder: ['asc','desc'],suppressMenu: true,cellClass: 'center-align'},
+                {headerName: 'CollectedByName',     field: 'CollectedByName',     width: 180, sortingOrder: ['asc','desc']},
+                {headerName: 'CollectedById',       field: 'CollectedById',       width: 180, sortingOrder: ['asc','desc']},
+                {headerName: 'CollectedDatetime',   field: 'CollectedDatetime',   width: 180, sortingOrder: ['asc','desc']}
+            ];
+
+            newOrgColumnDefs = [
+                {
+                    headerName: "",
+                    children: [
+                        {headerName: 'Employer',  field: 'AccountName',      width: 390, sortingOrder: ['asc','desc']},
+                        {headerName: 'Stage',     field: 'AssessmentStage',  width: 100, sortingOrder: ['asc','desc']},
+                        {headerName: 'Active',    field: 'Active',           width: 100, sortingOrder: ['asc','desc']}
+                    ]
+                },
+                {
+                    headerName: "Card Assessment",
+                    groupId: "Card",
+                    children: [
+                        {headerName: "Total",                field: "CATotal", width: 200, columnGroupShow: 'open'},
+                        {headerName: "0. No Entry",          field: "CA0", width: 200, columnGroupShow: 'closed'},
+                        {headerName: "1. Leader",            field: "CA1", width: 120, columnGroupShow: 'closed'},
+                        {headerName: "2. Supporter",         field: "CA2", width: 120, columnGroupShow: 'closed'},
+                        {headerName: "3. Undecided",         field: "CA3", width: 120, columnGroupShow: 'closed'},
+                        {headerName: "4. Anti-Union",        field: "CA4", width: 120, columnGroupShow: 'closed'},
+                        {headerName: "5. NUHW Supporter",    field: "CA5", width: 120, columnGroupShow: 'closed'},
+                        {headerName: "6. Management friend", field: "CA6", width: 120, columnGroupShow: 'closed'},
+                        {headerName: "7. NUHW leader",       field: "CA7", width: 120, columnGroupShow: 'closed'},
+                        {headerName: "9. NLE",               field: "CA9", width: 120, columnGroupShow: 'closed'}
+                    ]
+                }
+            ];
+        }
+
+        function loadNewOrgAccounts(){
+
+            var query = "SELECT Id,Name,Assessment_Stage__c,Active__c " +
+                        "From Account Where Account_Group__c = 'New Organizing' And " +
+                        "Assessment_Stage__c In ('GOTV','Probing','Verbal','Card','Vote Yes Petition') " +
+                        "Order By Active__c Desc, Assessment_Stage__c Desc,Name";
+            // try {
+                var queryResults = sforce.connection.query(query);
+                processNewOrgAccounts(queryResults);
+            //}
+            //catch(e) {alert('An error occurred retrieving Accounts: ' + e.faultstring);}
+        }
+
+        function processNewOrgAccounts(accountResults) {
+            var accountRec;
+            var empName;
+            var empAccountId;
+            var accountRecords;
+            var assessmentStage;
+            var active;
+
+            accountIdsArray     = [];
+            accountMap          = {};
+
+            accountRecords = accountResults.getArray('records');
+            len = accountRecords.length-1;
+
+            for (i = 0; i <= len; i++) {
+                accountRec      = accountRecords[i];
+                empAccountId    = accountRec.Id;
+                empName         = accountRec.Name;
+                assessmentStage = accountRec.Assessment_Stage__c;
+                active          = accountRec.Active__c;
+                newOrgDataArray.push({Id: empAccountId, AccountName: empName, AssessmentStage: assessmentStage, Active: active,
+                CATotal:0, CA0:0, CA1:0, CA2:0, CA3:0, CA4:0, CA5:0, CA6:0, CA7:0, CA8:0, CA9:0});
+            }
+
+            newOrgGridOptions = {
+                debug:true,
+                columnDefs: newOrgColumnDefs,
+                groupHeaders: true,
+                rowData: newOrgDataArray,
+                enableSorting: true,
+                enableFilter: true
+            };
+
+            new agGrid.Grid(newOrgGridDiv, newOrgGridOptions);
+
+        }
+
+        // ***************** Globals *****************
+
+        var responseDataArray   = [];
+        var newOrgDataArray     = [];
+        var newOrgGridOptions   = {};
+        var responseGridOptions = {};
+
+        var responseGridDiv;
+        var responseColumnDefs;
+        var newOrgGridDiv;
+        var newOrgColumnDefs;
+
+        var contactOwnerIdMap   = {};
+        var contactOwnerMap     = {};
+        var responseMap         = {};
+        var responseCnt         = 0;
+        var responseBatchCount  = 0;
+        var contactBatchCount   = 0;
+
+        var cardAssessmentMap   = {};
+        var gotvAssessmentMap   = {};
+        var verbalAssessmentMap = {};
+
+        var exportButton;
+        var output;
+        var statusDiv1;
+        var statusDiv2;
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function () {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            responseGridDiv = document.getElementById('ResponseGridDiv');
+            newOrgGridDiv   = document.getElementById('NewOrgGridDiv');
+
+            statusDiv1 = document.getElementById('StatusDiv1');
+            statusDiv2 = document.getElementById('StatusDiv2');
+
+            initAgGrid();
+            loadNewOrgAccounts();
+            loadAssessments('001i000001PTUkeAAH');
+
+//          loadResponses();
+
+
+        });
+
+    </script>
+    </body>
+</apex:page>

@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>To track Eboard Attendance</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Absence_Reason__c</fullName>
+        <externalId>false</externalId>
+        <label>Absence Reason</label>
+        <length>8000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Attendance_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>Unique Id; Concatenated of MemberId + &quot;-&quot; + Start Date of Mtg; 
+For example: MemberId 1234567 and Start Date: 04/18/2017
+1234567-04182017</description>
+        <externalId>true</externalId>
+        <inlineHelpText>Unique Id; Concatenated of MemberId + &quot;-&quot; + Start Date of Mtg; 
+For example: MemberId 1234567 and Start Date: 04/18/2017
+1234567-04182017</inlineHelpText>
+        <label>Attendance Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Attended__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Attended</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Candidate__r.Division__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Division</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Eboard_Candidate__c</fullName>
+        <description>Eboard Candidate Record;</description>
+        <externalId>false</externalId>
+        <label>Eboard Candidate</label>
+        <referenceTo>Eboard_Candidate__c</referenceTo>
+        <relationshipLabel>Eboard Attendance</relationshipLabel>
+        <relationshipName>Eboard_Attendance</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>true</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Eboard_Ecomm__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Eboard/Ecomm</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipName>Eboard_Attendance</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Employer__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Ecomm__r.Account.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Employer</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Excused__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Excused</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Executive_Title__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Candidate__r.Executive_Title__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Executive Title</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Ecomm__r.FID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>FID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Instated_To_Office__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Candidate__r.Instated_To_Office__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Instated To Office</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Job_Title__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Ecomm__r.Title</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Job Title</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Meeting_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Start_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Meeting Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Meeting_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Meeting Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>E Board Mtg</fullName>
+                    <default>false</default>
+                    <label>E Board Mtg</label>
+                </value>
+                <value>
+                    <fullName>E Committee Mtg</fullName>
+                    <default>false</default>
+                    <label>E Committee Mtg</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Meeting__c</fullName>
+        <externalId>false</externalId>
+        <label>Meeting</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name_2__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Ecomm__r.FirstName &amp; &quot; &quot; &amp; Eboard_Ecomm__r.LastName &amp; &quot; *&quot; &amp; TEXT(Instated_To_Office__c)  &amp; &quot; *&quot; &amp; TEXT(Unseated_Date__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Name 2</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Response_Value_Static__c</fullName>
+        <description>This is the original response value when imported;Static value</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the original response value when imported;Static value</inlineHelpText>
+        <label>Response Value Static</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Response__c</fullName>
+        <description>Response Value - formula field;</description>
+        <externalId>false</externalId>
+        <formula>Survey_Response__r.Response_Value__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Response Value - formula field;</inlineHelpText>
+        <label>Response</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Seat__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Candidate__r.Constituency_Name1__r.ConstituencyName__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Seat</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>Final status after the Meeting is completed.</description>
+        <externalId>false</externalId>
+        <formula>IF( Attended__c=TRUE, &quot;Attended&quot;,  IF( Excused__c=TRUE, &quot;Excused&quot;, IF( End_Date__c &lt;= TODAY(), &quot;Unexcused&quot;, &quot;None&quot;)) )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Final status after the Meeting is completed.</inlineHelpText>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Response__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This is the survey response record linked to Cvent; Need to be updated after the meeting is completed; API does a delete and insert on the survey response every time the cvent status change;</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the survey response record linked to Cvent; Need to be updated after the meeting is completed; API does a delete and insert on the survey response every time the cvent status change;</inlineHelpText>
+        <label>Survey Response</label>
+        <referenceTo>Survey_Response__c</referenceTo>
+        <relationshipLabel>Eboard Attendance</relationshipLabel>
+        <relationshipName>Eboard_Attendance</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Unexcused__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Status__c =&quot;Unexcused&quot;, TRUE, FALSE)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unexcused</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Unseated_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Eboard_Candidate__r.Resigned_Removed_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unseated Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>Eboard Attendance</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Response_Value_Static__c</columns>
+        <columns>Survey_Response__c</columns>
+        <columns>Status__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>April_2017_Exec_Board_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Status__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Meeting_Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Board Meeting April 2017</value>
+        </filters>
+        <label>April 2017 Exec Board Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>April_2017_Exec_Comm_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Response_Value_Static__c</columns>
+        <columns>Survey_Response__c</columns>
+        <columns>Status__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Seat__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Committee Meeting April 2017</value>
+        </filters>
+        <label>April 2017 Exec Comm Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>August_2017_Exec_Board_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Status__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Meeting_Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Board Meeting August 2017</value>
+        </filters>
+        <label>August 2017 Exec Board Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>December_2017_Exec_Board_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Status__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Meeting_Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Board Meeting December 2017</value>
+        </filters>
+        <label>December 2017 Exec Board Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>July_2017_Exec_Comm_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Response_Value_Static__c</columns>
+        <columns>Survey_Response__c</columns>
+        <columns>Status__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Seat__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Committee Meeting July  2017</value>
+        </filters>
+        <label>July 2017 Exec Comm Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>June_2017_Exec_Comm_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Response_Value_Static__c</columns>
+        <columns>Survey_Response__c</columns>
+        <columns>Status__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Seat__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Committee Meeting June 2017</value>
+        </filters>
+        <label>June 2017 Exec Comm Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>May_2017_Exec_Comm_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Response_Value_Static__c</columns>
+        <columns>Survey_Response__c</columns>
+        <columns>Status__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Seat__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Committee Meeting May 2017</value>
+        </filters>
+        <label>May 2017 Exec Comm Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Nov_2017_Exec_Comm_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Response_Value_Static__c</columns>
+        <columns>Survey_Response__c</columns>
+        <columns>Status__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Seat__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Committee Meeting November 2017</value>
+        </filters>
+        <label>Nov 2017 Exec Comm Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Oct_2017_Exec_Comm_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Response_Value_Static__c</columns>
+        <columns>Survey_Response__c</columns>
+        <columns>Status__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Seat__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Committee Meeting October 2017</value>
+        </filters>
+        <label>Oct 2017 Exec Comm Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Sept_2017_Exec_Comm_Mtg</fullName>
+        <columns>NAME</columns>
+        <columns>Meeting_Type__c</columns>
+        <columns>Eboard_Ecomm__c</columns>
+        <columns>Eboard_Candidate__c</columns>
+        <columns>Meeting__c</columns>
+        <columns>Response_Value_Static__c</columns>
+        <columns>Survey_Response__c</columns>
+        <columns>Status__c</columns>
+        <columns>Attended__c</columns>
+        <columns>Excused__c</columns>
+        <columns>Absence_Reason__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Seat__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Meeting__c</field>
+            <operation>equals</operation>
+            <value>Executive Committee Meeting September 2017</value>
+        </filters>
+        <label>Sept 2017 Exec Comm Mtg</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>EA-{0000}</displayFormat>
+        <label>EB Attendance No</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Eboard Attendance</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <visibility>Public</visibility>
+</CustomObject>

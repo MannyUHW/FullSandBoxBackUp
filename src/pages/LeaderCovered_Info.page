@@ -1,0 +1,396 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+<html>
+<head>
+<style>
+
+ /* Font Definitions */
+ @font-face
+    {font-family:"Cambria Math";
+    panose-1:2 4 5 3 5 4 6 3 2 4;
+    mso-font-charset:0;
+    mso-generic-font-family:roman;
+    mso-font-pitch:variable;
+    mso-font-signature:3 0 0 0 1 0;}
+
+@font-face
+    {font-family:Calibri;
+    panose-1:2 15 5 2 2 2 4 3 2 4;
+    mso-font-charset:0;
+    mso-generic-font-family:swiss;
+    mso-font-pitch:variable;
+    mso-font-signature:-536859905 -1073732485 9 0 511 0;}
+
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+    {mso-style-unhide:no;
+    mso-style-qformat:yes;
+    mso-style-parent:"";
+    margin-top:0in;
+    margin-right:0in;
+    margin-bottom:10.0pt;
+    margin-left:0in;
+    line-height:115%;
+    mso-pagination:widow-orphan;
+    font-size:11.0pt;
+    font-family:"Calibri",sans-serif;
+    mso-ascii-font-family:Calibri;
+    mso-ascii-theme-font:minor-latin;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;
+    mso-hansi-font-family:Calibri;
+    mso-hansi-theme-font:minor-latin;
+    mso-bidi-font-family:"Times New Roman";
+    mso-bidi-theme-font:minor-bidi;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+    {mso-style-priority:34;
+    mso-style-unhide:no;
+    mso-style-qformat:yes;
+    margin-top:0in;
+    margin-right:0in;
+    margin-bottom:10.0pt;
+    margin-left:.5in;
+    mso-add-space:auto;
+    line-height:115%;
+    mso-pagination:widow-orphan;
+    font-size:11.0pt;
+    font-family:"Calibri",sans-serif;
+    mso-ascii-font-family:Calibri;
+    mso-ascii-theme-font:minor-latin;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;
+    mso-hansi-font-family:Calibri;
+    mso-hansi-theme-font:minor-latin;
+    mso-bidi-font-family:"Times New Roman";
+    mso-bidi-theme-font:minor-bidi;}
+p.MsoListParagraphCxSpFirst, li.MsoListParagraphCxSpFirst, div.MsoListParagraphCxSpFirst
+    {mso-style-priority:34;
+    mso-style-unhide:no;
+    mso-style-qformat:yes;
+    mso-style-type:export-only;
+    margin-top:0in;
+    margin-right:0in;
+    margin-bottom:0in;
+    margin-left:.5in;
+    margin-bottom:.0001pt;
+    mso-add-space:auto;
+    line-height:115%;
+    mso-pagination:widow-orphan;
+    font-size:11.0pt;
+    font-family:"Calibri",sans-serif;
+    mso-ascii-font-family:Calibri;
+    mso-ascii-theme-font:minor-latin;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;
+    mso-hansi-font-family:Calibri;
+    mso-hansi-theme-font:minor-latin;
+    mso-bidi-font-family:"Times New Roman";
+    mso-bidi-theme-font:minor-bidi;}
+p.MsoListParagraphCxSpMiddle, li.MsoListParagraphCxSpMiddle, div.MsoListParagraphCxSpMiddle
+    {mso-style-priority:34;
+    mso-style-unhide:no;
+    mso-style-qformat:yes;
+    mso-style-type:export-only;
+    margin-top:0in;
+    margin-right:0in;
+    margin-bottom:0in;
+    margin-left:.5in;
+    margin-bottom:.0001pt;
+    mso-add-space:auto;
+    line-height:115%;
+    mso-pagination:widow-orphan;
+    font-size:11.0pt;
+    font-family:"Calibri",sans-serif;
+    mso-ascii-font-family:Calibri;
+    mso-ascii-theme-font:minor-latin;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;
+    mso-hansi-font-family:Calibri;
+    mso-hansi-theme-font:minor-latin;
+    mso-bidi-font-family:"Times New Roman";
+    mso-bidi-theme-font:minor-bidi;}
+p.MsoListParagraphCxSpLast, li.MsoListParagraphCxSpLast, div.MsoListParagraphCxSpLast
+    {mso-style-priority:34;
+    mso-style-unhide:no;
+    mso-style-qformat:yes;
+    mso-style-type:export-only;
+    margin-top:0in;
+    margin-right:0in;
+    margin-bottom:10.0pt;
+    margin-left:.5in;
+    mso-add-space:auto;
+    line-height:115%;
+    mso-pagination:widow-orphan;
+    font-size:11.0pt;
+    font-family:"Calibri",sans-serif;
+    mso-ascii-font-family:Calibri;
+    mso-ascii-theme-font:minor-latin;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;
+    mso-hansi-font-family:Calibri;
+    mso-hansi-theme-font:minor-latin;
+    mso-bidi-font-family:"Times New Roman";
+    mso-bidi-theme-font:minor-bidi;}
+span.GramE
+    {mso-style-name:"";
+    mso-gram-e:yes;}
+.MsoChpDefault
+    {mso-style-type:export-only;
+    mso-default-props:yes;
+    font-family:"Calibri",sans-serif;
+    mso-ascii-font-family:Calibri;
+    mso-ascii-theme-font:minor-latin;
+    mso-fareast-font-family:Calibri;
+    mso-fareast-theme-font:minor-latin;
+    mso-hansi-font-family:Calibri;
+    mso-hansi-theme-font:minor-latin;
+    mso-bidi-font-family:"Times New Roman";
+    mso-bidi-theme-font:minor-bidi;}
+.MsoPapDefault
+    {mso-style-type:export-only;
+    margin-bottom:10.0pt;
+    line-height:115%;}
+
+
+ /* List Definitions */
+ @list l0
+    {mso-list-id:290599707;
+    mso-list-type:hybrid;
+    mso-list-template-ids:-1466503950 67698709 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+    {mso-level-number-format:alpha-upper;
+    mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l0:level2
+    {mso-level-number-format:alpha-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l0:level3
+    {mso-level-number-format:roman-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:right;
+    text-indent:-9.0pt;}
+@list l0:level4
+    {mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l0:level5
+    {mso-level-number-format:alpha-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l0:level6
+    {mso-level-number-format:roman-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:right;
+    text-indent:-9.0pt;}
+@list l0:level7
+    {mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l0:level8
+    {mso-level-number-format:alpha-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l0:level9
+    {mso-level-number-format:roman-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:right;
+    text-indent:-9.0pt;}
+@list l1
+    {mso-list-id:673145903;
+    mso-list-type:hybrid;
+    mso-list-template-ids:-1458552918 67698709 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l1:level1
+    {mso-level-number-format:alpha-upper;
+    mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l1:level2
+    {mso-level-number-format:alpha-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l1:level3
+    {mso-level-number-format:roman-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:right;
+    text-indent:-9.0pt;}
+@list l1:level4
+    {mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l1:level5
+    {mso-level-number-format:alpha-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+@list l1:level6
+    {mso-level-number-format:roman-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:right;
+    text-indent:-9.0pt;}
+@list l1:level7
+    {mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+
+@list l1:level8
+    {mso-level-number-format:alpha-lower;
+    mso-level-tab-stop:none;
+    mso-level-number-position:left;
+    text-indent:-.25in;}
+
+  .one {
+    padding-left: 20px;
+    padding-top: 3px;
+  }
+
+h1 {
+  background-color: yellow;
+}
+</style>
+
+</head>
+<body>
+<div id="one">
+
+<h1>How to be a leader?</h1>
+
+<p style='margin-bottom:0in;margin-bottom:.0001pt;
+mso-add-space:auto;text-indent:-.25in;mso-list:l0 level1 lfo1'><span
+style='mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin'><span
+style='mso-list:Ignore'>A.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>A member need to be nominated via SQ's: </p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'><u><span style='text-decoration:none'>&nbsp;</span></u></p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'><u>New Leader Nominations:</u></p>
+
+<p style='margin-top:0in;margin-right:-27.0pt;
+margin-bottom:0in;margin-left:.5in;margin-bottom:.0001pt;mso-add-space:auto'>M.
+Nominated Not Engaged Yet<i style='mso-bidi-font-style:normal'>Nominated but
+have not started in engaging with potential followers</i></p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'>W. Nominated Leader Working <i style='mso-bidi-font-style:
+normal'> In the process in getting followers</i></p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'>A. Nominated Leader Achieved Goals- <i
+style='mso-bidi-font-style:normal'>Achieved the 10-25 followers</i></p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'>O. Override Achieved Goal- <i style='mso-bidi-font-style:
+normal'>Achieved more than 25 followers</i></p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'>R. Already a Reach Leader- <i style='mso-bidi-font-style:
+normal'>Already a leader from previous phases</i></p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'>X. Not a Leader</p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'>N. Not Nominated</p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'></p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto;text-indent:-.25in;mso-list:l0 level1 lfo1'><span
+style='mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin'><span
+style='mso-list:Ignore'>B.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Once a member is nominated he/she needs to work
+on getting 10-25 followers and making sure that these followers will have these
+following SQ responses, in order to count as followers:</p>
+
+<p style='margin-bottom:0in;margin-bottom:.0001pt;
+mso-add-space:auto'></p>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;text-indent:-.25in'><span
+style='mso-spacerun:yes'></span><u>Picket Commitment: </u></p>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt'>B. Confirmed </p>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt'>D. Reminded</p>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt'>A. Attended</p>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt'></p>
+
+<p style='margin-bottom:0in;margin-bottom:.0001pt;
+mso-add-space:auto;text-indent:-.25in;mso-list:l0 level1 lfo1'><span
+style='mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin'><span
+style='mso-list:Ignore'>C.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>When doing entry for the SQs Picket Commitment
+Organizers need to make sure that they enter the right person under collected
+by (leader), therefore it will fall under the right leader and their numbers
+will be accurate. </p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'></p>
+
+<p style='margin-bottom:0in;margin-bottom:.0001pt;
+mso-add-space:auto;text-indent:-.25in;mso-list:l0 level1 lfo1'><span
+style='mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin'><span
+style='mso-list:Ignore'>D.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Then, orgs need to make sure that those leaders
+that achieve the goal will have one of the following responses: <span
+style='mso-spacerun:yes'></span></p>
+
+<p style='margin-bottom:0in;margin-bottom:.0001pt;text-indent:
+.5in'><span style='mso-spacerun:yes'></span>A. Nominated Leader Achieved Goals</p>
+
+<p style='margin-bottom:0in;margin-bottom:.0001pt;text-indent:
+.5in'>O. Override Achieved Goal</p>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;text-indent:-.25in'></p>
+
+<h1>How to be covered?</h1>
+
+<p style='margin-bottom:0in;margin-bottom:.0001pt;
+mso-add-space:auto;text-indent:-.25in;mso-list:l1 level1 lfo2'><span
+style='mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin'><span
+style='mso-list:Ignore'>A.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>A member needs to be attached to a leader <span
+>in order to</span> be covered</p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto;text-indent:-.25in;mso-list:l1 level1 lfo2'><span
+style='mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin'><span
+style='mso-list:Ignore'>B.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>A member needs to have the report tags:</p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'>Prep6CoveredLdr</p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'>Phase6CoveredLdr</p>
+
+<p style='margin-bottom:0in;margin-bottom:
+.0001pt;mso-add-space:auto'></p>
+
+<p style='margin-bottom:0in;margin-bottom:.0001pt;
+mso-add-space:auto'></p>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;text-indent:-.25in'></p>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;
+margin-left:.5in;margin-bottom:.0001pt;text-indent:-.25in'></p>
+</div>
+
+</body>
+</html>
+</apex:page>

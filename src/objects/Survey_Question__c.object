@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Required only if survey question is a vote block type</inlineHelpText>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Survey Questions</relationshipLabel>
+        <relationshipName>Survey_Questions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Add_Info_Allowed_Dates__c</fullName>
+        <description>Enter dates in YYYY-MM-DD format separated by commas, semicolons, or newlines.</description>
+        <externalId>false</externalId>
+        <label>Add Info Allowed Dates</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Add_Info_Control__c</fullName>
+        <description>Controls options, lables, or behaviors for Add Info Types.
+For &quot;Numeric Additive&quot;, it is the label.
+For &quot;Picklist&quot;, it is the list of options.</description>
+        <externalId>false</externalId>
+        <label>Add Info Control</label>
+        <length>2000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Add_Info_Type__c</fullName>
+        <description>Numeric Additive is like surveys collected</description>
+        <externalId>false</externalId>
+        <label>Add Info Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Not Specified</fullName>
+                    <default>true</default>
+                    <label>Not Specified</label>
+                </value>
+                <value>
+                    <fullName>Numeric Additive</fullName>
+                    <default>false</default>
+                    <label>Numeric Additive</label>
+                </value>
+                <value>
+                    <fullName>Picklist</fullName>
+                    <default>false</default>
+                    <label>Picklist</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Allowed_Responses__c</fullName>
+        <defaultValue>&quot;yes&quot;</defaultValue>
+        <description>The responses allowed in a Survey Response.  Separate allowed responses by a newline character.</description>
+        <externalId>false</externalId>
+        <label>Allowed Responses</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Collected_By_Label__c</fullName>
+        <description>If you want to use a different label for MO rather than &quot;Collected By&quot; enter that label in this field.</description>
+        <externalId>false</externalId>
+        <label>Collected By Label</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Custom_Entry_Page__c</fullName>
+        <description>Custom VF Page for Data Entry</description>
+        <externalId>false</externalId>
+        <label>Custom Entry Page</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <description>Survey Description</description>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Effective_Date__c</fullName>
+        <defaultValue>Today()</defaultValue>
+        <description>What date did this survey question come online?</description>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Field_Staff_Assessment__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Field Staff Assessment</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Vote_Block__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Check if this survey code is a Vote Block (ie, list of time ranges)</inlineHelpText>
+        <label>Is Vote Block</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Ldr_Assm_Add_Info_Min__c</fullName>
+        <description>The minimum Add Info Numeric Value for a Leadership Assessment.</description>
+        <externalId>false</externalId>
+        <label>Ldr Assmnt Add Info Num Min</label>
+        <precision>11</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ldr_Assm_Vals__c</fullName>
+        <description>Enter the first letter of the responses that mark this person as an External/Repr/COOL Leader.  E.g. &quot;12&quot; considers anyone who has a Response Value of &quot;1. Leader&quot; or &quot;2. Supporter&quot; as a Leader.  If the Survey Question is not a leadership assessment leave this field blank.</description>
+        <externalId>false</externalId>
+        <label>Ldr Assmnt Values</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Linked_to_Petition__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check to see if Petition is linked to Campaign</description>
+        <externalId>false</externalId>
+        <label>Linked to Petition</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Linked_to_Recruits__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Does this SQ link to the Recruits custom object?</description>
+        <externalId>false</externalId>
+        <label>Linked to Recruits</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>MO_Show_Collected_Date_Label__c</fullName>
+        <externalId>false</externalId>
+        <label>MO Show Collected Date Label</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MO_Show_Collected_Date__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>If true, show Collected Date in MO.</description>
+        <externalId>false</externalId>
+        <label>MO Show Collected Date</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Mbr_Ldr_Portal_Access__c</fullName>
+        <externalId>false</externalId>
+        <label>Mbr Ldr Portal Access</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>None</fullName>
+                    <default>true</default>
+                    <label>None</label>
+                </value>
+                <value>
+                    <fullName>Read Only</fullName>
+                    <default>false</default>
+                    <label>Read Only</label>
+                </value>
+                <value>
+                    <fullName>Read/Write</fullName>
+                    <default>false</default>
+                    <label>Read/Write</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Populated_by_Question_Response_Field__c</fullName>
+        <externalId>false</externalId>
+        <label>Populated by Question Response Field</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Populated_by_Questionnaire_Name__c</fullName>
+        <description>The Prefix of the Questionnaire Name (Survey_Name__c) for this Survey Question.</description>
+        <externalId>false</externalId>
+        <label>Populated by Questionnaire Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Populated_by_Questionnaire__c</fullName>
+        <externalId>false</externalId>
+        <label>Populated by Questionnaire</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>No</fullName>
+                    <default>true</default>
+                    <label>No</label>
+                </value>
+                <value>
+                    <fullName>Contact</fullName>
+                    <default>false</default>
+                    <label>Contact</label>
+                </value>
+                <value>
+                    <fullName>Bargaining Ldr</fullName>
+                    <default>false</default>
+                    <label>Bargaining Ldr</label>
+                </value>
+                <value>
+                    <fullName>Department Ldr</fullName>
+                    <default>false</default>
+                    <label>Department Ldr</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Propagated_from_Cvent__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Does this Survey Question correspond to a Cvent Campaign?</description>
+        <externalId>false</externalId>
+        <label>Propagated from Cvent</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Questionnaire_Link_English__c</fullName>
+        <description>If there is an online questionnaire, that link may go here.</description>
+        <externalId>false</externalId>
+        <label>Questionnaire Link English</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Questionnaire_Link_Spanish__c</fullName>
+        <description>Questionnaire link, Spanish.</description>
+        <externalId>false</externalId>
+        <label>Questionnaire Link Spanish</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>SQ_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASESAFEID(Id)</formula>
+        <label>SQ Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Scope__c</fullName>
+        <description>Scope of the survey question.  If the survey is scoped &quot;Global&quot;, it will be propagated to all a person&apos;s Contacts record.  If the survey is scoped &quot;Division&quot;, it will be propagated to all a person&apos;s Contacts record within the same Division.  If the survey is scoped &quot;Employer Only&quot; it will only affect the immediate Contact record.</description>
+        <externalId>false</externalId>
+        <label>Scope</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Global</fullName>
+                    <default>true</default>
+                    <label>Global</label>
+                </value>
+                <value>
+                    <fullName>Division</fullName>
+                    <default>false</default>
+                    <label>Division</label>
+                </value>
+                <value>
+                    <fullName>Employer Only</fullName>
+                    <default>false</default>
+                    <label>Employer Only</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Survey_Code__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>Three letter Survey Code</description>
+        <externalId>true</externalId>
+        <label>Survey Code</label>
+        <length>3</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Campaign_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>UHW_Campaign__r.Name</formula>
+        <label>UHW Campaign Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UHW_Campaign__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>UHW Campaign</label>
+        <referenceTo>UHW_Campaign__c</referenceTo>
+        <relationshipLabel>Survey Questions</relationshipLabel>
+        <relationshipName>Survey_Questions</relationshipName>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Survey Question</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Scope__c</columns>
+        <columns>Survey_Code__c</columns>
+        <columns>UHW_Campaign__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>X2015</fullName>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Effective_Date__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>1/1/2015</value>
+        </filters>
+        <label>SQ 2015</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Data_Team</group>
+        </sharedTo>
+    </listViews>
+    <nameField>
+        <label>Survey Question Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Survey Questions</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>UHW_Campaign_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Survey_Code__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>Survey_Question_SOP</fullName>
+        <availability>online</availability>
+        <description>Standard Operating Procedure for Survey Questions include prototypes and best practices.</description>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Survey Question SOP</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>{!URLFOR(&quot;https://docs.google.com/document/d/1z-n1j11ZcO3xxKRmLjcW1cRXmQjflv7uIUtR7bWLtNY/edit?ts=568b25a1&quot;)}</url>
+    </webLinks>
+</CustomObject>

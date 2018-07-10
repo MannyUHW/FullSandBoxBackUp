@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Contract Ratification BU Member</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Contract Ratification BU Members</value>
+    </caseValues>
+    <fields>
+        <label><!-- Account Name --></label>
+        <name>Account_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- COPE New Amount --></label>
+        <name>COPE_New_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Current COPE Pledge --></label>
+        <name>COPE_Pledge__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contact --></label>
+        <name>Contact__c</name>
+        <relationshipLabel><!-- Contract Ratification BU Members --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Contract Rat BU ID --></label>
+        <name>Contract_Rat_BU_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contract Record Id --></label>
+        <name>Contract_Record_Id__c</name>
+    </fields>
+    <fields>
+        <help><!-- Hover to view Contract Detail --></help>
+        <label><!-- Contract --></label>
+        <name>Contract__c</name>
+        <relationshipLabel><!-- BU Members --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Department --></label>
+        <name>Department__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- First Name --></label>
+        <name>First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Increased/New COPE Sign Up # --></label>
+        <name>Inc_New_COPE__c</name>
+    </fields>
+    <fields>
+        <label><!-- Inc or New COPE Amt --></label>
+        <name>Inc_or_New_COPE_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Last Name --></label>
+        <name>Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- MemberID --></label>
+        <name>MemberID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Notes --></label>
+        <name>Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Turned Out By --></label>
+        <name>Turned_Out_By__c</name>
+    </fields>
+    <fields>
+        <label><!-- Voted --></label>
+        <name>Voted__c</name>
+    </fields>
+    <layouts>
+        <layout>Contract Ratification BU List Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Member Info --></label>
+            <section>Member Info</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- View_Contract --></label>
+        <name>View_Contract</name>
+    </webLinks>
+</CustomObjectTranslation>

@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Eboard Candidate</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Eboard Candidates</value>
+    </caseValues>
+    <fields>
+        <label><!-- AAA Ballot No --></label>
+        <name>AAA_Ballot_No__c</name>
+    </fields>
+    <fields>
+        <label><!-- Action Needed --></label>
+        <name>Action_Needed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alternate City --></label>
+        <name>Alternate_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alternate Email --></label>
+        <name>Alternate_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alternate First Name --></label>
+        <name>Alternate_First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alternate Last Name --></label>
+        <name>Alternate_Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alternate Phone --></label>
+        <name>Alternate_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alternate State --></label>
+        <name>Alternate_State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alternate Street --></label>
+        <name>Alternate_Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- Alternate Zip --></label>
+        <name>Alternate_Zip__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ballot First Name --></label>
+        <name>Ballot_First_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ballot Last Name --></label>
+        <name>Ballot_Last_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ballot Name --></label>
+        <name>Ballot_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Best Address --></label>
+        <name>Best_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Best City --></label>
+        <name>Best_City__c</name>
+    </fields>
+    <fields>
+        <label><!-- Best Email --></label>
+        <name>Best_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Best Phone --></label>
+        <name>Best_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Best State --></label>
+        <name>Best_State__c</name>
+    </fields>
+    <fields>
+        <label><!-- Best Street --></label>
+        <name>Best_Street__c</name>
+    </fields>
+    <fields>
+        <label><!-- Best Zip --></label>
+        <name>Best_Zip__c</name>
+    </fields>
+    <fields>
+        <label><!-- Candidate Office Title --></label>
+        <name>Candidate_Office_Title__c</name>
+        <picklistValues>
+            <masterLabel>Ethics Committee-Hospital</masterLabel>
+            <translation><!-- Ethics Committee-Hospital --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Ethics Committee-Kaiser</masterLabel>
+            <translation><!-- Ethics Committee-Kaiser --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Board-Hospital</masterLabel>
+            <translation><!-- Executive Board-Hospital --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Board-Hospital Retiree</masterLabel>
+            <translation><!-- Executive Board-Hospital Retiree --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Board-Kaiser</masterLabel>
+            <translation><!-- Executive Board-Kaiser --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Board-Kaiser Retiree</masterLabel>
+            <translation><!-- Executive Board-Kaiser Retiree --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Committee-Hospital</masterLabel>
+            <translation><!-- Executive Committee-Hospital --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Committee-Kaiser</masterLabel>
+            <translation><!-- Executive Committee-Kaiser --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Executive Committee-Union Wide</masterLabel>
+            <translation><!-- Executive Committee-Union Wide --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Finance Committee-Hospital</masterLabel>
+            <translation><!-- Finance Committee-Hospital --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Finance Committee-Kaiser</masterLabel>
+            <translation><!-- Finance Committee-Kaiser --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>President</masterLabel>
+            <translation><!-- President --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Vice President</masterLabel>
+            <translation><!-- Vice President --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Candidate Seated Date --></label>
+        <name>Candidate_Seated_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Candidate Seated --></label>
+        <name>Candidate_Seated__c</name>
+    </fields>
+    <fields>
+        <help><!-- Is a candidate statement submitted with the form and petition? Or has it been submitted by email? --></help>
+        <label><!-- Candidate Statement --></label>
+        <name>Candidate_Statement__c</name>
+    </fields>
+    <fields>
+        <label><!-- Candidate Type --></label>
+        <name>Candidate_Type__c</name>
+        <picklistValues>
+            <masterLabel>EBoard</masterLabel>
+            <translation><!-- EBoard --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>ECom</masterLabel>
+            <translation><!-- ECom --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Ethics</masterLabel>
+            <translation><!-- Ethics --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Financial</masterLabel>
+            <translation><!-- Financial --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Union Wide</masterLabel>
+            <translation><!-- Union Wide --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Constituency Name --></label>
+        <name>Constituency_Name1__c</name>
+        <relationshipLabel><!-- Eboard Candidates --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Constituency --></label>
+        <name>Constituency__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contested --></label>
+        <name>Contested__c</name>
+    </fields>
+    <fields>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+    </fields>
+    <fields>
+        <help><!-- Date processed by Membership --></help>
+        <label><!-- Date Processed --></label>
+        <name>Date_Processed__c</name>
+    </fields>
+    <fields>
+        <label><!-- District 2017 --></label>
+        <name>District_2017__c</name>
+    </fields>
+    <fields>
+        <label><!-- District --></label>
+        <name>District__c</name>
+        <relationshipLabel><!-- Eboard Candidates (District) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Division AA Email --></label>
+        <name>Division_AA_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division Director Email --></label>
+        <name>Division_Director_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <help><!-- Current Occupied EBS (from EboardSeats Object) --></help>
+        <label><!-- EBoard Seat --></label>
+        <name>Eboard_Seat__c</name>
+        <relationshipLabel><!-- Eboard Candidates --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Elected --></label>
+        <name>Elected__c</name>
+    </fields>
+    <fields>
+        <label><!-- Election Committee Comments --></label>
+        <name>Election_Committee_Comments__c</name>
+    </fields>
+    <fields>
+        <help><!-- Election Day --></help>
+        <label><!-- Election Date --></label>
+        <name>Election_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email Sent --></label>
+        <name>Email_Sent__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employee No --></label>
+        <name>Employee_No__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer ID --></label>
+        <name>Employer_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Executive Title --></label>
+        <name>Executive_Title__c</name>
+    </fields>
+    <fields>
+        <label><!-- First Time Elected --></label>
+        <name>First_Time_Elected__c</name>
+    </fields>
+    <fields>
+        <label><!-- Has a photo --></label>
+        <name>Has_a_photo__c</name>
+    </fields>
+    <fields>
+        <help><!-- help identify when seats are vacant since some seats are occupied by more than one person --></help>
+        <label><!-- Instated To Office --></label>
+        <name>Instated_To_Office__c</name>
+    </fields>
+    <fields>
+        <help><!-- to be completed by Membership --></help>
+        <label><!-- Make Candidate Date --></label>
+        <name>Make_Candidate_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- to be completed by Membership --></help>
+        <label><!-- Make Candidate --></label>
+        <name>Make_Candidate__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member ID --></label>
+        <name>Member_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Member --></label>
+        <name>Member__c</name>
+        <relationshipLabel><!-- Eboard Candidates --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Membership Employer Id --></label>
+        <name>Membership_Employer_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Membership Status --></label>
+        <name>Membership_Status__c</name>
+        <picklistValues>
+            <masterLabel>Complete</masterLabel>
+            <translation><!-- Complete --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Need Payment --></label>
+        <name>Need_Payment__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nomination Form Date Received --></label>
+        <name>Nomination_Form_Date_Received__c</name>
+    </fields>
+    <fields>
+        <help><!-- Is it included, completely filled out and signed? --></help>
+        <label><!-- Nomination Form --></label>
+        <name>Nomination_Form__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nomination Petition Signed Date --></label>
+        <name>Nomination_Petition_Signed_Date__c</name>
+    </fields>
+    <fields>
+        <help><!-- did nomineed(s) sign the petition? (must sign at least one petition) --></help>
+        <label><!-- Nomination Petition Signed --></label>
+        <name>Nomination_Petition_Signed__c</name>
+    </fields>
+    <fields>
+        <help><!-- Is it the correct petition for the office? Does it match the nomination form? --></help>
+        <label><!-- Nomination Petition --></label>
+        <name>Nomination_Petition__c</name>
+    </fields>
+    <fields>
+        <label><!-- Nomination Status --></label>
+        <name>Nomination_Status__c</name>
+        <picklistValues>
+            <masterLabel>Not Processed</masterLabel>
+            <translation><!-- Not Processed --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Qualified</masterLabel>
+            <translation><!-- Qualified --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unqualified</masterLabel>
+            <translation><!-- Unqualified --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Withdrawn</masterLabel>
+            <translation><!-- Withdrawn --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Number Of Signatures --></label>
+        <name>Number_Of_Signatures__c</name>
+    </fields>
+    <fields>
+        <label><!-- Payment Amount --></label>
+        <name>Payment_Amount__c</name>
+    </fields>
+    <fields>
+        <label><!-- Photo URL --></label>
+        <name>Photo_URL__c</name>
+    </fields>
+    <fields>
+        <label><!-- Photo --></label>
+        <name>Photo__c</name>
+    </fields>
+    <fields>
+        <help><!-- Previous Occupied EBS (from EboardSeats Object) --></help>
+        <label><!-- Previous Eboard Seat --></label>
+        <name>Previous_Eboard_Seat__c</name>
+        <relationshipLabel><!-- Eboard Candidates (Previous Eboard Seats) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Processed By --></label>
+        <name>Processed_By__c</name>
+        <relationshipLabel><!-- Eboard Candidates --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Qualified Date --></label>
+        <name>Qualified_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reg Dir Email --></label>
+        <name>Reg_Dir_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Regional Director Email --></label>
+        <name>Regional_Director_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Removed From Office --></label>
+        <name>Removed_From_Office__c</name>
+    </fields>
+    <fields>
+        <label><!-- Removed --></label>
+        <name>Removed__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resigned From Office --></label>
+        <name>Resigned_From_Office__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resigned/Removed Date --></label>
+        <name>Resigned_Removed_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resigned/Removed Reason --></label>
+        <name>Resigned_Removed_Reason__c</name>
+    </fields>
+    <fields>
+        <label><!-- Resigned --></label>
+        <name>Resigned__c</name>
+    </fields>
+    <fields>
+        <label><!-- Seat/Unseat --></label>
+        <name>Seat_Unseat__c</name>
+        <picklistValues>
+            <masterLabel>Seated</masterLabel>
+            <translation><!-- Seated --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Unseated</masterLabel>
+            <translation><!-- Unseated --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Signatures Verified --></label>
+        <name>Signatures_Verified__c</name>
+    </fields>
+    <fields>
+        <label><!-- Slate --></label>
+        <name>Slate__c</name>
+        <picklistValues>
+            <masterLabel>Cedars-Sinai-UHW</masterLabel>
+            <translation><!-- Cedars-Sinai-UHW --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>D7!</masterLabel>
+            <translation><!-- D7! --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Healthcare Justice</masterLabel>
+            <translation><!-- Healthcare Justice --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Independent</masterLabel>
+            <translation><!-- Independent --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SEIU UNITED Membership</masterLabel>
+            <translation><!-- SEIU UNITED Membership --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SEIU-UHW MUST (Members United for Strength)</masterLabel>
+            <translation><!-- SEIU-UHW MUST (Members United for Strength) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>SEIU-UHW ‘TRIUMPH&apos; (Trust, Results, Integrity, Unity, Membership, Purpose, Honesty)</masterLabel>
+            <translation><!-- SEIU-UHW ‘TRIUMPH&apos; (Trust, Results, Integrity, Unity, Membership, Purpose, Honesty) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Team Batman</masterLabel>
+            <translation><!-- Team Batman --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Time For A Change</masterLabel>
+            <translation><!-- Time For A Change --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>United Membership</masterLabel>
+            <translation><!-- United Membership --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>We Are Your Voice</masterLabel>
+            <translation><!-- We Are Your Voice --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- Use Alt Address --></label>
+        <name>Use_Alt_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Use Alt Email --></label>
+        <name>Use_Alt_Email__c</name>
+    </fields>
+    <fields>
+        <label><!-- Use Alt Name --></label>
+        <name>Use_Alt_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Use Alt Phone --></label>
+        <name>Use_Alt_Phone__c</name>
+    </fields>
+    <fields>
+        <help><!-- records how many votes this person received, whether they won their election or not --></help>
+        <label><!-- Votes --></label>
+        <name>Votes__c</name>
+    </fields>
+    <layouts>
+        <layout>Eboard Candidate Layout</layout>
+        <sections>
+            <label><!-- Alternate Contact Info --></label>
+            <section>Alternate Contact Info</section>
+        </sections>
+        <sections>
+            <label><!-- Best Contact Information --></label>
+            <section>Best Contact Information</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Election Committee Petition Verification Checklist --></label>
+            <section>Election Committee Petition Verification Checklist</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <validationRules>
+        <errorMessage><!-- Nomination status should be qualified. --></errorMessage>
+        <name>Validation_Make_Candidate</name>
+    </validationRules>
+    <validationRules>
+        <errorMessage><!-- Nomination status should be qualified. --></errorMessage>
+        <name>Validation_Make_Candidate2</name>
+    </validationRules>
+</CustomObjectTranslation>

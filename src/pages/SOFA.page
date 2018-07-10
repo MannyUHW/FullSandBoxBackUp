@@ -1,0 +1,1363 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="SOFA_Controller">
+    <html>
+        <head>
+            <meta charset="utf-8"></meta>
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+     
+            <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"></link>
+            <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet"></link>
+    
+            <style>
+                /* ----------------------------------------------------------------------- */
+                .tabs {
+                  border: 1px solid #ddd;
+                  position: relative;
+                }
+                .tabs__section { margin: 1rem; }
+                .tabs__navigation {
+                  margin-left: -1px;
+                  position: absolute;
+                  top: -34px;
+                }
+                .tabs__link {
+                  display: inline-block;
+                  border: 1px solid #ddd;
+                  text-decoration: none;
+                  padding: .25rem .75rem;
+                  color: #B3B3B3;
+                  background: #E7E7E7;
+                  margin-left: .25rem;
+                }
+                .tabs__link:first-child { margin-left: 10px; }
+                .tabs__link--active {
+                  font-weight: bold;
+                  border-bottom-color: #fff;
+                  background: #fff;
+                  color: #186baa;
+                }
+
+                .tableCellClass1 {
+                    color: whitesmoke;
+                }
+                .tableCellClass2 {
+                    color: yellow;
+                }
+                /* ----------------------------------------------------------------------- */
+                table {
+                    border-collapse: collapse;
+                    border-spacing: 0px;
+                }
+                table, th, td {
+                    padding: 5px;
+                    border: 1px solid #bbc6a5;
+                }
+                /* ----------------------------------------------------------------------- */
+               .hide {
+                    display:none;
+                }
+    
+                .show {
+                    display:block;
+                }
+    
+                #JobCreatedDiv {
+                    display: inline-block;
+                    color: cyan;
+                    width: 300px;
+                    padding-top: 7px;
+                    padding-right: 3px;
+                    padding-bottom: 3px;
+                    padding-left: 3px;
+                    height: 26px;                
+                }
+    
+                #TableDiv {
+                    color:whitesmoke;
+                    margin-top: 2px;
+                    width:590px;
+                }
+    
+                #SelectionDiv {
+                   display: inline-block;
+                   color: #bbc6a5;               
+                }
+    
+                #SelectAllStandard {}
+                #SelectAllCustom {}
+    
+                .labelValid {
+                    color:blue;
+                    color:#4b5d27;
+                }
+    
+                .labelInvalid {
+                    color:red;                
+                    color:#bbc6a5;
+                }
+    
+                #sec1 {
+                    display:inline-block;
+                    padding:3px;
+                    background-color: lightblue; 
+                    width:655px;
+                }
+    
+                #sec2 {
+                    display: inline-block;
+                    background-color: lightcoral; 
+                    width: 130px;
+                    padding-top: 7px;
+                    padding-right: 3px;
+                    padding-bottom: 3px;
+                    padding-left: 3px;
+                    height: 26px;
+                }
+    
+                #sec3 {
+                    display: inline-block;
+                    padding-top: 7px;
+                    padding-right: 3px;
+                    padding-bottom: 3px;
+                    padding-left: 3px;                
+                    background-color: lightsteelblue; 
+                    width:530px;
+                    height: 36px;
+                }
+    
+                #sec4 {
+                    display: inline-block;
+                    padding:3px;
+                    background-color: lightgray; 
+                    width:130px;
+                }
+    
+                .SelectCount0 {
+                    color:lightslategray;
+                    margin-left: 5px;
+                }
+    
+                .SelectCount1 {
+                    color:white;
+                    margin-left: 5px;
+                }
+    
+                #UserSelectedFields {
+                    width: 440px; 
+                    height: 48px;
+                }
+    
+                #FilterDiv1,#FilterDiv2 {
+                    display: inline-block;
+                    color: #bbc6a5;
+                    font-size: 16px;
+                    border: 1px solid blue; 
+                    width: 100%;
+                    padding-bottom: 5px;
+                    background-color: white;
+                }
+    
+                #UserSoqlInput {
+                    width: 510px;
+                    height: 26px;
+                    font-size: 15px;
+                    border: 1px solid white;
+                    position: relative;
+                    left: 10px;
+                    top: 4px;
+                    background-color: lightgray;
+                }
+    
+                #ObjectFilterInput,#FieldFilterInput {
+                    padding-left: 5px;
+                    width: 280px;
+                    height: 24px;
+                    font-size: 14px;
+                    margin-top: 15px;
+                    margin-left: 8px;
+                }
+    
+                #TitleDiv  {
+                    margin: 0 auto;
+                    width: 462px;
+                    padding-top: 1px;
+                    padding-right: 20px;
+                    padding-bottom: 1px;
+                    padding-left: 109px;
+                    color: white;
+                    font-size: 25px;
+                }
+    
+                #TitleDiv span {
+                    color: yellow;
+                }
+    
+                #Header {
+                    margin: 0 auto;
+                    width: 574px;
+                    padding-right: 20px;
+                    padding-bottom: 10px;
+                    padding-left: 20px;
+                    color: white;
+    /*                background-color: rebeccapurple; */
+                }
+    
+                #Content {
+                    margin-left: 5px;
+                    background-color: rebeccapurple;
+                    color: white;
+                }
+    
+                #ObjectGridDiv {
+                    height: 600px;
+                    margin-top: 3px;
+                    margin-bottom: 3px;
+                    overflow: auto;
+                    width: 100%;
+                }
+    
+                #FieldGridDiv {
+                    height: 600px;
+                    margin-top: 3px;
+                    margin-bottom: 3px;
+                    overflow: auto;
+                    width: 100%;
+                }
+    
+                .modalDialog {
+                    position: fixed;
+                    font-family: Arial, Helvetica, sans-serif;
+                    top: 100px;
+                    left: 50px;
+                    width: 80%;
+                    height: 80%;
+                    background: rgba(0, 0, 0, 0.8);
+                    z-index: 99999;
+                    opacity: 0.8;
+                    pointer-events: none;
+                }
+    
+                .modalDialog > div {
+                    width: 400px;
+                    position: relative;
+                    margin: 10% auto;
+                    padding: 5px 20px 13px 20px;
+                    border-radius: 10px;
+                    background: #fff;
+                    background: -moz-linear-gradient(#fff, #999);
+                    background: -webkit-linear-gradient(#fff, #999);
+                    background: -o-linear-gradient(#fff, #999);
+                }
+    
+                body {
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 14px;
+                    padding : 10px ;
+                    background-color: rebeccapurple;
+                }
+    
+                .cellRight {
+                    text-align: right;
+                    padding-right:5px !important;
+                    font-family: 'Roboto Mono', monospace;
+                    font-size: 12px;
+                    font-style: normal;
+                    font-variant: normal;
+                }
+    
+                .cellCenter {
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 12px;
+                    text-align: center;
+                    font-style: normal;
+                    font-variant: normal;
+                }
+    
+                .cellLeft {
+                    font-family: 'Montserrat', sans-serif;
+                    font-size: 12px;
+                    text-align: left;
+                    padding-left:5px !important;
+                    font-style: normal;
+                    font-variant: normal;
+                }
+    
+               .hdr {
+                    display: inline-block;
+                    width: 340px;
+                    border: 1px solid blue;
+                    color: #e1c1ff;
+                    margin-left: 5px;
+                    margin-top: 10px;
+                    padding-left: 6px;
+                    padding-top: 2px;
+                    font-weight: 600;
+                }
+    
+                .disp {
+                    display: inline-block;
+                    color: #e1c1ff;
+                    margin-left: 1px;
+                    padding-left: 1px;
+                    font-weight: normal;
+                    font-size: 10px;
+                }
+      
+                /* removes outline dots from button when it gets focus */
+                :focus {outline:none;}
+                ::-moz-focus-inner {border:0;}
+    
+                #JobCreateBtn, #VerifyBtn {
+                    background-color: white;
+                    color: #186baa;
+                    margin-left: 10px;
+                    height: 28px;
+                    font-weight: bold;
+                    padding-bottom: 4px;
+                    font-size: 15px;
+                }
+    
+                #JobCreateBtn:hover, #VerifyBtn:hover {
+                    background-color: rgba(0,0,255,0.2);
+                    color:white;
+                }
+    
+                #JobCreateBtn:disabled, #VerifyBtn:disabled {
+                    background-color: lightgray;
+                    color:whitesmoke;
+                }
+    
+            </style>
+        </head>
+        <body>
+    
+        <div id="Header">
+            <div id="TitleDiv"><span>S</span>alesforce <span>O</span>bject <span>F</span>ield <span>A</span>nalyzer</div>
+            <div id="TableDiv"></div>
+        </div>
+        <div id="Content">        
+            <div class="tabs">
+    
+                <nav class="tabs__navigation">
+                    <a id="Tab1Id" class="tabs__link tabs__link--active" href="#tab1">Objects</a>
+                    <a id="Tab2Id" class="tabs__link" href="#tab2">Selection</a>                
+                    <label id="SelectCountLabel" class="SelectCount0">0 Fields Selected</label>                                 
+                </nav>
+    
+                <div id="tab1" class="tabs__section">
+                    <div id="FilterDiv1">
+                        <input id="ObjectFilterInput" placeholder="Search..." type="text"/>
+                        <button id="JobCancelBtn"  class = "btn" type="button" disabled="true">Cancel Job</button>   
+                    </div>
+                    <div id="ObjectGridDiv" class="ag-fresh"></div>
+                    <div>
+                        <input id="SaveAsCsvButton"  class="btn" type="Button" value="Save As .csv"></input>
+                    </div>
+                </div>
+    
+                <div id="tab2" class="tabs__section">
+                    <div id="FilterDiv2">
+                    <div id="sec1">
+                        <input  id="FieldFilterInput" placeholder = "Search..." type = "text"/>
+    
+                        <input id="AllStandardCheckBox"    type="checkbox"></input>
+                        <label id="AllStandardCheckBoxLbl" for="AllStandardCheckBox" class="labelInvalid">All Standard</label>
+                        
+                        <input id="AllCustomCheckBox"    type="checkbox"></input>
+                        <label id="AllCustomCheckBoxLbl" for="AllCustomCheckBox" class="labelInvalid">All Custom</label>                    
+    
+                        <button id="JobCreateBtn"   class = "btn" type="button" disabled="true">Create Job</button>   
+                    </div>                    
+    
+                    <div id="JobCreatedDiv">&nbsp;</div> <!-- Oh how I hate you, css/html quirks! -->
+                    <div id="sec2">                    
+                        Optional SOQL:
+                    </div>                  
+                    <div id="sec3">  
+                        <textarea id="UserSoqlInput"      placeholder = "Soql..."></textarea>
+                    </div>                    
+                    <div id="sec4">
+                        <button id="VerifyBtn"   class="btn" type="button" disabled="true">Verify Soql</button>
+                    </div>
+                    </div>
+                    <div id="FieldGridDiv" class="ag-fresh"></div>
+                </div>
+            </div>
+        </div>
+    
+        <div id="ModalLoadingDiv" class="modalDialog hide">
+            <div>
+                <h2>Loading data...</h2>
+            </div>
+        </div>
+    
+        <script type="text/javascript">
+            'use strict';
+    
+            function init() {
+                tab1Id.addEventListener("click", tab1ClickHandler, false);
+                tab2Id.addEventListener("click", tab2ClickHandler, false);
+                allStandardCheckBox.addEventListener("click", checkAllStandardHandler, false);
+                allCustomCheckBox.addEventListener("click", checkAllCustomHandler, false);
+                objectFilterInput.addEventListener ("input", objectFilterInputHandler, false);
+                fieldFilterInput.addEventListener ("input", fieldFilterInputHandler, false);
+                userSoqlInput.addEventListener ("input",  userSoqlInputHandler, false);
+                saveAsCsvButton.addEventListener("click", saveAsCsv, false);
+                pureTabs.init('tabs__link', 'tabs__link--active'); // http://www.cssscript.com/lightweight-tabs-widget-with-pure-javascript-puretabs
+                tab2Id.disabled = true;
+                
+                jobCreateButton.addEventListener("click",jobCreateClickHandler,false);
+                verifyButton.addEventListener("click",VerifySoqlClickHandler,false);
+                jobCancelBtn.addEventListener("click",jobCreateClickHandler,false);
+            }
+    
+            function tab1ClickHandler(e) {
+                allStandardCheckBox.checked = false;
+                allCustomCheckBox.checked   = false;
+            }
+    
+            function tab2ClickHandler(e) {
+            }
+    
+            function jobCreateClickHandler(e) {
+                createJob();
+            }
+
+            function jobCancelClickHandler(e) {
+                cancelJob();
+            }
+    
+            function VerifySoqlClickHandler(e) {
+                let userSoqlTest, soql = userSoqlInput.value;
+                if(soql.length > 0) {
+                    userSoqlTest = verifySoql(soql).then(verifySqlResult).catch(verifyError);
+                }
+            }
+    
+            var verifySqlResult = function(result) {
+                return new Promise(function (resolve, reject) {
+                    if(result == 'SOQL OK') {
+                        resolve(result);
+                        jobCreateButton.disabled = false;
+                    } else {
+                        jobCreateButton.disabled = true;
+                        reject(result);
+                    }
+                }
+            )};
+    
+            function verifyError(error) {
+                let soqlError = error.replace(/&#39;/g, "'");
+                alert('SOQL Error\n\n' + soqlError);
+            }
+    
+            function objectFilterInputHandler(e) {
+                let searchText = e.target.value;
+                objectGridOptions.api.setQuickFilter(searchText);
+            }
+    
+            function fieldFilterInputHandler(e) {
+                let searchText = e.target.value;
+                fieldGridOptions.api.setQuickFilter(searchText);
+            }
+    
+            function userSoqlInputHandler(e) {
+                if(e.target.value.length == 0)
+                   verifyButton.disabled = true;
+                else   
+                   verifyButton.disabled = false;
+            }
+    
+            var verifySoql = function(pSoql) {
+                return new Promise(function (resolve, reject) {
+                    SOFA_Controller.verifySoql( selectedObjectAPIName, pSoql, (result, event) => {
+                        if (event.status) {
+                            console.log('VerifySoql called');
+                            resolve(result);
+                        }
+                        else
+                        {
+                            console.log('Error making remote call');
+                            console.log(event);
+                            reject(event);
+                        }
+                    });
+                });
+            } 
+    
+            const createJob = function() {
+                return new Promise(function (resolve, reject) {
+
+console.log('selectedObjectAPIName:', selectedObjectAPIName);
+console.log('selectedFieldsArray:',   selectedFieldsArray);
+
+                    SOFA_Controller.createJob( selectedObjectAPIName, selectedFieldsArray, (result, event) => {
+                        if (event.status) {
+                            console.log('createJob called');
+                            console.log('result:',result);
+                            JobCreatedDiv.innerHTML = `createJob called: ${result.ResStatus} || ${result.ResErrors}`;
+                            resolve(result);
+                        }
+                        else
+                        {
+                            console.log('Error calling createJob');
+                            console.log(event);
+                            reject(event);
+                        }
+                    });
+                });
+            } 
+
+            const cancelJob = function() {
+                return new Promise(function (resolve, reject) {
+
+console.log('selectedObjectAPIName:', selectedObjectAPIName);
+console.log('selectedFieldsArray:',   selectedFieldsArray);
+
+                    SOFA_Controller.cancelJob( selectedObjectAPIName, selectedFieldsArray, (result, event) => {
+                        if (event.status) {
+                            console.log('cancelJob called');
+                            console.log('result:',result);
+                            resolve(result);
+                        }
+                        else
+                        {
+                            console.log('Error calling cancelJob');
+                            console.log(event);
+                            reject(event);
+                        }
+                    });
+                });
+            } 
+    
+            function getJobData() {
+                return new Promise(function(resolve, reject) {
+                    SOFA_Controller.getJobData( (result, event) => {
+                        if (event.status) {
+                        console.log('JobData downloaded successfully');
+                        
+                        resolve(result);
+                    }
+                    else {
+                        console.log('JobData download error');
+                        reject(event);
+                    }
+                });
+                });
+            }
+    
+            function processJobData(results) {
+                return new Promise(function(resolve, reject) {
+                    let i,len,mapKey,rec,jobCount;
+                    let id, objectAPIName,jobStatus,jobStart,jobStop;
+                    let selectAllCustom,selectAllStandard,userSoql,userSelectedFields;
+    
+    // Select Id, ObjectApiName__c, SelectAllCustom__c,SelectAllStandard__c,Soql__c,UserSelectedFields__c, JobStart__c,JobStatus__c,JobStop__c
+    //             ORDER BY ObjectApiName__c
+                    jobDataArray  = [];
+                    jobMap        = {};
+                    jobCount      = 0;
+                    len = results.length;
+                    for(mapKey in results) {
+                        jobCount++;
+                        rec = results[mapKey];
+                        id                 = rec.Id;
+                        objectAPIName      = rec.ObjectAPIName__c;
+                        selectAllCustom    = rec.SelectAllCustom__c;
+                        selectAllStandard  = rec.SelectAllStandard__c;
+                        userSoql           = rec.Soql__c;
+                        userSelectedFields = rec.UserSelectedFields__c;
+                        jobStatus          = rec.JobStatus__c;
+                        jobStart           = rec.JobStart__c;
+                        jobStop            = rec.JobStop__c;
+                        jobDataArray.push( {ObjectAPIName:objectAPIName,SelectAllCustom:selectAllCustom,SelectAllStandard:selectAllStandard, UserSoql:userSoql, UserSelectedFields:userSelectedFields,JobStatus:jobStatus,JobStart:jobStart,JobStop:jobStop,Id:id} );
+                        jobMap[objectAPIName] = {ObjectAPIName:objectAPIName,SelectAllCustom:selectAllCustom,SelectAllStandard:selectAllStandard, UserSoql:userSoql, UserSelectedFields:userSelectedFields,JobStatus:jobStatus,JobStart:jobStart,JobStop:jobStop,Id:id};
+                    }
+    console.log('--------------------');
+    console.log(jobDataArray.length);
+    console.log('--------------------');
+                    resolve('ok');
+                });
+            }
+    
+            function getJobItemData() {
+                return new Promise(function(resolve, reject) {
+                    SOFA_Controller.getJobItemData( (result, event) => {
+                        if (event.status) {
+                        console.log('JobItemData downloaded successfully');
+                        alert('To do: fix premature population of Last Analyzed date and add status column to job detail.  dont allow selection if Queued. ');debugger;
+                        resolve(result);
+                    }
+                    else {
+                        console.log('JobItemData download error');
+                        reject(event);
+                    }
+                });
+                });
+            }
+    
+    /* 
+            sofaJobItem.JobId__c         = aaj.Id;
+            sofaJobItem.JobStatus__c     = aaj.Status;
+            sofaJobItem.JobErrors__c     = aaj.NumberOfErrors;
+            sofaJobItem.JobItems__c      = aaj.JobItemsProcessed;
+            sofaJobItem.JobItemsTotal__c = aaj.TotalJobItems; 
+    */
+    
+            function processJobItemData(results) {
+                return new Promise(function(resolve, reject) {
+                    let i,len,mapKey,rec,jobItemCount;
+                    let id, objectAPIName, fieldAPIName, countStart, countStop, count, jobErrors, jobId, jobItemsTotal, jobItems, jobStatus;
+    
+                    jobItemDataArray  = [];
+                    jobItemMap        = {};
+                    jobItemCount      = 0;
+                    for(mapKey in results) {
+                        jobItemCount++;
+                        rec = results[mapKey];
+                        objectAPIName = rec.ObjectAPIName__c;
+                        fieldAPIName  = rec.FieldAPIName__c;
+                        countStart    = moment(rec.CountStart__c).format('MM/DD/YYYY');
+                        countStop     = moment(rec.CountStop__c).format('MM/DD/YYYY');
+                        count         = rec.Count__c;
+                        jobErrors     = rec.JobErrors__c;
+                        jobId         = rec.JobId__c;
+                        jobItemsTotal = rec.JobItemsTotal__c;
+                        jobItems      = rec.JobItems__c;
+                        jobStatus     = rec.JobStatus__c;
+                        jobItemDataArray.push(   {ObjectAPIName:objectAPIName,FieldAPIName:fieldAPIName,CountStart:countStart,CountStop:countStop,Count:count,JobErrors:jobErrors,JobId:jobId,JobItemsTotal:jobItemsTotal,JobItems:jobItems,JobStatus:jobStatus});
+                        if(!jobItemMap[objectAPIName])
+                            jobItemMap[objectAPIName] = {};
+                        jobItemMap[objectAPIName][fieldAPIName] = {ObjectAPIName:objectAPIName,FieldAPIName:fieldAPIName,CountStart:countStart,CountStop:countStop,Count:count,JobErrors:jobErrors,JobId:jobId,JobItemsTotal:jobItemsTotal,JobItems:jobItems,JobStatus:jobStatus};
+                    }
+    console.log('--------------------');
+    console.log(jobItemDataArray.length);
+    console.log('--------------------');
+                    resolve('ok');
+                });
+            }
+    
+            function getObjectData() {
+                return new Promise(function (resolve, reject) {
+                    SOFA_Controller.getObjects((result, event) => {
+                        if (event.status) {
+                            console.log('SOFA_Controller.getObjects() called.');
+                            resolve(result);
+                        }
+                        else
+                        {
+                            console.log('Error from SOFA_Controller.getObjects() ');
+                            reject(event);
+                        }
+                    });
+                });
+            }
+    
+            function processObjectData(results) {
+                return new Promise(function (resolve, reject) {
+                    console.log('processObjectData()');
+                    let i,len,rec,customCount = 0, standardCount = 0, creatableCount = 0, standardCreatableCount = 0, customCreatableCount = 0;
+                    let objectName,objectAPIName,objectIsCustom,objectIsCreatable,objectIsQueryable;
+                    let id, jobStatus,jobStart,jobStop;
+                    let selectAllCustom,selectAllStandard,userSoql,userSelectedFields;
+                    len = results.length;
+                    if(len > 0) {
+                         for(i = 0; i < len; i++) {
+                            id = jobStatus = jobStart = jobStop = selectAllCustom = selectAllStandard = userSelectedFields = userSoql = '';
+                            rec               = results[i];
+                            objectName        = rec.ObjectName;
+                            objectAPIName     = rec.ObjectAPIName;
+                            objectIsCustom    = rec.ObjectIsCustom;
+                            objectIsCreatable = rec.ObjectIsCreatable;
+                            objectIsQueryable = rec.ObjectIsQueryable;
+                            if(jobMap[objectAPIName]) {
+                                id                 = jobMap[objectAPIName].Id;
+                                selectAllCustom    = jobMap[objectAPIName].SelectAllCustom;
+                                selectAllStandard  = jobMap[objectAPIName].SelectAllStandard;
+                                userSelectedFields = jobMap[objectAPIName].UserSelectedFields;
+                                userSoql           = jobMap[objectAPIName].UserSoql  ||  '..' ;
+                                jobStatus          = jobMap[objectAPIName].JobStatus ||  '..' ;
+                                jobStart           = jobMap[objectAPIName].JobStart  ||  '..' ;
+                                jobStop            = jobMap[objectAPIName].JobStop   ||  '..' ;
+                            }
+                            
+                            objectDataArray.push({ObjectName:objectName,ObjectAPIName:objectAPIName,ObjectIsCustom:objectIsCustom,ObjectIsCreatable:objectIsCreatable,ObjectIsQueryable:objectIsQueryable,SelectAllCustom:selectAllCustom,SelectAllStandard:selectAllStandard,UserSelectedFields:userSelectedFields,UserSoql:userSoql,JobStatus:jobStatus,JobStart:jobStart,JobStop:jobStop});
+                            objectMap[objectAPIName] = {ObjectName:objectName,ObjectAPIName:objectAPIName,ObjectIsCustom:objectIsCustom,ObjectIsCreatable:objectIsCreatable,ObjectIsQueryable:objectIsQueryable,SelectAllCustom:selectAllCustom,SelectAllStandard:selectAllStandard,UserSelectedFields:userSelectedFields,UserSoql:userSoql,JobStatus:jobStatus,JobStart:jobStart,JobStop:jobStop}; 
+                            if(objectIsCustom) {
+                                customCount++;
+                                if(objectIsCreatable) {
+                                    customCreatableCount++;
+                                }
+                            } else {
+                                standardCount++;
+                                if(objectIsCreatable)  {
+                                    standardCreatableCount++;
+                                } 
+                            }
+                        }  
+                        let objectTotal    = standardCount + customCount;
+                        let creatableTotal = standardCreatableCount + customCreatableCount;
+                        let msg = `
+                            <table>
+                                <tr>
+                                    <td class="tableCellClass1">Total Standard Objects</td><td class="tableCellClass2">${standardCount}</td><td class="tableCellClass1">Total Custom Objects</td><td class="tableCellClass2">${customCount}</td><td class="tableCellClass1">Total Object Count</td><td class="tableCellClass2">${objectTotal}</td>
+                                </tr>    
+                            </table>`;
+                        tableDiv.innerHTML = msg;
+                        objectGridOptions = {
+                            columnDefs: objectColumnDefs,
+                            rowData: objectDataArray,
+                            rowSelection: 'single',
+                            onRowDoubleClicked: rowDoubleClickedHandler,
+                            onSelectionChanged: objectRowSelectionHandler,
+                            enableSorting: true
+                        };
+                        new agGrid.Grid(objectGridDiv, objectGridOptions);
+                        objectGridOptions.api.setSortModel(initialObjectSort);
+    
+                        let notify = humane.create({ timeout: 4000, clickToClose: true, baseCls: 'humane-boldlight' })
+                        notify.log('Double click to select!')
+                    }
+                    else {
+                        console.log('no data!');
+                    } 
+                    resolve('ok');
+                });
+            }
+          
+            function rowDoubleClickedHandler(event) {
+                console.log('rowDoubleClickedHandler');
+                let tl = new TimelineLite();
+                let selectedRows = objectGridOptions.api.getSelectedRows();
+                if (selectedRows.length > 0) {
+                    selectedObjectName          = selectedRows[0].ObjectName;
+                    selectedObjectAPIName       = selectedRows[0].ObjectAPIName;
+                    tab2Id.innerHTML = selectedObjectName;                
+                    tl.to(tab2Id, 1.1, {color:"#0000ff", ease:Expo.easeOut});         
+                    tl.to(tab2Id, 0.8, {color:"#4E86AA", ease:Expo.easeOut});
+                    tl.play();
+                    tab2Id.disabled = false;
+                    tab2Id.click();
+    
+                    if(!fieldDescriptionMap[selectedObjectAPIName]) {
+                        console.log(`Fetching ${selectedObjectAPIName} details with Salesforce api`);
+                        getFields(selectedObjectAPIName)
+                            .then(processFieldData);
+                    } else {
+                        console.log(`Restoring ${selectedObjectAPIName} details from cache`);
+                        restoreFieldData(selectedObjectAPIName);
+                    }
+                    
+                }            
+            }
+    
+            function restoreFieldData(pObjectAPIName) {
+                let mapKey,rec;
+                fieldDataArray = [];
+                for(mapKey in fieldDescriptionMap[pObjectAPIName]) {
+                    rec = fieldDescriptionMap[pObjectAPIName][mapKey];
+                    fieldDataArray.push(rec);
+                } 
+            
+                if(shownBefore) 
+                   fieldGridOptions.api.destroy();
+                else 
+                    shownBefore = true;
+    
+                fieldGridOptions = {
+                    columnDefs: fieldColumnDefs,
+                    rowData: fieldDataArray,
+                    rowSelection: 'multiple',
+                    debug:false,
+                    enableSorting: true,
+                    onSelectionChanged: fieldRowSelectionHandler
+                };
+                new agGrid.Grid(fieldGridDiv, fieldGridOptions);
+                fieldGridOptions.api.setSortModel(initialFieldSort);
+    
+                let hStr = resize(fieldDataArray.length,170) + "px";
+                fieldGridDiv.style.height = hStr;
+            }
+    
+            function checkAllCustomHandler(e) {
+                if(e.target.checked) {
+                    console.log('  checkAllCustomHandler - target checked ');
+                    selectAllCustom();
+                }
+                else {
+                    console.log('  checkAllCustomHandler - target unchecked ');
+                    deselectAllCustom();
+                }
+            }
+    
+            function checkAllStandardHandler(e) {
+                if(e.target.checked) {
+                    console.log('  checkAllStandardHandler - target checked ');
+                    selectAllStandard();
+                }
+                else {
+                    console.log('  checkAllStandardHandler - target unchecked ');
+                    deselectAllStandard();
+                }
+            }
+    
+            function selectAllStandard() {
+                console.log('  selectAllStandard() called');
+                fieldGridOptions.api.forEachNode( function (node) {
+                    if (node.data.FieldIsFilterable && !node.data.FieldIsCustom) {
+                        node.setSelected(true);
+                        selectedCount++;
+                    }
+                });
+            }
+    
+            function deselectAllStandard() {
+                console.log('  deselectAllStandard() called');
+                fieldGridOptions.api.forEachNode( function (node) {
+                    if (node.data.FieldIsFilterable && !node.data.FieldIsCustom) {
+                        node.setSelected(false);
+                        selectedCount--;
+                    }
+                });
+            }
+    
+            function selectAllCustom() {
+                console.log('  selectAllCustom() called');
+                fieldGridOptions.api.forEachNode( function (node) {
+                    if (node.data.FieldIsFilterable && node.data.FieldIsCustom) {
+                        node.setSelected(true);
+                        selectedCount++;
+                    }
+                });
+            }
+    
+            function deselectAllCustom() {
+                console.log('  deselectAllCustom() called');
+                fieldGridOptions.api.forEachNode( function (node) {
+                    if (node.data.FieldIsFilterable && node.data.FieldIsCustom) {
+                        node.setSelected(false);
+                        selectedCount--;
+                    }
+                });
+            }
+    
+            function objectRowSelectionHandler() {
+                let selectedRows = objectGridOptions.api.getSelectedRows();
+                selectedRows.forEach( function(selectedRow, index) {
+                    console.log(selectedRow, index);
+                });
+            }
+
+            function fieldRowSelectionHandler() {
+    
+    console.log('ENTER fieldRowSelectionHandler()...');
+    
+                let selectedRows = fieldGridOptions.api.getSelectedRows();
+                let selectedRowsString = '';
+                let selectedStandardCount = 0, selectedCustomCount = 0;
+                selectedCount       = 0;
+                selectedFieldsArray = [];
+                selectedRows.forEach( function(selectedRow, index) {
+                    if(selectedRow.FieldIsFilterable) {
+                        if(selectedRow.FieldIsCustom) selectedCustomCount++; else selectedStandardCount++;
+                        selectedCount++;
+                        if (index!=0) {
+                            selectedRowsString += ', ';
+                        }
+                        selectedRowsString  += selectedRow.FieldAPIName;
+                        selectedRow.Selected = true;
+                        selectedFieldsArray.push(selectedRow.FieldAPIName);
+                    }
+                });
+    
+                if(selectedCount > 0) {
+                    if(selectedStandardCount == standardFieldCount && standardFieldCount > 0) {
+                        allStandardCheckBox.checked = true;
+                    } else {
+                        allStandardCheckBox.checked = false;
+                    }
+    
+                    if(selectedCustomCount == customFieldCount && customFieldCount > 0) {
+                        allCustomCheckBox.checked   = true;
+                    } else {
+                        allCustomCheckBox.checked   = false;
+                    }
+    
+                    SelectCountLabel.className = 'SelectCount1';
+                    jobCreateButton.disabled   = false;
+                    if(selectedCount == 1) {
+                        SelectCountLabel.textContent = '1 Field Selected';
+                    } else {
+                        SelectCountLabel.textContent = `${selectedCount} Fields Selected`;
+                    }
+                }
+                else { 
+                    SelectCountLabel.textContent = '0 Fields Selected';
+                    SelectCountLabel.className = 'SelectCount0';
+                    jobCreateButton.disabled   = true;
+                }
+            
+    console.log('EXIT fieldRowSelectionHandler()');
+    
+            } 
+    
+            var getFields = function(pObjectAPIName) {
+                return new Promise(function (resolve, reject) {
+                    SOFA_Controller.getObjectFields(pObjectAPIName, (result, event) => {
+                        if (event.status) {
+                            console.log('Retrieved Field data...');
+    //                      console.log(result);
+                            resolve(result);
+                        }
+                        else
+                        {
+                            console.log('Error retrieving Field data');
+                            reject(event);
+                        }
+                    });
+                });
+            }
+    
+            var processFieldData = function(results) {
+                return new Promise(function (resolve, reject) {
+    console.log('processFieldData() called');
+                    let s1,s2,s3,s4,s5,s6,s7,s8,s9;
+                    let len, rec, jobItemRec, countRec, i;
+                    let objectName,objectAPIName,fieldName,fieldAPIName,fieldFormula,fieldType,fieldIsCalculated,fieldIsCustom,fieldLength,fieldIsCreatable,fieldIsFilterable,fieldIsUpdateable;
+                    let jobId, jobStatus, jobErrors, jobItems, jobItemsTotal;
+                    let range,hours,mins,secs,ms;
+                    let count = 0, time = 0, countStart = '', countStop = '', timeFmt = '';
+    
+                    // this was painful to get working!
+                    let r1 = new RegExp(/&amp/,'gm');
+                    let r2 = new RegExp(/&#39/,'gm');
+                    let r3 = new RegExp(/&;/,'gm');
+                    let r4 = new RegExp(/&quot/,'gm');
+                    let r5 = new RegExp(/';/,'gm');
+                    let r6 = new RegExp(/&gt/,'gm');
+                    let r7 = new RegExp(/>;/,'gm');
+                    let r8 = new RegExp(/&lt/,'gm');
+                    let r9 = new RegExp(/<;/,'gm');
+    
+                    len = results.length;
+                    if(len > 0) {
+                        objectName    = results[0].ObjectName;
+                        objectAPIName = results[0].ObjectAPIName;
+                        fieldDescriptionMap[objectAPIName] = {};
+                        fieldDataArray     = [];
+                        standardFieldCount = 0, 
+                        customFieldCount   = 0
+    
+                        for (i = 0; i < len; i++) {
+                            jobId = '', jobStatus = '', jobErrors = 0, jobItems = 0, jobItemsTotal = 0;
+                            count = 0, countStart = countStop = timeFmt = '', time = fieldLength = 0;
+                            fieldName = fieldAPIName = fieldFormula = fieldType = fieldIsCalculated = fieldIsCustom = fieldIsCreatable = fieldIsFilterable = fieldIsUpdateable = '';
+                            rec               = results[i];
+                            fieldName         = clean(rec.FieldName);
+                            fieldAPIName      = rec.FieldAPIName;     
+                            fieldFormula      = clean(rec.FieldFormula);
+                            fieldType         = toProperCase(rec.FieldType);
+                            fieldLength       = rec.FieldLength;
+                            fieldIsCalculated = rec.FieldIsCalculated;      
+                            fieldIsCustom     = rec.FieldIsCustom;    
+                            fieldIsCreatable  = rec.FieldIsCreatable;
+                            fieldIsFilterable = rec.FieldIsFilterable;
+                            fieldIsUpdateable = rec.FieldIsUpdateable;                        
+                            if(jobItemMap[objectAPIName]){
+                                if(jobItemMap[objectAPIName][fieldAPIName]) {
+                                    jobItemRec    = jobItemMap[objectAPIName][fieldAPIName];
+                                    count         = jobItemRec.Count;
+                                    countStart    = jobItemRec.CountStart;
+                                    countStop     = jobItemRec.CountStop;
+                                    jobErrors     = jobItemRec.JobErrors;
+                                    jobId         = jobItemRec.JobId;
+                                    jobItemsTotal = jobItemRec.JobItemsTotal;
+                                    jobItems      = jobItemRec.JobItems;
+                                    jobStatus     = jobItemRec.JobStatus;
+                                }
+                                else {console.log(`INFO: ${objectAPIName} : ${fieldAPIName} not in jobItemMap`);}
+                            }
+                            else {
+                                console.log(`INFO: ${objectAPIName} not in jobItemMap`);
+                            }
+    
+                            if(fieldIsFilterable) {
+                                if(fieldIsCustom) customFieldCount++; else standardFieldCount++;
+                            }
+    
+                            fieldDescriptionMap[objectAPIName][fieldAPIName] = {
+                                Selected:false,
+                                ObjectName:objectName,
+                                ObjectAPIName:objectAPIName,
+                                FieldName:fieldName,
+                                FieldAPIName:fieldAPIName,
+                                FieldLength:fieldLength,
+                                FieldFormula:fieldFormula,
+                                FieldType:fieldType,
+                                FieldIsCalculated:fieldIsCalculated,
+                                FieldIsCustom:fieldIsCustom, 
+                                FieldIsCreatable:fieldIsCreatable, 
+                                FieldIsFilterable:fieldIsFilterable,
+                                FieldIsUpdateable:fieldIsUpdateable,
+                                CountStart:countStart, 
+                                CountStop:countStop, 
+                                Count:count, 
+                                Time: timeFmt,
+                                JobId:jobId,        
+                                JobStatus: jobStatus,
+                                JobErrors:jobErrors,
+                                JobItems:jobItems,
+                                JobItemsTotal:jobItemsTotal
+                            };
+    
+                            fieldDataArray.push({
+                                Selected: false,
+                                ObjectName:objectName,
+                                ObjectAPIName:objectAPIName,
+                                FieldName:fieldName,
+                                FieldAPIName:fieldAPIName,
+                                FieldLength:fieldLength,
+                                FieldFormula:fieldFormula,
+                                FieldType:fieldType,
+                                FieldIsCalculated:fieldIsCalculated,
+                                FieldIsCustom:fieldIsCustom, 
+                                FieldIsCreatable:fieldIsCreatable, 
+                                FieldIsFilterable:fieldIsFilterable,
+                                FieldIsUpdateable:fieldIsUpdateable,
+                                CountStart:countStart, 
+                                CountStop:countStop, 
+                                Count:count, 
+                                Time: timeFmt,
+                                JobId:jobId,        
+                                JobStatus: jobStatus,
+                                JobErrors:jobErrors,
+                                JobItems:jobItems,
+                                JobItemsTotal:jobItemsTotal
+                            });
+                        }
+                    }
+    
+                    if(customFieldCount == 0) {
+    console.log('customFieldCount == 0, allCustomCheckBox.disabled = true; ');                    
+                        allCustomCheckBoxLbl.className   = 'labelInvalid'; 
+                        allCustomCheckBox.disabled       = true;
+                    }
+                    else {
+    console.log('customFieldCount != 0, allCustomCheckBox.disabled = false; ');
+                        allCustomCheckBoxLbl.className   = 'labelValid';
+                        allCustomCheckBox.disabled       = false;
+                    }
+    
+                    if(standardFieldCount == 0) {
+    console.log('standardFieldCount == 0, allStandardCheckBox.disabled = true; ');
+                        allStandardCheckBoxLbl.className = 'labelInvalid'; 
+                        allStandardCheckBox.disabled     = true;
+                    }
+                    else {
+    console.log('standardFieldCount != 0, allStandardCheckBox.disabled = true; ');                    
+                        allStandardCheckBoxLbl.className = 'labelValid';
+                        allStandardCheckBox.disabled     = false;
+                    }
+    
+                    if(shownBefore) 
+                         fieldGridOptions.api.destroy();
+                    else 
+                        shownBefore = true;
+    
+                    fieldGridOptions = {
+                        columnDefs: fieldColumnDefs,
+                        rowData: fieldDataArray,
+                        rowSelection: 'multiple',
+                        enableSorting: true,
+                        debug: false,
+                        onSelectionChanged: fieldRowSelectionHandler
+                    };
+                    new agGrid.Grid(fieldGridDiv, fieldGridOptions);
+                    fieldGridOptions.api.setSortModel(initialFieldSort);
+                    
+                    let hStr = resize(fieldDataArray.length,170) + "px";
+                    console.log(hStr);
+                    fieldGridDiv.style.height = hStr;
+    
+                    resolve('ok');
+                });
+            }
+    
+            function resize(pLen,pMin) {
+                var retVal;
+    
+                if(pLen > 20)
+                    retVal = 693;
+                else
+                    retVal = pLen * 33;
+    
+                if(retVal < pMin)
+                    retVal = pMin;
+    
+                return String(retVal);
+            }
+    
+            function msToTime(duration) {
+                // https://stackoverflow.com/questions/19700283/how-to-convert-time-milliseconds-to-hours-min-sec-format-in-javascript
+                let milliseconds,seconds,minutes,hours;
+                milliseconds = parseInt((duration%1000)/100);
+                seconds = parseInt((duration/1000)%60); 
+                minutes = parseInt((duration/(1000*60))%60);
+                hours   = parseInt((duration/(1000*60*60))%24);
+                hours   = (hours   < 10) ? "0" + hours   : hours;
+                minutes = (minutes < 10) ? "0" + minutes : minutes;
+                seconds = (seconds < 10) ? "0" + seconds : seconds;
+                return hours + ":" + minutes + ":" + seconds;
+            }
+    
+            function number_format(number, decimals, dec_point, thousands_sep) {
+                number = (number + '')
+                        .replace(/[^0-9+\-Ee.]/g, '');
+                var n = !isFinite(+number) ? 0 : +number,
+                        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                        s = '',
+                        toFixedFix = function(n, prec) {
+                            var k = Math.pow(10, prec);
+                            return '' + (Math.round(n * k) / k).toFixed(prec);
+                        };
+                // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+                s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                        .split('.');
+                if (s[0].length > 3) {
+                    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+                }
+                if ((s[1] || '').length < prec) {
+                    s[1] = s[1] || '';
+                    s[1] += new Array(prec - s[1].length + 1)
+                            .join('0');
+                }
+                return s.join(dec);
+            }
+    
+            function lengthValueFormatter(params) {
+                return number_format(params.data.FieldLength,0);
+            }
+    
+            function fieldFormulaCellRenderer(params) {
+                if(params.data.FieldFormula != 'no formula')
+                    return params.value;
+                else
+                    return '';
+            }
+    
+            function fieldFormulaCellRenderer(params) {
+                if(params.data.FieldFormula != 'no formula')
+                    return params.value;
+                else
+                    return '';
+            }
+    
+            function fieldCheckboxSelection(params) {
+                return params.data.FieldIsFilterable;
+            }
+    
+            function initAgGrid() {
+                agGrid.LicenseManager.setLicenseKey("SEIU-UWH_Site_1Devs7_February_2018__MTUxNzk2MTYwMDAwMA==f54417966e3979c429e6a1af033c1a9a");
+/*
+                    {headerName: 'Select All Standard',field: 'SelectAllStandard',  width: 140, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'Select All Custom',  field: 'SelectAllCustom',    width: 140, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},                
+                    {headerName: 'Last completed',     field: 'JobStop',            width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'Last started',       field: 'JobStart',           width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'Selected Fields',    field: 'UserSelectedFields', width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},                
+*/
+                objectColumnDefs = [
+                    {headerName: 'Status',             field: 'JobStatus',          width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'Object Name',        field: 'ObjectName',         width: 300, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft', sort: 'asc'},
+                    {headerName: 'API Name',           field: 'ObjectAPIName',      width: 300, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft'  },
+                    {headerName: 'Is Custom',          field: 'ObjectIsCustom',     width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'Is Creatable',       field: 'ObjectIsCreatable',  width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'Is Queryable',       field: 'ObjectIsQueryable',  width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'User Soql',          field: 'UserSoql',           width: 400, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft'  }                
+                ];
+    
+                fieldColumnDefs = [
+                    {headerName: 'Selected',        field: 'dummy',             width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter',checkboxSelection: fieldCheckboxSelection},
+                    {headerName: 'Status',          field: 'JobStatus',         width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'Field Label',     field: 'FieldName',         width: 260, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                    {headerName: 'Field API Name',  field: 'FieldAPIName',      width: 280, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                    {headerName: 'Empty Count',     field: 'Count',             width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellRight'},
+                    {headerName: 'Last Analyzed',   field: 'CountStop',         width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter'},
+                    {headerName: 'Type',            field: 'FieldType',         width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                    {headerName: 'Length',          field: 'FieldLength',       width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellRight', valueFormatter: lengthValueFormatter },
+                    {headerName: 'Is Custom',       field: 'FieldIsCustom',     width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter' },
+                    {headerName: 'Is Calculated',   field: 'FieldIsCalculated', width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter' },
+                    {headerName: 'Is Creatable',    field: 'FieldIsCreatable',  width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter' },
+                    {headerName: 'Is Filterable',   field: 'FieldIsFilterable', width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter' },
+                    {headerName: 'Is Updateable',   field: 'FieldIsUpdateable', width: 120, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellCenter' },
+                    {headerName: 'Formula/Picklist',field: 'FieldFormula',      width: 450, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft',  cellRenderer:fieldFormulaCellRenderer}
+                ];
+    
+            }
+    
+            function spawn(generatorFunc) {
+                function continuer(verb, arg) {
+                    var result;
+                    try {
+                        result = generator[verb](arg);
+                    } catch (err) {
+                        return Promise.reject(err);
+                    }
+                    if (result.done) {
+                        return result.value;
+                    } else {
+                        return Promise.resolve(result.value).then(onFulfilled, onRejected);
+                    }
+                }
+                var generator = generatorFunc();
+                var onFulfilled = continuer.bind(continuer, "next");
+                var onRejected = continuer.bind(continuer, "throw");
+                return onFulfilled();
+            }
+    
+    /*       function showLoadingMsg(show) {
+                if(show) // modal window fake
+                    modalLoadingDiv.setAttribute('class', 'modalDialog');
+                else
+                    modalLoadingDiv.setAttribute('class', 'hide');
+            } 
+    */
+    
+            function saveAsCsv() {
+                objectGridOptions.api.exportDataAsCsv({fileName: 'FieldCountObjects.csv'});
+            }
+    
+    /*         function saveAsCsv() {
+                contactGridOptions.columnApi.setColumnVisible('CountStart',false);  
+                contactGridOptions.columnApi.setColumnVisible('CountStop',false);   
+                contactGridOptions.columnApi.setColumnVisible('Time',false);        
+                contactGridOptions.columnApi.setColumnVisible('JobId',false);       
+                contactGridOptions.columnApi.setColumnVisible('JobStatus',false);   
+                contactGridOptions.columnApi.setColumnVisible('JobErrors',false);   
+                contactGridOptions.columnApi.setColumnVisible('JobItems',false);    
+                contactGridOptions.columnApi.setColumnVisible('JobItemsTotal',false);
+    
+                contactGridOptions.api.exportDataAsCsv({fileName: 'ContactFieldUseCounts.csv'});
+    
+                contactGridOptions.columnApi.setColumnVisible('CountStart',true);  
+                contactGridOptions.columnApi.setColumnVisible('CountStop',true);   
+                contactGridOptions.columnApi.setColumnVisible('Time',true);        
+                contactGridOptions.columnApi.setColumnVisible('JobId',true);       
+                contactGridOptions.columnApi.setColumnVisible('JobStatus',true);   
+                contactGridOptions.columnApi.setColumnVisible('JobErrors',true);   
+                contactGridOptions.columnApi.setColumnVisible('JobItems',true);    
+                contactGridOptions.columnApi.setColumnVisible('JobItemsTotal',true);
+                
+            } */
+    
+            function toProperCase(s)
+            // My version - handles hyphenated names correctly :)
+            {
+                var s1;
+                if(s == null)
+                    s1 = 'Missing';
+                else
+                    s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+    
+                return s1;
+            }
+    
+            function clean(s) {
+                let s1,s2,s3,s4,s5,s6,s7,s8,s9 = '';
+                if(s) {
+                    s1 = s.replace(r1, "&");
+                    s2 = s1.replace(r2, "'");
+                    s3 = s2.replace(r3, "&");
+                    s4 = s3.replace(r4, "'");
+                    s5 = s4.replace(r5, "'");
+                    s6 = s5.replace(r6, ">");
+                    s7 = s6.replace(r7, ">"); 
+                    s8 = s6.replace(r8, "<");
+                    s9 = s6.replace(r8, "<");
+                }
+                return s9;
+            }
+
+            var objectData,objectMap = {}, objectDataArray = [], selectedFieldsArray = [];
+            var jobItemDataArray = [], jobItemData, jobItemMap = {};
+            var jobDataArray = [], jobData, jobMap = {};
+            var fieldData, fieldMap  = {}, fieldDescriptionMap = {}, fieldDataArray  = [];
+            var selectedRow,selectedNode,selectedObjectName,selectedObjectAPIName,refreshButton;
+            var objectColumnDefs,objectGridOptions;
+            var fieldColumnDefs,fieldGridOptions,shownBefore = false,selectedCount = 0, standardFieldCount = 0, customFieldCount = 0;
+    
+            const tab1Id                 = document.getElementById('Tab1Id');
+            const tab2Id                 = document.getElementById('Tab2Id');
+    
+            const titleDiv               = document.getElementById('TitleDiv');
+            const tableDiv               = document.getElementById('TableDiv');
+            const objectGridDiv          = document.getElementById('ObjectGridDiv');
+            const fieldGridDiv           = document.getElementById('FieldGridDiv');
+            const modalLoadingDiv        = document.getElementById('ModalLoadingDiv');
+            const selectionDiv           = document.getElementById('SelectionDiv');
+            const jobCreatedDiv          = document.getElementById('JobCreatedDiv');
+    
+            const allStandardCheckBox    = document.getElementById('AllStandardCheckBox');
+            const allCustomCheckBox      = document.getElementById('AllCustomCheckBox');
+    
+            const allStandardCheckBoxLbl = document.getElementById('AllStandardCheckBoxLbl');
+            const allCustomCheckBoxLbl   = document.getElementById('AllCustomCheckBoxLbl');
+    
+            const selectCountLabel       = document.getElementById('SelectCountLabel');
+    
+            const objectFilterInput      = document.getElementById('ObjectFilterInput');
+            const fieldFilterInput       = document.getElementById('FieldFilterInput');
+            const userSoqlInput          = document.getElementById('UserSoqlInput');
+            const saveAsCsvButton        = document.getElementById('SaveAsCsvButton');
+       
+            const jobCreateButton        = document.getElementById('JobCreateBtn');    
+            const verifyButton           = document.getElementById('VerifyBtn');    
+            const jobCancelBtn           = document.getElementById('JobCancelBtn');
+    
+            const initialObjectSort = [ 
+                {colId: 'ObjectIsQueryable', sort: 'desc'}, 
+                {colId: 'ObjectAPIName',     sort: 'asc'} 
+                ];
+    
+            const initialFieldSort = [ 
+                {colId: 'FieldIsFilterable', sort: 'desc'},
+                {colId: 'FieldAPIName',      sort: 'asc'} 
+            ];
+    
+            const r1 = new RegExp(/&amp/,'gm');
+            const r2 = new RegExp(/&#39/,'gm');
+            const r3 = new RegExp(/&;/,'gm');
+            const r4 = new RegExp(/&quot/,'gm');
+            const r5 = new RegExp(/';/,'gm');
+            const r6 = new RegExp(/&gt/,'gm');
+            const r7 = new RegExp(/>;/,'gm');
+            const r8 = new RegExp(/&lt/,'gm');
+            const r9 = new RegExp(/<;/,'gm');
+
+            // ***************** Main Program Entry *****************
+            init();
+            initAgGrid(); 
+
+            spawn(function *() {
+                jobData     = yield getJobData();
+                yield processJobData(jobData);
+                jobItemData = yield getJobItemData();
+                yield processJobItemData(jobItemData);
+                objectData  = yield getObjectData();
+                yield processObjectData(objectData);
+            }); 
+        </script> 
+        <script>
+            
+            <apex:includeScript value="{!$Resource.puretabsJs}"/>
+            <apex:includeScript value="{!$Resource.TweenMaxMinJS}"/>
+            <apex:includeScript value="{!$Resource.MomentJs}"/>
+            <apex:includeScript value="{!$Resource.agGridEnterprise12}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.HumaneZip, 'boldlight.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.HumaneZip, 'libnotify.css')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.HumaneZip,'humane.js')}"/> 
+    
+        </script>
+   </body>
+   </html>
+</apex:page>

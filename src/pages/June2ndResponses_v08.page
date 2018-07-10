@@ -1,0 +1,1918 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+    <head>
+        <apex:includeScript value="{!$Resource.snap}"/>
+
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">google.load('visualization', '1', {packages:['table']}); </script>
+
+        <style>
+
+            #svg1 {
+                width: 500px;
+                height: 370px;
+                float: left;
+                margin-right: 10px;
+                font: 1em source-sans-pro, Source Sans Pro, Helvetica, sans-serif;
+            }
+
+            #tabContainer {
+                background-color:#92f1f6;
+                background-color:linen;
+                -moz-border-radius: 4px;
+                border-radius: 4px;
+                border-color: red;
+                border-width: 2px;
+                overflow: visible;
+            }
+
+            #tabContainer h3 {
+                width:50%;
+                font-style: italic;
+                clear: left;
+            }
+
+            #tabs {
+                padding-top: 0px;
+                padding-bottom: 1px;
+                width: 90%;
+                margin-left: 20px;
+            }
+
+            #tabs > ul{
+                font: 1em;
+                list-style:none;
+            }
+
+            #tabs > ul > li  {
+                margin-top: 0px;
+                margin-right: 4px;
+                margin-bottom: 1px;
+                margin-left: 2px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                padding-left: 10px;
+                padding-right: 10px;
+                display:block;
+                float:left;
+                color:#FFF;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+                -moz-border-radius-topleft: 4px;
+                -moz-border-radius-topright: 4px;
+                -moz-border-radius-bottomright: 0px;
+                -moz-border-radius-bottomleft: 0px;
+                border-top-left-radius:4px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
+                background: -moz-linear-gradient(top, #0C91EC 0%, #257AB6 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0C91EC), color-stop(100%,#257AB6)); /* webkit */
+            }
+
+            #tabs > ul > li:hover{
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #F3F3F3 10%, #F3F3F3 50%, #FFFFFF 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(10%,#F3F3F3), color-stop(50%,#F3F3F3), color-stop(100%,#FFFFFF)); /* webkit */
+                cursor:pointer;
+                color: #333;
+            }
+
+            #tabs > ul > li.tabActiveHeader {
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #F3F3F3 10%, #F3F3F3 50%, #FFFFFF 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(10%,#F3F3F3), color-stop(50%,#F3F3F3), color-stop(100%,#FFFFFF)); /* webkit */
+                cursor:pointer;
+                color: #333;
+            }
+
+            #tabscontent {
+                -moz-border-radius-topleft: 0px;
+                -moz-border-radius-topright: 4px;
+                -moz-border-radius-bottomright: 4px;
+                -moz-border-radius-bottomleft: 4px;
+                border-top-left-radius: 0px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+                border-bottom-left-radius: 4px;
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #FFFFFF 90%, #e4e9ed 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(90%,#FFFFFF), color-stop(100%,#e4e9ed)); /* webkit */
+                color:#333;
+                padding: 0px;
+                margin: 20px;
+            }
+
+            body {
+                background-color : white;
+                border-color: darkgreen;
+                border-width: 2px;
+            }
+
+            #content {
+                width:700px;
+                margin:30px auto;
+            }
+
+            #StatusDiv {
+                font-size: 10px;
+                font-style: italic;
+                background-color: #92f1f6;
+            }
+
+            /* I couldn't work out syntax to make a css class with all these nth-childs.
+               If anyone does figure it out, please tell me! :) */
+
+            #DivisionDiv table th:nth-child(1) {
+                text-align:left;
+                width: 200px;
+            }
+            #DivisionDiv  table th:nth-child(2) {
+                text-align:right;
+                color: forestgreen;
+                width: 100px;
+            }
+            #DivisionDiv table th:nth-child(3) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #DivisionDiv table th:nth-child(4) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #DivisionDiv table th:nth-child(5) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #DivisionDiv table th:nth-child(6) {
+                text-align:right;
+                color: indianred;
+                width: 120px;
+            }
+
+            #DivisionDiv table td:nth-child(1) {
+                text-align:left;
+                padding-right: 22px;
+            }
+
+            #DivisionDiv table td:nth-child(2) {
+                text-align:right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #DivisionDiv table td:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #DivisionDiv table td:nth-child(4) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #DivisionDiv table td:nth-child(5) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #DivisionDiv table td:nth-child(6) {
+                text-align:right;
+                padding-right: 22px;
+                color: indianred;
+            }
+
+            #DivisionTotalsDiv table th:nth-child(1) {
+                text-align:left;
+                width: 200px;
+            }
+            #DivisionTotalsDiv  table th:nth-child(2) {
+                text-align:right;
+                width: 100px;
+                color: forestgreen;
+            }
+            #DivisionTotalsDiv table th:nth-child(3) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #DivisionTotalsDiv table th:nth-child(4) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #DivisionTotalsDiv table th:nth-child(5) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #DivisionTotalsDiv table th:nth-child(6) {
+                text-align:right;
+                color: indianred;
+                width: 120px;
+            }
+            #DivisionTotalsDiv table td:nth-child(1) {
+                text-align:left;
+                padding-right: 22px;
+            }
+            #DivisionTotalsDiv table td:nth-child(2) {
+                text-align:right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #DivisionTotalsDiv table td:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #DivisionTotalsDiv table td:nth-child(4) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #DivisionTotalsDiv table td:nth-child(5) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #DivisionTotalsDiv table td:nth-child(6) {
+                text-align:right;
+                padding-right: 22px;
+                color: indianred;
+            }
+
+
+            #PriorCurrentDiv table th:nth-child(1) {
+                text-align:left;
+                width: 200px;
+            }
+            #PriorCurrentDiv  table th:nth-child(2) {
+                text-align:right;
+                color: forestgreen;
+                width: 100px;
+            }
+            #PriorCurrentDiv table th:nth-child(3) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #PriorCurrentDiv table th:nth-child(4) {
+                text-align:right;
+                color: indianred;
+                width: 100px;
+            }
+            #PriorCurrentDiv table th:nth-child(5) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+
+            #PriorCurrentDiv table td:nth-child(1) {
+                text-align:left;
+                padding-right: 22px;
+            }
+
+            #PriorCurrentDiv table td:nth-child(2) {
+                text-align:right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #PriorCurrentDiv table td:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #PriorCurrentDiv table td:nth-child(4) {
+                text-align:right;
+                padding-right: 22px;
+                color: indianred;
+            }
+            #PriorCurrentDiv table td:nth-child(5) {
+                text-align:right;
+                padding-right: 22px;
+            }
+
+            #PriorCurrentTotalsDiv table th:nth-child(1) {
+                text-align:left;
+                width: 200px;
+            }
+
+            #PriorCurrentTotalsDiv  table th:nth-child(2) {
+                text-align:right;
+                width: 100px;
+                color: forestgreen;
+            }
+            #PriorCurrentTotalsDiv table th:nth-child(3) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #PriorCurrentTotalsDiv table th:nth-child(4) {
+                text-align:right;
+                color: indianred;
+                width: 100px;
+            }
+            #PriorCurrentTotalsDiv table th:nth-child(5) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+
+            #PriorCurrentTotalsDiv table td:nth-child(1) {
+                text-align:left;
+                padding-right: 22px;
+            }
+
+            #PriorCurrentTotalsDiv table td:nth-child(2) {
+                text-align:right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #PriorCurrentTotalsDiv table td:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #PriorCurrentTotalsDiv table td:nth-child(4) {
+                text-align:right;
+                padding-right: 22px;
+                color: indianred;
+            }
+            #PriorCurrentTotalsDiv table td:nth-child(5) {
+                text-align:right;
+                padding-right: 22px;
+            }
+
+            #BusLocationDiv  table th:nth-child(1) {
+                text-align:left;
+                width: 260px;
+            }
+            #BusLocationDiv  table th:nth-child(2) {
+                text-align:center;
+                width: 100px;
+                color: grey;
+            }
+            #BusLocationDiv  table th:nth-child(3) {
+                text-align:right;
+                color: forestgreen;
+                width: 100px;
+            }
+            #BusLocationDiv table th:nth-child(4) {
+                text-align:right;
+                color: grey;
+                width: 100px;
+            }
+            #BusLocationDiv table th:nth-child(5) {
+                text-align:right;
+                width: 100px;
+                color: grey;
+            }
+            #BusLocationDiv table th:nth-child(6) {
+                text-align:right;
+                width: 100px;
+                color: indianred;
+            }
+
+            #BusLocationDiv  table td:nth-child(1) {
+                text-align:left;
+                padding-right: 22px;
+            }
+            #BusLocationDiv  table td:nth-child(2) {
+                text-align:center;
+                padding-right: 22px;
+            }
+            #BusLocationDiv  table td:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #BusLocationDiv table td:nth-child(4) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #BusLocationDiv table td:nth-child(5) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #BusLocationDiv table td:nth-child(6) {
+                text-align:right;
+                padding-right: 22px;
+                color: indianred;
+            }
+
+            #KaiserDiv table th:nth-child(1) {
+                text-align:left;
+                width: 60px;
+            }
+            #KaiserDiv table th:nth-child(2) {
+                text-align:left;
+                width: 260px;
+            }
+            #KaiserDiv table th:nth-child(3) {
+                text-align:right;
+                color: forestgreen;
+                width: 60px;
+            }
+            #KaiserDiv table th:nth-child(4) {
+                text-align: right;
+                color: grey;
+                width: 100px;
+            }
+            #KaiserDiv table th:nth-child(5) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #KaiserDiv table th:nth-child(6) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #KaiserDiv table th:nth-child(7) {
+                text-align: right;
+                width: 100px;
+                color: indianred;
+            }
+            #KaiserDiv table td:nth-child(1) {
+                text-align: left;
+                padding-right: 22px;
+            }
+            #KaiserDiv table td:nth-child(2) {
+                text-align: left;
+                padding-right: 22px;
+            }
+            #KaiserDiv table td:nth-child(3) {
+                text-align: right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #KaiserDiv table td:nth-child(4) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #KaiserDiv table td:nth-child(5) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #KaiserDiv table td:nth-child(6) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #KaiserDiv table td:nth-child(7) {
+                color: indianred;
+                text-align: right;
+                padding-right: 22px;
+            }
+
+            #HospitalDiv table th:nth-child(1) {
+                text-align:left;
+                width: 60px;
+            }
+
+            #HospitalDiv table th:nth-child(2) {
+                text-align:left;
+                width: 260px;
+            }
+            #HospitalDiv table th:nth-child(3) {
+                text-align:right;
+                color: forestgreen;
+                width: 60px;
+            }
+            #HospitalDiv table th:nth-child(4) {
+                text-align: right;
+                color: grey;
+                width: 100px;
+            }
+            #HospitalDiv table th:nth-child(5) {
+                text-align: right;
+                color: grey;
+                width: 100px;
+            }
+            #HospitalDiv table th:nth-child(6) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #HospitalDiv table th:nth-child(7) {
+                text-align: right;
+                color: indianred;
+                width: 100px;
+            }
+
+            #HospitalDiv table td:nth-child(1) {
+                text-align: left;
+                padding-right: 22px;
+            }
+            #HospitalDiv table td:nth-child(2) {
+                text-align: left;
+                padding-right: 22px;
+            }
+            #HospitalDiv table td:nth-child(3) {
+                text-align: right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #HospitalDiv table td:nth-child(4) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #HospitalDiv table td:nth-child(5) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #HospitalDiv table td:nth-child(6) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #HospitalDiv table td:nth-child(7) {
+                color: indianred;
+                text-align: right;
+                padding-right: 22px;
+            }
+
+            #HomeCareDiv table th:nth-child(1) {
+                text-align:left;
+                width: 328px;
+            }
+            #HomeCareDiv table th:nth-child(2) {
+                text-align:right;
+                color: forestgreen;
+                width: 60px;
+            }
+            #HomeCareDiv table th:nth-child(3) {
+                text-align: right;
+                color: grey;
+                width: 100px;
+            }
+            #HomeCareDiv table th:nth-child(4) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #HomeCareDiv table th:nth-child(5) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #HomeCareDiv table th:nth-child(6) {
+                text-align: right;
+                width: 100px;
+                color: indianred;
+            }
+
+            #HomeCareDiv table td:nth-child(1) {
+                text-align: left;
+                padding-right: 22px;
+            }
+            #HomeCareDiv table td:nth-child(2) {
+                text-align: right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #HomeCareDiv table td:nth-child(3) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #HomeCareDiv table td:nth-child(4) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #HomeCareDiv table td:nth-child(5) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #HomeCareDiv table td:nth-child(6) {
+                color: indianred;
+                text-align: right;
+                padding-right: 22px;
+            }
+
+            #NursingHomeDiv table th:nth-child(1) {
+                text-align:left;
+                width: 328px;
+            }
+            #NursingHomeDiv table th:nth-child(2) {
+                text-align:right;
+                color: forestgreen;
+                width: 60px;
+            }
+            #NursingHomeDiv table th:nth-child(3) {
+                text-align: right;
+                color: grey;
+                width: 100px;
+            }
+            #NursingHomeDiv table th:nth-child(4) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #NursingHomeDiv table th:nth-child(5) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #NursingHomeDiv table th:nth-child(6) {
+                text-align: right;
+                width: 100px;
+                color: indianred;
+            }
+
+            #NursingHomeDiv table td:nth-child(1) {
+                text-align: left;
+                padding-right: 22px;
+            }
+            #NursingHomeDiv table td:nth-child(2) {
+                text-align: right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #NursingHomeDiv table td:nth-child(3) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #NursingHomeDiv table td:nth-child(4) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #NursingHomeDiv table td:nth-child(5) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #NursingHomeDiv table td:nth-child(6) {
+                color: indianred;
+                text-align: right;
+                padding-right: 22px;
+            }
+
+            #OtherDiv table th:nth-child(1) {
+                text-align:left;
+                width: 328px;
+            }
+            #OtherDiv table th:nth-child(2) {
+                text-align:right;
+                color: forestgreen;
+                width: 60px;
+            }
+            #OtherDiv table th:nth-child(3) {
+                text-align: right;
+                color: grey;
+                width: 100px;
+            }
+            #OtherDiv table th:nth-child(4) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #OtherDiv table th:nth-child(5) {
+                text-align: right;
+                width: 100px;
+                color: grey;
+            }
+            #OtherDiv table th:nth-child(6) {
+                text-align: right;
+                width: 100px;
+                color: indianred;
+            }
+
+            #OtherDiv table td:nth-child(1) {
+                text-align: left;
+                padding-right: 22px;
+            }
+            #OtherDiv table td:nth-child(2) {
+                text-align: right;
+                padding-right: 22px;
+                color: forestgreen;
+            }
+            #OtherDiv table td:nth-child(3) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #OtherDiv table td:nth-child(4) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #OtherDiv table td:nth-child(5) {
+                text-align: right;
+                padding-right: 22px;
+            }
+            #OtherDiv table td:nth-child(6) {
+                color: indianred;
+                text-align: right;
+                padding-right: 22px;
+            }
+        </style>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+
+        // Globals:
+        var _baseUrl;
+
+        var busLocationTable;
+        var employerTable;
+        var divisionTable;
+        var divisionTotalsTable;
+        var priorCurrentTable;
+        var priorCurrentTotalsTable;
+
+        var kaiserTable;
+        var hospitalTable;
+        var homecareTable;
+        var nursinghomeTable;
+        var otherTable;
+
+        var kaiserView;
+        var hospitalView;
+        var homecareView;
+        var nursinghomeView;
+        var otherView;
+
+        var kaiserViewTable;
+        var hospitalViewTable;
+        var homecareViewTable;
+        var nursinghomeViewTable;
+        var otherViewTable;
+
+        var overallTable;
+        var overallTableData = [];
+
+        var busLocationTableData        = [];
+        var employerTableData           = [];
+        var divisionTableData           = [];
+        var priorCurrentTableData       = [];
+        var divisionTotalsTableData     = [];
+        var priorCurrentTableData       = [];
+        var priorCurrentTotalsTableData = [];
+
+        var busLookupMap                = {};
+        var busLocationMap              = {};
+        var divisionMap                 = {};
+        var employerMap                 = {};
+        var employerInfoMap             = {};
+        var priorCurrentMap             = {};
+        var priorLookupMap              = {};
+        var currentLookupMap            = {};
+        var eBoardMap                   = {};
+
+        var exceptionsCnt;
+        var attendTotal;
+        var expectedTotal;
+        var cancelledTotal;
+        var noShowTotal;
+        var grandTotal;
+
+        var communityPc;
+        var hospitalPc;
+        var kaiserPc;
+        var homeCarePc;
+        var nursingHomePc;
+        var newOrganizingPc;
+
+        var refreshButton;
+        var busLookupDiv;
+        var busLocationDiv;
+        var divisionDiv;
+        var divisionTotalsDiv;
+        var allTotalsDiv;
+
+        var kaiserDiv;
+        var hospitalDiv;
+        var homecareDiv;
+        var nursinghomeDiv;
+        var otherDiv;
+
+        var statusDiv;
+        var checkCntDiv;
+        var responseDiv;
+        var priorCurrentTotalsDiv;
+
+        var responseArrayCnt;
+        var responseCnt;
+        var numFormatter;
+        var newBr;
+        var lineNum;
+
+        var timerID   = null;
+        var timerVal  = null;
+        var BW        = 20;
+        var SIZE100PC = 270;
+        var snap;
+        var percentTotal;
+
+        function startCounter(pSecs, pTick) {
+            timerVal    = pSecs;
+            if (timerID === null) {
+                timerID = setInterval(function () {displayCountdown(pTick)}, pTick);
+            }
+        }
+
+        function displayCountdown(tick)         {
+
+            timerVal = timerVal - (tick / 1000);
+            statusDiv.innerHTML = 'Auto retrieval will begin in ' + timerVal.toFixed(2) + ' seconds';
+
+            if (timerVal <=  (tick / 1000)) {
+                refreshClicked();
+            }
+        }
+
+        function refreshClicked() {
+            statusDiv.innerHTML = 'Auto retrieval will begin in 0.00 seconds';
+            cancelTimer();
+            loadResponses();
+        }
+
+        function cancelTimer () {
+            clearTimeout (timerID);
+            timerID = null;
+        }
+
+        function loadAccounts() {
+            var query = "SELECT Account_Group__c, Region__c, Name, Coordinator__r.Name, Coordinator__r.MobilePhone, Coordinator__r.Phone, Organizer_1__r.Name,Organizer_1__r.MobilePhone,Organizer_1__r.Phone  FROM Account WHERE Type = 'Employer' And Employer_ID__c != null Order By Account_Group__c, Region__c, Name";
+            try {
+                var accountResults = sforce.connection.query(query);
+                processAccounts(accountResults)
+            }
+                catch (e) {
+                alert('An error occurred retrieving Accounts: ' + e.faultstring);
+            }
+        }
+
+        function processAccounts(accountResults) {
+
+            var tmpActRec;
+            var region;
+            var name;
+            var division;
+            var coordinator;
+            var organizer1;
+            var coordCell;
+            var coordPhone;
+            var org1Cell;
+            var org1Phone;
+
+            var accountRecords = accountResults.getArray('records');
+
+            employerInfoMap           = {};
+
+            for (i = 0; i < accountRecords.length; i++) {
+                tmpActRec   = accountRecords[i];
+                region      = toProperCase(tmpActRec.Region__c);
+                name        = toProperCase(tmpActRec.Name);
+                division    = toProperCase(tmpActRec.Account_Group__c);
+
+                coordinator = coordCell = coordPhone = organizer1 = org1Cell = org1Phone = '';
+                if(tmpActRec.Coordinator__r != null) {
+                    coordinator = toProperCase(tmpActRec.Coordinator__r.Name);
+                    coordCell   = tmpActRec.Coordinator__r.MobilePhone;
+                    coordPhone  = tmpActRec.Coordinator__r.Phone;
+                }
+
+                if(tmpActRec.Organizer_1__r != null) {
+                    organizer1 = toProperCase(tmpActRec.Organizer_1__r.Name);
+                    org1Cell   = tmpActRec.Organizer_1__r.MobilePhone;
+                    org1Phone  = tmpActRec.Organizer_1__r.Phone;
+                }
+
+                employerInfoMap[name] = {
+                    Division:    division,
+                    Region:      region,
+                    Coordinator: coordinator,
+                    CoordCell:   coordCell,
+                    CoordPhone:  coordPhone,
+                    Organizer1:  organizer1,
+                    Org1Cell:    org1Cell,
+                    Org1Phone:   org1Phone
+                };
+            }
+        }
+
+        function loadBusLookup() {
+            var query;
+
+            query = "SELECT BusLocationNumber__c,UHW_Office__c,Name__c,Addr__c,Depart__c FROM BusLookup__c";
+            var busLookupResults = sforce.connection.query(query);
+            processBusLookup(busLookupResults);
+        }
+
+        function processBusLookup(results) {
+            var lookupRecords;
+            var tmpRec;
+            var busNum;
+            var shortName;
+            var office;
+            var addr;
+            var depart;
+
+            busLookupMap = {};
+
+            if (results.size.valueOf() == 0) {
+                alert('Error - Bus Lookup object is empty!');
+                return;
+            }
+
+            lookupRecords = results.getArray('records');
+            for (i = 0; i < lookupRecords.length; i++) {
+                tmpRec = lookupRecords[i];
+                busNum    = tmpRec.BusLocationNumber__c;
+                shortName = toProperCase(tmpRec.Name__c);
+                office    = toProperCase(tmpRec.UHW_Office__c);
+                addr      = toProperCase(tmpRec.Addr__c);
+                depart    = tmpRec.Depart__c;
+                busLookupMap[busNum] = {ShortName: shortName, Office:office, Addr:addr, Depart:depart};
+            }
+        }
+
+        function loadResponses() {
+            var query;
+
+            query = "SELECT Bus_Captain__c,Bus_Location_Name__c,Bus_Location_Number__c,Contact_Name__c,Coordinator__c,Departure_Time__c,Division__c,EBoard__c,Email__c," +
+            "Employer_Name__c,Last_Response__c,Organizer__c,Person_Type__c,Phone_Cell__c,Phone_Home__c,Region__c,Response_Value__c,UHW_Office__c " +
+            "FROM June_2nd_Attendees__c  " +
+            "WHERE Last_Response__c Not In ('X. Refused','N-Cancelled','N. Cancelled')";
+
+            try {
+                refreshButton.disabled = true;
+                refreshButton.value = 'Working...';
+                var responseResults = sforce.connection.query(query);
+                processResponses(responseResults);
+
+                refreshButton.disabled = false;
+                refreshButton.value = 'Refresh';
+            }
+            catch(e) {alert('An error occurred retrieving June 2nd Attendees: ' + e.faultstring);}
+        }
+
+        function processResponses(responseResults) {
+
+            var processedAll;
+            var responseRecords;
+            var batchCount;
+            var mapKey;
+            var busLocationName;
+            var busLocationShortName;
+            var busLocation;
+            var busCaptain;
+            var phoneCell;
+            var phoneHome;
+            var busLocationNumber;
+            var busStrNumber;
+            var departureTime;
+            var contactName;
+            var lastResponse;
+            var responseValue;
+            var division;
+            var eBoard;
+            var departure;
+            var employer;
+
+            var attend;
+            var expected;
+            var cancelled;
+            var noShow;
+
+            var committedTotal;
+            var confirmedTotal;
+            var reconfirmedTotal;
+            var waitlistTotal;
+            var slottedTotal;
+            var remindTotal;
+            var noPriorTotal;
+            var shortName;
+
+            var attendCnt;
+            var expectedCnt;
+            var cancelledCnt;
+            var noShowCnt;
+            var percent;
+
+            var responseChar;
+            var lastResponseChar;
+
+            var tmpBusLocationRec;
+            var properEmployer;
+            var region;
+            var recTot;
+            var pcAttendTotal;
+            var pcCancelledTotal;
+            var pcNoShowTotal;
+
+            var now;
+            var localDateTime;
+            var nowDate;
+            var msg;
+
+            var kaiserFilter;
+            var hospitalFilter;
+            var homecareFilter;
+            var nursinghomeFilter;
+            var otherFilter;
+            var divisionOK = false;
+
+            busLocationMap      = {};
+            divisionMap         = {};
+            employerMap         = {};
+            priorCurrentMap     = {};
+            priorCurrentCharMap = {};
+            eBoardMap           = {};
+            kaiserFilter        = [];
+            hospitalFilter      = [];
+            homecareFilter      = [];
+            nursinghomeFilter   = [];
+            otherFilter         = [];
+            resetVisualizations();
+
+            if (responseResults.size.valueOf() == 0) {
+                alert('No Responses found');
+                return;
+            }
+
+            committedTotal   = 0;
+            confirmedTotal   = 0;
+            reconfirmedTotal = 0;
+            waitlistTotal    = 0;
+            slottedTotal     = 0;
+            remindTotal      = 0;
+            noPriorTotal     = 0;
+            attendTotal      = 0;
+            expectedTotal    = 0;
+            cancelledTotal   = 0;
+            noShowTotal      = 0;
+            responseArrayCnt = 0;
+            responseCnt      = 0;
+            exceptionsCnt    = 0;
+            batchCount       = 1;
+            processedAll     = false;
+
+            now           = new Date();
+            localDateTime = now.toLocaleTimeString();
+            nowDate       = now.toDateString();
+
+            while (!processedAll) {
+                responseRecords = responseResults.getArray('records');
+                responseArrayCnt += responseRecords.length;
+                for (i = 0; i < responseRecords.length; i++) {
+                    responseCnt++;
+                    busLocationName = busLocationShortName =  busCaptain = phoneCell = phoneHome = busLocationNumber = departureTime = contactName = lastResponse = responseValue = division = eBoard = '';
+                    busLocationName   = responseRecords[i].Bus_Location_Name__c   || '';
+                    busCaptain        = responseRecords[i].Bus_Captain__c;
+                    phoneCell         = responseRecords[i].Phone_Cell__c          || '';
+                    phoneHome         = responseRecords[i].Phone_Home__c          || '';
+                    busLocationNumber = responseRecords[i].Bus_Location_Number__c || '';
+                    departureTime     = responseRecords[i].Departure_Time__c      || '';
+                    contactName       = responseRecords[i].Contact_Name__c        || '';
+                    lastResponse      = responseRecords[i].Last_Response__c       || '';
+                    responseValue     = responseRecords[i].Response_Value__c      || '';
+                    division          = responseRecords[i].Division__c            || '';
+                    region            = responseRecords[i].Region__c              || '';
+                    employer          = responseRecords[i].Employer_Name__c       || '';
+                    eBoard            = responseRecords[i].EBoard__c;
+
+                    if(lastResponse == '')
+                        lastResponse = '!';
+
+                    if(responseValue == '')
+                        responseValue = '!';
+
+                    if(division == '')
+                        division = 'None';
+                    else
+                        division = toProperCase(division);
+
+                    if(division == 'Nursing Homes')
+                        division = 'Nursing Home';
+
+                    divisionOK = false;
+                    if(division ==  'Community'    ||
+                       division ==  'Hospital'     ||
+                       division ==  'Kaiser'       ||
+                       division ==  'Home Care'    ||
+                       division ==  'Nursing Home' ||
+                       division ==  'New Organizing')
+                       divisionOK = true;
+
+                    if(!divisionOK)
+                        division = 'None';
+
+                    if(region == '')
+                        region = 'None';
+                    else
+                        region = toProperCase(region);
+
+                    if(employer == '')
+                        employer = 'None';
+                    else
+                        employer = toProperCase(employer);
+
+                    if(contactName == '')
+                        contactName = 'None';
+                    else
+                        contactName = toProperCase(contactName);
+
+                    if(busLocationName == '')
+                        busLocationName = 'None';
+                    else
+                        busLocationName = toProperCase(busLocationName);
+
+                    if(departureTime == '')
+                        departureTime = 'None';
+
+                    if(responseValue.indexOf('.') != -1)
+                        responseChar = responseValue.substr(responseValue.indexOf('.')-1,1);
+                    else
+                        responseChar = '.';
+
+                    if(lastResponse.indexOf('.') != -1)
+                       lastResponseChar = lastResponse.substr(lastResponse.indexOf('.')-1,1);
+                    else
+                        lastResponseChar = '.';
+
+                    attend = expected = cancelled = noShow = 0;
+                    switch(lastResponseChar) {
+                        case 'M' :
+                            committedTotal++;
+                            expected = 1;
+                            break;
+
+                        case 'R' :
+                            reconfirmedTotal++;
+                            expected = 1;
+                            break;
+
+                        case 'W' :
+                            waitlistTotal++;
+                            break;
+
+                        case 'B' :
+                            confirmedTotal++;
+                            expected = 1;
+                            break;
+
+                        case 'S' :
+                            slottedTotal++;
+                            expected = 1;
+                            break;
+
+                        case 'D' :
+                            remindTotal++;
+                            expected = 1;
+                            break;
+
+                        default :
+                            noPriorTotal++;
+                            lastResponseChar = '.';
+                    }
+
+                    if (responseChar != 'A' && responseChar != 'N' && responseChar != 'Z')
+                        exceptionsCnt++;
+
+                    if(lastResponseChar != 'W') {
+                        if (responseChar == 'A')
+                            attend = 1;
+
+                        if (responseChar == 'N')
+                            cancelled = 1;
+
+                        if (responseChar == 'Z')
+                            noShow = 1;
+                    }
+
+                    attendTotal    += attend;
+                    expectedTotal  += expected;
+                    cancelledTotal += cancelled;
+                    noShowTotal    += noShow;
+
+                    departure = departureTime.substr(11,5);
+
+                    if(busLocationName.length > 5)
+                        busLocation = busLocationName.substr(busLocationName.indexOf(' ') + 1);
+                    else
+                        busLocation = 'Bus No. ' + busLocationNumber;
+
+                    busStrNumber = busLocationNumber.substr(0,busLocationNumber.indexOf('.'));
+
+                    if(busLookupMap[busStrNumber])
+                        busLocationShortName = busLookupMap[busStrNumber].ShortName;
+                    else {
+                        busLocationShortName = busStrNumber;
+                    }
+
+                    if(!priorCurrentCharMap[lastResponseChar])
+                        priorCurrentCharMap[lastResponseChar] = {};
+
+                    if(!priorCurrentCharMap[lastResponseChar][responseChar]) {
+                        priorCurrentCharMap[lastResponseChar][responseChar] = {Count: 1};
+                    }
+                    else {
+                        priorCurrentCharMap[lastResponseChar][responseChar].Count ++;
+                    }
+
+                    if(attend+expected+cancelled+noShow > 0) {
+                        properEmployer = toProperCase(employer);
+                        if (employerInfoMap[properEmployer])
+                            region = employerInfoMap[properEmployer].Region;
+
+                        if (busLocationMap[busLocationShortName]) {
+                            busLocationMap[busLocationShortName].Attend += attend;
+                            busLocationMap[busLocationShortName].Expected += expected;
+                            busLocationMap[busLocationShortName].Cancelled += cancelled;
+                            busLocationMap[busLocationShortName].NoShow += noShow;
+
+                        }
+                        else {
+                            busLocationMap[busLocationShortName] = {
+                                ShortName: busLocationShortName,
+                                Attend: attend,
+                                Expected: expected,
+                                Cancelled: cancelled,
+                                NoShow: noShow,
+                                Departure: departure
+                            };
+                        }
+
+                        if (divisionMap[division]) {
+                            divisionMap[division].Attend += attend;
+                            divisionMap[division].Expected += expected;
+                            divisionMap[division].Cancelled += cancelled;
+                            divisionMap[division].NoShow += noShow;
+                        }
+                        else {
+                            divisionMap[division] = {
+                                Attend: attend,
+                                Expected: expected,
+                                Cancelled: cancelled,
+                                NoShow: noShow
+                            };
+                        }
+
+                        if (employerMap[employer]) {
+                            employerMap[employer].Attend += attend;
+                            employerMap[employer].Expected += expected;
+                            employerMap[employer].Cancelled += cancelled;
+                            employerMap[employer].NoShow += noShow;
+                        }
+                        else {
+                            employerMap[employer] = {
+                                Division: division,
+                                Region: region,
+                                Attend: attend,
+                                Expected: expected,
+                                Cancelled: cancelled,
+                                NoShow: noShow
+                            };
+                        }
+
+                        if (busCaptain == 'true') {
+                            if (busLocationMap[busLocationShortName]) {
+                                if (busLocationMap[busLocationShortName]['Captains']) {
+                                    busLocationMap[busLocationShortName]['Captains'].push(
+                                            {
+                                                Captain: contactName,
+                                                CellPhone: phoneCell,
+                                                HomePhone: phoneHome,
+                                                Response: responseValue
+                                            });
+                                }
+                                else {
+                                    busLocationMap[busLocationShortName]['Captains'] = [];
+                                    busLocationMap[busLocationShortName]['Captains'].push(
+                                            {
+                                                Captain: contactName,
+                                                CellPhone: phoneCell,
+                                                HomePhone: phoneHome,
+                                                Response: responseValue
+                                            });
+                                }
+                            }
+                            else
+                                alert('Exception - ' + busLocationShortName + ' is not found');
+                        }
+                    }
+                }
+
+                if (responseResults.done == 'true') {
+                    processedAll = true;
+                    msg = number_format(responseResults.size) + ' records found as of ' + localDateTime + ' ' + nowDate;
+                    stop_here = 2;
+                }
+                else {
+                    batchCount++;
+                    msg = 'Records retrieved - processing batch ' + batchCount.toString();
+                    responseResults = sforce.connection.queryMore(responseResults.queryLocator);
+                }
+                statusDiv.innerHTML = msg;
+
+            }
+
+            for (mapKey in divisionMap) {
+                attendCnt = expectedCnt = cancelledCnt = noShowCnt = 0;
+                attendCnt    = divisionMap[mapKey].Attend;
+                expectedCnt  = divisionMap[mapKey].Expected;
+                cancelledCnt = divisionMap[mapKey].Cancelled;
+                noShowCnt    = divisionMap[mapKey].NoShow;
+                percent      = (expectedCnt > 0) ? (attendCnt / expectedCnt) * 100 : 0.00;
+                divisionTableData.addRow([mapKey,attendCnt,expectedCnt,percent,cancelledCnt,noShowCnt]);
+            }
+            numFormatter.format(divisionTableData, 1);
+            numFormatter.format(divisionTableData, 2);
+            numFormatter.format(divisionTableData, 3);
+            numFormatter.format(divisionTableData, 4);
+            numFormatter.format(divisionTableData, 5);
+            divisionTable.draw(divisionTableData, {showRowNumber: false, alternatingRowStyle: true, sortColumn:0});
+
+            percentTotal     = (expectedTotal > 0) ? (attendTotal / expectedTotal) * 100 : 0.00;
+            divisionTotalsTableData.addRow(['Total',attendTotal,expectedTotal,percentTotal,cancelledTotal,noShowTotal]);
+            numFormatter.format(divisionTotalsTableData, 1);
+            numFormatter.format(divisionTotalsTableData, 2);
+            numFormatter.format(divisionTotalsTableData, 3);
+            numFormatter.format(divisionTotalsTableData, 4);
+            numFormatter.format(divisionTotalsTableData, 5);
+            divisionTotalsTable.draw(divisionTotalsTableData, {showRowNumber: false, alternatingRowStyle: true});
+
+            grandTotal = attendTotal + cancelledTotal + noShowTotal + waitlistTotal;
+            allTotalsDiv.innerHTML = '<p>Attend + Cancelled + No Show + Wait List: ' + number_format(grandTotal);
+
+            pcAttendTotal = pcCancelledTotal = pcNoShowTotal = 0;
+            for (mapKey in priorCurrentCharMap) {
+                attendCnt = cancelledCnt = noShowCnt = 0;
+
+                tmpRec = priorCurrentCharMap[mapKey];
+                if (tmpRec.hasOwnProperty('A'))
+                    attendCnt = tmpRec.A.Count;
+
+                if (tmpRec.hasOwnProperty('N'))
+                    cancelledCnt = tmpRec.N.Count;
+
+                if (tmpRec.hasOwnProperty('Z'))
+                    noShowCnt = tmpRec.Z.Count;
+
+                pcAttendTotal    += attendCnt;
+                pcCancelledTotal += cancelledCnt;
+                pcNoShowTotal    += noShowCnt;
+                recTot = attendCnt + cancelledCnt + noShowCnt;
+                priorCurrentTableData.addRow([priorLookupMap[mapKey],attendCnt,cancelledCnt,noShowCnt,recTot]);
+            }
+
+            numFormatter.format(priorCurrentTableData, 1);
+            numFormatter.format(priorCurrentTableData, 2);
+            numFormatter.format(priorCurrentTableData, 3);
+            numFormatter.format(priorCurrentTableData, 4);
+            priorCurrentTable.draw(priorCurrentTableData, {showRowNumber: false, alternatingRowStyle: true, sortColumn:0});
+
+            priorCurrentTotalsTableData.addRow(['Total',pcAttendTotal,pcCancelledTotal,pcNoShowTotal,pcAttendTotal+pcCancelledTotal+pcNoShowTotal]);
+            numFormatter.format(priorCurrentTotalsTableData, 1);
+            numFormatter.format(priorCurrentTotalsTableData, 2);
+            numFormatter.format(priorCurrentTotalsTableData, 3);
+            numFormatter.format(priorCurrentTotalsTableData, 4);
+            priorCurrentTotalsTable.draw(priorCurrentTotalsTableData, {showRowNumber: false, alternatingRowStyle: true});
+
+            empPtr = 0;
+            for (mapKey in employerMap) {
+                attendCnt = expectedCnt = cancelledCnt = noShowCnt = 0;
+                division     = employerMap[mapKey].Division;
+                region       = employerMap[mapKey].Region;
+                attendCnt    = employerMap[mapKey].Attend;
+                expectedCnt  = employerMap[mapKey].Expected;
+                cancelledCnt = employerMap[mapKey].Cancelled;
+                noShowCnt    = employerMap[mapKey].NoShow;
+                percent      = (expectedCnt > 0) ? (attendCnt / expectedCnt) * 100 : 0.00;
+                employerTableData.addRow([division,region,toProperCase(mapKey),attendCnt,expectedCnt,percent,cancelledCnt,noShowCnt]);
+
+                switch(division) {
+                    case 'Kaiser' :
+                        kaiserFilter.push(empPtr);
+                        break;
+                    case 'Hospital' :
+                        hospitalFilter.push(empPtr);
+                        break;
+                    case 'Home Care' :
+                        homecareFilter.push(empPtr);
+                        break;
+                    case 'Nursing Home' :
+                        nursinghomeFilter.push(empPtr);
+                        break;
+                    default :
+                        otherFilter.push(empPtr);
+                }
+                empPtr++;
+            }
+            numFormatter.format(employerTableData, 3);
+            numFormatter.format(employerTableData, 4);
+            numFormatter.format(employerTableData, 5);
+            numFormatter.format(employerTableData, 6);
+            numFormatter.format(employerTableData, 7);
+
+            for (mapKey in busLocationMap) {
+                tmpBusLocationRec = busLocationMap[mapKey];
+                busLocationName = mapKey;
+                shortName       = tmpBusLocationRec.ShortName;
+                attendCnt       = tmpBusLocationRec.Attend;
+                expectedCnt     = tmpBusLocationRec.Expected;
+                cancelledCnt    = tmpBusLocationRec.Cancelled;
+                noShowCnt       = tmpBusLocationRec.NoShow;
+                departure       = tmpBusLocationRec.Departure;
+                percent         = (attendCnt / expectedCnt) * 100;
+                percent         = (expectedCnt > 0) ? (attendCnt / expectedCnt) * 100 : 0.00;
+                busLocationTableData.addRow([toProperCase(shortName),departure,attendCnt,expectedCnt,percent,cancelledCnt,noShowCnt]);
+            }
+            numFormatter.format(busLocationTableData, 2);
+            numFormatter.format(busLocationTableData, 3);
+            numFormatter.format(busLocationTableData, 4);
+            numFormatter.format(busLocationTableData, 5);
+            numFormatter.format(busLocationTableData, 6);
+            busLocationTable.draw(busLocationTableData, {showRowNumber: false, alternatingRowStyle: true, sortColumn:0});
+
+            kaiserView      = new google.visualization.DataView(employerTableData);
+            hospitalView    = new google.visualization.DataView(employerTableData);
+            homecareView    = new google.visualization.DataView(employerTableData);
+            nursinghomeView = new google.visualization.DataView(employerTableData);
+            otherView       = new google.visualization.DataView(employerTableData);
+
+            kaiserView.setRows(kaiserFilter);
+            kaiserView.hideColumns([0]);
+
+            hospitalView.setRows(hospitalFilter);
+            hospitalView.hideColumns([0]);
+            homecareView.setRows(homecareFilter);
+            homecareView.hideColumns([0,1]);
+            nursinghomeView.setRows(nursinghomeFilter);
+            nursinghomeView.hideColumns([0,1]);
+            otherView.setRows(otherFilter);
+            otherView.hideColumns([0,1]);
+
+            kaiserViewTable.draw(kaiserView, {sortColumn: 1});
+            hospitalViewTable.draw(hospitalView, {sortColumn: 1});
+            homecareViewTable.draw(homecareView, {sortColumn: 0});
+            nursinghomeViewTable.draw(nursinghomeView, {sortColumn: 0});
+            otherViewTable.draw(otherView, {sortColumn: 0});
+
+            dashboard();
+        }
+
+        function getPercent(div) {
+            var tmpRec;
+            var attendCnt;
+            var expectedCnt;
+            var percent;
+
+            percent = 0.0;
+
+            if(divisionMap[div]) {
+                tmpRec      = divisionMap[div];
+                attendCnt   = tmpRec.Attend;
+                expectedCnt = tmpRec.Expected;
+                percent     = (expectedCnt > 0) ? (attendCnt / expectedCnt) * 100 : 0.0;
+            }
+
+            return percent;
+        }
+
+        function resetVisualizations() {
+            if (busLocationTableData.getNumberOfRows() > 0) {
+                busLocationTableData.removeRows(0, busLocationTableData.getNumberOfRows());
+                busLocationTable.clearChart();
+            }
+            if (divisionTableData.getNumberOfRows() > 0) {
+                divisionTableData.removeRows(0, divisionTableData.getNumberOfRows());
+                divisionTable.clearChart();
+            }
+            if (divisionTotalsTableData.getNumberOfRows() > 0) {
+                divisionTotalsTableData.removeRows(0, divisionTotalsTableData.getNumberOfRows());
+                divisionTotalsTable.clearChart();
+            }
+            if (priorCurrentTableData.getNumberOfRows() > 0) {
+                priorCurrentTableData.removeRows(0, priorCurrentTableData.getNumberOfRows());
+                priorCurrentTable.clearChart();
+            }
+            if (priorCurrentTotalsTableData.getNumberOfRows() > 0) {
+                priorCurrentTotalsTableData.removeRows(0, priorCurrentTotalsTableData.getNumberOfRows());
+                priorCurrentTotalsTable.clearChart();
+            }
+
+            if (priorCurrentTotalsTableData.getNumberOfRows() > 0) {
+                priorCurrentTotalsTableData.removeRows(0, priorCurrentTotalsTableData.getNumberOfRows());
+                priorCurrentTotalsTable.clearChart();
+            }
+        }
+
+        function initTables() {
+            busLocationTable     = new google.visualization.Table(busLocationDiv);
+            busLocationTableData = new google.visualization.DataTable();
+            busLocationTableData.addColumn('string', 'Bus Location');
+            busLocationTableData.addColumn('string', 'Departure');
+            busLocationTableData.addColumn('number', 'Attend');
+            busLocationTableData.addColumn('number', 'Expected');
+            busLocationTableData.addColumn('number', '% Met');
+            busLocationTableData.addColumn('number', 'Cancelled');
+            busLocationTableData.addColumn('number', 'No Show');
+            google.visualization.events.addListener(busLocationTable, 'select', busLocationTableSelectHandler);
+
+            divisionTable     = new google.visualization.Table(divisionDiv);
+            divisionTableData = new google.visualization.DataTable();
+            divisionTableData.addColumn('string', 'Division');
+            divisionTableData.addColumn('number', 'Attend');
+            divisionTableData.addColumn('number', 'Expected');
+            divisionTableData.addColumn('number', '% Met');
+            divisionTableData.addColumn('number', 'Cancelled');
+            divisionTableData.addColumn('number', 'No Show');
+
+            divisionTotalsTable     = new google.visualization.Table(divisionTotalsDiv);
+            divisionTotalsTableData = new google.visualization.DataTable();
+            divisionTotalsTableData.addColumn('string', '');
+            divisionTotalsTableData.addColumn('number', 'Attend');
+            divisionTotalsTableData.addColumn('number', 'Expected');
+            divisionTotalsTableData.addColumn('number', '% Met');
+            divisionTotalsTableData.addColumn('number', 'Cancelled');
+            divisionTotalsTableData.addColumn('number', 'No Show');
+
+            priorCurrentTable     = new google.visualization.Table(priorCurrentDiv);
+            priorCurrentTableData = new google.visualization.DataTable();
+            priorCurrentTableData.addColumn('string', 'Prior response');
+            priorCurrentTableData.addColumn('number', 'Attend');
+            priorCurrentTableData.addColumn('number', 'Cancelled');
+            priorCurrentTableData.addColumn('number', 'No Show');
+            priorCurrentTableData.addColumn('number', 'Record Total');
+
+            priorCurrentTotalsTable     = new google.visualization.Table(priorCurrentTotalsDiv);
+            priorCurrentTotalsTableData = new google.visualization.DataTable();
+            priorCurrentTotalsTableData.addColumn('string', 'Prior response');
+            priorCurrentTotalsTableData.addColumn('number', 'Attend');
+            priorCurrentTotalsTableData.addColumn('number', 'Cancelled');
+            priorCurrentTotalsTableData.addColumn('number', 'No Show');
+            priorCurrentTotalsTableData.addColumn('number', 'Record Total');
+
+            employerTableData = new google.visualization.DataTable();
+            employerTableData.addColumn('string', 'Division');
+            employerTableData.addColumn('string', 'Region');
+            employerTableData.addColumn('string', 'Name');
+            employerTableData.addColumn('number', 'Attend');
+            employerTableData.addColumn('number', 'Expected');
+            employerTableData.addColumn('number', '% Met');
+            employerTableData.addColumn('number', 'Cancelled');
+            employerTableData.addColumn('number', 'No Show');
+
+            kaiserViewTable      = new google.visualization.Table(kaiserDiv);
+            hospitalViewTable    = new google.visualization.Table(hospitalDiv);
+            homecareViewTable    = new google.visualization.Table(homecareDiv);
+            nursinghomeViewTable = new google.visualization.Table(nursinghomeDiv);
+            otherViewTable       = new google.visualization.Table(otherDiv);
+        }
+
+        function busLocationTableSelectHandler() {
+            var selection = busLocationTable.getSelection();
+            var textMessage;
+            var choice;
+            var caplist;
+            var item;
+
+            if (selection.length > 0) {
+                if (selection.length > 1) {
+                    alert('Please select a single row');
+                }
+                else {
+                    textMessage = 'No Bus Captains defined';
+                    item = selection[0];
+                    choice = busLocationTableData.getFormattedValue(item.row, 0);
+                    if(busLocationMap[choice]['Captains']) {
+                        caplist = busLocationMap[choice]['Captains'];
+                        textMessage = 'Bus Captains\n\n';
+                        for (i = 0; i < caplist.length; i++) {
+                            tmpRec = busLocationMap[choice]['Captains'][i];
+                            textMessage +=  tmpRec.Captain + ' - ' + tmpRec.Response + '\n';
+                            if(tmpRec.CellPhone != '')
+                                textMessage +=  'Cell # ' + tmpRec.CellPhone + '\n';
+                            if(tmpRec.HomePhone != '')
+                                textMessage +=  'Home # ' + tmpRec.HomePhone + '\n\n';
+                        }
+                    }
+                    alert(textMessage);
+                }
+            }
+        }
+
+        function employerTableSelectHandler(selection) {
+            // Note: This is not called from anywhere.  I have not bothered to change the code for tabelsViews
+            //       Probably worth doing in next version.
+            
+            //       The mechanism is differenct for adding event listeners to views.
+            //       See https://developers.google.com/chart/interactive/docs/reference#events
+
+            var selection;
+            var choice;
+            var item;
+            var coordinator;
+            var organizer1;
+            var tmpRec;
+            var textMessage;
+            var coordCell;
+            var coordPhone;
+            var org1Cell;
+            var org1Phone;
+
+            selection = employerTable.getSelection();
+            if (selection.length > 0) {
+                if (selection.length > 1) {
+                    alert('Please select a single row');
+                }
+                else {
+                    item = selection[0];
+                    choice = employerTableData.getFormattedValue(item.row, 0);
+                    textMessage = choice + '\n\n';
+                    coordinator = organizer1 = '';
+                    if(employerInfoMap[choice]) {
+                        tmpRec = employerInfoMap[choice];
+
+                        if(tmpRec.Coordinator != '') {
+                            coordinator = tmpRec.Coordinator + '\n';
+                            coordPhone  = tmpRec.CoordPhone;
+                            coordCell   = tmpRec.CoordCell;
+
+                            textMessage += 'Coordinator: ' + coordinator;
+
+                            if (coordPhone != null && coordPhone.length > 6) {
+                                textMessage += 'Phone: ' + coordPhone + '\n';
+                            }
+
+                            if (coordCell != null && coordCell.length > 6) {
+                                textMessage += 'Cell: ' + coordCell + '\n';
+                            }
+
+                        }
+
+                        if(tmpRec.Organizer1 != '') {
+                            organizer1 = tmpRec.Organizer1 + '\n';
+                            org1Phone  = tmpRec.Org1Phone;
+                            org1Cell   = tmpRec.Org1Cell;
+
+                            textMessage += 'Organizer1: ' + organizer1;
+
+                            if (org1Phone != null && org1Phone.length > 6) {
+                                textMessage += 'Phone: ' + org1Phone + '\n';
+                            }
+
+                            if (org1Cell != null && org1Cell.length > 6) {
+                                textMessage += 'Cell: ' + org1Cell + '\n';
+                            }
+                        }
+                    }
+                    alert(textMessage);
+                }
+            }
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = '';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        function dashboard() {
+            // Note: This is only showing attended v expected.  Records with no expectation are not included here, so counts wouldn't match 100%.
+
+            snap = Snap("#svg1");
+
+            communityPc     = getPercent('Community');
+            hospitalPc      = getPercent('Hospital');
+            kaiserPc        = getPercent('Kaiser');
+            homeCarePc      = getPercent('Home Care');
+            nursingHomePc   = getPercent('Nursing Home');
+            newOrganizingPc = getPercent('New Organizing');
+
+            var yTick1 = snap.path("M25  20L35  20").attr({stroke: 'indianred',strokeWidth: 1,strokeOpacity: .6});
+            var yTick2 = snap.path("M25  70L35  70").attr({stroke: 'indianred',strokeWidth: 1,strokeOpacity: .6});
+            var yTick3 = snap.path("M25 120L35 120").attr({stroke: 'indianred',strokeWidth: 1,strokeOpacity: .6});
+            var yTick4 = snap.path("M25 170L35 170").attr({stroke: 'indianred',strokeWidth: 1,strokeOpacity: .6});
+            var yTick5 = snap.path("M25 220L35 220").attr({stroke: 'indianred',strokeWidth: 1,strokeOpacity: .6});
+
+            var t1 = snap.text(5, 70, "100%").attr({font: "8px Helvetica, sans-serif"});
+            var t2 = snap.text(5,120,  "75%").attr({font: "8px Helvetica, sans-serif"});
+            var t3 = snap.text(5,170,  "50%").attr({font: "8px Helvetica, sans-serif"});
+            var t4 = snap.text(5,220,  "25%").attr({font: "8px Helvetica, sans-serif"});
+
+//          var example100pcBar  = snap.rect( 70,  70,BW, 200).attr({fill: '#B28C5F', stroke: 'red', strokeWidth: 1});
+            var overallBar       = snap.rect(45,  SIZE100PC - (percentTotal    * 2),BW, percentTotal    * 2).attr({fill: '#16CC25', stroke: '#16CC25', strokeWidth: 1});
+            var communityBar     = snap.rect(90,  SIZE100PC - (communityPc     * 2),BW, communityPc     * 2).attr({fill: '#4D93B2', stroke: '#4D93B2', strokeWidth: 1});
+            var homeCareBar      = snap.rect(135, SIZE100PC - (homeCarePc      * 2),BW, homeCarePc      * 2).attr({fill: '#FFAC4A', stroke: '#FFAC4A', strokeWidth: 1});
+            var hospitalBar      = snap.rect(180, SIZE100PC - (hospitalPc      * 2),BW, hospitalPc      * 2).attr({fill: '#AEE6FF', stroke: '#AEE6FF', strokeWidth: 1});
+            var kaiserBar        = snap.rect(235, SIZE100PC - (kaiserPc        * 2),BW, kaiserPc        * 2).attr({fill: '#BAA1FF', stroke: '#BAA1FF', strokeWidth: 1});
+            var newOrganizingBar = snap.rect(280, SIZE100PC - (newOrganizingPc * 2),BW, newOrganizingPc * 2).attr({fill: '#E5DF8D', stroke: '#E5DF8D', strokeWidth: 1});
+            var nursingHomeBar   = snap.rect(325, SIZE100PC - (nursingHomePc   * 2),BW, nursingHomePc   * 2).attr({fill: 'indianred', stroke: '#BAA1FF', strokeWidth: 1});
+
+            var yAxis = snap.path("M30 20L30 270");
+            yAxis.attr({stroke: 'black',strokeWidth: 2});
+            var xAxis = snap.path("M30 270 L350 270");
+            xAxis.attr({stroke: 'black',strokeWidth: 2});
+
+            var xt = snap.text(130,  16, "Percentage of Expectation Met").attr({font: "12px Helvetica, sans-serif"});
+            var xt = snap.text(175, 310, "Divisions").attr({font: "12px Helvetica, sans-serif"});
+
+            var l2a = snap.text( 40,280, "Overall").attr({font: "8px Helvetica, sans-serif"});
+            var l3a = snap.text( 74,280, "Community").attr({font: "8px Helvetica, sans-serif"});
+            var l4a = snap.text(124,280, "Home Care").attr({font: "8px Helvetica, sans-serif"});
+            var l5a = snap.text(176,280, "Hospital").attr({font: "8px Helvetica, sans-serif"});
+            var l6a = snap.text(234,280, "Kaiser").attr({font: "8px Helvetica, sans-serif"});
+            var l7a = snap.text(276,280, "New Org.").attr({font: "8px Helvetica, sans-serif"});
+            var l8a = snap.text(320,280, "Nursing Home").attr({font: "8px Helvetica, sans-serif"});
+
+        }
+
+        function initTabs() {
+
+            // get tab container
+            var container = document.getElementById("tabContainer");
+            var tabcon = document.getElementById("tabscontent");
+
+            // set current tab
+            var navitem = document.getElementById("tabHeader_1");
+
+            //store which tab we are on
+            var ident = navitem.id.split("_")[1];
+
+            navitem.parentNode.setAttribute("data-current",ident);
+            //set current tab with class of activetabheader
+            navitem.setAttribute("class","tabActiveHeader");
+
+            //hide two tab contents we don't need
+            var pages = tabcon.getElementsByTagName("div");
+            var page;
+
+            for (var i = 1; i < pages.length; i++) {
+                page = pages.item(i);
+                if(page.className.indexOf('tabpage')!= -1) {
+                    pages.item(i).style.display="none";
+                }
+            };
+
+            //this adds click event to tabs
+            var tabs = container.getElementsByTagName("li");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].onclick=displayPage;
+            }
+        }
+
+        // on click of one of tabs
+        function displayPage() {
+            var current = this.parentNode.getAttribute("data-current");
+            //remove class of activetabheader and hide old contents
+            document.getElementById("tabHeader_" + current).removeAttribute("class");
+            document.getElementById("tabpage_" + current).style.display="none";
+
+            var ident = this.id.split("_")[1];
+            //add class of activetabheader to new active tab and show contents
+            this.setAttribute("class","tabActiveHeader");
+            document.getElementById("tabpage_" + ident).style.display="block";
+            this.parentNode.setAttribute("data-current",ident);
+        }
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function() {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            var _url = "{!$CurrentPage.URL}";
+            _baseUrl = _url.substr(0, _url.indexOf("/", 20)+1);
+
+            lineNum  = 0;
+            statusDiv             = document.getElementById('StatusDiv');
+            busLookupDiv          = document.getElementById('BusLookupDiv');
+            busLocationDiv        = document.getElementById('BusLocationDiv');
+            divisionDiv           = document.getElementById('DivisionDiv');
+            divisionTotalsDiv     = document.getElementById('DivisionTotalsDiv');
+            allTotalsDiv          = document.getElementById('AllTotalsDiv');
+            priorCurrentDiv       = document.getElementById('PriorCurrentDiv');
+            priorCurrentTotalsDiv = document.getElementById('PriorCurrentTotalsDiv');
+
+            kaiserDiv            = document.getElementById('KaiserDiv');
+            hospitalDiv          = document.getElementById('HospitalDiv');
+            homecareDiv          = document.getElementById('HomeCareDiv');
+            nursinghomeDiv       = document.getElementById('NursingHomeDiv');
+            otherDiv             = document.getElementById('OtherDiv');
+
+            numFormatter  = new google.visualization.NumberFormat({pattern: '#,##0'});
+            refreshButton = document.getElementById("RefreshButton");
+            refreshButton.addEventListener("click", refreshClicked, false);
+
+            priorLookupMap['B']   = 'Confirmed';
+            priorLookupMap['D']   = 'Remind';
+            priorLookupMap['M']   = 'Committed';
+            priorLookupMap['R']   = 'Reconfirmed';
+            priorLookupMap['B']   = 'Confirmed';
+            priorLookupMap['S']   = 'Slotted';
+            priorLookupMap['W']   = 'Waitlist';
+            priorLookupMap['.']   = 'None';
+
+            currentLookupMap['A'] = 'Attended';
+            currentLookupMap['N'] = 'Cancelled';
+            currentLookupMap['Z'] = 'No Show';
+
+            initTabs();
+            initTables();
+            loadBusLookup();
+            loadAccounts();
+            startCounter(5,100);
+
+        });
+
+    </script>
+
+    <div id="MainDiv" style="width:980px; padding: 5px;clear: both;background-color:#92f1f6;">
+        <h2> June 2nd Attendances</h2>
+
+        <span id="refresh">
+            <input  id="RefreshButton"  style="padding: 5px;" type="Button" value="Retrieve"></input>
+        </span>
+
+        <span id="StatusDiv" style="padding: 5px;clear: both;"> </span>
+        <div id="tabContainer">
+            <div id="tabs">
+                <ul>
+                    <li id="tabHeader_1">Division</li>
+                    <li id="tabHeader_2">Prior/Current</li>
+                    <li id="tabHeader_3">Bus Locations</li>
+                    <li id="tabHeader_4">Kaiser</li>
+                    <li id="tabHeader_5">Hospital</li>
+                    <li id="tabHeader_6">Home Care</li>
+                    <li id="tabHeader_7">Nursing Home</li>
+                    <li id="tabHeader_8">Other</li>
+                    <li id="tabHeader_9">Dashboard</li>
+                </ul>
+            </div>
+
+            <div id="tabscontent">
+                <div class="tabpage" id="tabpage_1" style="background-color: white;height: 500px">
+                    <h3>Division counts</h3>
+                    <div id="DivisionDiv"       style="padding: 5px;clear: both;background-color:white;"> </div>
+                    <div id="DivisionTotalsDiv" style="padding: 5px;clear: both;background-color:white;"> </div>
+                    <div id="AllTotalsDiv"      style="padding: 5px;clear: both;background-color:white;"> </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_2">
+                    <h3>Prior/Current counts</h3>
+                    <div id="PriorCurrentDiv" > </div>
+                    <div id="PriorCurrentTotalsDiv" > </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_3">
+                    <h3>Bus Location counts</h3>
+                    <div id="BusLocationDiv" > </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_4">
+                    <h3>Kaiser counts</h3>
+                    <div id="KaiserDiv" > </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_5">
+                    <h3>Hospital counts</h3>
+                    <div id="HospitalDiv" > </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_6">
+                    <h3>Home Care counts</h3>
+                    <div id="HomeCareDiv" class="colcount6"> </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_7">
+                    <h3>Nursing Home counts</h3>
+                    <div id="NursingHomeDiv" class="colcount6"> </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_8">
+                    <h3>Other counts</h3>
+                    <div id="OtherDiv" class="colcount6"> </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_9" style="background-color: white;height: 600px">
+                    <svg id="svg1"></svg>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </body>
+</apex:page>

@@ -1,0 +1,581 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="ContactFieldUseController">
+<html>
+    <head>
+        <meta charset="utf-8"></meta>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+ 
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"></link>
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet"></link>
+
+        <style>
+
+            .blue-cell {
+                color: blue;
+            }
+
+            .black-cell {
+                color: black;
+            }
+
+           .hide {
+                display:none;
+            }
+
+            .show {
+                display:block;
+            }
+
+            #RefreshBtn {
+                color: blue;
+                font-size: 18px;
+                margin-left: 5px;
+            }
+
+            #RefreshField {
+                display: inline-block;
+                color: cyan;
+            }
+
+            #Section {
+                width:100%;
+                height:40px;
+            }
+
+            #StatsDiv {
+                width:175px;
+                display: inline-block;
+                color: #bbc6a5;
+                margin-top: 10px;
+                font-size: 14px;
+                float: right;
+                margin-right: 25px;                
+            }
+
+            #TitleDiv  {
+                display: inline-block;
+                color: #bbc6a5;
+                padding-left: 6px;
+                font-size: 25px;
+                margin-left: 4px;
+            }
+
+            #Content {
+                margin-left: 5px;
+                background-color: rebeccapurple;
+            }
+
+            #ContactGridDiv {
+                height: 700px !important;
+                padding-right: 5px;
+                margin-left: 5px;
+                margin-top: 3px;
+                margin-bottom: 3px;
+            }
+
+            .modalDialog {
+                position: fixed;
+                font-family: Arial, Helvetica, sans-serif;
+                top: 100px;
+                left: 50px;
+                width: 80%;
+                height: 80%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 99999;
+                opacity: 0.8;
+                pointer-events: none;
+            }
+
+            .modalDialog > div {
+                width: 400px;
+                position: relative;
+                margin: 10% auto;
+                padding: 5px 20px 13px 20px;
+                border-radius: 10px;
+                background: #fff;
+                background: -moz-linear-gradient(#fff, #999);
+                background: -webkit-linear-gradient(#fff, #999);
+                background: -o-linear-gradient(#fff, #999);
+            }
+
+            body {
+/*                font-family: Helvetica Neue,Helvetica,Arial,sans-serif; */
+                font-family: 'Montserrat', sans-serif;
+                font-size: 14px;
+                padding : 10px ;
+            }
+
+            .cellRight {
+                text-align: right;
+                padding-right:5px !important;
+                font-family: 'Roboto Mono', monospace;
+                font-size: 12px;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .cellClass2 {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 12px;
+                text-align: center;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+            .cellLeft {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 12px;
+                text-align: left;
+                padding-left:5px !important;
+                font-style: normal;
+                font-variant: normal;
+            }
+
+           .hdr {
+                display: inline-block;
+                width: 340px;
+                border: 1px solid blue;
+                color: #e1c1ff;
+                margin-left: 5px;
+                margin-top: 10px;
+/*                height: 25px; */
+                padding-left: 6px;
+                padding-top: 2px;
+                font-weight: 600;
+            }
+
+            .disp {
+                display: inline-block;
+                color: #e1c1ff;
+                margin-left: 1px;
+                padding-left: 1px;
+                font-weight: normal;
+                font-size: 10px;
+            }
+  
+            /* removes outline dots from button when it gets focus */
+            :focus {outline:none;}
+            ::-moz-focus-inner {border:0;}
+
+            #TestBtn {
+                background-color: white;
+                color:blue;
+                margin-left: 10px;
+                margin-top: 10px;
+            }
+
+            #TestBtn:hover {
+                background-color: rgba(0,0,255,0.2);
+                color:white;
+            }
+        </style>
+
+        <apex:includeScript value="{!$Resource.MomentJs}"/>
+        <apex:includeScript value="{!$Resource.agGridEnterprise11}"/>
+
+    </head>
+    <body>
+    <div id="Content">
+        <div id="Section">
+            <div id="TitleDiv">
+                Contact Field Use
+            </div>
+            <div id="StatsDiv"></div>
+        </div>
+        <div id="ContactGridDiv" class="ag-fresh"></div>
+        <div>    
+            <button id="RefreshBtn"      class="btn" type="button">Refresh one more</button>
+            <input id="SaveAsCsvButton"  class="btn" type="Button" value="Save As .csv"></input>
+            <div id="RefreshField"></div>
+             <hr/>
+        </div>
+    </div>
+
+    <div id="ModalLoadingDiv" class="modalDialog hide">
+        <div>
+            <h2>Loading data...</h2>
+        </div>
+    </div>
+    </body>
+
+    <script type="text/javascript">
+        'use strict';
+
+        function init() {
+            titleDiv          = document.getElementById('TitleDiv');
+            statsDiv          = document.getElementById('StatsDiv');
+            contactGridDiv    = document.getElementById('ContactGridDiv');
+            modalLoadingDiv   = document.getElementById('ModalLoadingDiv');
+            refreshField      = document.getElementById('RefreshField');
+            saveAsCsvButton   = document.getElementById("SaveAsCsvButton");
+            
+            refreshButton = document.getElementById('RefreshBtn');
+            refreshButton.addEventListener("click",refreshHandler,false);
+            saveAsCsvButton.addEventListener("click", saveAsCsv, false);
+        }
+
+        function refreshHandler(e) {
+            return new Promise(function (resolve, reject) {
+                ContactFieldUseController.startRefresh( (result, event) => {
+                    if (event.status) {
+                        console.log('Get count data batch started');
+                        console.log('result:',result);
+                        refreshField.innerHTML = `Batched refresh for: ${result}`
+                        refreshButton.disabled = true;
+                        resolve(result);
+                    }
+                    else
+                    {
+                        console.log('Error starting get count batch');
+                        console.log(event);
+                        reject(event);
+                    }
+                });
+            });
+        }
+
+        function getCountData() {
+            return new Promise(function (resolve, reject) {
+                ContactFieldUseController.getCounts( (result, event) => {
+                    if (event.status) {
+                        console.log('Get count data batch started');
+                        resolve(result);
+                    }
+                    else
+                    {
+                        console.log('Error from ContactFieldUseController.getCounts() ');
+                        reject(event);
+                    }
+                });
+            });
+        }
+
+        function processCountData(results) {
+            return new Promise(function (resolve, reject) {
+                console.log('processCountData');
+                let i,len,rec;
+                let id,fieldAPIName,countStart,countStop,count,jobId, jobStatus, jobErrors, jobItems, jobItemsTotal;
+                len = results.length;
+                if(len > 0) {
+                    for (i = 0; i < len; i++) {
+                        rec           = results[i];
+                        id            = rec.Id;
+                        fieldAPIName  = rec.FieldAPIName__c;
+                        countStart    = rec.CountStart__c;
+                        countStop     = rec.CountStop__c;
+                        count         = rec.Count__c         || 0;
+                        jobId         = rec.JobId__c         || '';
+                        jobStatus     = rec.JobStatus__c     || '';
+                        jobErrors     = rec.JobErrors__c     || 0;
+                        jobItems      = rec.JobItems__c      || 0;
+                        jobItemsTotal = rec.JobItemsTotal__c || 0;
+                        countMap[fieldAPIName] = {
+                            Id:id, 
+                            FieldAPIName:fieldAPIName, 
+                            CountStart:countStart, 
+                            CountStop:countStop, 
+                            Count:count,
+                            JobId:jobId,        
+                            JobStatus:jobStatus,
+                            JobErrors:jobErrors,
+                            JobItems:jobItems,
+                            JobItemsTotal:jobItemsTotal
+                        };
+                    }   
+                }
+                else {
+                    console.log('no count data!');
+                }
+                resolve('ok');
+            });
+        }
+        
+        function getContactFields() {
+            return new Promise(function (resolve, reject) {
+                ContactFieldUseController.getFieldData( refreshParam, (result, event) => {
+                    if (event.status) {
+                        console.log('Retrieved Field data');
+                        resolve(result);
+                    }
+                    else
+                    {
+                        console.log('Error retrieving Field data');
+                        reject(event);
+                    }
+                });
+            });
+        }
+
+        function processContactData(results) {
+            return new Promise(function (resolve, reject) {
+                let s1,s2,s3,s4,s5,s6,s7,s8,s9;
+                let len, rec, countRec, i;
+                let fieldName,fieldAPIName,fieldFormula,fieldType,fieldIsCustom,fieldLength,jobId, jobStatus, jobErrors, jobItems, jobItemsTotal;
+                let range,hours,mins,secs,ms;
+                let customCount = 0, count = 0, time = 0, countStart = '', countStop = '', countStartFmt = '', countStopFmt = '', timeFmt = '';
+
+                // this was painful to get working!
+                let r1 = new RegExp(/&amp/,'gm');
+                let r2 = new RegExp(/&#39/,'gm');
+                let r3 = new RegExp(/&;/,'gm');
+                let r4 = new RegExp(/&quot/,'gm');
+                let r5 = new RegExp(/';/,'gm');
+                let r6 = new RegExp(/&gt/,'gm');
+                let r7 = new RegExp(/>;/,'gm');
+                let r8 = new RegExp(/&lt/,'gm');
+                let r9 = new RegExp(/<;/,'gm');
+
+                len = results.length;
+                if(len > 0) {
+
+                    for (i = 0; i < len; i++) {
+                        jobId = '', jobStatus = '', jobErrors = 0, jobItems = 0, jobItemsTotal = 0;
+                        count = 0, countStart = countStartFmt = countStop = countStopFmt = timeFmt = '', time = fieldLength = 0;
+                        fieldName = fieldAPIName = fieldFormula = fieldType = fieldIsCustom = '';
+                        rec           = results[i];
+                        fieldName     = rec.FieldName__c;    
+                        fieldAPIName  = rec.FieldAPIName__c; 
+                        fieldFormula  = rec.FieldFormula__c;
+                        if(fieldFormula != 'no formula') {
+                            s1 = fieldFormula.replace(r1, "&");  // prevent &amp; &#38;
+                            s2 = s1.replace(r2, "'");
+                            s3 = s2.replace(r3, "&");
+                            s4 = s3.replace(r4, "'");
+                            s5 = s4.replace(r5, "'");
+                            s6 = s5.replace(r6, ">");
+                            s7 = s6.replace(r7, ">"); 
+                            s8 = s6.replace(r8, "<");
+                            s9 = s6.replace(r8, "<");
+                            fieldFormula = decodeURI(s9);
+                        }
+                        fieldLength   = parseInt(rec.FieldLength__c);  
+                        fieldType     = toProperCase(rec.FieldType__c);    
+                        fieldIsCustom = rec.FieldIsCustom__c;
+
+                        if(fieldIsCustom) customCount++;
+
+                        if(countMap[fieldAPIName]) {
+                            countRec      = countMap[fieldAPIName];
+                            countStart    = moment(countRec.CountStart)
+                            countStartFmt = countStart.format('MM/DD/YY HH:mm:ss'); 
+                            countStop     = moment(countRec.CountStop); 
+                            countStopFmt  = countStop.format('MM/DD/YY HH:mm:ss'); 
+                            count         = countRec.Count;
+                            time          = countStop.diff(countStart, 'millisecond');
+                            timeFmt       = msToTime(time);
+                            jobId         = countRec.JobId;
+                            jobStatus     = countRec.JobStatus;
+                            jobErrors     = countRec.JobErrors;
+                            jobItems      = countRec.JobItems;
+                            jobItemsTotal = countRec.JobItemsTotal;
+                        } 
+                        // else {
+                        //    console.log('fieldAPIName ' + fieldAPIName + ' not found in countMap');
+                        // }
+                        
+                        contactDataArray.push({
+                            FieldName:fieldName,
+                            FieldAPIName:fieldAPIName,
+                            FieldLength:fieldLength,
+                            FieldFormula:fieldFormula,
+                            FieldType:fieldType,
+                            FieldIsCustom:fieldIsCustom, 
+                            CountStart:countStartFmt, 
+                            CountStop:countStopFmt, 
+                            Count:count, 
+                            Time: timeFmt,
+                            JobId:jobId,        
+                            JobStatus: jobStatus,
+                            JobErrors:jobErrors,
+                            JobItems:jobItems,
+                            JobItemsTotal:jobItemsTotal
+                        });
+                    }
+                }
+                showLoadingMsg(false);
+                statsDiv.innerHTML = ` Custom field count: ${customCount}`;
+                contactGridOptions = {
+                    columnDefs: contactColumnDefs,
+                    rowData: contactDataArray,
+                    rowSelection: 'single',
+                    enableSorting: true
+                };
+                new agGrid.Grid(contactGridDiv, contactGridOptions);
+
+                resolve('ok');
+            });
+        }
+
+        function msToTime(duration) {
+            // https://stackoverflow.com/questions/19700283/how-to-convert-time-milliseconds-to-hours-min-sec-format-in-javascript
+            let milliseconds,seconds,minutes,hours;
+            milliseconds = parseInt((duration%1000)/100);
+            seconds = parseInt((duration/1000)%60); 
+            minutes = parseInt((duration/(1000*60))%60);
+            hours   = parseInt((duration/(1000*60*60))%24);
+            hours   = (hours   < 10) ? "0" + hours   : hours;
+            minutes = (minutes < 10) ? "0" + minutes : minutes;
+            seconds = (seconds < 10) ? "0" + seconds : seconds;
+            return hours + ":" + minutes + ":" + seconds;
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        function countValueGetter(params) {
+            return params.data.Count;
+        }
+
+        function countValueFormatter(params) {
+            return number_format(params.data.Count,0);
+        }
+
+        function lengthValueFormatter(params) {
+            return number_format(params.data.FieldLength,0);
+        }
+
+        function fieldFormulaCellRenderer(params) {
+            if(params.data.FieldFormula != 'no formula')
+                return params.value;
+            else
+                return '';
+        }
+
+        function initAgGrid() {
+            agGrid.LicenseManager.setLicenseKey("SEIU-UWH_Site_1Devs7_February_2018__MTUxNzk2MTYwMDAwMA==f54417966e3979c429e6a1af033c1a9a");
+
+            rowColorClassRules = {
+                'blue-cell' : function(params) {
+                    return params.data.CountStop != '';
+                },
+                'black-cell': function(params) {
+                    return params.data.CountStop == '';
+                }
+            };
+
+            contactColumnDefs = [
+                {headerName: 'Label',           field: 'FieldName',     width: 260, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                {headerName: 'API Name',        field: 'FieldAPIName',  width: 280, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                {headerName: 'Count',           field: 'Count',         width:  80, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellRight', cellClassRules:rowColorClassRules, valueFormatter: countValueFormatter },
+                {headerName: 'Type',            field: 'FieldType',     width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                {headerName: 'Length',          field: 'FieldLength',   width:  80, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellRight', valueFormatter: lengthValueFormatter },
+                {headerName: 'Custom',          field: 'FieldIsCustom', width:  80, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },                
+                {headerName: 'Formula',         field: 'FieldFormula',  width: 400, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft',  cellRenderer:fieldFormulaCellRenderer},
+                {headerName: 'Start Date',      field: 'CountStart',    width: 130, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },                
+                {headerName: 'End Date',        field: 'CountStop',     width: 130, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft', sort: 'desc'},
+                {headerName: 'Time taken',      field: 'Time',          width: 130, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                {headerName: 'JobId',           field: 'JobId',         width: 200, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                {headerName: 'JobStatus',       field: 'JobStatus',     width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                {headerName: 'JobErrors',       field: 'JobErrors',     width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                {headerName: 'JobItems',        field: 'JobItems',      width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' },
+                {headerName: 'JobItemsTotal',   field: 'JobItemsTotal', width: 100, suppressMenu: true, sortingOrder: ['asc','desc'], cellClass: 'cellLeft' }
+            ];
+        }
+
+        function spawn(generatorFunc) {
+            function continuer(verb, arg) {
+                var result;
+                try {
+                    result = generator[verb](arg);
+                } catch (err) {
+                    return Promise.reject(err);
+                }
+                if (result.done) {
+                    return result.value;
+                } else {
+                    return Promise.resolve(result.value).then(onFulfilled, onRejected);
+                }
+            }
+            var generator = generatorFunc();
+            var onFulfilled = continuer.bind(continuer, "next");
+            var onRejected = continuer.bind(continuer, "throw");
+            return onFulfilled();
+        }
+
+        function showLoadingMsg(show) {
+            if(show) // modal window fake
+                modalLoadingDiv.setAttribute('class', 'modalDialog');
+            else
+                modalLoadingDiv.setAttribute('class', 'hide');
+        }
+
+        function saveAsCsv() {
+            contactGridOptions.columnApi.setColumnVisible('CountStart',false);  
+            contactGridOptions.columnApi.setColumnVisible('CountStop',false);   
+            contactGridOptions.columnApi.setColumnVisible('Time',false);        
+            contactGridOptions.columnApi.setColumnVisible('JobId',false);       
+            contactGridOptions.columnApi.setColumnVisible('JobStatus',false);   
+            contactGridOptions.columnApi.setColumnVisible('JobErrors',false);   
+            contactGridOptions.columnApi.setColumnVisible('JobItems',false);    
+            contactGridOptions.columnApi.setColumnVisible('JobItemsTotal',false);
+
+            contactGridOptions.api.exportDataAsCsv({fileName: 'ContactFieldUseCounts.csv'});
+
+            contactGridOptions.columnApi.setColumnVisible('CountStart',true);  
+            contactGridOptions.columnApi.setColumnVisible('CountStop',true);   
+            contactGridOptions.columnApi.setColumnVisible('Time',true);        
+            contactGridOptions.columnApi.setColumnVisible('JobId',true);       
+            contactGridOptions.columnApi.setColumnVisible('JobStatus',true);   
+            contactGridOptions.columnApi.setColumnVisible('JobErrors',true);   
+            contactGridOptions.columnApi.setColumnVisible('JobItems',true);    
+            contactGridOptions.columnApi.setColumnVisible('JobItemsTotal',true);
+            
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = 'Missing';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        var countMap = {},contactMap = {};
+        var countData,contactData,contactDataArray = [];
+        var modalLoadingDiv;
+        var refreshButton,saveAsCsvButton,refreshField;
+        var contactGridDiv,contactColumnDefs,contactGridOptions,rowColorClassRules,titleDiv,statsDiv;
+
+        const refreshParam = "{!$CurrentPage.parameters.refresh}" || 'false';
+
+        // ***************** Main Program Entry *****************
+        init();
+        initAgGrid(); 
+        showLoadingMsg(true);
+
+        spawn(function *() {
+            countData = yield getCountData();
+            yield processCountData(countData);
+            contactData = yield getContactFields();
+            yield processContactData(contactData);
+        });
+
+    </script>
+    </html>
+</apex:page>

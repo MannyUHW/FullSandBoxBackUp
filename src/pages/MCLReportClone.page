@@ -1,0 +1,5 @@
+<apex:page standardController="MCL_Report__c" 
+    extensions="MCLReportCloneExtension" 
+    action="{!cloneReport}">
+    <apex:pageMessages />
+</apex:page>

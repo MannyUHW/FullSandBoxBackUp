@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>tls_help_url_text_profile__c</fullName>
+        <description>Text used to form the link at the end of the message for more instructions</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Text used for the link at the end of the message for more instructions.
+Leave blank if you want no link</inlineHelpText>
+        <label>Help URL Link Text</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>tls_message_profile__c</fullName>
+        <externalId>false</externalId>
+        <label>Warning Message (by Profile)</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <label>TLS Warning Message (by profile)</label>
+    <visibility>Public</visibility>
+</CustomObject>

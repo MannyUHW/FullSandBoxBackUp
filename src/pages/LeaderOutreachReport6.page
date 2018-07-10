@@ -1,0 +1,1419 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" controller="LeaderOutreachReportController">
+    <html>
+    <head>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <apex:includeScript value="{!$Resource.agGridEnterpriseMin429}"/>
+
+        <style>
+
+            .no-show {
+                display:none;
+            }
+
+            .show {
+                display:block;
+            }
+
+            .hide {
+                /*
+                visibility: hidden;
+                height: 2px !important;
+                */
+            }
+
+            .right-align {
+                text-align: right;
+                padding-right: 12px !important;
+                color:blue;
+            }
+
+            .left-align {
+                padding-left: 12px !important;
+                text-align: left;
+                color:red;
+            }
+
+            .left-align2 {
+                padding-left: 12px !important;
+                text-align: left;
+                color:purple;
+                font-weight: bold;
+            }
+
+            .left-align3 {
+                padding-left: 12px !important;
+                text-align: left;
+                background-color: #c3b3ff;
+                font-weight: bold;
+            }
+
+            .modalDialog {
+                position: fixed;
+                font-family: Arial, Helvetica, sans-serif;
+                top: 100px;
+                left: 50px;
+                width: 80%;
+                height: 80%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 99999;
+                opacity: 0.8;
+                pointer-events: none;
+            }
+
+            .modalDialog > div {
+                width: 400px;
+                position: relative;
+                margin: 10% auto;
+                padding: 5px 20px 13px 20px;
+                border-radius: 10px;
+                background: #fff;
+                background: -moz-linear-gradient(#fff, #999);
+                background: -webkit-linear-gradient(#fff, #999);
+                background: -o-linear-gradient(#fff, #999);
+            }
+
+            #DetailGridDiv,#SummaryGridDiv,#FinalGridDiv {
+                height: 800px;
+                clear: both;
+                margin-top: 4px;
+            }
+
+            #EmpOrg1GridDiv {
+                height: 800px;
+                clear: both;
+                margin-top: 6px;
+                border: 1px solid blue;
+                background-color: lightsteelblue;
+            }
+
+            #TitleDiv {
+                width:85%;
+                display: inline-block;
+                margin-top:1px;
+                margin-bottom:1px;
+            }
+
+            #SaveAsDiv {
+                display: inline-block;
+                margin-top:1px;
+                margin-bottom:1px;
+            }
+
+            #ExportFinalButton, #ExportSummaryButton {
+                font-size: 1.3em;
+            }
+
+        </style>
+
+    </head>
+    <body>
+    <div id="TitleDiv">
+        <h1>Leader Outreach Response Test</h1>
+    </div>
+    <div id="SaveAsDiv">
+        <button id="ExportFinalButton"   class="btn" type="button">Final Export</button>
+        <button id="ExportSummaryButton" class="btn" type="button">Summary Export</button>
+    </div>
+    <p>This is current data</p>
+
+    <div id="FinalLabelDiv">
+      <h3>Summary by Coordinator/Organizer</h3>
+    </div>
+    <div id="FinalGridDiv"    class="ag-fresh"></div>
+
+    <div id="EmpOrg1LabelDiv">
+        <h3>Summary by Employer/Organizer</h3>
+    </div>
+    <div id="EmpOrg1GridDiv"  class="ag-fresh "></div> <!-- hide -->
+
+    <div id="SummaryLabelDiv">
+        <h3>Summary by Employer/Organizer/Leader</h3>
+    </div>
+    <div id="SummaryGridDiv"  class="ag-fresh"></div>
+
+    <div id="DetailLabelDiv">
+        <h3>Detail</h3>
+    </div>
+    <div id="DetailGridDiv"   class="ag-fresh"></div>
+
+    <div id="ModalLoadingDiv" class="modalDialog no-show">
+        <div>
+            <h2>Loading data...</h2>
+        </div>
+    </div>
+
+    </body>
+    <script type="text/javascript">
+
+        function getData(code,ids) {
+            return new Promise(function (resolve, reject) {
+                LeaderOutreachReportController.getData( code,ids, (result, event) => {
+                    if (event.status) {
+                        console.log('Retrieved Response data');
+                        resolve(result);
+                    }
+                    else
+                    {
+                        console.log('Error retrieving Response data');
+                        reject(event);
+                    }
+                });
+            });
+        }
+
+/*        function getCountData(code) {
+            return new Promise(function (resolve, reject) {
+                LeaderOutreachReportController.getCountData( code, (result, event) => {
+                    if (event.status) {
+                        console.log('Retrieved Response Count data');
+                        resolve(result);
+                    }
+                    else
+                    {
+                        console.log('Error retrieving Response Count data');
+                        reject(event);
+                    }
+                });
+            });
+        }*/
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        function countCellRenderer(params) {
+            return number_format(params.value,0);
+        }
+
+        function initAgGrid() {
+
+            agGrid.LicenseManager.setLicenseKey("United_Healthcare_Workers_West_10-Mar-2016_MTQ4OTEwNDAwMDAwMA==575a9957bde70d692feff6c444540406");
+
+            initialSort = [
+                {colId: 'Org1Name',             sort: 'asc'},
+                {colId: 'EmpName',              sort: 'asc'},
+                {colId: 'LeaderName',           sort: 'asc'}
+            ];
+
+            empOrg1Sort = [
+                {colId: 'EmpId',              sort: 'asc'},
+                {colId: 'Org1Id',             sort: 'asc'}
+            ];
+
+
+            finalColumnDefs = [
+                {headerName: 'Division',          field: 'Division',     width: 90, cellClass: 'left-align'},
+                {headerName: 'Region',            field: 'Region',       width: 90},
+                {headerName: 'BU Cnt (contacts)', field: 'BuCnt',        width: 160, cellClass: 'right-align', suppressMenu: true, cellRenderer:countCellRenderer},
+                {headerName: 'BU Cnt (accounts)', field: 'BuCnt_A',      width: 160, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Coordinator',       field: 'CoordName',    width: 230},
+                {headerName: 'Organizer1',        field: 'Org1Name',     width: 230},
+                {headerName: 'Org1 Total',        field: 'Org1Total',    width: 110, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Org1PC',            field: 'Org1PC',       width: 110, cellClass: 'right-align', suppressMenu: true}
+            ];
+
+            empOrg1ColumnDefs = [
+                {headerName: 'Division',          field: 'Division',     width: 90, cellClass: 'left-align2'},
+                {headerName: 'Region',            field: 'Region',       width: 90},
+                {headerName: 'Employer',          field: 'EmpName',      width: 300},
+                {headerName: 'BU Cnt (contacts)', field: 'BuCnt',        width: 160, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'BU Cnt (accounts)', field: 'BuCnt_A',      width: 160, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Coordinator',       field: 'CoordName',    width: 230},
+                {headerName: 'Organizer1',        field: 'Org1Name',     width: 230},
+                {headerName: 'Org1 Total',        field: 'Org1Total',    width: 110, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Org1 Sub-Total',    field: 'Org1SubTotal', width: 110, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Org1PC',            field: 'Org1PC',       width: 110, cellClass: 'right-align', suppressMenu: true}
+            ];
+
+            empColumnDefs = [
+                {headerName: 'Division',          field: 'Division', width: 300},
+                {headerName: 'Region',            field: 'Region',   width: 90},
+                {headerName: 'Employer',          field: 'Name',     width: 300},
+                {headerName: 'BU Cnt (contacts)', field: 'BuCnt',        width: 80, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'BU Cnt (accounts)', field: 'BuCnt_A',      width: 80, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'CoordName',         field: 'CoordName',width: 230},
+                {headerName: 'Org1Name',          field: 'Org1Name', width: 230}
+            ];
+
+            summaryColumnDefs = [
+                {headerName: 'Division',          field: 'Division',     width: 90, cellClass: 'left-align3'},
+                {headerName: 'Region',            field: 'Region',       width: 90},
+                {headerName: 'Employer',          field: 'EmpName',      width: 300},
+                {headerName: 'BU Cnt (contacts)', field: 'BuCnt',        width: 160, cellClass: 'right-align', suppressMenu: true, cellRenderer:countCellRenderer},
+                {headerName: 'BU Cnt (accounts)', field: 'BuCnt_A',      width: 160, cellClass: 'right-align', suppressMenu: true, cellRenderer:countCellRenderer},
+                {headerName: 'Coordinator',       field: 'CoordName',    width: 230},
+                {headerName: 'Organizer1',        field: 'Org1Name',     width: 230},
+                {headerName: 'Org1 Total',        field: 'Org1Total',    width: 110, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Org1 Sub-Total',    field: 'Org1SubTotal', width: 110, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'Org1PC',            field: 'Org1PC',       width: 110, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'LeaderName',        field: 'LeaderName',   width: 230},
+                {headerName: 'LeaderTotal',       field: 'LeaderTotal',  width: 110, cellClass: 'right-align', suppressMenu: true},
+                {headerName: 'LdrPC',             field: 'LdrPC',        width: 110, cellClass: 'right-align', suppressMenu: true}
+            ];
+
+            detailColumnDefs = [
+                {headerName: 'Employer', field: 'EmpName', width: 300},
+                {
+                    headerName: "Coordinator",
+                    children: [
+                        {headerName: 'Name',       field: 'CoordName',      width: 140},
+                        {headerName: 'Cell Phone', field: 'CoordCellPhone', width: 140},
+                        {headerName: 'Email',      field: 'CoordEmail',     width: 140}]
+                },
+                {
+                    headerName: "Organizer1",
+                    children: [
+                        {headerName: 'Name',       field: 'Org1Name',      width: 140},
+                        {headerName: 'Cell Phone', field: 'Org1CellPhone', width: 140},
+                        {headerName: 'Email',      field: 'Org1Email',     width: 140}]
+                },
+                {
+                    headerName: "Leader",
+                    children: [
+                        {headerName: 'Name',       field: 'LeaderName',    width: 140},
+                        {headerName: 'Cell Phone', field: 'LeaderCellPhone', width: 140},
+                        {headerName: 'Email',      field: 'LeaderEmail',     width: 140}]
+                },
+                {
+                    headerName: "Member",
+                    children: [
+                        {headerName: 'Name',       field: 'MemberName',      width: 140},
+                        {headerName: 'Cell Phone', field: 'MemberCellPhone', width: 140},
+                        {headerName: 'Email',      field: 'MemberEmail',     width: 140}]
+                }
+            ];
+        }
+
+        function exportFinal() {
+            let dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric'};
+            let d = new Date();
+            let t = d.toLocaleString('en-US', dateOptions);
+            let fileName = 'Org1 Outreach Summary (as of: ' + t + ').csv';
+            finalGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function exportSummary() {
+            let dateOptions = { year: 'numeric', month: 'numeric', day: 'numeric'};
+            let d = new Date();
+            let t = d.toLocaleString('en-US', dateOptions);
+            let fileName = 'Org1-Leader Outreach Summary (as of: ' + t + ').csv';
+            summaryGridOptions.api.exportDataAsCsv({fileName: fileName});
+        }
+
+        function init() {
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+            empOrg1LdrMap       = {};
+            org1EmpLeaderMap    = {};
+            accountBuMap        = {};
+            accountContactBuMap = {};
+            modalLoadingDiv     = document.getElementById('ModalLoadingDiv');
+            finalGridDiv        = document.getElementById('FinalGridDiv');
+            empOrg1GridDiv      = document.getElementById('EmpOrg1GridDiv');
+            empGridDiv          = document.getElementById('EmpGridDiv');
+            summaryGridDiv      = document.getElementById('SummaryGridDiv');
+            detailGridDiv       = document.getElementById('DetailGridDiv');
+            exportSummaryButton = document.getElementById('ExportSummaryButton');
+            exportFinalButton   = document.getElementById('ExportFinalButton');
+            exportSummaryButton.addEventListener("click", exportSummary, false);
+            exportFinalButton.addEventListener("click", exportFinal, false);
+        }
+
+        function process_J01_Data(result) {
+            return new Promise(function(resolve, reject) {
+                let i,len,rec;
+                console.log('-- J01 --');
+                console.log('J01 Array length: ' + result.length);
+                console.log('-- J01 --');
+
+//              for(i=0,len = result.length; i<len; i++) {
+//                alert('debug');debugger;
+                for(i=0; i < 3; i++) {
+                    rec = result[i];
+        //           console.log(JSON.parse(rec));
+
+
+
+//                if(!targetMap[org1Id][contactId])
+//                    targetMap[org1Id][contactId]
+//
+//                if(!targetMap[org1Id][contactId])
+//                    targetMap[org1Id][contactId]
+
+                }
+                resolve('ok');
+            });
+        }
+
+        function compareNumbers(a, b) {
+            return a.value - b.value;
+        }
+
+        function compareIds(a, b) {
+
+            let aOrgId = a.OrgId.toUpperCase();
+            let bOrgId = b.OrgId.toUpperCase();
+            let aEmpId = a.EmpId.toUpperCase();
+            let bEmpId = b.EmpId.toUpperCase();
+
+            if (aEmpId < bEmpId && aOrgId < bOrgId) {
+                return -1;
+            }
+            if (aEmpId > bEmpId && aOrgId > bOrgId) {
+                return 1;
+            }
+            return 0;
+        }
+
+        function dynamicSort(property) {
+            var sortOrder = 1;
+            if(property[0] === "-") {
+                sortOrder = -1;
+                property = property.substr(1);
+            }
+            return function (a,b) {
+                var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                return result * sortOrder;
+            }
+        }
+
+        function dynamicSortMultiple() {
+            /*
+             * save the arguments object as it will be overwritten
+             * note that arguments object is an array-like object
+             * consisting of the names of the properties to sort by
+             */
+            var props = arguments;
+            return function (obj1, obj2) {
+                var i = 0, result = 0, numberOfProperties = props.length;
+                /* try getting a different result from 0 (equal)
+                 * as long as we have extra properties to compare
+                 */
+                while(result === 0 && i < numberOfProperties) {
+                    result = dynamicSort(props[i])(obj1, obj2);
+                    i++;
+                }
+                return result;
+            }
+        }
+
+        function processData(result) {
+            /* controller data:
+             Contact__r.Account.Id, Contact__r.Account.Name, Contact__r.Account.Region__c, Contact__r.Account.Account_Group__c, Contact__r.Account.BU_Count__c, Contact__r.Account.Coordinator__r.FirstName, Contact__r.Account.Coordinator__r.LastName, Contact__r.Account.Coordinator__r.Email, Contact__r.Account.Coordinator__r.MobilePhone, Contact__r.Account.Organizer_1__r.FirstName, Contact__r.Account.Organizer_1__r.LastName, Contact__r.Account.Organizer_1__r.Email, Contact__r.Account.Organizer_1__r.MobilePhone, Contact__r.FirstName, Contact__r.LastName, Contact__r.Email, Contact__r.MobilePhone, Collected_By__r.FirstName, Collected_By__r.LastName, Collected_By__r.Email Collected_By__r.MobilePhone
+             */
+            return new Promise(function(resolve, reject) {
+            let id,name,region,divison, coordId, coordLastName, coordFirstName,org1Id, org1LastName, org1FirstName, leaderLastName, leaderFirstName, leaderId,memberId,memberLastName, memberFirstName;
+            let leaderName,memberName,coordName,org1Name;
+            let len,rec,i,buCnt,buCnt_A;
+            let empName, empId,empDiv, coordCellPhone, coordEmail,org1CellPhone, org1Email,leaderCellPhone,leaderEmail,memberEmail,memberCellPhone;
+            let empMap,orgLeaderMap;
+            let oelMapKey,elMapKey,errorMap,errorArray;
+            let detailGridOptions,empGridOptions;
+            let leaderTotal,org1SubTotal,leaderMap,lMapKey;
+
+            org1EmpLeaderMap  = {};
+            orgLeaderMap      = {};
+            leaderMap         = {}
+            detailArray       = [];
+            errorArray        = [];
+//            empOrg1Array      = [];
+            org1EmpArray      = [];
+            empArray          = [];
+            empMap            = {};
+            empMap            = {};
+            errorMap          = {};
+
+            console.log('J02 Array length: ' + result.length);
+            for(i=0,len = result.length; i<len; i++) {
+                id = name = region = divison = coordId = coordLastName = coordFirstName = org1Id = org1LastName = org1FirstName = leaderLastName = leaderFirstName = leaderId = memberLastName = memberFirstName = memberId = '';
+                leaderName = memberName = coordName = org1Name = '';
+                coordCellPhone = coordEmail = org1CellPhone = org1Email = leaderCellPhone = leaderEmail = memberEmail = memberCellPhone = '';
+                rec = result[i];
+                id = rec.Id;
+                if ('Collected_By__r' in rec) {
+                    if (rec.Collected_By__r) {
+                        leaderLastName = rec.Collected_By__r.LastName;
+                        leaderFirstName = rec.Collected_By__r.FirstName;
+                        leaderId = rec.Collected_By__r.Id;
+                        leaderEmail = rec.Collected_By__r.Email;
+                        leaderCellPhone = rec.Collected_By__r.MobilePhone;
+                        leaderName = toProperCase(leaderLastName) + ',' + toProperCase(leaderFirstName);
+                    }
+                    else {
+                        errorArray.push(id);
+                        //            console.log(id + ' Collected_By__r IS NULL!');
+                    }
+                }
+
+                if ('Contact__r' in rec) {
+                    memberLastName = rec.Contact__r.LastName;
+                    memberFirstName = rec.Contact__r.FirstName;
+                    memberId = rec.Contact__r.Id;
+                    memberEmail = rec.Contact__r.Email;
+                    memberCellPhone = rec.Contact__r.MobilePhone;
+                    memberName = toProperCase(memberLastName) + ',' + toProperCase(memberFirstName);
+
+                    if ('Account' in rec.Contact__r) {
+                        if (rec.Contact__r) {
+                            empName = toProperCase(rec.Contact__r.Account.Name);
+                            empDiv = rec.Contact__r.Account.Account_Group__c;
+                            empId = rec.Contact__r.Account.Id;
+                            region = rec.Contact__r.Account.Region__c;
+                          buCnt_A = parseInt(rec.Contact__r.Account.BU_Count__c) ||  0;
+                            if(accountContactBuMap[empId])
+                                buCnt = accountContactBuMap[empId].BuCnt;
+                            else
+                                buCnt = buCnt_A;
+
+                        }
+                        else
+                        {
+                            errorArray.push(id);
+                            //                console.log(id + ' Contact__r IS NULL!');
+                        }
+
+                        if (!empMap[empId]) {
+                            empMap[empId] = {Id: empId, Name: empName, Division: empDiv, Region: region, BuCnt: buCnt, BuCnt_A: buCnt_A};
+                            empArray.push({Id: empId, Name: empName, Division: empDiv, Region: region, BuCnt: buCnt, BuCnt_A:buCnt_A});
+                        }
+
+                        if ('Coordinator__r' in rec.Contact__r.Account) {
+                            if (rec.Contact__r.Account) {
+                                coordId = rec.Contact__r.Account.Coordinator__r.Id;
+                                coordLastName = rec.Contact__r.Account.Coordinator__r.LastName;
+                                coordFirstName = rec.Contact__r.Account.Coordinator__r.FirstName;
+                                coordEmail = rec.Contact__r.Account.Coordinator__r.Email;
+                                coordCellPhone = rec.Contact__r.Account.Coordinator__r.MobilePhone;
+                                coordName = toProperCase(coordLastName) + ',' + toProperCase(coordFirstName);
+                            }
+                            else {
+                                errorArray.push(id);
+                                //                    console.log(id + ' Contact__r IS NULL!');
+                            }
+
+                            if (!leaderId) {
+                                leaderId = coordId;
+                                //                    console.log('Collect By missing, using CoordId (' + coordId + ')');
+                            }
+                        }
+                        else {
+                            errorArray.push(id);
+                            coordId = leaderId;
+                            //                console.log('CoordId missing, using Collect By(' + leaderId + ')');
+                        }
+
+                        if ('Organizer_1__r' in rec.Contact__r.Account) {
+                            if(rec.Contact__r.Account.Organizer_1__r) {
+                                org1Id = rec.Contact__r.Account.Organizer_1__r.Id;
+                                org1LastName = rec.Contact__r.Account.Organizer_1__r.LastName;
+                                org1FirstName = rec.Contact__r.Account.Organizer_1__r.FirstName;
+                                org1Email = rec.Contact__r.Account.Organizer_1__r.Email;
+                                org1CellPhone = rec.Contact__r.Account.Organizer_1__r.MobilePhone;
+                                org1Name = toProperCase(org1LastName) + ',' + toProperCase(org1FirstName);
+                                if (!leaderId) {
+                                    leaderId = org1Id; // give org1Id credit precedence.
+                                    errorArray.push(id);
+                                    //                       console.log('Collect By missing, using Org1Id (' + org1Id + ')');
+                                }
+                            }
+                            else {
+                                errorArray.push(id);
+                                //                    console.log(id + ' rec.Contact__r.Account.Organizer_1__r IS NULL!');
+                            }
+                        }
+                        else {
+                            errorArray.push(id);
+                            org1Id = coordId;
+                            //                console.log('Org1Id missing, using CoordId(' + coordId + ')');
+                        }
+                    }
+                    else console.log(contact__r.Id + ' has no account!');
+                }
+                else {
+                    console.log(id + ' has no contact rec!');
+                    coordId = org1Id = leaderId;
+                }
+
+                if (empId && org1Id && leaderId) {
+                    detailArray.push({ Id: id, EmpId: empId, EmpName: empName, CoordId: coordId, CoordName: coordName, CoordCellPhone: coordCellPhone, CoordEmail: coordEmail, Division: empDiv, Region: region, Org1Id: org1Id, Org1Name: org1Name, Org1CellPhone: org1CellPhone, Org1Email: org1Email, LeaderId: leaderId, LeaderName: leaderName, LeaderCellPhone: leaderCellPhone, LeaderEmail: leaderEmail, MemberName: memberName, MemberCellPhone: memberCellPhone, MemberEmail: memberEmail});
+
+                    if (!org1EmpLeaderMap[org1Id])
+                        org1EmpLeaderMap[org1Id] = {};
+
+                    if (!org1EmpLeaderMap[org1Id][empId])
+                        org1EmpLeaderMap[org1Id][empId] = {};
+
+                    if (!org1EmpLeaderMap[org1Id][empId][leaderId]) {
+                        org1EmpLeaderMap[org1Id][empId][leaderId] = {
+                            Cnt: 1, Id: id, EmpId: empId, EmpName: empName, BuCnt:buCnt, BuCnt_A: buCnt_A, CoordId: coordId, CoordName: coordName, CoordCellPhone: coordCellPhone, CoordEmail: coordEmail, Division: empDiv, Region: region, Org1Id: org1Id, Org1Name: org1Name, Org1CellPhone: org1CellPhone, Org1Email: org1Email, LeaderId: leaderId, LeaderName: leaderName, LeaderCellPhone: leaderCellPhone, LeaderEmail: leaderEmail, MemberName: memberName, MemberCellPhone: memberCellPhone, MemberEmail: memberEmail
+                        };
+                    }
+                    else
+                        org1EmpLeaderMap[org1Id][empId][leaderId].Cnt++;
+                }
+                else {
+                    console.log(id + '-' + empName + ' has bad data!');
+                    if (!coordId);
+                    console.log('coordId missing');
+                    if (!org1Id);
+                    console.log('org1Id missing');
+                    if (!leaderId);
+                    console.log('leaderId missing');
+                }
+            }
+
+            let errMsg = errorArray.join();
+            console.log('Error Ids ');
+            console.log(errMsg);
+
+            console.log(' ************************************* final Index: ' + i + ' *************************************');
+            console.log('         Emp Array length: ' + empArray.length);
+
+            let ldrTotal, org1Total;
+            ldrTotal = org1Total = 0;
+
+            summaryArray   = [];
+            subTotalMap    = {};
+            totalMap       = {};
+            leaderTotalMap = {};
+            empOrg1LdrMap  = {};
+
+            // loop once just for sub-totals
+            for(oelMapKey in org1EmpLeaderMap) {
+                org1Id = oelMapKey;
+                org1Total    = 0;
+
+                empLeaderMap = org1EmpLeaderMap[oelMapKey];
+                for (elMapKey in empLeaderMap) {
+                    org1SubTotal = 0;
+                    leaderMap = empLeaderMap[elMapKey];
+                    for (lMapKey in leaderMap) {
+                        rec = leaderMap[lMapKey];
+                        empId = rec.EmpId;
+                        empName = rec.EmpName;
+                        org1Name = rec.Org1Name;
+                        leaderName = rec.LeaderName;
+
+                        org1SubTotal += rec.Cnt;
+                        org1Total    += rec.Cnt;
+
+             //           console.log(leaderName, rec.Cnt);
+                        if(!leaderTotalMap[org1Id])
+                        leaderTotalMap[org1Id] = {};
+
+                        if(!leaderTotalMap[org1Id][empId])
+                            leaderTotalMap[org1Id][empId] = {};
+
+                        if(!leaderTotalMap[org1Id][empId][leaderName])
+                            leaderTotalMap[org1Id][empId][leaderName] = {LdrTotal: rec.Cnt};
+
+                    }
+
+                    if(!subTotalMap[org1Id])
+                        subTotalMap[org1Id] = {};
+
+                    if(!subTotalMap[org1Id][empId])
+                        subTotalMap[org1Id][empId] = {SubTotal: org1SubTotal, Emp: empName};
+
+//                    console.log(' ---- current ---- ', org1Name,org1SubTotal,empName);
+
+                }
+                if(!totalMap[org1Id]) {
+//                    console.log(empName + ' - ' + ' added to TotalMap for ' + org1Name );
+                    totalMap[org1Id] = {Total:org1Total};
+//                    console.log(org1Name,totalMap[org1Id].Total);
+                }
+                else {
+                    totalMap[org1Id].Total += org1Total;
+//                    console.log(empName + ' - ' + ' updating TotalMap for ' + org1Name );
+//                    console.log(org1Name,totalMap[org1Id].Total);
+                }
+             }
+
+if(false) {
+    console.log('--- totalMap dump -----');
+    for (let mapKey in totalMap) {
+        console.log(totalMap[mapKey].Total);
+    }
+
+    console.log('--- sub-totalMap dump -----');
+    i = 0;
+    for (let oeMapKey in subTotalMap) {
+        i++;
+        let totalMap = subTotalMap[oeMapKey];
+        for (let eMapKey in totalMap) {
+            console.log(i, oeMapKey, eMapKey, totalMap[eMapKey].SubTotal);
+        }
+    }
+
+    console.log('--- leaderTotalMap dump -----');
+    i = 0;
+    for (oelMapKey in leaderTotalMap) {
+        let empLeaderTotalMap = leaderTotalMap[oelMapKey];
+        for (elMapKey in empLeaderTotalMap) {
+            leaderSubMap = empLeaderTotalMap[elMapKey];
+            for (lMapKey in leaderSubMap) {
+                i++;
+                rec = leaderSubMap[lMapKey];
+                console.log(i, oelMapKey, elMapKey, lMapKey, rec);
+            }
+        }
+    }
+}
+            for(oelMapKey in org1EmpLeaderMap) {
+                empLeaderMap = org1EmpLeaderMap[oelMapKey];
+                for (elMapKey in empLeaderMap) {
+                    leaderMap = empLeaderMap[elMapKey];
+                    leaderRec = leaderMap[lMapKey];
+                    for(lMapKey in leaderMap) {
+                        rec = leaderMap[lMapKey];
+                        id = rec.Id;
+                        empId = rec.EmpId;
+                        empName = rec.EmpName;
+                        region = rec.Region;
+                        empDiv = rec.Division;
+                        coord1Id = rec.CoordId;
+                        coordName = rec.CoordName;
+                        org1Id = rec.Org1Id;
+                        org1Name = rec.Org1Name;
+                        leaderName = rec.LeaderName;
+
+
+                        org1Total    = 0;
+                        org1SubTotal = 0;
+
+                        org1Total    = rec.Org1Total;
+                        org1SubTotal = rec.Org1SubTotal;
+
+                        buCnt     = 0;
+                        buCnt_A   = 0;
+                        org1Total = 0;
+                        org1Total = 0;
+                        ldrTotal  = 0;
+
+                        if(accountContactBuMap[empId]) buCnt        = accountContactBuMap[empId].BuCnt;
+if(accountBuMap[empId])
+    buCnt_A      = accountBuMap[empId].BuCnt_A;
+else {
+    alert(empId + ' not in accountBuMap ');debugger;
+}
+                        if(totalMap[org1Id])           org1Total    = totalMap[org1Id].Total;
+                        if(subTotalMap[org1Id][empId]) org1SubTotal = subTotalMap[org1Id][empId].SubTotal;
+
+                        if(leaderTotalMap[org1Id][empId][leaderName])
+                            ldrTotal     = leaderTotalMap[org1Id][empId][leaderName].LdrTotal;
+/*
+                        if (totalMap[org1Id]) {
+                            org1Total = totalMap[org1Id].Total;
+                        }
+                        else {
+                            console.log(id + ' error ' + org1Name + '(' + org1Id + ') not in totalMap');
+                            totalMap[org1Id] = {Total:0};
+                        }
+
+                        if (subTotalMap[org1Id]) {
+                            if (subTotalMap[org1Id][empId]) {
+                                org1SubTotal = subTotalMap[org1Id][empId].SubTotal;
+                            }
+                            else {
+                                subTotalMap[org1Id][empId] = {SubTotal:0};
+                            }
+                        }
+                        else {
+                            subTotalMap[org1Id] = {};
+                            subTotalMap[org1Id][empId] = {SubTotal:0};
+                            console.log(id + ' error ' + empId + ':' + org1Id + ' not in subTotalMap');
+                        }
+
+             //           buCnt = empMap[empId].BuCnt;
+             //           buCnt_A = empMap[empId].BuCnt_A;
+
+                        buCnt = 22;
+                        buCnt_A = 33;
+*/
+                        if (!empOrg1LdrMap[empId])
+                            empOrg1LdrMap[empId] = {};
+
+// console.log(empName,empId,org1Id, ' ** summary push ** ');
+
+                            empOrg1LdrMap[empId][org1Id] = {Status: 'Ok'};
+
+                            summaryArray.push({
+                                EmpName: '( ' + empName + ' )',
+                                Division: empDiv,
+                                Region: region,
+                                BuCnt: buCnt,
+                                BuCnt_A: buCnt_A,
+                                CoordName: coordName,
+                                Org1Name: org1Name,
+                                Org1Total: org1Total,
+                                Org1SubTotal: org1SubTotal,
+                                Org1PC: ((org1SubTotal / buCnt ) * 100).toFixed(2),
+                                LeaderName: leaderName,
+                                LeaderTotal: ldrTotal,
+                                LdrPC: ((ldrTotal / buCnt ) * 100).toFixed(2)
+                            });
+
+                            
+//                        if (!empOrg1LdrMap[empId][org1Id][leaderName]) {
+//                             empOrg1LdrMap[empId][org1Id][leaderName] = {
+//                                EmpId: empId,
+//                                EmpName: empName,
+//                                Division: empDiv,
+//                                Region: region,
+//                                BuCnt: buCnt,
+//                                BuCnt_A: buCnt_A,
+//                                CoordId: coordId,
+//                                CoordName: coordName,
+//                                Org1Id: org1Id,
+//                                Org1Name: org1Name,
+//                                Org1Total: org1Total,
+//                                Org1SubTotal: org1SubTotal,
+//                                Org1PC: ((org1SubTotal / buCnt ) * 100).toFixed(2),
+//                                LeaderName: leaderName,
+//                                LeaderTotal: ldrTotal,
+//                                LdrPC: ((ldrTotal / buCnt ) * 100).toFixed(2)
+//                            };
+
+/*                            empOrg1Array.push({
+                                EmpId: empId,
+                                EmpName: empName,
+                                Division: empDiv,
+                                Region: region,
+                                BuCnt: buCnt,
+                                BuCnt_A: buCnt_A,
+                                CoordId: coordId,
+                                CoordName: coordName,
+                                Org1Id: org1Id,
+                                Org1Name: org1Name,
+                                Org1Total: org1Total,
+                                Org1SubTotal: org1SubTotal,
+                                Org1PC: ((org1SubTotal / buCnt ) * 100).toFixed(2)
+                            });*/
+                        }
+                    }
+                }
+      //      }
+
+           checkEmps(); // Adds any non-existant Emps to empOrg1LdrMap
+
+
+            //    for(tp=0;tp<items.length;tp++) {
+            //        console.log(tp, items[tp].name, items[tp].EmpId, items[tp].OrgId);
+            //    }
+
+
+    //        empOrg1GridOptions.api.setSortModel(empOrg1Sort);
+
+//            empOrg1Array.sort(dynamicSortMultiple('CoordId','Org1Id'));
+                
+//            buildEmpOrg1Array();
+            buildOrg1EmpArray();
+            buildSummary();
+
+            empOrg1GridOptions = {
+                columnDefs: empOrg1ColumnDefs,
+                rowData: org1EmpArray,
+                enableSorting: true,
+                suppressCellSelection: true
+            };
+            new agGrid.Grid(empOrg1GridDiv,  empOrg1GridOptions);
+                
+            console.log('**********************');
+            console.log('Summary length: ' + summaryArray.length);
+            console.log('**********************');
+
+            summaryGridOptions = {
+                columnDefs: summaryColumnDefs,
+                rowData: summaryArray,
+                enableSorting: true,
+                suppressCellSelection: true
+            };
+            new agGrid.Grid(summaryGridDiv,  summaryGridOptions);
+    //        summaryGridOptions.api.setSortModel(initialSort);
+
+            detailGridOptions = {
+                columnDefs: detailColumnDefs,
+                rowData: detailArray,
+                enableSorting: true,
+                suppressCellSelection: true
+            };
+            new agGrid.Grid(detailGridDiv,  detailGridOptions);
+    //        detailGridOptions.api.setSortModel(initialSort);
+
+            showLoadingMsg(false);
+                resolve('ok');
+            });
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = 'Missing';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function spawn(generatorFunc) {
+            function continuer(verb, arg) {
+                var result;
+                try {
+                    result = generator[verb](arg);
+                } catch (err) {
+                    return Promise.reject(err);
+                }
+                if (result.done) {
+                    return result.value;
+                } else {
+                    return Promise.resolve(result.value).then(onFulfilled, onRejected);
+                }
+            }
+            var generator = generatorFunc();
+            var onFulfilled = continuer.bind(continuer, "next");
+            var onRejected = continuer.bind(continuer, "throw");
+            return onFulfilled();
+        }
+
+        function phoneFormat(s) {
+            var s1;
+            if (s == null || s.trim().length < 10)
+                s1 = '';
+            else {
+                s1 = s.trim().replace(/[^0-9]/g, '');
+                s1 = '(' + s1.substr(0, 3) + ') ' + s1.substr(3, 3) + '-' + s1.substr(6);
+            }
+            return s1;
+        }
+
+        function showLoadingMsg(show) {
+            // modal window fake
+            if(show) modalLoadingDiv.setAttribute('class', 'modalDialog');
+            else modalLoadingDiv.setAttribute('class', 'no-show');
+        }
+
+//        function processRow(node) {
+//            let rec = node.data;
+//            sortedArray.push(rec);
+//    //        console.log(' processRow - ' + rec.EmpName);
+//        }
+
+        function buildOrg1EmpArray() {
+alert('build array');debugger;
+           let oelMapKey,olMapKey,olMap,oMap,oKey,empId,org1Id,rec,subTotal,total;
+            let cnt = 0;
+//         empOrg1Array = [];
+            org1EmpMap  = {};
+           org1EmpArray = [];
+           for(oelMapKey in org1EmpLeaderMap) {
+               cnt++;
+               org1Id = oelMapKey;
+//console.log(cnt, 'org1Id',org1Id);
+               orgLeaderMap = org1EmpLeaderMap[oelMapKey];
+               for(olMapKey in orgLeaderMap) {
+                   empId = olMapKey;
+//console.log(cnt, 'empId',empId);
+
+                   leaderMap = orgLeaderMap[olMapKey];
+                   for (lMapKey in leaderMap) {
+                       rec = leaderMap[lMapKey];
+//           console.log(cnt, rec.EmpName, rec.CoordName, rec.Org1Name);
+//                       console.log(rec.EmpName + '  added to empOrg1Array');
+
+                       subTotal = subTotalMap[org1Id][empId].SubTotal;
+                       total    = totalMap[org1Id].Total;
+
+                       if(!org1EmpMap[org1Id])
+                           org1EmpMap[org1Id] = {};
+
+                       if(!org1EmpMap[org1Id][empId]) {
+                           org1EmpMap[org1Id][empId] = {Org1Id: org1Id, EmpId: empId};
+
+                           org1EmpArray.push({
+                               EmpId: rec.EmpId,
+                               EmpName: ':' + rec.EmpName + ':',
+                               Division: rec.Division,
+                               Region: rec.Region,
+                               BuCnt: rec.BuCnt,
+                               BuCnt_A: rec.BuCnt_A,
+                               CoordId: rec.CoordId,
+                               CoordName: rec.CoordName,
+                               Org1Id: rec.Org1Id,
+                               Org1Name: rec.Org1Name,
+                               Org1Total: total,
+                               Org1SubTotal: subTotal,
+                               Org1PC: 0,
+                               LeaderName: rec.LeaderName,
+                               LeaderTotal: 1,
+                               LdrPC: 0
+                           });
+                       }
+                   }
+               }
+           }
+        }
+        
+        function buildSummary() {
+            let divison, region, coordId, coordName, org1Id, org1Name;
+            let len, j, empOrg1Rec, currentOrgId,currentEmpId;
+            let total, totalPc, org1BuTotal, ptr;
+
+console.log('org1EmpArray .length...');
+console.log(org1EmpArray .length);
+
+            finalArray = [];
+
+            len = org1EmpArray.length;
+            j = 0;
+            ptr = 0;
+            currentOrgId = org1EmpArray[0].Org1Id;
+            currentEmpId = org1EmpArray[0].EmpId;
+            empOrg1Rec   = org1EmpArray[0];
+            console.log('=====================================');
+//alert('debug build...');debugger;
+            let stepCnt = 0;
+            while (j < len) {
+                stepCnt = 0;
+                org1BuTotal = 0;
+              org1BuTotal_A = 0;
+
+                total = 0;
+                while (j < len && currentOrgId == org1EmpArray[j].Org1Id) {
+                    stepCnt++;
+                    total = Math.max(total, org1EmpArray[j].Org1Total) // because injected Emps will have a total of 0
+                    org1BuTotal += org1EmpArray[j].BuCnt;
+                  org1BuTotal_A += org1EmpArray[j].BuCnt_A;
+                    j++;
+                }
+    //            console.log('stepCnt: ' , stepCnt);
+
+                divison = empOrg1Rec.Division;
+                region = empOrg1Rec.Region;
+                coordId = empOrg1Rec.CoordId;
+                coordName = empOrg1Rec.CoordName;
+                org1Id = empOrg1Rec.Org1Id;
+                org1Name = empOrg1Rec.Org1Name;
+                if (org1BuTotal > 0)
+                    totalPc = ( (total / org1BuTotal) * 100 ).toFixed(2);
+                else totalPc = 0;
+
+   //             console.log(coordName,org1Name, org1BuTotal, org1BuTotal_A);
+
+                finalArray.push({
+                    Division: divison,
+                    Region: region,
+                    BuCnt: org1BuTotal,
+                  BuCnt_A: org1BuTotal_A,
+                    CoordId: coordId,
+                    CoordName: coordName,
+                    Org1Id: org1Id,
+                    Org1Name: org1Name,
+                    Org1Total: total,
+                    Org1PC: totalPc
+                });
+
+                ptr = j;
+                if (j < len) {
+                    empOrg1Rec   = org1EmpArray[j];
+                    currentOrgId = org1EmpArray[j].Org1Id;
+                }
+            }
+            console.log('=====================================');
+
+            finalGridOptions = {
+                columnDefs: finalColumnDefs,
+                rowData: finalArray,
+                enableSorting: true,
+                suppressCellSelection: true
+            };
+            new agGrid.Grid(finalGridDiv,  finalGridOptions);
+      //      finalGridOptions.api.setSortModel(initialSort);
+
+        }
+
+        function checkEmps() {
+            let i,j,k,l,rec,found,empRec,respRec,missingCnt,empId,org1Id,leaderName;
+            let eoMapKey,oMap,oKey;
+            missingCnt = 0;
+alert('ckecking');debugger;
+            for(i = 0,l = accountArray.length; i < l;i++) {
+                found  = false;
+                empRec = accountArray[i];
+                empId  = empRec.EmpId;
+                org1Id = empRec.Org1Id;
+                console.log('ckecking ' + empRec.EmpName);
+                if(empOrg1LdrMap[empId]) {
+                    if (empOrg1LdrMap[empId][org1Id]) {
+                        found = true;
+                    }
+                }
+//            }
+//
+//            for(i = 0,l = accountArray.length; i < l;i++) {
+//                found = false;
+//                empRec = accountArray[i];
+//                for (j = 0, k = empOrg1Array.length; j < k; j++) {
+//                    respRec = empOrg1Array[j];
+//                    if (empRec.EmpId == respRec.EmpId && empRec.Org1Id == respRec.Org1Id) {
+//                        found = true;
+//                        break;
+//                    }
+//                }
+
+                if(!found) {
+//                  console.log(empRec.EmpName + ' Missing responses - Id: ' + empRec.EmpId);
+
+/*                    if (empRec.EmpId.substr(0,15) == '001i000001XMh5z' ||
+                        empRec.EmpId.substr(0,15) == '001i000001BSBw0' ||
+                        empRec.EmpId.substr(0,15) == '001i000000lPaAC' ||
+                        empRec.EmpId.substr(0,15) == '001i000000lPaAG' ||
+                        empRec.EmpId.substr(0,15) == '001i000000lPa6r' || empRec.EmpId.substr(0,15) == '001i000000lPa9N') {*/
+
+//                    console.log(empRec.EmpName + ' injected into org1EmpArray');
+//                  console.log(empRec.CoordId, empRec.CoordName, empRec.Org1Id, empRec.Org1Name);
+//                  console.log(empRec);
+                    missingCnt++;
+                    empId      = empRec.EmpId || 'fix';
+                    org1Id     = empRec.Org1Id || 'fix';
+                    leaderName = empRec.LeaderName;
+
+                    buCnt     = 0;
+                    buCnt_A   = 0;
+                    if(accountContactBuMap[empId]) buCnt    = accountContactBuMap[empId].BuCnt;
+                    if(accountBuMap[empId])        buCnt_A  = accountBuMap[empId].BuCnt_A;
+
+
+console.log(' ++ ' + empRec.EmpName + ' injected to empOrg1LdrMap & org1EmpLeaderMap (' + empId + ') ++');
+                    
+                        if (!empOrg1LdrMap[empId])
+                             empOrg1LdrMap[empId] = {};
+
+                        if (!empOrg1LdrMap[empId][org1Id])
+                             empOrg1LdrMap[empId][org1Id] = {Status:'Add'};
+
+                        if(!org1EmpLeaderMap[org1Id])
+                            org1EmpLeaderMap[org1Id] = {};
+
+                        if(!org1EmpLeaderMap[org1Id][empId])
+                            org1EmpLeaderMap[org1Id][empId] = {};
+
+                        if(!totalMap[org1Id])
+                            totalMap[org1Id] = {Total:0};
+
+                        if(!subTotalMap[org1Id])
+                            subTotalMap[org1Id] = {};
+
+                        if(!subTotalMap[org1Id][empId])
+                            subTotalMap[org1Id][empId] = {SubTotal:0};
+
+                        if(!leaderTotalMap[org1Id])
+                            leaderTotalMap[org1Id] = {};
+
+                        if(!leaderTotalMap[org1Id][empId])
+                            leaderTotalMap[org1Id][empId] = {};
+
+                        if(!leaderTotalMap[org1Id][empId]['injected'])
+                            leaderTotalMap[org1Id][empId]['injected'] = {LdrTotal: 0};
+
+                        org1EmpLeaderMap[org1Id][empId]['injected'] = {
+                            EmpId: empRec.EmpId,
+                            EmpName: '[[' + empRec.EmpName + ']]',
+                            Division: empRec.Division,
+                            Region: empRec.Region,
+                            BuCnt: buCnt,
+                            BuCnt_A: buCnt_A,
+                            CoordId: empRec.CoordId,
+                            CoordName: empRec.CoordName,
+                            Org1Id: empRec.Org1Id,
+                            Org1Name: empRec.Org1Name,
+                            Org1Total: 0,
+                            Org1SubTotal: 0,
+                            Org1PC: 0,
+                            LeaderName: 'injected',
+                            LeaderTotal: 0.00,
+                            LdrPC: 0.00
+                        };
+
+/*                        console.log(' ++ ' + empRec.EmpName + ' added to empOrg1Array ++ ');
+                        console.log(empRec.EmpId,empRec.EmpName,empRec.CoordId, empRec.CoordName, empRec.Org1Id, empRec.Org1Name);
+                        empOrg1Array.push({
+                            EmpId: empRec.EmpId,
+                            EmpName: '[[' + empRec.EmpName + ']]',
+                            Division: empRec.Division,
+                            Region: empRec.Region,
+                            BuCnt: empRec.BuCnt,
+                            BuCnt_A: empRec.BuCnt_A,
+                            CoordId: empRec.CoordId,
+                            CoordName: empRec.CoordName,
+                            Org1Id: empRec.Org1Id,
+                            Org1Name: empRec.Org1Name,
+                            Org1Total: 0,
+                            Org1SubTotal: 0,
+                            Org1PC: 0
+                        });*/
+                    }
+        //        }
+                else console.log(empRec.EmpName + ' has responses soo NOT injected to empOrg1LdrMap');
+            }
+            console.log('# Employers without any responses: ' + missingCnt);
+        }
+
+/*        function getContactCountsForAllAccounts(srcArray) {
+            alert('check');
+            debugger;
+            let accountIdArray = srcArray.map( function(obj) {
+                let rObj = {};
+                rObj[obj.Id] = obj.Id;
+                return rObj;
+            });
+            console.log('accountIdArray',accountIdArray);
+        }*/
+
+        function processEmployers(results) {
+            return new Promise(function(resolve, reject) {
+
+                loadContactBUs();
+
+                let accountRec,accountRecords,len;
+                let empAccountId,coordName,org1Name,empName,empRegion,empDivision,coordId,coordLastName,coordFirstName,org1Id,org1LastName,org1FirstName;
+                let buCnt,buCnt_A;
+                let coordinatorId;
+                let organizer1Id;
+                accountBuMap = {};
+                accountMap   = {};
+                accountArray = [];
+         //       alert('debug');debugger;
+                len = results.length;
+                for (i = 0; i < len; i++) {
+                    empAccountId  = empName = empRegion = empDivison = coordId = coordLastName = coordFirstName = org1Id = org1LastName = org1FirstName = '';
+                    accountRec    = results[i];
+                    empAccountId  = accountRec.Id;
+                    empName       = toProperCase(accountRec.Name);
+                    empRegion     = accountRec.Region__c;
+                    empDivision   = accountRec.Account_Group__c;
+                  buCnt_A         = parseInt(accountRec.BU_Count__c) ||  0;
+
+                    if(accountContactBuMap[empAccountId]) {
+                        accountContactBuMap[empAccountId].BuCnt_A = buCnt_A;
+                        buCnt = accountContactBuMap[empAccountId].BuCnt;
+                    }
+                    else buCnt = buCnt_A;
+
+                    accountBuMap[empAccountId] = {
+                        Id:      empAccountId,
+                        Name:    empName,
+                        BuCnt_A: buCnt_A
+                    };
+
+                    if('Coordinator__r' in accountRec) {
+                        if(accountRec.Coordinator__r) {
+                            coordId = accountRec.Coordinator__r.Id;
+                            coordFirstName = accountRec.Coordinator__r.FirstName;
+                            coordLastName = accountRec.Coordinator__r.LastName;
+                            coordName = toProperCase(coordLastName) + ',' + toProperCase(coordFirstName);
+                        }
+                        else console.log('[' + empName + '  missing coordinator]');
+                    }
+                    else console.log('[' + empName + '  missing coordinator]');
+
+                    if('Organizer_1__r' in accountRec) {
+                        if(accountRec.Organizer_1__r) {
+                            org1Id = accountRec.Organizer_1__r.Id;
+                            org1FirstName = accountRec.Organizer_1__r.FirstName;
+                            org1LastName = accountRec.Organizer_1__r.LastName;
+                            org1Name = toProperCase(org1LastName) + ',' + toProperCase(org1FirstName);
+                        }
+                        else console.log('[' + empName + '  missing organizer1]');
+                    }
+                    else console.log('[' + empName + '  missing organizer1]');
+
+                    /*                    accountMap[empAccountId] = {
+                     EmpId:     empAccountId,
+                     EmpName:   empName,
+                     Region:    empRegion,
+                     Division:  empDivision,
+                     BuCnt:     buCnt,
+                     CoordId:   coordId,
+                     CoordName: coordName,
+                     Org1Id:    org1Id,
+                     Org1Name:  org1Name
+                     };*/
+/*console.log('checking ' + empName);
+if(empName == 'Sequoia Hospital') {
+    console.log(empAccountId.substr(0,18));
+    console.log(empAccountId.substr(0,15));
+    alert('stop');debugger;
+}*/
+
+//                    if (empAccountId.substr(0,15) == '001i000001XMh5z' ||
+//                        empAccountId.substr(0,15) == '001i000001BSBw0' ||
+//                        empAccountId.substr(0,15) == '001i000000lPaAC' ||
+//                        empAccountId.substr(0,15) == '001i000000lPaAG' ||
+//                        empAccountId.substr(0,15) == '001i000000lPa6r' ||
+//                        empAccountId.substr(0,15) == '001i000000lPa9N') {
+
+ //                       console.log('        MATCHED ' + empName.toUpperCase() + '  ' + coordName + '  ' + org1Name);
+
+                        accountArray.push({
+                            EmpId: empAccountId,
+                            EmpName: empName,
+                            Region: empRegion,
+                            Division: empDivision,
+                            BuCnt: buCnt,
+                            BuCnt_A: buCnt_A,
+                            CoordId: coordId,
+                            CoordName: coordName,
+                            Org1Id: org1Id,
+                            Org1Name: org1Name
+                        });
+       //             }
+                }
+
+        //        getContactCountsForAllAccounts(accountArray);
+
+                /*                empGridOptions = {
+                 columnDefs: empColumnDefs,
+                 rowData: accountArray,
+                 enableSorting: true,
+                 suppressCellSelection: true
+                 };
+                 new agGrid.Grid(empGridDiv,  empGridOptions);
+                 empGridOptions.api.setSortModel(initialSort);
+
+                 console.log('accountArray.length: ' + accountArray.length);*/
+
+                resolve('ok');
+            });
+        }
+
+        function getEmpData() {
+            return new Promise(function (resolve, reject) {
+                LeaderOutreachReportController.getAccountData( (result, event) => {
+                    if (event.status) {
+                    console.log('Retrieved Emp data');
+                    resolve(result);
+                }
+                else
+                {
+                    console.log('Error retrieving Emp data');
+                    reject(event);
+                }
+            });
+            });
+        }
+
+        function loadContactBUs(){
+            let query;
+            if(restrictArray.length > 0) {
+                restrictArray.push('001i000000lPa9N'); // SEQUOIA HOSPITAL
+                let accountList = restrictArray.join("','");
+
+                query = "SELECT Account.Id, Account.Name, Count(Id) " +
+                    "FROM Contact " +
+                    "WHERE In_Current_BU__c = true AND Account.Id In ('" + accountList + "') " +
+                    "GROUP BY Account.Id, Account.Name";
+            }
+            else {
+                    query = "SELECT Account.Id, Account.Name, Count(Id) " +
+                    "FROM Contact " +
+                    "WHERE In_Current_BU__c = true AND Account.Account_Group__c IN ('KAISER','HOSPITAL') AND (NOT Account.Name like 'pomona valley%') AND (NOT Account.Name like 'parkview%') " +
+                    "GROUP BY Account.Id, Account.Name";
+           }
+console.log(query);
+            try {
+                let queryResults = sforce.connection.query(query);
+                processContactBUs(queryResults);
+            }
+            catch(e) {alert('An error occurred retrieving Accounts: ' + e.faultstring);}
+        }
+
+        function processContactBUs(accountResults) {
+            let accountRec;
+            let empName;
+            let empId;
+            let accountRecords;
+            let len;
+            let buCnt;
+
+            accountContactBuMap   = {};
+            accountRecords = accountResults.getArray('records');
+            len            = accountRecords.length-1;
+            for (i = 0; i <= len; i++) {
+                accountRec = accountRecords[i];
+                empId      = accountRec.Id;
+                empName    = accountRec.Name;
+                buCnt      = parseInt(accountRec.expr0);
+        //      console.log(empId, empName, buCnt);
+                accountContactBuMap[empId] = {
+                    Id:    empId,
+                    Name:  empName,
+                    BuCnt: buCnt
+                };
+            }
+        }
+
+        var initialSort,empOrg1Sort,empOrg1ColumnDefs,empColumnDefs,detailColumnDefs,summaryColumnDefs, finalColumnDefs, modalLoadingDiv;
+        var data,accountBuMap,accountContactBuMap,org1EmpMap,empOrg1LdrMap,org1EmpArray,detailArray,summaryArray,summaryGridOptions,org1EmpLeaderMap,accountMap,empArray,accountArray,finalArray,finalGridDiv,finalGridOptions,empGridDiv,empGridOptions,empOrg1GridDiv,empOrg1GridOptions,exportButton;
+        var sortedArray;
+        var employerData,j02Data,restrictArray,subTotalMap,totalMap,leaderTotalMap;
+
+        // ***************** Main Program Entry *****************
+
+        init();
+        initAgGrid();
+        showLoadingMsg(true);
+  
+
+/*
+005i0000002NcEIAA0  ALAMEDA HOSPITAL                    001i000000lPaACAA0  HD6B
+005i0000002NcEIAA0  SOUTHSHORE CONVALESCENT HOSPITAL    001i000001XMh5zAAD  HD6B
+005i0000002NcEIAA0  TIBURCIO VASQUEZ HEALTH CENTER      001i000000lPaAGAA0  HD6E
+005i0000002NcEIAA0  WATERS EDGE 99                      001i000001BSBw0AAH  HD6B
+005i0000002NcEIAA0  JEWISH HOME OF SAN FRANCISCO        001i000000lPa6rAAC  HDJW
+*/
+
+    restrictArray = [];
+//    restrictArray = ['001i000000lPa6r','001i000000lPa9K','001i000000lPa9M','001i000000lPaAC','001i000000lPaAD','001i000001BSBw0','001i000000lPa9L'];
+//      restrictArray = ['001i000000lPaACAA0','001i000001XMh5zAAD','001i000000lPaAGAA0','001i000001BSBw0AAH','001i000000lPa6rAAC','001i000000lPa9K','001i000000lPa9M'];
+
+//      alert('******');debugger;
+        spawn(function *() {
+            employerData = yield getEmpData();
+            yield processEmployers(employerData);
+
+//            j01Data = yield getCountData('J01');
+//            yield process_J01_Data(j01Data);
+
+            j02Data = yield getData('J02',restrictArray);
+            yield processData(j02Data);
+        });
+
+    </script>
+    </html>
+</apex:page>

@@ -1,0 +1,1053 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<div align="center">
+<font size="+2"><div id="titleDiv">Min Wage Campaign Report</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+<br></br>
+</div>
+ 
+
+<br>&nbsp;</br>
+<div align="center" id="jumpDiv"></div>
+<div align="center" id="dashboardDiv"></div>
+<div align="center" id="coorDiv"></div>
+<div align="center" id="turfDiv"></div>
+<div align="center" id="eboardDiv"></div>
+
+<script language="JavaScript">
+
+var lastRecord = null;
+
+var ALL= "ALL";
+
+var DISTRICT = "DISTRICT";
+
+var EBOARD = "EBOARD";
+var LEADERS = "LEADERS";
+var SIGNATURES = "SIGNATURES";
+var TURF = "TURF";
+var COORDINATOR = "COORDINATOR";
+var DIVISION = "DIVISION";
+
+var OVERRIDE = "OVERRIDE";
+var GOAL = "GOAL";
+ 
+var countMap = new Array();
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+ 
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == null || mode == "null" || mode == "") {
+  mode = "all";
+}
+mode = mode.toLowerCase();
+
+var hospitalsLdrSigMap = new Array();
+hospitalsLdrSigMap[("Diana Marin-Isaac").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("Amalia Woods-Drake").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("Bennie Tinson").toLowerCase()] = [7, 300];
+hospitalsLdrSigMap[("Jacqueline Mcelroy").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("Donna Mapp").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("Edwin Valdez").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("Katrice Lee").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("Sabrina Struth").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("Alicia Lepe").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("John Aho").toLowerCase()] = [7,  300];
+hospitalsLdrSigMap[("Jorge Villanueva").toLowerCase()] = [7,  300];
+
+
+var hospEboardCount = 0;
+
+var Turf = new Array();
+var EBoard = new Array();
+
+
+var div = "{!$CurrentPage.parameters.div}";
+if (div == null || div == "null" || div == "") {
+  div = "Hospital";
+}
+div = toProperCase(div);
+
+var turfAccountIdMap = new Array();
+var turfUserIdMap = new Array();
+var divisionSet = new Array();
+
+var districtSet = new Array();
+var emDistrictMap = new Array();
+var emSeatMap = new Array();
+var District = new Array();
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+ 
+    var query = "select Id, Employer_ID__c, Name, Account_Group__c, Eboard_Seats__c, Eboard_Seats__r.DistrictName__c, Eboard_Seats__r.SeatName__c from Account";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+      //alert(JSON.stringify(records1[i]));
+      if (records1[i].Account_Group__c == null) {
+        records1[i].Account_Group__c = "Other";
+      }
+      
+      if (records1[i].EBoard_Seats__c == null || records1[i].EBoard_Seats__r.DistrictName__c == null ) {
+        //for Community and Other New Organizing Accounts without EBoard representation
+        if ( District[records1[i].Account_Group__c.toLowerCase().trim()] == null) {
+          District[records1[i].Account_Group__c.toLowerCase().trim()] = new Object();
+          District[records1[i].Account_Group__c.toLowerCase().trim()].Employers = new Array();
+          District[records1[i].Account_Group__c.toLowerCase().trim()].EComm = records1[i].Account_Group__c;        
+        }      
+        District[records1[i].Account_Group__c.toLowerCase().trim()].Employers.push(records1[i].Name);
+        emDistrictMap[records1[i].Name.toLowerCase().trim()] = records1[i].Account_Group__c;
+        emSeatMap[records1[i].Name.toLowerCase().trim()] = records1[i].Account_Group__c;              
+      } else {
+        var adistrict = records1[i].EBoard_Seats__r.DistrictName__c.toLowerCase().trim().replace(/\s\s+/g, ' ');;
+        if ( District[adistrict ] == null) {
+          District[adistrict ] = new Object();
+          District[adistrict ].Employers = new Array();
+          District[adistrict ].EComm = "Vacant - " + records1[i].EBoard_Seats__r.DistrictName__c;        
+        }
+        District[adistrict ].Employers.push(records1[i].Name);
+        emDistrictMap[records1[i].Name.toLowerCase().trim()] = adistrict ;
+        emSeatMap[records1[i].Name.toLowerCase().trim()] = records1[i].EBoard_Seats__r.SeatName__c;        
+      }
+    }
+    
+    //alert("emDistrictMap for KBPK = " + emDistrictMap["KAISER-BALDWIN PARK"]);
+ 
+    var query = "select Id, Name, Region__c, Employer_ID__c, Account_Group__c from Account where Account_Group__c like 'KAISER%' or Account_Group__c like 'HOSPITAL%' or Account_Group__c like 'COMMUNITY%'";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    for(var i=0;i < records1.length; i++){ 
+    
+      lastRecord = records1[i];
+      
+      if (records1[i].Name.toLowerCase() != "community" && records1[i].Name.toLowerCase().indexOf("community la") < 0  && records1[i].Name.toLowerCase().indexOf("community home") < 0 && records1[i].Name.toLowerCase().indexOf("good health") < 0) {
+      
+        if (records1[i].Name.toLowerCase().indexOf("community") >= 0 && records1[i].Account_Group__c.toLowerCase() == "community") {
+          //alert(records1[i].Name);
+        }
+      
+        Turf[records1[i].Name] = new Object();
+        Turf[records1[i].Name].EmployerId = records1[i].Employer_ID__c;
+        Turf[records1[i].Name].Organizer = "Vacant";
+        Turf[records1[i].Name].Coordinator = "Vacant";
+        Turf[records1[i].Name].Division = records1[i].Account_Group__c;
+      
+        if (divisionSet.indexOf(records1[i].Account_Group__c) < 0) {
+          divisionSet.push(records1[i].Account_Group__c);
+        }
+      
+        Turf[records1[i].Name].AccountId =   records1[i].Id;    
+        Turf[records1[i].Name].BU_Count = 0;
+        turfAccountIdMap[records1[i].Id] = records1[i].Name;
+      }
+    }
+    
+    
+    var query = "select Id, Name from User";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+      turfUserIdMap[records1[i].Id] = records1[i].Name;
+    }
+    
+    //alert("got users");
+    
+    var query = "select ACCOUNTID, USERID, TEAMMEMBERROLE from AccountTeamMember order by USERID";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+      lastRecord = records1[i];    
+      var emName = turfAccountIdMap[records1[i].AccountId];
+      if (emName != null) {
+        var userName = turfUserIdMap[records1[i].UserId];
+        var role = records1[i].TeamMemberRole;
+        if (role.toLowerCase().indexOf("organizer") >= 0) {
+          var organizers = "";
+          if (Turf[emName].Organizer != null && Turf[emName].Organizer != "Vacant") {
+            organizers = Turf[emName].Organizer + ", ";
+          }
+          organizers += userName;
+          Turf[emName].Organizer = organizers;
+        } else if (role.toLowerCase().indexOf("coordinator") >= 0) {
+          Turf[emName].Coordinator = userName;      
+        }       
+      }
+    } 
+    
+    var turfSortSet = new Array();
+    var coorSortSet = new Array();    
+    
+    for (var emName in Turf) {
+        var turfa = Turf[emName];
+        //alert("turfa = " + JSON.stringify(turfa));
+        var turfKey = JSON.stringify([turfa.Division, turfa.Coordinator, turfa.Organizer]);
+        var div = turfa.Division.toLowerCase().trim();
+        if (turfSortSet.indexOf(turfKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0 || div.indexOf("community") >= 0)) {
+          turfSortSet.push(turfKey);
+        }
+        var coorKey = JSON.stringify([turfa.Division, turfa.Coordinator]);
+        if (coorSortSet.indexOf(coorKey) < 0 && (div.indexOf("kaiser") >= 0 || div.indexOf("hospital") >= 0 || div.indexOf("community") >= 0)) {
+          if (turfa.Division.toLowerCase().trim() == "hospital" && turfa.Coordinator.toLowerCase().trim() == "vacant") {
+            //do not add
+          } else {
+            coorSortSet.push(coorKey);
+          }
+        }        
+    }
+    
+    //alert("got Account Team");
+   
+   
+   
+   //alert("outputting!");
+   
+    var leaderSortSet = new Array();
+    var ecommSet = new Array();
+    var ecommNameSet = new Array();    
+       
+    var query = "SELECT Id, FID__c, Name, Account.Name, Department, Account.Account_Group__c, Executive_Body_Title__c FROM Contact where EBoard__c = true  and (Account.Account_Group__c like 'KAISER%' or Account.Account_Group__c like 'HOSPITAL%') ";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i<records1.length;i++){ 
+      lastRecord = records1[i];    
+      if (Turf[records1[i].Account.Name] != null) {
+      var fid = records1[i].FID__c;
+      EBoard[fid] = new Object;
+      EBoard[fid].Name = records1[i].Name;
+      EBoard[fid].Employer = records1[i].Account.Name;
+      EBoard[fid].ContactId = records1[i].Id;
+      
+      if (records1[i].Department == null) {
+        EBoard[fid].Department = "Unknown"; 
+      } else {
+        EBoard[fid].Department = records1[i].Department;
+      }
+      
+      var coordinator = Turf[records1[i].Account.Name].Coordinator;
+      var organizer = Turf[records1[i].Account.Name].Organizer;      
+      
+      var eboardKey = JSON.stringify([records1[i].Account.Account_Group__c, coordinator, organizer, records1[i].Name, fid, records1[i].Account.Name ]).toLowerCase();
+      if (leaderSortSet.indexOf(eboardKey) < 0) {
+          leaderSortSet.push(eboardKey);
+          if (records1[i].Executive_Body_Title__c.toLowerCase().indexOf("comm") >= 0 && records1[i].Executive_Body_Title__c.toLowerCase().indexOf("wide") < 0 && ecommSet.indexOf(eboardKey) < 0) {
+            ecommSet.push(eboardKey);
+            ecommNameSet.push(records1[i].Name);
+            var adistrict = emDistrictMap[records1[i].Account.Name.toLowerCase().trim()];
+            if (adistrict == null || District[adistrict.toLowerCase().trim()] == null) {
+              //alert("not otay = " + JSON.stringify(records1[i]));
+              adistrict = records1[i].Account.Account_Group__c;
+            } else {
+              //alert("otay = " + JSON.stringify(records1[i]));
+            }
+            //alert("adistrict for " + records1[i].Account.Name + " = " + adistrict);
+            if (District[adistrict.toLowerCase().trim()] == null) {
+              District[adistrict.toLowerCase().trim()] = new Object();
+            }
+            District[adistrict.toLowerCase().trim()].EComm =  records1[i].Name;
+          }
+      }
+      
+      var emName2 = EBoard[fid].Employer.toLowerCase();
+      if (emName2.indexOf("alta bates") < 0 && emName2.indexOf("cedars-sinai") < 0 && emName2.indexOf("parkview community") < 0 && emName2.indexOf("sutter roseville") < 0 && emName2.indexOf("kindred hospital ontario") < 0 && emName2.indexOf("sutter delta") < 0) {
+        incrementCounter([ALL,EBOARD], 1);
+      
+        incrementCounter([TURF, EBOARD, coordinator, organizer], 1);
+        incrementCounter([COORDINATOR, EBOARD, records1[i].Account.Account_Group__c, coordinator], 1);      
+      
+        incrementCounter([DIVISION, EBOARD, records1[i].Account.Account_Group__c], 1);
+        if (records1[i].Account.Account_Group__c.toLowerCase().indexOf("hospital") >= 0) {
+          hospEboardCount++;
+        }
+      }
+      
+      var div = records1[i].Account.Account_Group__c.toLowerCase();
+      var turfKey = JSON.stringify([records1[i].Account.Account_Group__c, coordinator, organizer]);
+        
+      }
+      
+    } 
+ 
+
+
+    
+    for (var x = 0; x < 10; x++) {
+      var query = "SELECT Collected_By_Name__c, Division__c, Collected_By__c, Collected_By__r.FID__c,  Collected_By__r.Account.Name, Collected_By__r.Account.Account_Group__c, Collected_By__r.Department, FID__c, Contact_Name__c, Alt_Person_Type__c, Employer_Name__c, Contact__c, Contact__r.Department, Question_Name__c,Response_Value__c, Add_Info__c FROM Survey_Response__c where Survey_Code__c=\'P15\' and (Division__c like 'KAISER%' OR Division__c like 'HOSPITAL%'  OR Division__c like 'COMMUNITY%')  and FID__c like '%" + x + "' ";      
+      if (x == 0) {
+        query = "SELECT Collected_By_Name__c, Division__c, Collected_By__c, Collected_By__r.FID__c,  Collected_By__r.Account.Name, Collected_By__r.Account.Account_Group__c, Collected_By__r.Department, FID__c, Contact_Name__c, Alt_Person_Type__c, Employer_Name__c, Contact__c, Contact__r.Department, Question_Name__c,Response_Value__c, Add_Info__c FROM Survey_Response__c where Survey_Code__c=\'P15\' and (Division__c like 'KAISER%' OR Division__c like 'HOSPITAL%'  OR Division__c like 'COMMUNITY%')  and (FID__c like '%" + x + "' or FID__c = null) ";      
+      }      
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      for(var i=0;i<records1.length;i++){     
+      
+        lastRecord = records1[i];      
+        if (records1[i].Contact__c != null && records1[i].Contact__c != "null" && records1[i].Contact__c != "" && records1[i].Contact__r == null) {
+          //security restriction on Contact, do not process for this user
+        } else if (records1[i].Collected_By__c != null && records1[i].Collected_By__c != "null" && records1[i].Collected_By__c != "" && records1[i].Collected_By__r == null) {
+          //security restriction on Collector, also do not process for this user
+        } else {  
+          var signatures = parseInt(records1[i].Add_Info__c);      
+        
+          //alert("signatures = " + signatures);
+          if (signatures > 0) {
+            if (records1[i].Collected_By__c != null) {
+              if (Turf[records1[i].Collected_By__r.Account.Name] != null) {
+                var coordinator2 = Turf[records1[i].Collected_By__r.Account.Name].Coordinator;
+                var organizer2 = Turf[records1[i].Collected_By__r.Account.Name].Organizer;            
+                incrementCounter([EBOARD, LEADERS, records1[i].Collected_By__r.FID__c], 1);
+                incrementCounter([EBOARD, SIGNATURES, records1[i].Collected_By__r.FID__c], signatures );  
+                var leaderKey = JSON.stringify([records1[i].Collected_By__r.Account.Account_Group__c, coordinator2, organizer2, records1[i].Collected_By_Name__c, records1[i].Collected_By__r.FID__c, records1[i].Collected_By__r.Account.Name]).toLowerCase();
+                if (leaderSortSet.indexOf(leaderKey) < 0) {
+                  leaderSortSet.push(leaderKey);
+                }                    
+              }
+            }
+        
+            incrementCounter([ALL, LEADERS], 1);
+            incrementCounter([ALL, SIGNATURES], signatures);  
+
+            incrementCounter([DIVISION, LEADERS, records1[i].Division__c], 1);
+            incrementCounter([DIVISION, SIGNATURES, records1[i].Division__c], signatures);  
+
+            var emName = records1[i].Employer_Name__c;
+            var coordinator = "Vacant";
+            var organizer = "Vacant";                
+            if (Turf[emName] != null) {
+              coordinator = Turf[emName].Coordinator;
+              organizer = Turf[emName].Organizer;          
+              incrementCounter([TURF, LEADERS, coordinator, organizer], 1);
+              incrementCounter([TURF, SIGNATURES, coordinator, organizer], signatures);          
+              incrementCounter([COORDINATOR, LEADERS, records1[i].Division__c, coordinator], 1);
+              incrementCounter([COORDINATOR, SIGNATURES, records1[i].Division__c, coordinator], signatures);                    
+            }
+            
+            var adistrict = emDistrictMap[emName.toLowerCase().trim()];
+            if (adistrict == null) {
+              adistrict = records1[i].Division__c;
+            }
+            incrementCounter([DISTRICT, adistrict, LEADERS], 1);
+            incrementCounter([DISTRICT, adistrict, SIGNATURES], signatures);  
+            var ecommName = "Vacant";
+            if (District[adistrict.toLowerCase().trim()] != null) {
+              ecommName = District[adistrict.toLowerCase().trim()].EComm;
+            }
+            var ecommKey = JSON.stringify([records1[i].Division__c, coordinator, adistrict, ecommName , ecommName , adistrict]).toLowerCase();                        
+            if (records1[i].Division__c.toLowerCase().trim() != "community" && ecommName.toLowerCase().trim() != "hospital" && ecommName.toLowerCase().trim() != "kaiser" && ecommNameSet.indexOf(ecommName ) < 0) {
+              ecommSet.push(ecommKey );
+              ecommNameSet.push(ecommName);
+            }  
+            
+            
+
+          }  else if (records1[i].Division__c.toLowerCase() == "community") {
+             //force leaders to be shown for Community
+             if (records1[i].Collected_By__c != null) {
+              if (Turf[records1[i].Collected_By__r.Account.Name] != null) {
+                var coordinator2 = Turf[records1[i].Collected_By__r.Account.Name].Coordinator;
+                var organizer2 = Turf[records1[i].Collected_By__r.Account.Name].Organizer;                    
+                var leaderKey = JSON.stringify([records1[i].Collected_By__r.Account.Account_Group__c, coordinator2, organizer2, records1[i].Collected_By_Name__c, records1[i].Collected_By__r.FID__c, records1[i].Collected_By__r.Account.Name]).toLowerCase();
+                if (leaderSortSet.indexOf(leaderKey) < 0) {
+                  leaderSortSet.push(leaderKey);
+                }                    
+              }
+            }
+          }
+
+        }       
+      }
+    }
+    
+    
+    //
+    //COMMUNITY GOALS
+    //
+    //divisionSet.push("COMMUNITY");
+    
+
+    incrementCounter([TURF, EBOARD, "Elliott Petty", "Mariaelena Querales"], 70);
+    incrementCounter([TURF, EBOARD, "Elliott Petty", "Vacant"], 14);
+    incrementCounter([TURF, EBOARD, "Lisbeth Espinosa", "Sanjanette Fowler, Sofiya Starikova"], 50);
+    incrementCounter([TURF, EBOARD, "Lisbeth Espinosa", "Phoua Lee"], 66);
+    incrementCounter([TURF, EBOARD, "Lisbeth Espinosa", "Melanie Vang, Jezabeth Najera"], 50);
+
+    incrementCounter([COORDINATOR, EBOARD, "Community", "Elliott Petty"], (70+14));
+    incrementCounter([COORDINATOR, EBOARD, "Community", "Lisbeth Espinosa"], (50+66+50));
+        
+    
+    incrementCounter([ALL, EBOARD], 250);    
+    incrementCounter([DIVISION, EBOARD, "COMMUNITY"], 250);      
+    //
+    //
+    //    
+    
+     
+     
+    turfSortSet.sort();
+    leaderSortSet.sort();
+    coorSortSet.sort();
+    
+    
+    //alert("turfSortSet length = " +turfSortSet.length);
+    
+    var turfWriter = "<a name=\"turfAnchor\"></a>\n\n";
+    turfWriter += "<table cellpadding=\"7\">\n";
+    turfWriter += "<tr valign=\"bottom\">\n";    
+    if (mode != "kaiser" && mode != "community" && mode.indexOf("hospital") < 0) {
+      turfWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Division</td>";    
+    }
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Coordinator</td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Organizer</td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"18%\" align=\"center\"><font color=\"white\">Employers</td>";     
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leader Count</td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leader Goal</font></td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Leader %</font></td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Signatures Count</font></td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Signatures Goal</font></td>";    
+    turfWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Signatures %</font></td>";                
+    turfWriter += "</tr>\n";    
+    for (var u = 0; u < turfSortSet.length; u++) {
+      var turfKey = turfSortSet[u];
+      if (turfKey.toLowerCase().indexOf("community") >= 0) {
+        //alert("JSON turfKey = " + turfKey);
+      }
+      var keyArray = JSON.parse(turfKey);
+      var division = keyArray[0];
+      var coordinator = keyArray[1];
+      var organizer = keyArray[2]; 
+      var leaderCount = getCounter([TURF, LEADERS, coordinator, organizer]);     
+      var signatureCount = getCounter([TURF, SIGNATURES, coordinator, organizer]);           
+      
+      var employers = "";
+      for (var emName2 in Turf) {
+          var organizer2 = Turf[emName2].Organizer;
+          var coordinator2 = Turf[emName2].Coordinator;        
+          if (organizer2 == organizer && coordinator2 == coordinator) {
+            employers += toProperCase(emName2) + "<br/>";
+          }
+      }
+      var emNames2 = employers.toLowerCase();
+      var eboardCount = getCounter([TURF, EBOARD, coordinator, organizer]);
+      if (eboardCount == 0 && emNames2.indexOf("cedars-sinai") < 0 && emNames2.indexOf("parkview community") < 0 && emNames2.indexOf("kindred hospital ontario") < 0 && emNames2.indexOf("alta bates") < 0 && emNames2.indexOf("sutter roseville") < 0 && emNames2.indexOf("sutter delta") < 0) {
+        eboardCount = 1;
+      }
+      
+
+      
+  
+      //add calculations
+      
+      var outputRow = false;
+      if (mode.indexOf("kaiser") >= 0 && division.toLowerCase().indexOf("kaiser") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("hospital") >= 0 && division.toLowerCase().indexOf("hospital") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("community") >= 0 && division.toLowerCase().indexOf("community") >= 0) {
+        outputRow = true;
+      }  else       if ((mode.indexOf("eboard") >= 0 || mode.indexOf("ldrldr") >= 0 || mode.indexOf("ecomm") >= 0 || mode.indexOf("dashboard") >= 0) && division.toLowerCase().indexOf("hospital") >= 0) {
+        outputRow = true;        
+      }  else  if (mode == "all") {
+        outputRow = true;
+      }
+      
+      if (coordinator.toLowerCase().trim() == "vacant" && organizer.toLowerCase().trim() == "vacant") {
+        outputRow = false;
+      }
+
+      
+      if (outputRow == true) {
+      
+        turfWriter += "<tr valign=\"top\">\n"; 
+        if (mode != "kaiser" && mode != "community" && mode.indexOf("hospital") < 0) {      
+          turfWriter += "<td>" + division + "</td>";         
+        }
+        turfWriter += "<td>" + coordinator + "</td>";      
+        turfWriter += "<td>" + organizer + "</td>";      
+      
+        turfWriter += "<td>";      
+        turfWriter += employers;
+        turfWriter += "</td>"
+      
+        if (division.toLowerCase().indexOf("hospital") >= 0) {
+          var emName2 = employers.toLowerCase();
+          var leaderGoal = 14;
+          var signatureGoal = 575;
+          if (hospitalsLdrSigMap[organizer.toLowerCase()] != null) {
+            leaderGoal = hospitalsLdrSigMap[organizer.toLowerCase()][0];
+            signatureGoal = hospitalsLdrSigMap[organizer.toLowerCase()][1];            
+          } else if (emName2.indexOf("cedars-sinai") >= 0 || emName2.indexOf("alta bates") >= 0 || emName2.indexOf("parkview community") >= 0 || emName2.indexOf("kindred hospital ontario") >= 0|| emName2.indexOf("sutter roseville") >= 0 || emName2.indexOf("sutter delta") >= 0) {
+            leaderGoal = 0;
+            signatureGoal = 0;
+          } else if (coordinator.toLowerCase().trim() == "vacant" && organizer.toLowerCase().trim() == "vacant") {
+            leaderGoal = 0;
+            signatureGoal = 0;          
+          }
+          incrementCounter([OVERRIDE, GOAL, "hospital", SIGNATURES], signatureGoal );
+          incrementCounter([OVERRIDE, GOAL, "hospital", LEADERS], leaderGoal );
+
+
+          turfWriter += "<td align=\"center\">" + leaderCount + "</td>";            
+          turfWriter += "<td align=\"center\">" + leaderGoal  + "</td>";         
+          turfWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / leaderGoal  ).toFixed(0) + "%</td>";               
+      
+          turfWriter += "<td align=\"center\">" + signatureCount + "</td>";            
+          turfWriter += "<td align=\"center\">" + signatureGoal  + "</td>";    
+     
+          turfWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / signatureGoal ).toFixed(0) + "%</td>";               
+
+          turfWriter += "</tr>\n"; 
+        
+        } else {
+
+          turfWriter += "<td align=\"center\">" + leaderCount + "</td>";            
+          turfWriter += "<td align=\"center\">" + (eboardCount * 6) + "</td>";         
+          turfWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / (eboardCount * 6)).toFixed(0) + "%</td>";               
+      
+          turfWriter += "<td align=\"center\">" + signatureCount + "</td>";            
+          if (division.toLowerCase().indexOf("community") < 0) {
+            turfWriter += "<td align=\"center\">" + (eboardCount * 250) + "</td>";           
+            turfWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / (eboardCount * 250)).toFixed(0) + "%</td>";               
+          } else {
+            turfWriter += "<td align=\"center\">" + (eboardCount * 101) + "</td>";                     
+            turfWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / (eboardCount * 101)).toFixed(0) + "%</td>";               
+          }
+          turfWriter += "</tr>\n"; 
+        }
+      }
+    }
+    turfWriter += "\n</table>\n\n\n\n";
+    turfWriter += "<br>&nbsp;</br>";
+        //turfWriter += countMap.length;
+    turfWriter += "<br>&nbsp;</br>";        
+    //turfWriter += JSON.stringify(countMap);
+    
+    if (mode == "all" || mode.indexOf("kaiser") >= 0 || mode.indexOf("hospital") >= 0  || mode.indexOf("community") >= 0 ) {
+      document.getElementById("turfDiv").innerHTML = "<font size=\"+1\">Turf</font><br/>" +  turfWriter;
+      document.getElementById("jumpDiv").innerHTML = document.getElementById("jumpDiv").innerHTML  + "<a href=\"#turfAnchor\">Go to Turf</a><br/>&nbsp;<br/>";
+    }
+    
+    
+    //
+    //Coordinators
+    //
+        var coorWriter = "<a name=\"coorAnchor\"></a>\n\n";
+    coorWriter += "<table cellpadding=\"7\">\n";
+    coorWriter += "<tr valign=\"bottom\">\n";    
+    if (mode != "kaiser" && mode != "community" && mode.indexOf("hospital") < 0) {
+      coorWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Division</td>";    
+    }
+    coorWriter += "  <td bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"white\">Coordinator</td>";     
+    coorWriter += "  <td bgcolor=\"#481C60\" width=\"18%\" align=\"center\"><font color=\"white\">Organizers</td>";     
+    coorWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leader Count</td>";    
+    coorWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leader Goal</font></td>";    
+    coorWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Leader %</font></td>";    
+    coorWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Signatures Count</font></td>";    
+    coorWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Signatures Goal</font></td>";    
+    coorWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Signatures %</font></td>";                
+    coorWriter += "</tr>\n";    
+    for (var u = 0; u < coorSortSet.length; u++) {
+      var coorKey = coorSortSet[u];
+
+      var keyArray = JSON.parse(coorKey);
+      var division = keyArray[0];
+      var coordinator = keyArray[1];
+       
+      var leaderCount = getCounter([COORDINATOR, LEADERS, division, coordinator]);     
+      var signatureCount = getCounter([COORDINATOR, SIGNATURES, division, coordinator]);                 
+      var eboardCount = getCounter([COORDINATOR, EBOARD, division, coordinator]);
+      if (eboardCount == 0) {
+        eboardCount = 1;
+      }
+      //add calculations
+      
+      var outputRow = false;
+      if (mode.indexOf("kaiser") >= 0 && division.toLowerCase().indexOf("kaiser") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("hospital") >= 0 && division.toLowerCase().indexOf("hospital") >= 0 && coordinator.toLowerCase().indexOf("vacant") < 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("community") >= 0 && division.toLowerCase().indexOf("community") >= 0  && coordinator.toLowerCase().indexOf("vacant") < 0) {
+        outputRow = true;
+      }  else       if (division.toLowerCase().indexOf("community") >= 0  && coordinator.toLowerCase().indexOf("vacant") >= 0) {
+        outputRow = false;        
+      }  else  if (mode == "all") {
+        outputRow = true;
+      }
+      
+      if (outputRow == true) {
+      
+        coorWriter += "<tr valign=\"top\">\n"; 
+        if (mode != "kaiser" && mode != "community" && mode.indexOf("hospital") < 0) {      
+          coorWriter += "<td>" + division + "</td>";         
+        }
+        coorWriter += "<td>" + coordinator + "</td>";      
+      
+        coorWriter += "<td>";    
+        var includedOrgSet = new Array();  
+        var firstOrgListed = true;
+        var hospLdrGoal = 0;
+        var hospSigGoal = 0;
+        for (var emName2 in Turf) {
+          var organizer2 = Turf[emName2].Organizer;
+          var coordinator2 = Turf[emName2].Coordinator;        
+          var division2 = Turf[emName2].Division;        
+          if (coordinator2 == coordinator && division2.toLowerCase() == division.toLowerCase()) {
+            var orgArray = organizer2.split(",");
+            for (var o2i = 0; o2i < orgArray.length; o2i++) {
+              var organizer2i = orgArray[o2i];
+              if (includedOrgSet.indexOf(organizer2i.toLowerCase().trim()) < 0) {
+                if (firstOrgListed == true) {
+                  firstOrgListed = false;
+                } else {
+                  coorWriter += ", ";
+                }
+                coorWriter += toProperCase(organizer2i);
+                includedOrgSet.push(organizer2i.toLowerCase().trim());
+                if (division.toLowerCase().indexOf("hospital") >= 0) {
+                  var leaderGoal = 14;
+                  var signatureGoal = 575;
+                  if (hospitalsLdrSigMap[organizer2i.toLowerCase()] != null) {
+                    leaderGoal = hospitalsLdrSigMap[organizer2i.toLowerCase()][0];
+                    signatureGoal = hospitalsLdrSigMap[organizer2i.toLowerCase()][1];            
+                  }
+                  if (emName2.toLowerCase().indexOf("cedars-sinai") < 0 && emName2.toLowerCase().indexOf("alta bates") < 0 && emName2.toLowerCase().indexOf("parkview community") < 0 && emName2.toLowerCase().indexOf("kindred hospital ontario") < 0 && emName2.toLowerCase().indexOf("sutter roseville") < 0 && emName2.toLowerCase().indexOf("sutter delta") < 0) {
+                    hospLdrGoal += leaderGoal;
+                    hospSigGoal += signatureGoal;
+                  }
+                }
+              }
+            }
+          }
+        }
+        coorWriter += "</td>"
+
+        if (division.toLowerCase().indexOf("hospital") >= 0) {
+
+          coorWriter += "<td align=\"center\">" + leaderCount + "</td>";            
+          coorWriter += "<td align=\"center\">" + hospLdrGoal  + "</td>";         
+          coorWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / hospLdrGoal ).toFixed(0) + "%</td>";               
+      
+          coorWriter += "<td align=\"center\">" + signatureCount + "</td>";            
+          coorWriter += "<td align=\"center\">" + hospSigGoal  + "</td>";         
+          coorWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / hospSigGoal ).toFixed(0) + "%</td>";               
+                
+        } else {     
+          coorWriter += "<td align=\"center\">" + leaderCount + "</td>";            
+          coorWriter += "<td align=\"center\">" + (eboardCount * 6) + "</td>";         
+          coorWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / (eboardCount * 6)).toFixed(0) + "%</td>";               
+      
+          coorWriter += "<td align=\"center\">" + signatureCount + "</td>";        
+          if (division.toLowerCase().indexOf("community") < 0) {              
+            coorWriter += "<td align=\"center\">" + (eboardCount * 250) + "</td>";         
+            coorWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / (eboardCount * 250)).toFixed(0) + "%</td>";               
+          } else {
+            coorWriter += "<td align=\"center\">" + (eboardCount * 101) + "</td>";         
+            coorWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / (eboardCount * 102)).toFixed(0) + "%</td>";                         
+          }
+        }    
+        coorWriter += "</tr>\n"; 
+      }
+    }
+    coorWriter += "\n</table>\n\n\n\n";
+    coorWriter += "<br>&nbsp;</br>";
+        //coorWriter += countMap.length;
+    coorWriter += "<br>&nbsp;</br>";        
+    //coorWriter += JSON.stringify(countMap);
+    
+    if (mode == "all" || mode.indexOf("kaiser") >= 0 || mode.indexOf("hospital") >= 0  || mode.indexOf("community") >= 0 ) {
+      document.getElementById("coorDiv").innerHTML = "<font size=\"+1\">Coordinators</font><br/>" +  coorWriter;
+      document.getElementById("jumpDiv").innerHTML = "<a href=\"#coorAnchor\">Go to Coordinators</a><br/>&nbsp;<br/>" + document.getElementById("jumpDiv").innerHTML;      
+    }
+    
+    
+    
+    
+
+    
+    
+    var divSigWriter = "";
+    divSigWriter += "<table width=\"100%\" cellpadding=\"7\">\n";
+    divSigWriter += "<tr valign=\"bottom\">\n";    
+    divSigWriter += "  <td bgcolor=\"#481C60\" width=\"40%\" align=\"center\"><font color=\"white\">Division</td>";       
+    divSigWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Signatures Count</font></td>";    
+    divSigWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Signatures Goal</font></td>";    
+    divSigWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Signatures %</font></td>";                
+    divSigWriter += "</tr>\n";    
+    var overallSignGoal = 0;
+    for (var u = 0; u < divisionSet.length; u++) {
+      var division = divisionSet[u];
+
+      var signatureCount = getCounter([DIVISION, SIGNATURES, division ]);           
+      
+      var eboardCount = getCounter([DIVISION, EBOARD, division ]);
+      if (eboardCount == 0) {
+        eboardCount = 1;
+      }
+      //add calculations
+      var outputRow = false;
+      if (mode.indexOf("kaiser") >= 0 && division.toLowerCase().indexOf("kaiser") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("hospital") >= 0 && division.toLowerCase().indexOf("hospital") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("community") >= 0 && division.toLowerCase().indexOf("community") >= 0) {
+        outputRow = true;
+      }  else  if (mode == "all" || mode == "eboard" || mode == "ldrldr" || mode == "ecomm" || mode == "dashboard") {
+        outputRow = true;
+      }
+      
+      if (outputRow == true) {
+      
+        divSigWriter += "<tr valign=\"top\">\n"; 
+        divSigWriter  += "<td>" + toProperCase(division) + "</td>";         
+
+        divSigWriter += "<td align=\"center\">" + signatureCount + "</td>";     
+        if (division.toLowerCase().indexOf("hospital") >= 0) {
+          var signaturesGoal = getCounter([OVERRIDE, GOAL, "hospital", SIGNATURES]);
+          overallSignGoal = overallSignGoal + signaturesGoal;
+          divSigWriter += "<td align=\"center\">" + signaturesGoal  + "</td>";         
+          divSigWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / signaturesGoal ).toFixed(0) + "%</td>";                       
+        } else {  
+          if (division.toLowerCase().indexOf("community") < 0) {    
+            overallSignGoal = overallSignGoal + (eboardCount * 250);                
+            divSigWriter += "<td align=\"center\">" + (eboardCount * 250) + "</td>";         
+            divSigWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / (eboardCount * 250)).toFixed(0) + "%</td>";               
+          } else {
+            overallSignGoal = overallSignGoal + (eboardCount * 101);                          
+            divSigWriter += "<td align=\"center\">" + (eboardCount * 101) + "</td>";         
+            divSigWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / (eboardCount * 101)).toFixed(0) + "%</td>";                         
+          }
+        }
+        divSigWriter += "</tr>\n"; 
+      }
+    }
+    //
+    //SIGNATURE TOTALS
+    //
+    if (mode == "all" || mode == "dashboard" || mode=="eboard"  || mode=="ldrldr") {
+    
+      var leaderCount = getCounter([ALL, LEADERS]);     
+      var signatureCount = getCounter([ALL, SIGNATURES ]); 
+      
+      var eboardCount = getCounter([ALL, EBOARD]);
+      if (eboardCount == 0) {
+        eboardCount = 1;
+      }
+      var divGoal = ((eboardCount - hospEboardCount) * 250) + getCounter([OVERRIDE, GOAL, "hospital", SIGNATURES]);
+      var divGoal = overallSignGoal ; 
+    
+      divSigWriter += "<tr valign=\"top\">\n"; 
+      divSigWriter += "<td align=\"center\"><b>Total</b></td>";         
+      
+      divSigWriter += "<td align=\"center\"><b>" + signatureCount + "</b></td>";            
+      divSigWriter += "<td align=\"center\"><b>" + divGoal  + "</b></td>";         
+      divSigWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\"><b>" + (100 * signatureCount / divGoal).toFixed(0) + "%</b></td>";               
+                 
+      
+      divSigWriter += "</tr>\n";     
+    }    
+    
+    divSigWriter += "\n</table>\n\n\n\n";
+    divSigWriter += "<br>&nbsp;</br>";
+
+    
+        var divLdrWriter = "";
+    divLdrWriter += "<table  width=\"100%\" cellpadding=\"7\">\n";
+    divLdrWriter += "<tr valign=\"bottom\">\n";    
+    divLdrWriter += "  <td bgcolor=\"#481C60\" width=\"40%\" align=\"center\"><font color=\"white\">Division</td>";       
+    divLdrWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Leader Count</td>";    
+    divLdrWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Leader Goal</font></td>";    
+    divLdrWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Leader %</font></td>";    
+             
+    divLdrWriter += "</tr>\n";    
+
+
+    
+    for (var u = 0; u < divisionSet.length; u++) {
+      var division = divisionSet[u];
+
+      var leaderCount = getCounter([DIVISION, LEADERS, division ]);     
+        
+      
+      var eboardCount = getCounter([DIVISION, EBOARD, division ]);
+      if (eboardCount == 0) {
+        eboardCount = 1;
+      }
+      //add calculations
+      
+      var outputRow = false;
+      if (mode.indexOf("kaiser") >= 0 && division.toLowerCase().indexOf("kaiser") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("hospital") >= 0 && division.toLowerCase().indexOf("hospital") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("community") >= 0 && division.toLowerCase().indexOf("community") >= 0) {
+        outputRow = true;
+      }  else  if (mode == "all" || mode == "eboard" || mode == "ldrldr" || mode == "ecomm" || mode == "dashboard") {
+        outputRow = true;
+      }
+      
+      if (outputRow == true) {
+      
+        divLdrWriter += "<tr valign=\"top\">\n"; 
+        divLdrWriter += "<td>" + toProperCase(division) + "</td>";         
+        divLdrWriter += "<td align=\"center\">" + leaderCount + "</td>";            
+        if (division.toLowerCase().indexOf("hospital") >= 0) {
+          var leadersGoal = getCounter([OVERRIDE, GOAL, "hospital", LEADERS]);
+          divLdrWriter += "<td align=\"center\">" + leadersGoal + "</td>";         
+          divLdrWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / leadersGoal ).toFixed(0) + "%</td>";                       
+        } else {  
+          
+          divLdrWriter += "<td align=\"center\">" + (eboardCount * 6) + "</td>";         
+          divLdrWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / (eboardCount * 6)).toFixed(0) + "%</td>";               
+        }   
+        divLdrWriter += "</tr>\n"; 
+      }
+    }
+    //
+    //LEADER TOTALS
+    //
+    if (mode == "all" || mode == "dashboard" || mode == "ldrldr" || mode=="eboard") {
+    
+        var leaderCount = getCounter([ALL, LEADERS]);     
+
+      
+        var eboardCount = getCounter([ALL, EBOARD]);
+        if (eboardCount == 0) {
+          eboardCount = 1;
+        }
+        var divGoal = ((eboardCount - hospEboardCount) * 6) + getCounter([OVERRIDE, GOAL, "hospital", LEADERS]);
+    
+        divLdrWriter += "<tr valign=\"top\">\n"; 
+        divLdrWriter += "<td align=\"center\"><b>Total</b></td>";         
+      
+        divLdrWriter += "<td align=\"center\"><b>" + leaderCount + "</b></td>";            
+        divLdrWriter += "<td align=\"center\"><b>" + divGoal  + "</b></td>";         
+        divLdrWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\"><b>" + (100 * leaderCount / divGoal ).toFixed(0) + "%</b></td>";               
+                 
+      
+        divLdrWriter += "</tr>\n";     
+    }
+    divLdrWriter += "\n</table>\n\n\n\n";
+    divLdrWriter += "<br>&nbsp;</br>";
+
+    
+        document.getElementById("dashboardDiv").innerHTML = "<table><tr><td>" + divSigWriter + "\<br>&nbsp;</br>" + divLdrWriter  + "</td></tr></table>";
+
+    var eboardWriter = "<a name=\"ldrldrAnchor\"></a>\n\n";
+    eboardWriter += "<table cellpadding=\"7\">\n";
+    eboardWriter += "<tr valign=\"bottom\">\n";    
+    if (mode != "kaiser" && mode != "community" && mode.indexOf("hospital") < 0) {
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Division</td>";    
+    }
+    if (mode == "eboard") {
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"16%\" align=\"center\"><font color=\"white\">EBoard Name</td>";           
+    } else if (mode == "ecomm") {
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"16%\" align=\"center\"><font color=\"white\">EComm Name</td>";           
+    } else {
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"11%\" align=\"center\"><font color=\"white\">Leader<sup>2</sup> Name</td>";           
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"5%\" align=\"center\"><font color=\"white\">EBoard</td>";           
+    }
+    if (mode != "ecomm") {       
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"13%\" align=\"center\"><font color=\"white\">EComm Leader</td>";     
+    }
+    eboardWriter += "  <td bgcolor=\"#481C60\" width=\"13%\" align=\"center\"><font color=\"white\">Coordinator</td>"; 
+    if (mode != "ecomm") {       
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"13%\" align=\"center\"><font color=\"white\">Organizer</td>";    
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"18%\" align=\"center\"><font color=\"white\">Employer</td>";           
+    } else {
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"18%\" align=\"center\"><font color=\"white\">District</td>";         
+    }
+
+          
+    eboardWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leader Count</td>";    
+    if (mode=="eboard") {
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leader Goal</font></td>";    
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Leader %</font></td>";    
+    }
+    eboardWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Signatures Count</font></td>";    
+    if (mode=="eboard") {    
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Signatures Goal</font></td>";    
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"6%\" align=\"center\"><font color=\"white\">Signatures %</font></td>";                
+    }    
+    if (mode=="ecomm") {    
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Leaders in District</font></td>";    
+      eboardWriter += "  <td bgcolor=\"#481C60\" width=\"8%\" align=\"center\"><font color=\"white\">Signatures in District</font></td>";                
+    }        
+    eboardWriter += "</tr>\n";    
+    
+    //alert("eboard count = " + leaderSortSet.length);
+    
+    //alert("ecomm count = " + ecommSet.length);
+    if (mode=="ecomm") {
+      ecommSet.sort();
+      leaderSortSet = ecommSet; 
+    }
+    
+    for (var u = 0; u < leaderSortSet.length; u++) {
+
+      var eboardKey = leaderSortSet[u];
+
+      var keyArray = JSON.parse(eboardKey);
+      var division = keyArray[0];
+      var coordinator = keyArray[1];
+      var organizer = keyArray[2];
+      var contactName = keyArray[3];  
+      var fid =       keyArray[4];   
+      var employer = keyArray[5];
+      
+      var leaderCount = getCounter([EBOARD, LEADERS, fid]);     
+      var signatureCount = getCounter([EBOARD, SIGNATURES, fid]);           
+      
+      var eboardCount = 1;
+      var emName2 = employer.toLowerCase();
+
+      
+      
+      var isEboard = false;
+      if (EBoard[fid] != null) {
+        isEboard = true;
+      }
+      
+      //add calculations
+ 
+      if (mode == "all" ||  mode == "ldrldr"  ||  mode == "ecomm" || (mode == "eboard" && isEboard)) {
+      
+
+        eboardWriter += "<tr valign=\"top\">\n"; 
+        if (mode != "kaiser" && mode != "community" && mode.indexOf("hospital") < 0) {
+          eboardWriter += "<td>" +  toProperCase(division) + "</td>";         
+        }
+        eboardWriter += "<td>" + toProperCase(contactName ) + "</td>";     
+        if (mode == "ldrldr") {
+          if (isEboard) {
+            eboardWriter += "<td align=\"center\">y</td>";               
+          } else {
+            eboardWriter += "<td></td>";             
+          }
+        }     
+        var adistrict = emDistrictMap[employer.toLowerCase().trim()];
+        if (adistrict == null) {
+          adistrict = employer;
+        }
+        
+        if (mode != "ecomm") {             
+          var ecomm = District[adistrict.toLowerCase().trim()].EComm;
+          eboardWriter += "<td>" + toProperCase(ecomm ) + "</td>";              
+        } 
+        
+        eboardWriter += "<td>" +  toProperCase(coordinator) + "</td>";   
+        if (mode != "ecomm") {            
+          eboardWriter += "<td>" + toProperCase(organizer) + "</td>";      
+          eboardWriter += "<td>" + toProperCase(employer)  + "</td>\n";                
+        } else {
+          eboardWriter += "<td>" + toProperCase(adistrict)  + "</td>\n";              
+        }
+
+ 
+      
+        eboardWriter += "<td align=\"center\">" + leaderCount + "</td>";   
+        
+        if (division.toLowerCase().indexOf("hospital") < 0) {
+           //non-hospitals
+           if (mode=="eboard") {  
+            eboardWriter += "<td align=\"center\">" + (eboardCount * 6) + "</td>";         
+            eboardWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / (eboardCount * 6)).toFixed(0) + "%</td>";               
+           }        
+           eboardWriter += "<td align=\"center\">" + signatureCount + "</td>";            
+           if (mode=="eboard") {         
+              eboardWriter += "<td align=\"center\">" + (eboardCount * 250) + "</td>";         
+              eboardWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / (eboardCount * 250)).toFixed(0) + "%</td>";               
+           }            
+        } else {
+           //hospitals        
+           var emName = employer.toLowerCase();
+           var leaderGoal = 14;
+           var signatureGoal = 575;
+           if (hospitalsLdrSigMap[organizer.toLowerCase()] != null) {
+              leaderGoal = hospitalsLdrSigMap[organizer.toLowerCase()][0];
+              signatureGoal = hospitalsLdrSigMap[organizer.toLowerCase()][1];            
+           } else if (emName2.indexOf("cedars-sinai") >= 0 || emName2.indexOf("alta bates") >= 0 || emName2.indexOf("sutter roseville") >= 0 || emName2.indexOf("sutter delta") >= 0 || emName2.indexOf("parkview community") >= 0 || emName2.indexOf("kindred hospital ontario") >= 0) {
+              leaderGoal = 0;
+              signatureGoal = 0;
+           } else if (coordinator.toLowerCase().trim() == "vacant" && organizer.toLowerCase().trim() == "vacant") {
+              leaderGoal = 0;
+              signatureGoal = 0;          
+           }
+           var denom = getCounter([TURF, EBOARD, coordinator, organizer]);
+           if (denom == 0) {
+             denom = 1;
+           }
+           if (mode=="eboard") { 
+             eboardWriter += "<td align=\"center\">" + (leaderGoal/denom).toFixed(1) + "</td>";         
+             eboardWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / (leaderGoal / denom)).toFixed(0) + "%</td>";               
+           }
+           eboardWriter += "<td align=\"center\">" + signatureCount + "</td>";            
+           if (mode=="eboard") {         
+              eboardWriter += "<td align=\"center\">" + (signatureGoal / denom).toFixed(1) + "</td>";         
+              eboardWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / (signatureGoal / denom)).toFixed(0) + "%</td>";               
+           }       
+               
+        }
+        if (mode=="ecomm") {    
+           eboardWriter += "<td align=\"center\">" + getCounter([DISTRICT, adistrict, LEADERS ]) + "</td>";         
+           eboardWriter += "<td align=\"center\">" + getCounter([DISTRICT, adistrict, SIGNATURES]) + "</td>";                               
+        }  
+        eboardWriter += "</tr>\n"; 
+        }
+    }
+    eboardWriter += "\n</table>\n\n\n\n";
+    eboardWriter += "<br>&nbsp;</br>";
+    
+    if (mode == "all" || mode == "eboard" || mode == "ldrldr" || mode == "ecomm") {
+      if (mode == "ldrldr") { 
+        document.getElementById("eboardDiv").innerHTML = "<font size=\"+1\">Leaders of Leaders</font><br/>" + eboardWriter ;
+        document.getElementById("jumpDiv").innerHTML = document.getElementById("jumpDiv").innerHTML  + "<a href=\"#ldrldrAnchor\">Go to Leaders of Leaders</a><br/>&nbsp;<br/>";                    
+      } else if (mode == "ecomm") { 
+        document.getElementById("eboardDiv").innerHTML = "<font size=\"+1\">Ecomm</font><br/>" + eboardWriter ;
+      } else { 
+        document.getElementById("eboardDiv").innerHTML = "<font size=\"+1\">Eboard</font><br/>" + eboardWriter ;
+      }
+    }
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="confidentialDiv" align="center"><i>CONFIDENTIAL</i></div>
+
+<script language="JavaScript">
+  if (mode == "dashboard") {
+    document.getElementById("confidentialDiv").style.display = 'none';
+  }
+  if (mode == "kaiser" || mode == "community" || mode.indexOf("hospital") >= 0 || mode == "eboard" || mode == "ecomm") {
+    document.getElementById("titleDiv").innerHTML =     document.getElementById("titleDiv").innerHTML + " - " + toProperCase(mode);
+  }  else if (mode == "ldrldr") {
+    document.getElementById("titleDiv").innerHTML =     document.getElementById("titleDiv").innerHTML + " - Leader of Leaders";
+  }
+</script>
+
+</apex:page>

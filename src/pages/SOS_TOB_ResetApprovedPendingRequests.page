@@ -1,0 +1,10 @@
+<apex:page controller="SOS_TOB_ResetApprovedPendingRequests">
+    <apex:form >
+        <apex:pageBlock title="" mode="edit">
+            <apex:pageMessages />
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Reset Approved/Pending Requests" action="{!Reset}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    </apex:page>

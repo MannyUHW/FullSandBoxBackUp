@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Boothforce;This is a block of time of which a booth needs to be staffed. This is use by Sarah Steck;</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Area_Zone__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The Area or on the trade show floor where the Booth is located</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The Area on the trade show floor where the Booth is located</inlineHelpText>
+        <label>Area</label>
+        <referenceTo>Area_Zone__c</referenceTo>
+        <relationshipLabel>Shift Times</relationshipLabel>
+        <relationshipName>Shift_Times</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Remaining_Shifts_to_be_Staffed__c</fullName>
+        <externalId>false</externalId>
+        <formula>Total_Shifts_to_be_Staffed__c - Total_Shifts_Staffed__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Remaining Shifts to be Staffed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Shift_Date__c</fullName>
+        <description>This is the just the Date of  the Shift.  Helpful for reporting purposes.</description>
+        <externalId>false</externalId>
+        <formula>DATEVALUE(Shift_Start_Time__c )</formula>
+        <inlineHelpText>This is the just the Date of  the Shift.  Helpful for reporting purposes.</inlineHelpText>
+        <label>Shift Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Shift_End_Time__c</fullName>
+        <description>This is the date and time the Shift ends.  This should be on the same date as the &quot;Shift Start Time&quot;</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the date and time the Shift ends.  This should be on the same date as the &quot;Shift Start Time&quot;</inlineHelpText>
+        <label>Shift End Time</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Shift_Start_Time__c</fullName>
+        <description>The date and time the Shift starts.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The date and time the Shift starts.</inlineHelpText>
+        <label>Shift Start Time</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Total_Shifts_Staffed__c</fullName>
+        <description>This is the total number of shifts staffed for this particular Shift Time</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the total number of shifts staffed for this particular Shift Time</inlineHelpText>
+        <label>Total Shifts Staffed</label>
+        <summarizedField>Staffing_Assignment__c.Is_Staffed__c</summarizedField>
+        <summaryForeignKey>Staffing_Assignment__c.Shift_Time__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Total_Shifts_to_be_Staffed__c</fullName>
+        <description>This is the Total number of shifts that need to be staffed for this particular Shift Time</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the Total number of shifts that need to be staffed for this particular Shift Time</inlineHelpText>
+        <label>Total Shifts to be Staffed</label>
+        <summaryForeignKey>Staffing_Assignment__c.Shift_Time__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <label>Shift Time</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Area_Zone__c</columns>
+        <columns>Shift_Date__c</columns>
+        <columns>Shift_Start_Time__c</columns>
+        <columns>Shift_End_Time__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Shift Times</label>
+    </listViews>
+    <listViews>
+        <fullName>Todays_Shift_Times</fullName>
+        <columns>NAME</columns>
+        <columns>Area_Zone__c</columns>
+        <columns>Shift_Start_Time__c</columns>
+        <columns>Shift_End_Time__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Shift_Date__c</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>Todays Shift Times</label>
+    </listViews>
+    <listViews>
+        <fullName>Tomorrows_Shift_Times</fullName>
+        <columns>NAME</columns>
+        <columns>Area_Zone__c</columns>
+        <columns>Shift_Start_Time__c</columns>
+        <columns>Shift_End_Time__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Shift_Date__c</field>
+            <operation>equals</operation>
+            <value>TOMORROW</value>
+        </filters>
+        <label>Tomorrows Shift Times</label>
+    </listViews>
+    <nameField>
+        <label>Shift Time Friendly Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Shift Times</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Area_Zone__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Shift_Start_Time__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Shift_End_Time__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Shift_Start_Time__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Shift_End_Time__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Shift_Start_Time__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Shift_End_Time__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

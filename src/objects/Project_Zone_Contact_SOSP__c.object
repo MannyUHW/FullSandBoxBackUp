@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>List of Contact for a specific Project</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Bad_Phone_Numbers__c</fullName>
+        <externalId>false</externalId>
+        <label>Bad Phone Numbers</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Last_Activity_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.LastActivityDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Last Activity Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Project Zone Contacts</relationshipLabel>
+        <relationshipName>Project_Zone_Contacts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Cope_Pladged__c</fullName>
+        <externalId>false</externalId>
+        <formula>! ISNULL(Contact__r.Cope_Payment_Date__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cope Pledged</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Dispatcher_Assigned_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Dispatcher Assigned Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1</fullName>
+                    <default>false</default>
+                    <label>1</label>
+                </value>
+                <value>
+                    <fullName>2</fullName>
+                    <default>false</default>
+                    <label>2</label>
+                </value>
+                <value>
+                    <fullName>3</fullName>
+                    <default>false</default>
+                    <label>3</label>
+                </value>
+                <value>
+                    <fullName>4</fullName>
+                    <default>false</default>
+                    <label>4</label>
+                </value>
+                <value>
+                    <fullName>5</fullName>
+                    <default>false</default>
+                    <label>5</label>
+                </value>
+                <value>
+                    <fullName>6</fullName>
+                    <default>false</default>
+                    <label>6</label>
+                </value>
+                <value>
+                    <fullName>7</fullName>
+                    <default>false</default>
+                    <label>7</label>
+                </value>
+                <value>
+                    <fullName>8</fullName>
+                    <default>false</default>
+                    <label>8</label>
+                </value>
+                <value>
+                    <fullName>9</fullName>
+                    <default>false</default>
+                    <label>9</label>
+                </value>
+                <value>
+                    <fullName>10</fullName>
+                    <default>false</default>
+                    <label>10</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Field_Work_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Field Work Notes</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>June_5_Action__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.IsJune5Action__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>June 5 Action</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Languages__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(INCLUDES( Contact__r.Languages__c , &quot;ENGLISH&quot;), &quot;ENGLISH,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES( Contact__r.Languages__c , &quot;SPANISH&quot;), &quot;SPANISH,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c, &quot;RUSSIAN&quot;), &quot;RUSSIAN,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;HMONG&quot;), &quot;HMONG,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;CANTONESE&quot;), &quot;CANTONESE,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;MANDARIN&quot;), &quot;MANDARIN,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;VIETNAMESE&quot;), &quot;VIETNAMESE,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;FARSI&quot;), &quot;FARSI,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;KOREAN&quot;), &quot;KOREAN,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;TAGALOG&quot;), &quot;TAGALOG,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;ARMENIAN&quot;), &quot;ARMENIAN,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;ERITREAN&quot;), &quot;ERITREAN,&quot;, NULL) + &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;AMERICAN SIGN&quot;), &quot;AMERICAN SIGN,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;ARABIC&quot;), &quot;ARABIC,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;CAMBODIAN&quot;), &quot;CAMBODIAN,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;CHINESE&quot;), &quot;CHINESE,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;FRENCH&quot;), &quot;FRENCH,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;HINDI&quot;), &quot;HINDI,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;KHMER (CAMBODIAN)&quot;), &quot;KHMER (CAMBODIAN),&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;KINYARWANDA&quot;), &quot;KINYARWANDA,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;LAO&quot;), &quot;LAO,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;MIEN&quot;), &quot;MIEN,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;NON-ENGLISH&quot;), &quot;NON-ENGLISH,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;OTHER CHINESE&quot;), &quot;OTHER CHINESE,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;OTHER CHINESE LANGUAGES&quot;), &quot;OTHER CHINESE LANGUAGES,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;OTHER NON-ENGLISH&quot;), &quot;OTHER NON-ENGLISH,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;PERSIAN&quot;), &quot;PERSIAN,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;POLL&quot;), &quot;POLL,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;PUNJABI&quot;), &quot;PUNJABI,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;SAMOAN&quot;), &quot;SAMOAN,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;SIGN-AMERICAN&quot;), &quot;SIGN-AMERICAN,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;THAI&quot;), &quot;THAI,&quot;, NULL)+ &apos; &apos; + 
+IF(INCLUDES(Contact__r.Languages__c , &quot;TIGRINYA&quot;), &quot;TIGRINYA&quot;, NULL)</formula>
+        <label>Languages</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Last_Phone_Bank_Task_Subject__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Contact__r.Last_Phone_Bank_Task_Subject__c)</formula>
+        <label>Last Task Subject</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mailing_City__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.MailingCity</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Mailing City</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mobile__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.MobilePhone</formula>
+        <label>Mobile</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.FirstName  + &apos; &apos; + Contact__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Phone</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Zone__r.Project__r.Id</formula>
+        <label>ProjectID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectZoneGroupID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Zone__r.Project_Zone_Group__r.Id</formula>
+        <label>ProjectZoneGroupID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Packet__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Packet</label>
+        <referenceTo>Project_Packet_SOSP__c</referenceTo>
+        <relationshipLabel>Project Zone Contacts</relationshipLabel>
+        <relationshipName>Project_Zone_Contacts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project_Zone_ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Packet__r.Project_Zone__c</formula>
+        <label>Project Zone ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Zone__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Zone</label>
+        <referenceTo>Project_Zone_SOSP__c</referenceTo>
+        <relationshipLabel>Project Zone Contacts</relationshipLabel>
+        <relationshipName>Project_Zone_Contacts</relationshipName>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Zone__r.Project__r.Name</formula>
+        <label>Project</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Secondary_Phone1__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Secondary_Phone1__c</formula>
+        <label>Secondary Phone1</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Secondary_Phone2__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Secondary_Phone2__c</formula>
+        <label>Secondary Phone2</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Signed_Date_MC__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Signed_Membership_Card_Date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Signed Date (MC)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Signed_MC__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Signed_Membership_Card__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Signed (MC)</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Subject__c</fullName>
+        <externalId>false</externalId>
+        <label>Subject</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Call - Verbal Supporter</fullName>
+                    <default>false</default>
+                    <label>Call - Verbal Supporter</label>
+                </value>
+                <value>
+                    <fullName>Call - Not Home</fullName>
+                    <default>false</default>
+                    <label>Call - Not Home</label>
+                </value>
+                <value>
+                    <fullName>Call - Bad Number</fullName>
+                    <default>false</default>
+                    <label>Call - Bad Number</label>
+                </value>
+                <value>
+                    <fullName>Call - Language Barrier</fullName>
+                    <default>false</default>
+                    <label>Call - Language Barrier</label>
+                </value>
+                <value>
+                    <fullName>Call - No Client (NLE)</fullName>
+                    <default>false</default>
+                    <label>Call - No Client (NLE)</label>
+                </value>
+                <value>
+                    <fullName>Call - Fixed Address</fullName>
+                    <default>false</default>
+                    <label>Call - Fixed Address</label>
+                </value>
+                <value>
+                    <fullName>Visit - Signed Card</fullName>
+                    <default>false</default>
+                    <label>Visit - Signed Card</label>
+                </value>
+                <value>
+                    <fullName>Visit - Not Home</fullName>
+                    <default>false</default>
+                    <label>Visit - Not Home</label>
+                </value>
+                <value>
+                    <fullName>Visit - Language Barrier</fullName>
+                    <default>false</default>
+                    <label>Visit - Language Barrier</label>
+                </value>
+                <value>
+                    <fullName>Visit- No Client (NLE)</fullName>
+                    <default>false</default>
+                    <label>Visit- No Client (NLE)</label>
+                </value>
+                <value>
+                    <fullName>Refused</fullName>
+                    <default>false</default>
+                    <label>Refused</label>
+                </value>
+                <value>
+                    <fullName>Switch</fullName>
+                    <default>false</default>
+                    <label>Switch</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Zipcode5__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.Zipcode5__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Zipcode5</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ZoneID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Packet__r.Project_Zone__r.Zone_p__r.Id</formula>
+        <label>ZoneID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zone_Group_Coordinator__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Zone__r.Project_Zone_Group__r.Zone_Group_Coordinator__c</formula>
+        <label>Zone Group Coordinator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zone_Group__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Zone__r.Project_Zone_Group__r.Zone_Group__r.Name</formula>
+        <label>Zone Group</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Zone__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Zone__r.Zone_p__r.Name</formula>
+        <label>Zone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Project Zone Contact</label>
+    <nameField>
+        <displayFormat>P-{0000}</displayFormat>
+        <label>Project ZoneContact ID</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Project Zone Contacts</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Project_Zone__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Name__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

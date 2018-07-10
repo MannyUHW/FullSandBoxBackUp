@@ -1,0 +1,1028 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableChangeDataCapture>false</enableChangeDataCapture>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Bargaining_Assessment__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Assessment</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Budget_and_Job_Security__c</fullName>
+        <description>Question 12 from Stanford GetFeedback form.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Budget and Job Security</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Current_Health_Benefits__c</fullName>
+        <description>Question 15 from Stanford GetFeedback survey.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Current Health Benefits</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Fair_Disclipline__c</fullName>
+        <description>Question 10 from GetFeedback form.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Fair Disclipline</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Help_Win_Contract__c</fullName>
+        <description>Question 18 from Stanford GetFeedback survey.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Help Win Contract</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Important_Issues__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Important Issues</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Is_Leader__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Is Leader</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Leader_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Leader Type</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Nom_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Nom Comments</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Nom_Department__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Nom Department</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Nom_Job__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Nom Job</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Nom_Name__c</fullName>
+        <description>Screen 19 of Stanford GetFeedback survey.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Nom Name</label>
+        <length>120</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Nom_Shift__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Nom Shift</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Patient_Care_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Patient Care Comments</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Patient_Care__c</fullName>
+        <description>Question 6 from Stanford GetFeedback form.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Patient Care</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Patients_at_Risk__c</fullName>
+        <description>Question 7 from Stanford GetFeedback form.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Patients at Risk</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Pay_Comp_Other_Hosps__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Pay Comp Other Hosps</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Pay_Competitive__c</fullName>
+        <description>Question 13 from Stanford GetFeedback survey.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Pay Competitive</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Priority_1__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Priority 1</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Priority_2__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Priority 2</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Priority_3__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Priority 3</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Priority_4__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Priority 4</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Priority_5__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Priority 5</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Priority_6__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Priority 6</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Priority_7__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Priority 7</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Priority_8__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Priority 8</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Respect_Seniority__c</fullName>
+        <description>Question 9 from Stanford GetFeedback Survey.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Respect Seniority</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Retirement_Matching__c</fullName>
+        <description>Question 14 from Stanford GetFeedback survey.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Retirement Matching</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Staffing_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Staffing Comments</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Staffing__c</fullName>
+        <description>question 4 on Stanford GetFeedback form</description>
+        <externalId>false</externalId>
+        <label>Bargaining Staffing</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Steward_Release__c</fullName>
+        <description>Question 8 from Stanford GetFeedback form.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Steward Release</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Union_Info_Preference__c</fullName>
+        <description>Question 11 from Stanford GetFeedback survey.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Union Info Preference</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Work_Satisfaction__c</fullName>
+        <externalId>false</externalId>
+        <label>Bargaining Work Satisfaction</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bargaining_Workload__c</fullName>
+        <description>question 5 from Stanford GetFeedback form.</description>
+        <externalId>false</externalId>
+        <label>Bargaining Workload</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Building__c</fullName>
+        <externalId>false</externalId>
+        <label>Building</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>COPE_Contribution__c</fullName>
+        <description>use in Consolidation Survey 2017</description>
+        <externalId>false</externalId>
+        <inlineHelpText>use in Consolidation Survey 2017</inlineHelpText>
+        <label>COPE Contribution</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Completion_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Completion Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Information_Correct__c</fullName>
+        <description>Use in Consolidation Survey; If answer is NO, cell and email are provided.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Use in Consolidation Survey; If answer is NO, cell and email are provided.</inlineHelpText>
+        <label>Contact Information Correct</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Coordinator_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Leader_Employer__r.Coordinator__r.FirstName &amp; &quot; &quot; &amp; 
+ Leader_Employer__r.Coordinator__r.LastName</formula>
+        <label>Coordinator Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Division__c</fullName>
+        <externalId>false</externalId>
+        <formula>text(Leader_Employer__r.Account_Group__c)</formula>
+        <label>Division</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Duplicate__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Duplicate</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Employer_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Leader_Employer__r.Name</formula>
+        <label>Employer Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Ethnic_Group__c</fullName>
+        <externalId>false</externalId>
+        <label>Ethnic Group</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Floor__c</fullName>
+        <externalId>false</externalId>
+        <label>Floor</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Language_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Language Code</label>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>EN</fullName>
+                    <default>true</default>
+                    <label>EN</label>
+                </value>
+                <value>
+                    <fullName>ES</fullName>
+                    <default>false</default>
+                    <label>ES</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Leader_Employer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Leader Employer</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Reach Questionnaires</relationshipLabel>
+        <relationshipName>Reach_Questionnaires</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Leader_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Leader Name</label>
+        <length>120</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manually_Created__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Was this reach questionnaire manually created rather than going through GetFeedback?</description>
+        <externalId>false</externalId>
+        <label>Manually Created</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Member_Alt_Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Alt Phone</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Member_Cell_Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Cell Phone</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>Member_Department__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Department</label>
+        <length>120</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Email</label>
+        <length>128</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Employee_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Employee Id</label>
+        <length>32</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Facility__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Facility</label>
+        <length>120</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Home_Zip_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Home Zip Code</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_ID__c</fullName>
+        <description>use in Consolidation Survey 2017</description>
+        <externalId>false</externalId>
+        <label>Member ID</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Job__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Job</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Name</label>
+        <length>120</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Member_Shift__c</fullName>
+        <externalId>false</externalId>
+        <label>Member Shift</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Nomination_1_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Nomination 1 Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Reach Questionnaires</relationshipLabel>
+        <relationshipName>Reach_Questionnaires</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Nomination_1_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Nomination 1 Name</label>
+        <length>160</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Organizer_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Leader_Employer__r.Organizer_1__r.FirstName &amp; &quot; &quot; &amp;  Leader_Employer__r.Organizer_1__r.LastName</formula>
+        <label>Organizer Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Question_Election_Results__c</fullName>
+        <description>How do you think the November election results will affect you?</description>
+        <externalId>false</externalId>
+        <label>Question Election Results</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Negatively</fullName>
+                    <default>false</default>
+                    <label>Negatively</label>
+                </value>
+                <value>
+                    <fullName>Positively</fullName>
+                    <default>false</default>
+                    <label>Positively</label>
+                </value>
+                <value>
+                    <fullName>Won&apos;t affect me</fullName>
+                    <default>false</default>
+                    <label>Won&apos;t affect me</label>
+                </value>
+                <value>
+                    <fullName>Don&apos;t know</fullName>
+                    <default>false</default>
+                    <label>Don&apos;t know</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Question_Healthcare_Cuts__c</fullName>
+        <externalId>false</externalId>
+        <label>Question Healthcare Cuts</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Question_Losing_Union__c</fullName>
+        <description>How will losing your union affect you?</description>
+        <externalId>false</externalId>
+        <label>Question Losing Union</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Question_Path_Forward__c</fullName>
+        <externalId>false</externalId>
+        <label>Question Path Forward</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Strongly agree</fullName>
+                    <default>false</default>
+                    <label>Strongly agree</label>
+                </value>
+                <value>
+                    <fullName>Somewhat agree</fullName>
+                    <default>false</default>
+                    <label>Somewhat agree</label>
+                </value>
+                <value>
+                    <fullName>Somewhat disagree</fullName>
+                    <default>false</default>
+                    <label>Somewhat disagree</label>
+                </value>
+                <value>
+                    <fullName>Strongly disagree</fullName>
+                    <default>false</default>
+                    <label>Strongly disagree</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Questionnaire_Duration__c</fullName>
+        <externalId>false</externalId>
+        <formula>Completion_Time__c -  Start_Time__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Questionnaire Duration</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Questionnaire_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank( Survey_Response__c), 
+    if (Duplicate__c = true, &quot;Duplicate&quot;, 
+    if ( Unable_to_Resolve__c = true, &quot;Unable to Resolve&quot;, &quot;Not Evaluated&quot;)
+      ),
+    if (isblank(Survey_Response__r.Contact__c), &quot;Non-Member&quot;, &quot;Member&quot;)
+)</formula>
+        <label>Questionnaire Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Recon_Page__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (isblank(Survey_Response__c),
+HYPERLINK(&quot;apex/Resolve_Consolidation_SRs?rcid=&quot; &amp; CASESAFEID(Id) , &quot;Recon Page&quot;),
+&quot;Already Reconciled&quot;)</formula>
+        <label>Recon Page</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Reg_Director_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Leader_Employer__r.Regional_Director__r.FirstName &amp; &quot; &quot; &amp; Leader_Employer__r.Regional_Director__r.LastName</formula>
+        <label>Reg Director Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Region__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Leader_Employer__r.Region__c)</formula>
+        <label>Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Resolve_Comments_Extended__c</fullName>
+        <externalId>false</externalId>
+        <label>Resolve Comments Extended</label>
+        <length>4096</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Resolve_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Resolve Comments</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sex__c</fullName>
+        <externalId>false</externalId>
+        <label>Sex</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Male</fullName>
+                    <default>false</default>
+                    <label>Male</label>
+                </value>
+                <value>
+                    <fullName>Female</fullName>
+                    <default>false</default>
+                    <label>Female</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Signed_Membership_Card__c</fullName>
+        <description>use in Consolidation Survey 2017</description>
+        <externalId>false</externalId>
+        <label>Signed Membership Card</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Yes</fullName>
+                    <default>false</default>
+                    <label>Yes</label>
+                </value>
+                <value>
+                    <fullName>No</fullName>
+                    <default>false</default>
+                    <label>No</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Source_Text__c</fullName>
+        <externalId>false</externalId>
+        <label>Source Text</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>7</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Start_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Stretch_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>if ( Questionnaire_Status__c = &quot;Member&quot;,
+     if (contains(upper(Survey_Response__r.Report_Group__c), &quot;REACH&quot;), 
+         &quot;Already Reached&quot;,
+         if (isblank(Survey_Response__r.Contact__r.Tier_Staff__c), 
+             &quot;Not in ID-ed Dept&quot;,
+              if (Survey_Response__r.Contact__r.In_Current_BU__c = true, 
+                  &quot;Stretch Credited&quot;,
+                  &quot;Not in Current BU&quot;
+              )
+         )
+     ),
+if (FIND(&quot;duplicat&quot;,  LOWER(Resolve_Comments__c)) &gt; 0, &quot;Duplicate&quot;, Questionnaire_Status__c)
+)</formula>
+        <label>Stretch Status</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Response__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Survey Response</label>
+        <referenceTo>Survey_Response__c</referenceTo>
+        <relationshipLabel>Reach Questionnaires</relationshipLabel>
+        <relationshipName>Reach_Questionnaires</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Unable_to_Resolve__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Unable to Resolve</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Version__c</fullName>
+        <externalId>false</externalId>
+        <label>Version</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Years_of_Service__c</fullName>
+        <externalId>false</externalId>
+        <label>Years of Service</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Reach Questionnaire</label>
+    <nameField>
+        <displayFormat>RCH-{00000000}</displayFormat>
+        <label>Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Reach Questionnaires</pluralLabel>
+    <searchLayouts>
+        <searchResultsAdditionalFields>Leader_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Employer_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Member_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Questionnaire_Status__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>AppLog</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>AppLogs</value>
+    </caseValues>
+    <fields>
+        <label><!-- App --></label>
+        <name>App__c</name>
+    </fields>
+    <fields>
+        <label><!-- DateTime --></label>
+        <name>DateTime__c</name>
+    </fields>
+    <fields>
+        <label><!-- Error --></label>
+        <name>Error__c</name>
+    </fields>
+    <fields>
+        <label><!-- UserId --></label>
+        <name>UserId__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

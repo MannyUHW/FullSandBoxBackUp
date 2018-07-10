@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>GOTV Views</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>GOTV Views</value>
+    </caseValues>
+    <fields>
+        <label><!-- ColumnState --></label>
+        <name>ColumnState__c</name>
+    </fields>
+    <fields>
+        <label><!-- Description --></label>
+        <name>Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- SortModel --></label>
+        <name>SortModel__c</name>
+    </fields>
+    <fields>
+        <label><!-- Type --></label>
+        <name>Type__c</name>
+    </fields>
+    <fields>
+        <label><!-- User --></label>
+        <name>User__c</name>
+        <relationshipLabel><!-- GOTV Views --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- ViiewClass --></label>
+        <name>ViewClass__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

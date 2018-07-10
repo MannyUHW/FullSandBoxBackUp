@@ -1,0 +1,179 @@
+<apex:page sidebar="false">
+<script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.tablesorter.min.js')}"/>
+<link rel="stylesheet" href="{!URLFOR($Resource.mo_assets, '/mo_assets/css/tablesorter/tablesorter_blue_style.css')}" type="text/css" id="" media="print, projection, screen" />
+<div align="center">
+<font size="+2">UHW Management Raw Login Report</font>
+</div>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div align="center" id="loginDiv"></div>
+
+
+<script language="JavaScript">
+
+
+var DIVISION = "DIVISION";
+var LAST_WEEK = "LAST_WEEK";
+var LAST_MONTH = "LAST_MONTH";
+ 
+var countMap = new Array();
+var ucount = 0;
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+ 
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+
+var userMap = new Array();
+var userMap2 = new Array();
+var lastLoginMap = new Array();
+
+var oneWeekSortList = new Array();
+var oneMonthSortList = new Array();
+
+var overallSortList = new Array();
+var overallSortMap = new Array();
+
+try{ 
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    
+    //var query = "Select Id, Name, Department, Title, LastLoginDate  FROM User where IsActive = true and (title like '%director%' or title like '%coord%' or title like '%chief%') order by LastLoginDate asc";
+    var query = "Select Id, Name, Department, Title, LastLoginDate  FROM User where IsActive = true order by LastLoginDate asc";    
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i < records1.length; i++){ 
+      var uid = records1[i].Id;
+      lastLoginMap[uid] = i;
+      userMap[uid] = records1[i];
+      ucount++;
+    }
+    
+    //alert("got users = " + ucount);
+    //alert(JSON.stringify(userMap[uid]));  
+      
+        
+    for (var x = 0; x < 30; x++) {
+       var query = "SELECT UserId, Application, LoginTime, SourceIp FROM LoginHistory where LoginTime >= LAST_N_DAYS:" + (x+1) + " and LoginTime < LAST_N_DAYS:" + x;
+       var records = sforce.connection.query(query); 
+       var records1 = records.getArray('records'); 
+       for(var i=0;i < records1.length; i++){     
+         var app = records1[i].Application.toLowerCase();
+         if (app.indexOf("browser") || app.indexOf("salesforce1")) {
+           incrementCounter([records1[i].UserId, LAST_MONTH], 1);
+           if (x < 7) {
+             incrementCounter([records1[i].UserId, LAST_WEEK], 1);           
+           }
+         }
+       }
+    }
+    //alert("got logins");
+        
+    for (var uid in userMap) {
+      oneWeekSortList.push(1000000 + getCounter([uid, LAST_WEEK]));
+      oneMonthSortList.push(1000000 + getCounter([uid, LAST_MONTH]));    
+    }
+    oneWeekSortList.sort();
+    oneMonthSortList.sort();
+    
+    //alert(JSON.stringify(oneWeekSortList));
+    
+    var userWriter = "";
+    userWriter += "<table cellpadding=\"7\"  id=\"userTable\" class=\"tablesorter\">\n";
+    userWriter += "<thead>\n";    
+
+    userWriter += "  <th bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"black\">User</td>";    
+    userWriter += "  <th bgcolor=\"#481C60\" width=\"15%\" align=\"center\"><font color=\"black\">Department</td>";   
+    userWriter += "  <th bgcolor=\"#481C60\" width=\"15%\" align=\"center\"><font color=\"black\">Title</td>";    
+    userWriter += "  <th bgcolor=\"#481C60\" width=\"14%\" align=\"center\"><font color=\"black\">Overall<br/>Salesforce<br/>Login Rank</td>";    
+    userWriter += "  <th bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"black\">Last Login</td>";     
+    userWriter += "  <th bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"black\">Logins Last Week</td>";    
+    userWriter += "  <th bgcolor=\"#481C60\" width=\"12%\" align=\"center\"><font color=\"black\">Logins Last Month</font></td>";    
+        
+    userWriter += "</thead>\n";    
+    //alert(JSON.stringify(userMap));    
+    
+    for (var uid in userMap) {
+    
+      var urecord = userMap[uid];
+      //alert(JSON.stringify(urecord));
+      var lastLoginRank = lastLoginMap[uid];
+      var lastWeekRank = oneWeekSortList.indexOf(1000000 + getCounter([uid, LAST_WEEK]));
+      var lastMonthRank = oneMonthSortList.indexOf(1000000 + getCounter([uid, LAST_MONTH]));      
+      var overallRank = (lastLoginRank  + lastWeekRank + lastMonthRank + lastMonthRank) / 4.0;
+      var sortKey = (1000000 + overallRank) + uid;
+      overallSortList.push(sortKey);
+      overallSortMap[sortKey] = urecord; 
+      
+    }
+
+    //alert(JSON.stringify(overallSortList));
+    overallSortList.sort();
+    //alert(JSON.stringify(overallSortList));
+        
+    var rank = 1;
+    for (var i = 0; i < overallSortList.length; i++) {
+      var sortKey = overallSortList[i];
+      //alert("rank = " + rank + " (" + sortKey + ")");
+      var urecord = overallSortMap[sortKey];
+      var uid = urecord.Id;
+      
+      userWriter += "<tr valign=\"top\">\n"; 
+      userWriter += "<td>" + toProperCase(urecord.Name) + "</td>";         
+      userWriter += "<td>" + toProperCase(urecord.Department) + "</td>";      
+      userWriter += "<td>" + toProperCase(urecord.Title) + "</td>";           
+      userWriter += "<td align=\"center\">" + (1 + ucount - rank)  + "</td>";   
+      if (urecord.LastLoginDate != null && urecord.LastLoginDate != "null" && urecord.LastLoginDate != "") {
+        userWriter += "<td align=\"center\">" + urecord.LastLoginDate.substring(0, 10) + "</td>"; 
+      } else {
+        userWriter += "<td align=\"center\">NEVER</td>"; 
+      }
+      userWriter += "<td align=\"center\">" + getCounter([uid, LAST_WEEK]) + "</td>"; 
+      userWriter += "<td align=\"center\">" + getCounter([uid, LAST_MONTH]) +"</td>";             
+      
+      userWriter += "</tr>\n"; 
+      
+      rank++;
+    }
+    userWriter += "\n</table>\n\n\n\n";
+    userWriter += "<br>&nbsp;</br>";
+        //userWriter += ucount;
+    userWriter += "<br>&nbsp;</br>";        
+
+    
+    document.getElementById("loginDiv").innerHTML = userWriter;
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i); 
+}    
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div align="center"><i>CONFIDENTIAL</i></div>
+
+<script>
+$(document).ready(function() 
+    { 
+        $("#userTable").tablesorter(); 
+    } 
+);    
+</script>
+
+</apex:page>

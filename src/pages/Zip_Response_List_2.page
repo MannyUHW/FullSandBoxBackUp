@@ -1,0 +1,884 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+    <head>
+
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">google.load('visualization', '1', {packages:['table']}); </script>
+
+        <style>
+
+            #tabContainer {
+                background-color:#92f1f6;
+                background-color:linen;
+                -moz-border-radius: 4px;
+                border-radius: 4px;
+                border-color: red;
+                border-width: 2px;
+                overflow: visible;
+            }
+
+            #tabContainer h3 {
+                width:50%;
+                font-style: italic;
+                clear: left;
+            }
+
+            #tabs {
+                padding-top: 0px;
+                padding-bottom: 1px;
+                width: 100%;
+                margin-left: 20px;
+            }
+
+            #tabs > ul{
+                font: 1em;
+                list-style:none;
+            }
+
+            #tabs > ul > li  {
+                margin-top: 0px;
+                margin-right: 4px;
+                margin-bottom: 1px;
+                margin-left: 2px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+                padding-left: 10px;
+                padding-right: 10px;
+                display:block;
+                float:left;
+                color:#FFF;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                user-select: none;
+                -moz-border-radius-topleft: 4px;
+                -moz-border-radius-topright: 4px;
+                -moz-border-radius-bottomright: 0px;
+                -moz-border-radius-bottomleft: 0px;
+                border-top-left-radius:4px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 0px;
+                border-bottom-left-radius: 0px;
+                background: -moz-linear-gradient(top, #0C91EC 0%, #257AB6 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#0C91EC), color-stop(100%,#257AB6)); /* webkit */
+            }
+
+            #tabs > ul > li:hover{
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #F3F3F3 10%, #F3F3F3 50%, #FFFFFF 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(10%,#F3F3F3), color-stop(50%,#F3F3F3), color-stop(100%,#FFFFFF)); /* webkit */
+                cursor:pointer;
+                color: #333;
+            }
+
+            #tabs > ul > li.tabActiveHeader {
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #F3F3F3 10%, #F3F3F3 50%, #FFFFFF 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(10%,#F3F3F3), color-stop(50%,#F3F3F3), color-stop(100%,#FFFFFF)); /* webkit */
+                cursor:pointer;
+                color: #333;
+            }
+
+            #tabscontent {
+                -moz-border-radius-topleft: 0px;
+                -moz-border-radius-topright: 4px;
+                -moz-border-radius-bottomright: 4px;
+                -moz-border-radius-bottomleft: 4px;
+                border-top-left-radius: 0px;
+                border-top-right-radius: 4px;
+                border-bottom-right-radius: 4px;
+                border-bottom-left-radius: 4px;
+                background: -moz-linear-gradient(top, #FFFFFF 0%, #FFFFFF 90%, #e4e9ed 100%); /* firefox */
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(90%,#FFFFFF), color-stop(100%,#e4e9ed)); /* webkit */
+                color:#333;
+                padding: 0px;
+                margin: 20px;
+            }
+
+            body {
+                background-color : white;
+                border-color: darkgreen;
+                border-width: 2px;
+            }
+/*
+            #content {
+                width:700px;
+                margin:30px auto;
+            }
+*/
+            #statusDiv1 {
+                font-size: 14px;
+                font-style: italic;
+                background-color: #92f1f6;
+            }
+
+            #statusDiv2 {
+                font-size: 14px;
+                font-style: italic;
+                color: red;
+            }
+
+            /* I couldn't work out syntax to make a css class with all these nth-childs.
+               If anyone does figure it out, please tell me! :) */
+
+            <!-- Employer -->
+            #DetailDiv table th:nth-child(1) {
+                text-align:left;
+                color: grey;
+                width: 220px;
+            }
+            <!-- Department -->
+            #DetailDiv table th:nth-child(2) {
+                text-align:left;
+                color: grey;
+                width: 210px;
+            }
+            <!-- Job Title -->
+            #DetailDiv table th:nth-child(3) {
+                text-align:left;
+                color: grey;
+                width: 210px;
+            }
+            <!-- Member Name -->
+            #DetailDiv table th:nth-child(4) {
+                text-align:left;
+                color: grey;
+                width: 200px;
+            }
+            <!-- Street -->
+            #DetailDiv table th:nth-child(5) {
+                text-align:left;
+                color: grey;
+                width: 200px;
+            }
+            <!-- City-->
+            #DetailDiv table th:nth-child(6) {
+                text-align:left;
+                color: grey;
+                width: 100px;
+            }
+            <!-- Zip -->
+            #DetailDiv table th:nth-child(7) {
+                text-align:left;
+                color: grey;
+                width: 100px;
+            }
+            <!-- Home Phone-->
+            #DetailDiv table th:nth-child(8) {
+                text-align:left;
+                color: grey;
+                width: 100px;
+            }
+            <!-- Cell Phone -->
+            #DetailDiv table th:nth-child(9) {
+                text-align:left;
+                color: grey;
+                width: 100px;
+            }
+            <!-- Phone -->
+            #DetailDiv table th:nth-child(10) {
+                text-align:left;
+                color: grey;
+                width: 100px;
+            }
+/*
+            #Div1 table td:nth-child(5) {
+                text-align:right;
+                padding-right: 22px;
+            }
+            #Div1 table td:nth-child(6) {
+                text-align:right;
+                padding-right: 22px;
+            }
+*/
+            <!-- Zip -->
+            #ZipListDiv table th:nth-child(1) {
+                text-align:left;
+                width: 100px;
+            }
+            <!-- Count -->
+            #ZipListDiv table td:nth-child(3) {
+                text-align:right;
+                padding-right: 22px;
+            }
+
+        </style>
+    </head>
+    <body>
+
+    <script type="text/javascript">
+
+        function refreshClicked() {
+            var userZipList;
+            var inputArray;
+            var testChar;
+            var goodOutput;
+            var badInput;
+            var charBad;
+            var outputArray;
+            var badInputArray;
+            var goodZipList;
+
+            contactMap         = {};
+            zipCodeMap         = {};
+            responseMap        = {};
+            uniqueResponseMap  = {};
+
+            outputArray   = [];
+            badInputArray = [];
+
+            statusDiv1.innerHTML = 'Retrieving....';
+
+            employerMapDeptMapJobTitleMap            = {};
+            employerMapDeptMapJobTitleMapResponseMap = {};
+            responseMap                   = {};
+            uniqueSurveyMap               = {};
+            codeResponseMap               = {};
+            uniqueResponseMap             = {};
+            uniqueCodeResponseMap         = {};
+            employerMapCodeMapResponseMap = {};
+
+            //   resetTable();
+
+            userZipList = zipListInput.value;
+            inputArray = userZipList.split(',');
+            badInput   = '';
+            goodOutput = '';
+            var testString = '';
+            testOutput = '';
+            for(var i=0;i<inputArray.length;i++) {
+                testString = inputArray[i];
+                charBad = false
+                if(testString.length == 5) {
+                    for (j=0;j<5;j++) {
+                        testChar = testString.charCodeAt(j);
+                        if(testChar < 48 || testChar > 57) {
+                            charBad = true;
+                            break;
+                        }
+                    }
+                    if(!charBad) {
+                        outputArray.push(testString);
+                        goodOutput += testString;
+                    }
+                    else {
+                        badInput += testString;
+                        badInputArray.push(testString);
+                    }
+                }
+                else {
+                    badInputArray.push(testString);
+                    badInput += testString;
+                }
+            }
+            debugger;
+            //   alert(badInput);
+            //   alert(goodOutput);
+            retrieved = true;
+            loadResponses(outputArray);
+        }
+
+        function loadResponses(zipsArray) {
+            var campList;
+            var campListArray  = [];
+            var tmpVal;
+
+            statusDiv1.innerHTML = 'Retrieving Response Data...';
+
+            var select;
+            var where1;
+            var where2;
+            var i;
+
+            if(campaignDropdown1.selectedIndex < 1 &&
+               campaignDropdown2.selectedIndex < 1 &&
+               campaignDropdown3.selectedIndex < 1 &&
+               campaignDropdown4.selectedIndex < 1) {
+               alert('Pick a survey');
+               return;
+            }
+
+            if(campaignDropdown1.selectedIndex > 1) {
+                tmpVal = "'" + campaignDropdown1.value + "'";
+                campListArray.push(tmpVal);
+            }
+            if(campaignDropdown2.selectedIndex > 1) {
+                tmpVal = "'" + campaignDropdown2.value + "'";
+                campListArray.push(tmpVal);
+            }
+            if(campaignDropdown3.selectedIndex > 1) {
+                tmpVal = "'" + campaignDropdown3.value + "'";
+                campListArray.push(tmpVal);
+            }
+            if(campaignDropdown4.selectedIndex > 1) {
+                tmpVal = "'" + campaignDropdown4.value + "'";
+                campListArray.push(tmpVal);
+            }
+
+            campList = campListArray.join();
+
+            select = "SELECT Contact__r.Account.Id,Contact__r.Account.Name,Contact__r.Id,Contact__r.Name, Contact__r.Department, Contact__r.Title,Contact__r.MailingStreet, Contact__r.MailingCity, " +
+                    "Contact__r.MailingPostalCode, Contact__r.HomePhone, Contact__r.MobilePhone, Contact__r.Phone,Survey_Code__c,Contact__c,Response_Value__c,Collected_By__c,Collected_By_Name__c " +
+                    "FROM Survey_Response__c ";
+
+            where1 = "WHERE Contact__r.In_Current_BU__c = true AND Survey_Code__c in (" + campList + ") AND ";
+
+            if(zipsArray.length == 1) {
+                where2 = "";
+                where2 += "Contact__r.MailingPostalCode LIKE '" + zipsArray[0]+ "%' ";
+            }
+            else {
+                where2 = "(";
+                for (i = 1; i <= zipsArray.length - 1; i++) {
+                    where2 += "Contact__r.MailingPostalCode LIKE '" + zipsArray[i-1] + "%' OR ";
+                }
+                i = zipsArray.length - 1;
+                where2 += " Contact__r.MailingPostalCode LIKE '" + zipsArray[i] + "%')";
+            }
+            var query = select + where1 + where2;
+
+            debugDiv.innerHTML = query;
+
+            var responseResults = sforce.connection.query(query);
+            processResponses(responseResults);
+        }
+
+        function processResponses(pResults) {
+
+            var processedAll;
+            var responseRecords;
+            var response;
+            var responseCnt;
+            var uniqueResponse;
+            var code;
+            var responseRec;
+            var contact;
+            var responseBatchCount;
+            var employer;
+            var zipCode;
+            var title;
+            var department;
+            var street;
+            var city;
+            var homePhone;
+            var mobilePhone;
+            var phone;
+            var contactId;
+            var uniqueId;
+            var mapKey;
+
+            processedAll       = false;
+            responseCnt        = 0;
+            responseBatchCount = 0;
+
+            while (!processedAll) {
+                responseRecords = pResults.getArray('records');
+                for (i = 0; i < responseRecords.length; i++) {
+                    responseCnt++;
+                    responseRec = responseRecords[i];
+                    zipCode     = responseRec.Contact__r.MailingPostalCode;
+                    contact     = responseRec.Contact__r.Name;
+                    contactId   = responseRec.Contact__r.Id;
+                    title       = responseRec.Contact__r.Title;
+                    department  = responseRec.Contact__r.Department;
+                    street      = responseRec.Contact__r.MailingStreet;
+                    city        = responseRec.Contact__r.MailingCity;
+                    homePhone   = phoneFormat(responseRec.Contact__r.HomePhone);
+                    mobilePhone = phoneFormat(responseRec.Contact__r.MobilePhone);
+                    phone       = phoneFormat(responseRec.Contact__r.Phone);
+                    if(responseRec.Contact__r.Account)
+                        employer      = responseRec.Contact__r.Account.Name;
+                    else
+                        employer      = 'none';
+
+                    if(!zipCodeMap[zipCode])
+                        zipCodeMap[zipCode] = {Count:1};
+                    else
+                        zipCodeMap[zipCode].Count++;
+
+                    if(!contactMap[contactId])
+                        contactMap[contactId] = {Employer: employer,Department:department,Title:title, ContactId:contactId,Name:contact,Street:street,City:city,ZipCode:zipCode,HomePhone:homePhone,MobilePhone:mobilePhone,Phone:phone};
+
+                    //    responder = responseRec.Contact__c;
+                    response       = responseRec.Response_Value__c;
+                    code           = responseRec.Survey_Code__c;
+                    uniqueResponse = code + '.' + response;
+                    uniqueId       = code + '.' + contactId;
+
+                    if(!uniqueSurveyMap[code])
+                        uniqueSurveyMap[code]  = 'Ok';
+
+                    if (!uniqueResponseMap[uniqueResponse])
+                        uniqueResponseMap[uniqueResponse] = 'Ok';
+
+                    if (!responseMap[uniqueId])
+                        responseMap[uniqueId] = response;
+
+                }
+                if (pResults.done == 'true') {
+                    processedAll = true;
+                    statusDiv2.innerHTML = 'Total ResponseCnt: ' + responseCnt.toString() + ' (batch count: ' + responseBatchCount.toString() + ')';
+                }
+                else {
+                    responseBatchCount++;
+                    statusDiv2.innerHTML = 'Total ResponseCnt: ' + responseCnt.toString() + ' (batch count: ' + responseBatchCount.toString() + ')';
+                    pResults = sforce.connection.queryMore(pResults.queryLocator);
+                }
+
+            }
+            uniqueResponseArray = [];
+            for (mapKey in uniqueResponseMap)
+                uniqueResponseArray.push(mapKey);
+
+            uniqueResponseArray.sort();
+            debugger;
+            uniqueSurveyArray = [];
+            for (mapKey in uniqueSurveyMap)
+                uniqueSurveyArray.push(mapKey);
+            uniqueSurveyArray.sort();
+
+            //        resetTable();
+            initTables();
+            populateTable();
+            // drawToolbar();
+        }
+
+        function populateTable() {
+
+            var surveyKey;
+            var uniqueId;
+            var response;
+
+            var contactRec;
+            var employer;
+            var department;
+            var title;
+            var contactId;
+            var contact;
+            var street;
+            var city;
+            var zipCode;
+            var homePhone;
+            var mobilePhone;
+            var phone;
+            var mapKey;
+            var currentRow;
+            var currentCol;
+
+            for (mapKey in contactMap) {
+                contactRec  = contactMap[mapKey];
+                employer    = contactRec.Employer;
+                department  = contactRec.Department;
+                title       = contactRec.Title;
+                contactId   = contactRec.ContactId;
+                contact     = contactRec.Name;
+                street      = contactRec.Street;
+                city        = contactRec.City;
+                zipCode     = contactRec.ZipCode;
+                homePhone   = phoneFormat(contactRec.HomePhone);
+                mobilePhone = phoneFormat(contactRec.MobilePhone);
+                phone       = phoneFormat(contactRec.Phone);
+
+                currentRow = contactTableData.addRow();
+                contactTableData.setValue(currentRow,0,toProperCase(employer));
+                contactTableData.setValue(currentRow,1,toProperCase(department));
+                contactTableData.setValue(currentRow,2,toProperCase(title));
+                contactTableData.setValue(currentRow,3,toProperCase(contact));
+                contactTableData.setValue(currentRow,4,toProperCase(street));
+                contactTableData.setValue(currentRow,5,toProperCase(city));
+                contactTableData.setValue(currentRow,6,zipCode);
+                contactTableData.setValue(currentRow,7,homePhone);
+                contactTableData.setValue(currentRow,8,mobilePhone);
+                contactTableData.setValue(currentRow,9,phone);
+
+                for(i = 0;i < uniqueSurveyArray.length; i++) {
+                    currentCol = 9;
+                    surveyKey = uniqueSurveyArray[i];
+                    uniqueId = surveyKey + '.' + contactId;
+                    if (responseMap[uniqueId]) {
+                        response = responseMap[uniqueId];
+                        for(j = 0;j < uniqueResponseArray.length; j++) {
+                            currentCol++;
+                            responseKey = uniqueResponseArray[j];
+                            if(surveyKey + '.' + response == responseKey) {
+                                contactTableData.setValue(currentRow, currentCol, 1);
+                            }
+                        }
+                    }
+                }
+            }
+
+            var cssClassNames = {headerRow: 'headerClass',tableRow: 'tableClass'};
+            contactTableData.sort([{column: 1}, {column: 2},{column: 3},{column: 4}]);
+            contactTable.draw(contactTableData, {height: '600px', showRowNumber: false, alternatingRowStyle: true});
+
+            // To be fixed later....
+//            for (i=0;i<uniqueResponseArray.length;i++) {
+//                contactTableData.setProperty(0, 10 + i, 'background-color', 'red');
+//            }
+
+            createZipTable();
+        }
+
+        function resetTable() {
+            var remCount;
+            var colCount;
+            if(retrieved) {
+                colCount = contactTableData.getNumberOfColumns();
+                if (colCount > 9) {
+                    remCount = colCount - 9;
+                    contactTableData.removeColumns(4, remCount);
+                    contactTable.draw(contactTableData, {height: '600px', showRowNumber: false, alternatingRowStyle: true});
+                }
+            }
+        }
+
+        function createZipTable() {
+            var mapKey;
+
+            zipCountsTable     = new google.visualization.Table(zipListDiv);
+            zipCountsTableData = new google.visualization.DataTable();
+            zipCountsTableData.addColumn('string', 'Zip');
+            zipCountsTableData.addColumn('number', 'Count');
+
+            for(mapKey in zipCodeMap) {
+                zipCountsTableData.addRow([mapKey,zipCodeMap[mapKey].Count]);
+            }
+            zipCountsTableData.sort([{column: 0}, {column: 1}]);
+            zipCountsTable.draw(zipCountsTableData, {height: '600px', showRowNumber: false, alternatingRowStyle: true});
+
+        }
+
+        function loadSurveysWithResponse() {
+            // Apex doesn't let you Group on a formula field, so I can't simply do this: Select Survey_Code__c, Count(Id) From Survey_Response__c Group By Survey_Code__c
+            // So, first find Ids of surveys that have a response and then just retrieve their questions...
+            var campaignResults;
+            var campaignCountResults;
+            var campaignCountRecords;
+            var query1 = "SELECT Survey_Question__c, count(Id) Cnt FROM Survey_Response__c Group By Survey_Question__c Having Count(Id) > 1";
+            var query2 = '';
+            var idList = '';
+
+            statusDiv1.innerHTML = 'Retrieving Response Counts...';
+            try {
+                campaignCountResults = sforce.connection.query(query1);
+                campaignCountRecords = campaignCountResults.getArray('records');
+                for (i = 0; i < campaignCountRecords.length - 2; i++) {
+                    idList += "'" + campaignCountRecords[i].Survey_Question__c + "', ";
+                }
+                idList += "'" + campaignCountRecords[campaignCountRecords.length - 1].Survey_Question__c + "'";
+                query2 = "SELECT Id,Name,Survey_Code__c,UHW_Campaign__r.Name FROM Survey_Question__c Where Id In (" + idList + ") Order By UHW_Campaign__r.Name";
+                campaignResults = sforce.connection.query(query2);
+                processCampaigns(campaignResults);
+            }
+            catch (e) {
+                alert('An error occurred retrieving Campaigns: ' + e.faultstring);
+            }
+        }
+
+        function processCampaigns(campaignResults) {
+
+            var campaignRecords;
+            var opt1;
+            var opt2;
+            var opt3;
+            var opt4;
+            var title;
+
+            opt1 = document.createElement("option");
+            opt1.text  = 'Survey 1';
+            opt1.value = campaignDropdown1.add(opt1, null);
+
+            opt2 = document.createElement("option");
+            opt2.text  = 'Survey 2';
+            opt2.value = campaignDropdown2.add(opt2, null);
+
+            opt3 = document.createElement("option");
+            opt3.text  = 'Survey 3';
+            opt3.value = campaignDropdown3.add(opt3, null);
+
+            opt4 = document.createElement("option");
+            opt4.text  = 'Survey 4';
+            opt4.value = campaignDropdown4.add(opt4, null);
+
+            campaignRecords = campaignResults.getArray('records');
+            for (i = 0; i < campaignRecords.length; i++) {
+                title = campaignRecords[i].UHW_Campaign__r.Name + ' (' + campaignRecords[i].Survey_Code__c + ')';
+                opt1  = document.createElement("option");
+                opt1.text  = title;
+                opt1.value = campaignRecords[i].Survey_Code__c;
+                campaignDropdown1.add(opt1, null);
+                opt2 = document.createElement("option");
+                opt3 = document.createElement("option");
+                opt4 = document.createElement("option");
+                opt1.text  = opt2.text  = opt3.text  = opt4.text  = title;
+                opt1.value = opt2.value = opt3.value = opt4.value = campaignRecords[i].Survey_Code__c;
+                campaignDropdown1.add(opt1, null);
+                campaignDropdown2.add(opt2, null);
+                campaignDropdown3.add(opt3, null);
+                campaignDropdown4.add(opt4, null);
+            }
+        }
+
+        //        function resetVisualizations() {
+        //            if (employerDeptTitleTableData.getNumberOfRows() > 0) {
+        //                employerDeptTitleTableData.removeRows(0, employerDeptTitleTableData.getNumberOfRows());
+        //                employerDeptTitleTable.clearChart();
+        //            }
+        //        }
+
+        function initTables() {
+            var i;
+
+            contactTable     = new google.visualization.Table(detailDiv);
+            contactTableData = new google.visualization.DataTable();
+            contactTableData.addColumn('string', 'Employer');
+            contactTableData.addColumn('string', 'Department');
+            contactTableData.addColumn('string', 'Job Title');
+            contactTableData.addColumn('string', 'Member Name');
+            contactTableData.addColumn('string' ,'Street');
+            contactTableData.addColumn('string', 'City');
+            contactTableData.addColumn('string', 'ZipCode');
+            contactTableData.addColumn('string', 'HomePhone');
+            contactTableData.addColumn('string', 'MobilePhone');
+            contactTableData.addColumn('string', 'Phone');
+
+            for (i=0;i<uniqueResponseArray.length;i++) {
+                contactTableData.addColumn('number', '[' + uniqueResponseArray[i] + ']');
+            }
+        }
+
+        function drawToolbar() {
+            var components = [
+                {type: 'csv', datasource: 'https://spreadsheets.google.com/tq?key=pCQbetd-CptHnwJEfo8tALA'}
+            ];
+
+            var container = document.getElementById('ControlDiv');
+            google.visualization.drawToolbar(container, components);
+        };
+
+
+        function phoneFormat(s) {
+            var s1;
+            if(s == null || s == '')
+                s1 = '';
+            else
+                s1 = s.replace('-','');
+            s1 = s1.replace(' ','');
+            s1 = s1.replace('(','');
+            s1 = s1.replace(')','');
+            s1 = s1.substr(0,3) + ' ' + s1.substr(3,3) + ' ' + s1.substr(6);
+            return s1;
+        }
+
+        function toProperCase(s)
+        // My version - handles hyphenated names correctly :)
+        {
+            var s1;
+            if(s == null)
+                s1 = 'Empty';
+            else
+                s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g,function($1) {return $1.toUpperCase();});
+
+            return s1;
+        }
+
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            number = (number + '')
+                    .replace(/[^0-9+\-Ee.]/g, '');
+            var n = !isFinite(+number) ? 0 : +number,
+                    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                    s = '',
+                    toFixedFix = function(n, prec) {
+                        var k = Math.pow(10, prec);
+                        return '' + (Math.round(n * k) / k).toFixed(prec);
+                    };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+                    .split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1)
+                        .join('0');
+            }
+            return s.join(dec);
+        }
+
+        function initTabs() {
+
+            // get tab container
+            var container = document.getElementById("tabContainer");
+            var tabcon = document.getElementById("tabscontent");
+
+            // set current tab
+            var navitem = document.getElementById("tabHeader_1");
+
+            //store which tab we are on
+            var ident = navitem.id.split("_")[1];
+
+            navitem.parentNode.setAttribute("data-current",ident);
+            //set current tab with class of activetabheader
+            navitem.setAttribute("class","tabActiveHeader");
+
+            //hide two tab contents we don't need
+            var pages = tabcon.getElementsByTagName("div");
+            var page;
+
+            for (var i = 1; i < pages.length; i++) {
+                page = pages.item(i);
+                if(page.className.indexOf('tabpage')!= -1) {
+                    pages.item(i).style.display="none";
+                }
+            };
+
+            //this adds click event to tabs
+            var tabs = container.getElementsByTagName("li");
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].onclick=displayPage;
+            }
+        }
+
+        // on click of one of tabs
+        function displayPage() {
+            var current = this.parentNode.getAttribute("data-current");
+            //remove class of activetabheader and hide old contents
+            document.getElementById("tabHeader_" + current).removeAttribute("class");
+            document.getElementById("tabpage_" + current).style.display="none";
+
+            var ident = this.id.split("_")[1];
+            //add class of activetabheader to new active tab and show contents
+            this.setAttribute("class","tabActiveHeader");
+            document.getElementById("tabpage_" + ident).style.display="block";
+            this.parentNode.setAttribute("data-current",ident);
+        }
+
+        // ***************** Globals *****************
+
+        // https://www.zipcodeapi.com/rest/<api_key>/radius.<format>/<zip_code>/<distance>/<units>
+        // https://www.zipcodeapi.com/rest/yP2ocnILhNu91W5Yg708qLQisyMuGqYef1DsoleG9IQaFW9V494uUVMntzSaZQpf/radius.csv/94609/10/mile
+        var zipApiKey = 'yP2ocnILhNu91W5Yg708qLQisyMuGqYef1DsoleG9IQaFW9V494uUVMntzSaZQpf'; // www.zipcodeapi.com
+
+        var campaignDropdown1;
+        var campaignDropdown2;
+        var campaignDropdown3;
+        var campaignDropdown4;
+
+        var now;
+        var localDateTime;
+        var nowDate;
+        var msg;
+
+        var _baseUrl;
+        var employerDeptTitleTableData = [];
+        var contactEmployerDeptTitleTableData = [];
+        var zipLocationsTableData         = [];
+        var zipLocationsTable             = {};
+        var employerDeptTitleTable        = {};
+        var contactEmployerDeptTitleTable = {};
+
+        var zipCodeMap;
+
+        var percentTotal;
+        var statusDiv1;
+        var statusDiv2;
+        var debugDiv;
+        var summaryDiv;
+        var detailDiv;
+        var zipListDiv;
+        var zipListInput;
+
+        var contactMap;
+        var responseMap;
+        var uniqueResponseMap;
+        var uniqueResponseArray;
+        var uniqueSurveyArray;
+        var uniqueSurveyMap;
+
+        var retrieved;
+        var responseResults;
+
+        // ***************** Main Program Entry *****************
+        document.addEventListener('DOMContentLoaded', function() {
+
+            sforce.connection.sessionId = "{!$Api.Session_ID}";
+            var _url = "{!$CurrentPage.URL}";
+            _baseUrl = _url.substr(0, _url.indexOf("/", 20)+1);
+
+            campaignDropdown1 = document.getElementById("campaignSelectList1");
+            campaignDropdown2 = document.getElementById("campaignSelectList2");
+            campaignDropdown3 = document.getElementById("campaignSelectList3");
+            campaignDropdown4 = document.getElementById("campaignSelectList4");
+            statusDiv1        = document.getElementById('statusDiv1');
+            statusDiv2        = document.getElementById('statusDiv2');
+            debugDiv          = document.getElementById('DebugDiv');
+            summaryDiv        = document.getElementById('SummaryDiv');
+            detailDiv         = document.getElementById('DetailDiv');
+            zipListDiv        = document.getElementById('ZipListDiv');
+            zipListInput      = document.getElementById('ZipListInput');
+
+            numFormatter  = new google.visualization.NumberFormat({pattern: '#,##0'});
+            refreshButton = document.getElementById("RefreshButton");
+            refreshButton.addEventListener("click", refreshClicked, false);
+
+            initTabs();
+            loadSurveysWithResponse();
+            statusDiv1.innerHTML = 'Ready';
+
+            // campaignDropdown1.selectedIndex = 19;
+
+            retrieved = false;
+        });
+
+    </script>
+
+    <div id="MainDiv" style="padding: 5px;clear: both;background-color:#92f1f6;">
+        <h2>Members living in specified Zips with responses to chosen Surveys</h2>
+        <h3>Version 0.1</h3>
+
+        <span id="refresh">
+            <div id="inputDiv1">
+                <input id="ZipListInput"  style="margin-top: 5px;margin-bottom: 5px;padding: 5px;width: 700px;" type="text" placeholder = "Enter list of comma separated 5 digit zip codes"></input>
+            </div>
+            <div id="dropdownDiv1">
+                <select id="campaignSelectList1" style="margin-top: 5px;margin-bottom: 5px;padding: 5px;"></select>
+                <select id="campaignSelectList2" style="margin-top: 5px;margin-bottom: 5px;padding: 5px;"></select>
+                <select id="campaignSelectList3" style="margin-top: 5px;margin-bottom: 5px;padding: 5px;"></select>
+                <select id="campaignSelectList4" style="margin-top: 5px;margin-bottom: 5px;padding: 5px;"></select>
+            </div>
+            <input  id="RefreshButton"  style="padding: 5px;" type="Button" value="Retrieve"></input>
+        </span>
+
+        <span id="statusDiv1" style="padding: 5px;clear: both;"> </span>
+        <span id="statusDiv2" style="padding: 5px;clear: both;"> </span>
+        <div id="tabContainer">
+            <div id="tabs">
+                <ul>
+                    <li id="tabHeader_1">Contact/Response Detail</li>
+                    <li id="tabHeader_2">Zip code counts</li>
+                    <li id="tabHeader_3">Debug</li>
+                </ul>
+            </div>
+
+            <div id="tabscontent">
+                <div class="tabpage" id="tabpage_1" style="background-color: white;">
+                    <h3>Detail</h3>
+                    <div id="DetailDiv" > </div>
+                    <div id="ControlDiv"> </div>
+                </div>
+                <div class="tabpage" id="tabpage_2">
+                    <h3>Zip counts</h3>
+                    <div id="ZipListDiv" style="padding: 5px;clear: both;background-color:white;"> </div>
+                </div>
+
+                <div class="tabpage" id="tabpage_3">
+                    <h3>Debug</h3>
+                    <div id="DebugDiv" > </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+</apex:page>

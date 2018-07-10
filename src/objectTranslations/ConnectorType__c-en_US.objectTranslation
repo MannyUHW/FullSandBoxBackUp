@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Connector Type</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Connector Types</value>
+    </caseValues>
+    <fields>
+        <label><!-- Authorization Endpoint --></label>
+        <name>AuthorizationEndpoint__c</name>
+    </fields>
+    <fields>
+        <label><!-- Callback URL --></label>
+        <name>CallbackURL__c</name>
+    </fields>
+    <fields>
+        <label><!-- Client Id --></label>
+        <name>ClientId__c</name>
+    </fields>
+    <fields>
+        <label><!-- Client Secret --></label>
+        <name>ClientSecret__c</name>
+    </fields>
+    <fields>
+        <label><!-- Developer Name --></label>
+        <name>DeveloperName__c</name>
+    </fields>
+    <fields>
+        <label><!-- Extra Url Parameters --></label>
+        <name>ExtraUrlParameters__c</name>
+    </fields>
+    <fields>
+        <label><!-- Redirect URI --></label>
+        <name>RedirectUri__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scope Required --></label>
+        <name>ScopeRequired__c</name>
+    </fields>
+    <fields>
+        <label><!-- Scope --></label>
+        <name>Scope__c</name>
+    </fields>
+    <fields>
+        <label><!-- Token Endpoint --></label>
+        <name>TokenEndpoint__c</name>
+    </fields>
+    <layouts>
+        <layout>Connector Type Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

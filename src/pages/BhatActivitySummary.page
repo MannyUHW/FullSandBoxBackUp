@@ -1,0 +1,102 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false">
+<script type="text/javascript">
+    var sortingOrder = 'name';
+    
+</script>
+
+<script> $("#header").html("Activity Tracker - Summary "); </script>
+<div class="hidden-phone">
+
+
+    <div class="navbar NavbarTop">
+        <div class="navbar-inner">
+
+            <ul class="nav">
+                <li class="active"><a href="#/activitysummary">Activity Weekly</a></li>
+                <li><a href="#/activitylist">Activity Daily </a></li>
+                <li><a href="#/activitydaily">Daily Entry</a></li>
+                <!-- <li><a href="#/approverlist">Approver Summary</a></li>
+                <li><a href="#/approverweekly">Approver Weekly </a></li>
+                <li><a href="#/approversingle">Approver Daily</a></li> -->
+                <li><a href="/home/home.jsp">Home</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+
+    <div class="container" style="">
+        <span class="pull-left">Name: <b>{{rsv_BhatGlobalData.UserFullName}}</b>
+        </span>
+
+    </div>
+    <br />
+    <div class="clr"></div>
+
+
+    <div>
+        <div style="clear: both;"></div>
+        <table width="80%" class="table table-striped table-condensed table-hover">
+            <thead>
+                <tr>
+                    <th class="name">Week&nbsp;<a ng-click="sort_by('activitydate')"><i class="icon-sort"></i></a>
+                    </th>
+                    <th class="description">Reported Hours&nbsp;<a ng-click="sort_by('totalhours')"><i class="icon-sort"></i></a>
+                    </th>
+                    <th class="field4">Status&nbsp;<a ng-click="sort_by('reviewed')"><i class="icon-sort"></i></a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in sv_activitySummaryList  | orderBy:'WeekStartDate':true">
+                    <td>
+                        <a ng-click="navigateToWeekly(item.WeekStartDate)">{{item.WeekName}} '{{item.WeekStartDate | date:'yy'}}</a>
+                    </td>
+                    <td>{{item.WeeklyHoursTotal  | number:2}}
+                    </td>
+                    <td ng-class="{red: item.Status == 'No Entry', orange: item.Status == 'Incomplete', green: item.Status== 'Complete', brown: item.Status == 'Overtime'}">{{item.Status}} 
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <td colspan="6">
+                    <div class="pagination pull-right">
+                        <ul>
+                            <li><button class="btn btn-success" href="" ng-click="prevPage()">Prev</button>&nbsp;
+                            </li>
+                            <li><button class="btn btn-success" ng-click="nextPage()">Next</button>&nbsp; </li>
+                        </ul>
+                    </div>
+                </td>
+            </tfoot>
+
+        </table>
+    </div>
+</div>
+
+
+
+
+<div class="visible-phone">
+    <form class="form-inline">
+        <b>Weekly Summary</b> &nbsp;&nbsp;&nbsp;
+        
+         <button class="btn btn-success" ng-click="prevPage();"><i class="icon-backward icon-white"></i></button>&nbsp;
+         <button class="btn btn-success" ng-click="nextPage();"><i class="icon-forward icon-white"></i></button>
+
+         <br />
+        <small class="metadata">{{rsv_BhatGlobalData.UserFullName}} </small>
+    </form>
+
+    <table class="table table-striped table-condensed table-hover">
+        <tr ng-click="navigateToWeekly(item.WeekStartDate);" ng-repeat="item in sv_activitySummaryList | orderBy:'WeekStartDate':true">
+            <td><b class="fullname">{{item.WeekName}} '{{item.WeekStartDate | date:'yy'}}</b>
+                <br />
+                <small class="metadata">({{item.WeeklyHoursTotal  | number:2}} hours)</small> &nbsp;&nbsp; <small ng-class="{red: item.Status == 'No Entry', orange: item.Status == 'Incomplete', green: item.Status== 'Complete'}" class="metadata">{{item.Status}} </small>
+            </td>
+            <td><i class="icon-chevron-right"></i></td>
+        </tr>
+    </table>
+</div>
+
+</apex:page>

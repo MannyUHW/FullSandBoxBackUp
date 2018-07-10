@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Contract Ratification</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Contract Ratifications</value>
+    </caseValues>
+    <fields>
+        <label><!-- Account Name --></label>
+        <name>Account_Name__c</name>
+        <relationshipLabel><!-- Contract Ratifications --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- BU Size --></label>
+        <name>BU_Size__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contract End Date --></label>
+        <name>Contract_End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contract Name --></label>
+        <name>Contract_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contract Ratification ID --></label>
+        <name>Contract_Ratification_ID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contract Start Date --></label>
+        <name>Contract_Start_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Contract Term --></label>
+        <name>Contract_Term__c</name>
+    </fields>
+    <fields>
+        <label><!-- Corporate Name --></label>
+        <name>Corporate_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Description --></label>
+        <name>Description__c</name>
+    </fields>
+    <fields>
+        <help><!-- Estimated BU Size use for Soft Reporting --></help>
+        <label><!-- Est BU Size --></label>
+        <name>Est_BU_Size__c</name>
+    </fields>
+    <fields>
+        <label><!-- Expiration Notice (days) --></label>
+        <name>Expiration_Notice__c</name>
+        <picklistValues>
+            <masterLabel>30</masterLabel>
+            <translation><!-- 30 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>60</masterLabel>
+            <translation><!-- 60 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>90</masterLabel>
+            <translation><!-- 90 --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Facilty Rep/Point --></label>
+        <name>Facilty_Rep_Point__c</name>
+        <relationshipLabel><!-- Contract Ratifications (Facilty Rep Point) --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Notes --></label>
+        <name>Notes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ratification Date --></label>
+        <name>Ratification_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ratification Location --></label>
+        <name>Ratification_Location__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ratification Times --></label>
+        <name>Ratification_Times__c</name>
+    </fields>
+    <fields>
+        <label><!-- Status --></label>
+        <name>Status__c</name>
+        <picklistValues>
+            <masterLabel>Activated</masterLabel>
+            <translation><!-- Activated --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Draft</masterLabel>
+            <translation><!-- Draft --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>In Approval Process</masterLabel>
+            <translation><!-- In Approval Process --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <help><!-- A survey response is created for each attended &amp; voted member. --></help>
+        <label><!-- Survey Question --></label>
+        <name>Survey_Question__c</name>
+        <relationshipLabel><!-- Contract Ratifications --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Total Ballots Casts --></label>
+        <name>Total_Ballots_Casts__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total COPE # --></label>
+        <name>Total_COPE_Collected__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total COPE $ --></label>
+        <name>Total_COPE__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Current COPE $ --></label>
+        <name>Total_Current_COPE__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Increase/New COPE $ --></label>
+        <name>Total_Increase_New_COPE_D__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Increase/New COPE # --></label>
+        <name>Total_Increase_New_COPE__c</name>
+    </fields>
+    <fields>
+        <help><!-- Enter total number of &quot;No&quot; votes. --></help>
+        <label><!-- Total No Votes --></label>
+        <name>Total_No_Votes__c</name>
+    </fields>
+    <fields>
+        <help><!-- Enter total number of &quot;Void&quot; votes. --></help>
+        <label><!-- Total Void Votes --></label>
+        <name>Total_Void_Votes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Voted % --></label>
+        <name>Total_Voted_Pct__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Voted --></label>
+        <name>Total_Voted__c</name>
+    </fields>
+    <fields>
+        <label><!-- Total Voted % (soft) --></label>
+        <name>Total_Voted_soft__c</name>
+    </fields>
+    <fields>
+        <help><!-- Enter total number of &quot;Yes&quot; votes. --></help>
+        <label><!-- Total Yes Votes --></label>
+        <name>Total_Yes_Votes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Turn Out COPE% (Increase or New) --></label>
+        <name>Turn_Out_COPE__c</name>
+    </fields>
+    <fields>
+        <label><!-- Turn Out COPE % (soft) --></label>
+        <name>Turn_Out_COPE_soft__c</name>
+    </fields>
+    <fields>
+        <label><!-- Turn Out Yes % --></label>
+        <name>Turn_Out_Yes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Turn Out Yes % (soft) --></label>
+        <name>Turn_Out_Yes_soft__c</name>
+    </fields>
+    <fields>
+        <label><!-- Witness 1 Full Name --></label>
+        <name>Witness_1_Full_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Witness 2 Full Name --></label>
+        <name>Witness_2_Full_Name__c</name>
+    </fields>
+    <layouts>
+        <layout>Contract UHW Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Ratification --></label>
+            <section>Ratification</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

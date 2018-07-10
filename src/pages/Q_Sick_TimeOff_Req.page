@@ -1,0 +1,100 @@
+<apex:page controller="sickTimeRequestController">
+
+<apex:includeScript value="{!$Resource.approvals_jQuery_2_0_2}"/>
+
+
+  <script type="text/javascript">
+    
+    function DoTimeOff(objButton)
+    {
+      
+        if ($(".today").is(':checked') == false && $(".tomorrow").is(':checked') == false)
+        {
+            alert('select at least one checkbox (today and/or tomororw)');
+            return false;
+        }
+        else{
+        
+            $(".submit-button").prop('disabled', true);
+           
+            var submitButtons = document.getElementsByClassName("submit-button");
+            if (submitButtons != null)
+            {
+                for (i = 0; i < submitButtons.length; i++) 
+                { 
+                    //submitButtons[i].disabled = true;
+                    //submitButtons[i].prop('disabled', true);
+                }
+    
+            }
+           
+            
+            $(".leavetype").prop('disabled', true);
+            $(".today").prop('disabled', true);
+            $(".tomorrow").prop('disabled', true);
+            $(".comments").prop('disabled', true);
+            
+            
+            dotimeOffrequest()
+            alert('Your Request has been submitted succesfully');
+            
+            if( (typeof sforce != 'undefined') && (sforce != null) ) 
+            {
+            }
+            else
+            {
+                window.open('/home/home.jsp','_parent');
+            }
+        }
+    }
+    
+    </script>
+    
+
+<apex:sectionHeader title="When will you be out sick?"/>
+<apex:form id="theForm">
+<apex:pageBlock >
+
+  <apex:actionFunction name="dotimeOffrequest" action="{!submitRequest}" rerender="results,debug,errors" oncomplete="promptAlert()">
+  </apex:actionFunction>
+         
+
+<apex:panelGrid >
+<apex:panelGrid columns="3">
+<apex:outputText value="Sick Leave Type "></apex:outputText>
+&nbsp;
+<apex:inputField styleClass="leavetype" value="{!timeOffRequest.Sick_Leave_Type__c}" required="true" />
+</apex:panelGrid>
+<apex:panelGrid columns="6">
+<apex:outputText value="Today"></apex:outputText>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<apex:inputCheckbox styleClass="today" value="{!Today}" label="Today"/>
+</apex:panelGrid>
+<apex:panelGrid columns="6">
+<apex:outputText value="Tomorrow"></apex:outputText>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<apex:inputCheckbox styleClass="tomorrow" value="{!Tomarrow}" label="Tomorrow"/>
+</apex:panelGrid>
+<apex:panelGrid columns="5">
+<apex:outputText value="Comments"></apex:outputText>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<apex:inputfield styleClass="comments" value="{!timeOffRequest.Comments__c}"/>
+</apex:panelGrid>
+</apex:panelGrid>
+<apex:panelgrid columns="2">
+<apex:commandButton styleClass="submit-button" value="Submit" onclick="DoTimeOff(this);return false;" reRender="theForm" />
+<apex:commandButton value="Cancel" action="{!Cancel}" reRender="theForm" />
+</apex:panelgrid>
+<apex:inputHidden value="{!isSuccess}"/>
+</apex:pageBlock>
+<script>
+function promptAlert(){
+    var status = '{!isSuccess}';
+    if(status == 'true'){
+        alert('Your Request has been submitted succesfully');
+        window.open('/home/home.jsp','_parent');
+    }
+}
+</script>
+</apex:form>
+</apex:page>

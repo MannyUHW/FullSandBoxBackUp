@@ -1,0 +1,454 @@
+<apex:page sidebar="false" showHeader="false">
+<script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<div align="center">
+<font size="+2"><div id="titleDiv">Exec Comp Dashboard</div></font>
+<br>&nbsp;</br>
+<i>Updated: 
+<script language="JavaScript">
+document.write((new Date).toLocaleString());
+</script>
+</i>
+<br></br>
+</div>
+ 
+
+<br>&nbsp;</br>
+
+<font size="+2"><div align="center" id="progressDiv">0%</div></font>
+
+<div align="center" id="jumpDiv"></div>
+<div align="center" id="dashboardDiv"></div>
+<div align="center" id="coorDiv"></div>
+<div align="center" id="turfDiv"></div>
+<div align="center" id="eboardDiv"></div>
+
+<script language="JavaScript">
+var debugString;
+
+var lastRecord = null;
+
+var ALL= "ALL";
+
+var DISTRICT = "DISTRICT";
+var SEAT = "SEAT";
+var EMPLOYER = "EMPLOYER";
+var EBOARD = "EBOARD";
+var LEADERS = "LEADERS";
+var SIGNATURES = "SIGNATURES";
+var TURF = "TURF";
+var COORDINATOR = "COORDINATOR";
+
+var TEAM = "TEAM";
+var KCOORDINATOR = "KCOORDINATOR";
+
+var REGIONAL_DIRECTOR = "REGIONAL_DIRECTOR";
+var DIVISION = "DIVISION";
+
+var OVERRIDE = "OVERRIDE";
+var GOAL = "GOAL";
+
+var BU = "BU";
+
+var LDRLDR = "LDRLDR";
+ 
+var countMap = {};
+
+
+
+function incrementCounter(pArray, pAmount) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  //alert("incrementCounter " + incrementKey + " by " + pAmount);  
+  var oldCounter = getCounter(pArray);
+  countMap[incrementKey] = oldCounter + pAmount;
+  return true;
+}
+  
+function getCounter(pArray) {
+  var incrementKey = JSON.stringify(pArray).toLowerCase();
+  if (countMap[incrementKey] != null) {
+    return countMap[incrementKey];
+  }
+  return 0;
+}
+
+var mode = "{!$CurrentPage.parameters.mode}";
+if (mode == null || mode == "null" || mode == "") {
+  mode = "all";
+}
+mode = mode.toLowerCase();
+
+
+var Turf = {};
+var EBoard = new Array();
+
+var div = "{!$CurrentPage.parameters.div}";
+if (div == null || div == "null" || div == "") {
+  div = "Hospital";
+}
+div = toProperCase(div);
+
+var turfAccountIdMap = new Array();
+var turfUserIdMap = new Array();
+var divisionSet = new Array();
+
+var districtSet = new Array();
+var emDistrictMap = new Array();
+var emSeatMap = new Array();
+var District = new Array();
+var emIdSet = new Array();
+
+try{  
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";   
+   
+   
+   //alert("outputting!");
+   
+
+    var ldrldrSet = new Array();   
+    var leaderSortSet = new Array();
+    for (var x = 0; x < 10; x++) {
+      var query = "SELECT Collected_By_Name__c, Division__c, Collected_By__c, Collected_By__r.FID__c,  Collected_By__r.Account.Name, Collected_By__r.Account.Account_Group__c, Collected_By__r.Department, FID__c, Contact_Name__c, Alt_Person_Type__c, Employer_Name__c, Contact__c, Contact__r.Department, Question_Name__c,Response_Value__c, Add_Info__c FROM Survey_Response__c where Survey_Code__c=\'P6S\' and (Division__c like 'KAISER%' OR Division__c like 'HOSPITAL%' )  and FID__c like '%" + x + "' ";      
+      if (x == 0) {
+        query = "SELECT Collected_By_Name__c, Division__c, Collected_By__c, Collected_By__r.FID__c,  Collected_By__r.Account.Name, Collected_By__r.Account.Account_Group__c, Collected_By__r.Department, FID__c, Contact_Name__c, Alt_Person_Type__c, Employer_Name__c, Contact__c, Contact__r.Department, Question_Name__c,Response_Value__c, Add_Info__c FROM Survey_Response__c where Survey_Code__c=\'P6S\' and (Division__c like 'KAISER%' OR Division__c like 'HOSPITAL%')  and (FID__c like '%" + x + "' or FID__c = null) ";      
+      } 
+      
+      var progress = (10 * x);
+      
+      document.getElementById("progressDiv").innerHTML = "" + progress.toFixed(0) + "%";
+    
+           
+      var records = sforce.connection.query(query); 
+      var records1 = records.getArray('records'); 
+      for(var i=0;i<records1.length;i++){     
+      
+        lastRecord = records1[i];      
+    
+        if (divisionSet.indexOf(records1[i].Division__c) < 0) {
+          divisionSet.push(records1[i].Division__c);
+        }
+        
+        if (records1[i].Contact__c != null && records1[i].Contact__c != "null" && records1[i].Contact__c != "" && records1[i].Contact__r == null) {
+          //security restriction on Contact, do not process for this user
+        } else if (records1[i].Collected_By__c != null && records1[i].Collected_By__c != "null" && records1[i].Collected_By__c != "" && records1[i].Collected_By__r == null) {
+          //security restriction on Collector, also do not process for this user
+        } else {  
+
+          var signatures = parseInt(records1[i].Add_Info__c);      
+        
+          //alert("signatures = " + signatures);
+          if (signatures > 0) {
+            if (records1[i].Collected_By__c != null) {
+
+              var emName2 = records1[i].Collected_By__r.Account.Name.toLowerCase();        
+        
+            
+              if (1 == 1) {
+ 
+                var leaderKey = JSON.stringify([records1[i].Collected_By__r.Account.Account_Group__c, records1[i].Collected_By_Name__c, records1[i].Collected_By__r.FID__c, records1[i].Collected_By__r.Account.Name]).toLowerCase();
+                if (leaderSortSet.indexOf(leaderKey) < 0) {
+                  leaderSortSet.push(leaderKey);
+                }    
+                if (ldrldrSet.indexOf(leaderKey) < 0) {
+
+                
+                  ldrldrSet.push(leaderKey);
+                  incrementCounter([ALL, LDRLDR], 1);                  
+                  incrementCounter([DIVISION, LDRLDR, records1[i].Division__c], 1);                  
+                                               
+                }                                  
+              }
+            }
+        
+            incrementCounter([ALL, LEADERS], 1);
+            incrementCounter([ALL, SIGNATURES], signatures);  
+
+            incrementCounter([DIVISION, LEADERS, records1[i].Division__c], 1);
+            incrementCounter([DIVISION, SIGNATURES, records1[i].Division__c], signatures);  
+
+            var emName = records1[i].Employer_Name__c;
+
+          }
+
+        }       
+      }
+    }
+    
+    
+    
+     
+     
+
+    leaderSortSet.sort();
+
+    
+   
+    
+    var divSigWriter = "";
+    divSigWriter += "<table width=\"100%\" cellpadding=\"7\">\n";
+    divSigWriter += "<tr valign=\"bottom\">\n";    
+    divSigWriter += "  <td bgcolor=\"#481C60\" width=\"40%\" align=\"center\"><font color=\"white\">Division</td>";       
+    divSigWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Signatures Count</font></td>";    
+    divSigWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Signatures Goal</font></td>";    
+    divSigWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Signatures %</font></td>";                
+    divSigWriter += "</tr>\n";    
+    var overallSignGoal = 0;
+    for (var u = 0; u < divisionSet.length; u++) {
+      var division = divisionSet[u];
+
+      var signatureCount = getCounter([DIVISION, SIGNATURES, division ]);           
+      
+      var eboardCount = getCounter([DIVISION, EBOARD, division ]);
+      if (eboardCount == 0) {
+        eboardCount = 1;
+      }
+      //add calculations
+      var outputRow = false;
+      if (mode.indexOf("kaiser") >= 0 && division.toLowerCase().indexOf("kaiser") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("hospital") >= 0 && division.toLowerCase().indexOf("hospital") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("community") >= 0 && division.toLowerCase().indexOf("community") >= 0) {
+        outputRow = true;
+      }  else  if (mode == "all" || mode == "eboard" || mode == "ldrldr" || mode == "ecomm" || mode == "dashboard") {
+        outputRow = true;
+      }
+      
+      if (outputRow == true) {
+      
+        divSigWriter += "<tr valign=\"top\">\n"; 
+        divSigWriter  += "<td>" + toProperCase(division) + "</td>";         
+
+        divSigWriter += "<td align=\"center\">" + signatureCount + "</td>";     
+        if (division.toLowerCase().indexOf("hospital") >= 0) {
+          var signaturesGoal = 24000;
+          divSigWriter += "<td align=\"center\">" + signaturesGoal  + "</td>";         
+          divSigWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / signaturesGoal ).toFixed(0) + "%</td>";                       
+        } else {  
+            var signaturesGoal = 45000;        
+            overallSignGoal = overallSignGoal + (eboardCount * 101);                          
+            divSigWriter += "<td align=\"center\">" + signaturesGoal + "</td>";         
+            divSigWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * signatureCount / signaturesGoal ).toFixed(0) + "%</td>";                         
+        }
+        divSigWriter += "</tr>\n"; 
+      }
+    }
+    //
+    //SIGNATURE TOTALS
+    //
+    if (mode == "all" || mode == "dashboard" || mode=="eboard"  || mode=="ldrldr") {
+      if (divisionSet.length > 1) {
+      var leaderCount = getCounter([ALL, LEADERS]);     
+      var signatureCount = getCounter([ALL, SIGNATURES ]); 
+      
+      var eboardCount = getCounter([ALL, EBOARD]);
+      if (eboardCount == 0) {
+        eboardCount = 1;
+      }
+      var allGoal = 24000 + 45000;
+
+    
+      divSigWriter += "<tr valign=\"top\">\n"; 
+      divSigWriter += "<td align=\"center\"><b>Total</b></td>";         
+      
+      divSigWriter += "<td align=\"center\"><b>" + signatureCount + "</b></td>";            
+      divSigWriter += "<td align=\"center\"><b>" + allGoal  + "</b></td>";         
+      divSigWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\"><b>" + (100 * signatureCount / allGoal).toFixed(0) + "%</b></td>";               
+                 
+      
+      divSigWriter += "</tr>\n"; 
+      }    
+    }    
+    
+    divSigWriter += "\n</table>\n\n\n\n";
+    divSigWriter += "<br>&nbsp;</br>";
+
+    var divTeamWriter = "";
+    divTeamWriter += "<table  width=\"100%\" cellpadding=\"7\">\n";
+    divTeamWriter += "<tr valign=\"bottom\">\n";    
+    divTeamWriter += "  <td bgcolor=\"#481C60\" width=\"40%\" align=\"center\"><font color=\"white\">Division</td>";       
+    divTeamWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Tier 1/Team<br/>Ldr Count</td>";    
+    divTeamWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Tier 1/Team<br/>Ldr Goal</font></td>";    
+    divTeamWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Tier 1/Team<br/>Ldr %</font></td>";    
+             
+    divTeamWriter += "</tr>\n";    
+
+
+    
+    for (var u = 0; u < divisionSet.length; u++) {
+      var division = divisionSet[u];
+
+      var teamCount = getCounter([DIVISION, LDRLDR, division ]);     
+        
+      
+      var eboardCount = getCounter([DIVISION, EBOARD, division ]);
+      if (eboardCount == 0) {
+        eboardCount = 1;
+      }
+      //add calculations
+      
+      var outputRow = false;
+      if (mode.indexOf("kaiser") >= 0 && division.toLowerCase().indexOf("kaiser") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("hospital") >= 0 && division.toLowerCase().indexOf("hospital") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("community") >= 0 && division.toLowerCase().indexOf("community") >= 0) {
+        outputRow = true;
+      }  else  if (mode == "all" || mode == "eboard" || mode == "ldrldr" || mode == "ecomm" || mode == "dashboard") {
+        outputRow = true;
+      }
+      
+      if (outputRow == true) {
+      
+        divTeamWriter += "<tr valign=\"top\">\n"; 
+        divTeamWriter += "<td>" + toProperCase(division) + "</td>";         
+        divTeamWriter += "<td align=\"center\">" + teamCount + "</td>";            
+        if (division.toLowerCase().indexOf("hospital") >= 0) {
+          var teamGoal = 504;
+          divTeamWriter += "<td align=\"center\">" + teamGoal + "</td>";         
+          divTeamWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * teamCount / teamGoal ).toFixed(0) + "%</td>";                       
+        } else {  
+          
+          divTeamWriter += "<td align=\"center\">" + 180 + "</td>";         
+          divTeamWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * teamCount / 180).toFixed(0) + "%</td>";               
+        }   
+        divTeamWriter += "</tr>\n"; 
+      }
+    }
+    //
+    //TEAM TOTALS
+    //
+    if (mode == "all" || mode == "dashboard" || mode == "ldrldr" || mode=="eboard") {
+      if (divisionSet.length > 1) {    
+        var teamCount = getCounter([ALL, LDRLDR]);     
+
+      
+        var eboardCount = getCounter([ALL, EBOARD]);
+        if (eboardCount == 0) {
+          eboardCount = 1;
+        }
+        var allGoal = 504 + 180;
+    
+        divTeamWriter += "<tr valign=\"top\">\n"; 
+        divTeamWriter += "<td align=\"center\"><b>Total</b></td>";         
+      
+        divTeamWriter += "<td align=\"center\"><b>" + teamCount + "</b></td>";            
+        divTeamWriter += "<td align=\"center\"><b>" + allGoal  + "</b></td>";         
+        divTeamWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\"><b>" + (100 * teamCount / allGoal ).toFixed(0) + "%</b></td>";               
+                 
+      
+        divTeamWriter += "</tr>\n"; 
+        }    
+    }
+    divTeamWriter += "\n</table>\n\n\n\n";
+    divTeamWriter += "<br>&nbsp;</br>";
+
+  
+
+    
+        var divLdrWriter = "";
+    divLdrWriter += "<table  width=\"100%\" cellpadding=\"7\">\n";
+    divLdrWriter += "<tr valign=\"bottom\">\n";    
+    divLdrWriter += "  <td bgcolor=\"#481C60\" width=\"40%\" align=\"center\"><font color=\"white\">Division</td>";       
+    divLdrWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Tier 2/Mbr<br/>Ldr Count</td>";    
+    divLdrWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Tier 2/Mbr<br/>Ldr Goal</font></td>";    
+    divLdrWriter += "  <td bgcolor=\"#481C60\" width=\"20%\" align=\"center\"><font color=\"white\">Tier 2/Mbr<br/>Ldr %</font></td>";    
+             
+    divLdrWriter += "</tr>\n";    
+    
+    for (var u = 0; u < divisionSet.length; u++) {
+      var division = divisionSet[u];
+
+      var leaderCount = getCounter([DIVISION, LEADERS, division ]);     
+      var teamCount = getCounter([DIVISION, LDRLDR, division ]);           
+      
+      var eboardCount = getCounter([DIVISION, EBOARD, division ]);
+      if (eboardCount == 0) {
+        eboardCount = 1;
+      }
+      //add calculations
+      
+      var outputRow = false;
+      if (mode.indexOf("kaiser") >= 0 && division.toLowerCase().indexOf("kaiser") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("hospital") >= 0 && division.toLowerCase().indexOf("hospital") >= 0) {
+        outputRow = true;
+      }  else       if (mode.indexOf("community") >= 0 && division.toLowerCase().indexOf("community") >= 0) {
+        outputRow = true;
+      }  else  if (mode == "all" || mode == "eboard" || mode == "ldrldr" || mode == "ecomm" || mode == "dashboard") {
+        outputRow = true;
+      }
+      
+      if (outputRow == true) {
+      
+        divLdrWriter += "<tr valign=\"top\">\n"; 
+        divLdrWriter += "<td>" + toProperCase(division) + "</td>";         
+            
+        if (division.toLowerCase().indexOf("hospital") >= 0) {
+          divLdrWriter += "<td align=\"center\">" + (leaderCount - teamCount) + "</td>";                  
+          var leadersGoal = 756;
+          divLdrWriter += "<td align=\"center\">" + leadersGoal + "</td>";         
+          divLdrWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * (leaderCount - teamCount) / leadersGoal ).toFixed(0) + "%</td>";                       
+        } else {  
+          divLdrWriter += "<td align=\"center\">" + leaderCount + "</td>";          
+          divLdrWriter += "<td align=\"center\">" + 1080 + "</td>";         
+          divLdrWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\">" + (100 * leaderCount / 1080).toFixed(0) + "%</td>";               
+        }   
+        divLdrWriter += "</tr>\n"; 
+      }
+    }
+    //
+    //LEADER TOTALS
+    //
+    if (mode == "all" || mode == "dashboard" || mode == "ldrldr" || mode=="eboard") {
+      if (divisionSet.length > 1) {    
+        var leaderCount = getCounter([ALL, LEADERS]);     
+        var hospitalCount =  getCounter([DIVISION, LDRLDR, "hospital"]);     
+      
+        var eboardCount = getCounter([ALL, EBOARD]);
+        if (eboardCount == 0) {
+          eboardCount = 1;
+        }
+        var allGoal = 756 + 1080;
+    
+        divLdrWriter += "<tr valign=\"top\">\n"; 
+        divLdrWriter += "<td align=\"center\"><b>Total</b></td>";         
+      
+        divLdrWriter += "<td align=\"center\"><b>" + (leaderCount - hospitalCount) + "</b></td>";            
+        divLdrWriter += "<td align=\"center\"><b>" + allGoal  + "</b></td>";         
+        divLdrWriter += "<td align=\"center\" bgcolor=\"#e0ffe0\"><b>" + (100 * (leaderCount - hospitalCount) / allGoal ).toFixed(0) + "%</b></td>";               
+                 
+      
+        divLdrWriter += "</tr>\n";   
+        }  
+    }
+    divLdrWriter += "\n</table>\n\n\n\n";
+    divLdrWriter += "<br>&nbsp;</br>";
+
+    
+        document.getElementById("dashboardDiv").innerHTML = "<table><tr><td>" + divTeamWriter + "<br>&nbsp;</br>" + divLdrWriter + "<br>&nbsp;</br>" + divSigWriter  + "</td></tr></table>";
+
+   
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e + "\n\n" + i + "\n\n" + JSON.stringify(lastRecord)); 
+}    
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+<div id="debugDiv" align="center"></div>
+  
+
+<script language="JavaScript">
+ 
+  document.getElementById("progressDiv").innerHTML = ""; 
+  
+</script>
+  
+</apex:page>

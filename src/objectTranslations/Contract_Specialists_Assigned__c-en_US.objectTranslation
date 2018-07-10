@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Contract Specialists Assigned</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Contract Specialists Assigned</value>
+    </caseValues>
+    <fields>
+        <label><!-- AccountId --></label>
+        <name>AccountId__c</name>
+    </fields>
+    <fields>
+        <label><!-- ContactId --></label>
+        <name>ContactId__c</name>
+    </fields>
+    <fields>
+        <label><!-- DivisionCode --></label>
+        <name>DivisionCode__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

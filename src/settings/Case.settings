@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CaseSettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseFeedItemSettings>
+        <characterLimit>400</characterLimit>
+        <collapseThread>false</collapseThread>
+        <displayFormat>Default</displayFormat>
+        <feedItemType>EmailMessageEvent</feedItemType>
+    </caseFeedItemSettings>
+    <closeCaseThroughStatusChange>true</closeCaseThroughStatusChange>
+    <defaultCaseOwner>mdalmacio@seiu-uhw.org</defaultCaseOwner>
+    <defaultCaseOwnerType>User</defaultCaseOwnerType>
+    <defaultCaseUser>mdalmacio@seiu-uhw.org</defaultCaseUser>
+    <emailToCase>
+        <enableE2CSourceTracking>true</enableE2CSourceTracking>
+        <enableEmailToCase>true</enableEmailToCase>
+        <enableHtmlEmail>true</enableHtmlEmail>
+        <enableOnDemandEmailToCase>true</enableOnDemandEmailToCase>
+        <enableThreadIDInBody>true</enableThreadIDInBody>
+        <enableThreadIDInSubject>true</enableThreadIDInSubject>
+        <notifyOwnerOnNewCaseEmail>true</notifyOwnerOnNewCaseEmail>
+        <overEmailLimitAction>Bounce</overEmailLimitAction>
+        <preQuoteSignature>false</preQuoteSignature>
+        <routingAddresses>
+            <addressType>Outlook</addressType>
+            <caseOrigin>Email</caseOrigin>
+            <caseOwner>jdecker@seiu-uhw.org</caseOwner>
+            <caseOwnerType>User</caseOwnerType>
+            <casePriority>High</casePriority>
+            <isVerified>false</isVerified>
+            <routingName>Data Group Support</routingName>
+        </routingAddresses>
+        <routingAddresses>
+            <addressType>Outlook</addressType>
+            <caseOrigin>Email</caseOrigin>
+            <caseOwner>mdalmacio@seiu-uhw.org</caseOwner>
+            <caseOwnerType>User</caseOwnerType>
+            <casePriority>High</casePriority>
+            <isVerified>false</isVerified>
+            <routingName>In-House Support</routingName>
+        </routingAddresses>
+        <unauthorizedSenderAction>Discard</unauthorizedSenderAction>
+    </emailToCase>
+    <enableCaseFeed>false</enableCaseFeed>
+    <enableEarlyEscalationRuleTriggers>false</enableEarlyEscalationRuleTriggers>
+    <enableSuggestedSolutions>false</enableSuggestedSolutions>
+    <notifyContactOnCaseComment>false</notifyContactOnCaseComment>
+    <notifyDefaultCaseOwner>true</notifyDefaultCaseOwner>
+    <notifyOwnerOnCaseComment>true</notifyOwnerOnCaseComment>
+    <notifyOwnerOnCaseOwnerChange>true</notifyOwnerOnCaseOwnerChange>
+    <showEmailAttachmentsInCaseAttachmentsRL>true</showEmailAttachmentsInCaseAttachmentsRL>
+    <showFewerCloseActions>false</showFewerCloseActions>
+    <useSystemEmailAddress>true</useSystemEmailAddress>
+    <useSystemUserAsDefaultCaseUser>false</useSystemUserAsDefaultCaseUser>
+    <webToCase>
+        <enableWebToCase>false</enableWebToCase>
+    </webToCase>
+</CaseSettings>

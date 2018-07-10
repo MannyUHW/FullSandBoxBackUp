@@ -1,0 +1,26 @@
+<apex:page standardController="SOS_Time_Off_Request__c" sidebar="false" extensions="SOS_TOR_Display_Hr_Pending" showHeader="false">
+    <apex:form >
+        <apex:pageblock Title="Items to Approve">
+            <apex:pageblocktable value="{!hrPendingLst}" var="hrp" rendered="{!isDisplay}">
+                <apex:column headervalue="Related To">
+                    <apex:commandLink value="Approve / Reject" action="{!navRecord}" target="_top">
+                        <apex:param name="RecId" value="{!hrp.id}" assignTo="{!recId}"/>
+                    </apex:commandlink>
+                </apex:column>
+                
+                <apex:column headervalue="Emp. Name" value="{!hrp.Employee_Name__c}"/>                
+                <apex:column headervalue="Emp. Number" value="{!hrp.Employee_Number__c}"/>
+                <apex:column headervalue="Manager Name" value="{!hrp.Manager_Name__c}"/>
+                <apex:column headervalue="Type" value="{!hrp.Type__c}"/>
+                <apex:column headervalue="Time Off Remaining" value="{!hrp.Time_Off_Remaining_by_type__c}"/>
+                <apex:column headervalue="Time Off Requested" value="{!hrp.Total_Hours_Requested_Hour_Day__c}" rendered="{!!isExempt}"/>                
+                <apex:column headervalue="Start Date" value="{!hrp.Start_Date__c}"/>
+                <apex:column headervalue="End Date" value="{!hrp.End_Date__c}"/> 
+                <apex:column headervalue="Time Off Submitted" value="{!hrp.CreatedDate}"/>               
+                <apex:column headervalue="Status" value="{!hrp.Status__c}"/>
+                <apex:column headervalue="Employee Comments" value="{!hrp.Comments__c}"/>
+            </apex:pageblocktable>
+            <apex:outputLabel value="You don't have access to this list." rendered="{!!isDisplay}"></apex:outputLabel>
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

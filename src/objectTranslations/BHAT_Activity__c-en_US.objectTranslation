@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>BHAT Activity</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>BHAT Activities</value>
+    </caseValues>
+    <fields>
+        <label><!-- ActivityDateMonday --></label>
+        <name>ActivityDateMonday__c</name>
+    </fields>
+    <fields>
+        <label><!-- Activity Date --></label>
+        <name>Activity_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Activity Note Name --></label>
+        <name>Activity_Note_Name__c</name>
+    </fields>
+    <fields>
+        <help><!-- Approved By --></help>
+        <label><!-- Approved By --></label>
+        <name>Approved_By__c</name>
+    </fields>
+    <fields>
+        <label><!-- Approved Date --></label>
+        <name>Approved_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Code --></label>
+        <name>BHAT_Activity_Code__c</name>
+        <relationshipLabel><!-- BHAT Activities --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- BHAT Activity Daily --></label>
+        <name>BHAT_Activity_Daily__c</name>
+        <relationshipLabel><!-- BHAT Activities --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- BHAT Sub Category Other --></label>
+        <name>BHAT_Activity_Note_Other__c</name>
+    </fields>
+    <fields>
+        <help><!-- BHAT Sub Category --></help>
+        <label><!-- BHAT Sub Category --></label>
+        <name>BHAT_Activity_Note__c</name>
+        <relationshipLabel><!-- BHAT Activities --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- BHAT Code and Short Desc --></label>
+        <name>BHAT_Code_and_Short_Desc__c</name>
+    </fields>
+    <fields>
+        <label><!-- Details --></label>
+        <name>Details__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- EEID --></label>
+        <name>EEID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Email Address --></label>
+        <name>Email_Address__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hire Date --></label>
+        <name>Hire_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hourly_Employee --></label>
+        <name>Hourly_Employee__c</name>
+    </fields>
+    <fields>
+        <label><!-- Hours Spent --></label>
+        <name>Hours_Spent__c</name>
+    </fields>
+    <fields>
+        <label><!-- IsDailyHours --></label>
+        <name>IsDailyHours__c</name>
+    </fields>
+    <fields>
+        <label><!-- IsPaidBreak? --></label>
+        <name>IsPaidBreak__c</name>
+    </fields>
+    <fields>
+        <label><!-- IsTimeOff? --></label>
+        <name>IsTimeOff__c</name>
+    </fields>
+    <fields>
+        <label><!-- IsUnpaidLunch? --></label>
+        <name>IsUnpaidLunch__c</name>
+    </fields>
+    <fields>
+        <label><!-- Location --></label>
+        <name>Location__c</name>
+    </fields>
+    <fields>
+        <label><!-- Manager Id --></label>
+        <name>Manager_Id__c</name>
+    </fields>
+    <fields>
+        <label><!-- Name EEID --></label>
+        <name>Name_EEID__c</name>
+    </fields>
+    <fields>
+        <label><!-- Non_Exempt_Employee --></label>
+        <name>Non_Exempt_Employee__c</name>
+    </fields>
+    <fields>
+        <label><!-- Record No --></label>
+        <name>Record_No__c</name>
+    </fields>
+    <fields>
+        <help><!-- Submitted Date --></help>
+        <label><!-- Submitted Date --></label>
+        <name>Submitted_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Term Date --></label>
+        <name>Term_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- UniqueId --></label>
+        <name>UniqueId__c</name>
+    </fields>
+    <fields>
+        <label><!-- User Name --></label>
+        <name>User_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- Week Start Date --></label>
+        <name>WeekStartDate__c</name>
+    </fields>
+    <fields>
+        <label><!-- city --></label>
+        <name>city__c</name>
+    </fields>
+    <layouts>
+        <layout>BHAT Activity Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>MCL Report</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>MCL Reports</value>
+    </caseValues>
+    <fields>
+        <label><!-- Add SOQL Criteria --></label>
+        <name>Add_SOQL_Criteria__c</name>
+    </fields>
+    <fields>
+        <label><!-- Bargaining Units --></label>
+        <name>Bargaining_Units__c</name>
+    </fields>
+    <fields>
+        <label><!-- Code List --></label>
+        <name>Code_List__c</name>
+    </fields>
+    <fields>
+        <label><!-- Columns --></label>
+        <name>Columns__c</name>
+    </fields>
+    <fields>
+        <label><!-- Coordinator --></label>
+        <name>Coordinator__c</name>
+    </fields>
+    <fields>
+        <label><!-- Custom CSS --></label>
+        <name>Custom_CSS__c</name>
+    </fields>
+    <fields>
+        <label><!-- Departments --></label>
+        <name>Departments__c</name>
+    </fields>
+    <fields>
+        <label><!-- Description --></label>
+        <name>Description__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division --></label>
+        <name>Division__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer --></label>
+        <name>Employer__c</name>
+        <relationshipLabel><!-- MCL Reports --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Filter Survey Question --></label>
+        <name>Filter_Survey_Question__c</name>
+        <relationshipLabel><!-- MCL Reports --></relationshipLabel>
+    </fields>
+    <fields>
+        <label><!-- Filter Survey Response --></label>
+        <name>Filter_Survey_Response__c</name>
+    </fields>
+    <fields>
+        <label><!-- Job Classes --></label>
+        <name>Job_Classes__c</name>
+    </fields>
+    <fields>
+        <label><!-- Map Gamma --></label>
+        <name>Map_Gamma__c</name>
+    </fields>
+    <fields>
+        <label><!-- Map Height --></label>
+        <name>Map_Height__c</name>
+    </fields>
+    <fields>
+        <label><!-- Map Width --></label>
+        <name>Map_Width__c</name>
+    </fields>
+    <fields>
+        <label><!-- Map Zoom Level --></label>
+        <name>Map_Zoom_Level__c</name>
+    </fields>
+    <fields>
+        <label><!-- Organizer --></label>
+        <name>Organizer__c</name>
+    </fields>
+    <fields>
+        <label><!-- Orientation --></label>
+        <name>Orientation__c</name>
+        <picklistValues>
+            <masterLabel>Landscape</masterLabel>
+            <translation><!-- Landscape --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Portrait</masterLabel>
+            <translation><!-- Portrait --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Page Size --></label>
+        <name>Page_Size__c</name>
+        <picklistValues>
+            <masterLabel>11x17</masterLabel>
+            <translation><!-- 11x17 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>A4</masterLabel>
+            <translation><!-- A4 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Envelope #10</masterLabel>
+            <translation><!-- Envelope #10 --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Legal (8.5x14)</masterLabel>
+            <translation><!-- Legal (8.5x14) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Letter (8.5x11)</masterLabel>
+            <translation><!-- Letter (8.5x11) --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Prefilter By Current BU --></label>
+        <name>Prefilter_By_Current_BU__c</name>
+    </fields>
+    <fields>
+        <label><!-- Prefilter Report Tags --></label>
+        <name>Prefilter_Report_Tags__c</name>
+    </fields>
+    <fields>
+        <label><!-- Print Link --></label>
+        <name>Print_Link__c</name>
+    </fields>
+    <fields>
+        <label><!-- Ignore Contacts with following SR codes --></label>
+        <name>Records_with_no_responses__c</name>
+    </fields>
+    <fields>
+        <label><!-- Reg Director --></label>
+        <name>Reg_Director__c</name>
+    </fields>
+    <fields>
+        <help><!-- The number of headers that consume the same amount of vertical space as one record. --></help>
+        <label><!-- Row height (in headers) --></label>
+        <name>Row_height__c</name>
+    </fields>
+    <fields>
+        <help><!-- Maximum number of records to be displayed in one column. --></help>
+        <label><!-- Rows --></label>
+        <name>Rows__c</name>
+    </fields>
+    <fields>
+        <label><!-- Sorting Config --></label>
+        <name>Sorting_Config__c</name>
+    </fields>
+    <fields>
+        <label><!-- Template --></label>
+        <name>Template__c</name>
+    </fields>
+    <fields>
+        <label><!-- Turf String --></label>
+        <name>Turf_String__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Campaign Name --></label>
+        <name>UHW_Campaign_Name__c</name>
+    </fields>
+    <fields>
+        <label><!-- UHW Campaign --></label>
+        <name>UHW_Campaign__c</name>
+        <relationshipLabel><!-- MCL Reports --></relationshipLabel>
+    </fields>
+    <layouts>
+        <layout>MCL Report Format Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Debugging --></label>
+            <section>Debugging</section>
+        </sections>
+        <sections>
+            <label><!-- Map Properties --></label>
+            <section>Map Properties</section>
+        </sections>
+        <sections>
+            <label><!-- Page Format --></label>
+            <section>Page Format</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+    <webLinks>
+        <label><!-- Clone --></label>
+        <name>Clone</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Export_to_CSV_Excel --></label>
+        <name>Export_to_CSV_Excel</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Print --></label>
+        <name>Print</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Print_Some --></label>
+        <name>Print_Some</name>
+    </webLinks>
+</CustomObjectTranslation>

@@ -1,0 +1,217 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false" controller="KaiserSiteController">
+    <html>
+    <head>
+        <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+        <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+        <apex:includeScript value="{!$Resource.agGridEnterpriseMin429}"/>
+
+        <style>
+            #KaiserGrid {
+                height: 800px;
+                clear: both;
+                margin-top: 4px;
+            }
+        </style>
+
+    </head>
+    <body>
+    <h1>Kaiser Route List</h1>
+    <p>This is current data</p>
+    <div id="KaiserGrid" class="ag-fresh"></div>
+    </body>
+    <script type="text/javascript">
+
+        var csMap = {};
+        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.KaiserSiteController.gc}', init, {buffer: false, timeout: 120000 });
+
+        function init(result, event) {
+            if(event.status) {
+                console.log(result[0]);
+                agGrid.LicenseManager.setLicenseKey(result[0]);
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.KaiserSiteController.getCsData}', csDataResults, {buffer: false, timeout: 120000 });
+            }
+            else
+                console.log('Something went wrong!')
+        }
+
+        function csDataResults(result, event) {
+            var len;
+            var rec;
+            var i;
+            var csId;
+            var firstName;
+            var lastName;
+            var cellPhone;
+            var email;
+
+            if(event.status) {
+                for(i=0,len=result.length;i<len;i++) {
+                    firstName = lastName = cellPhone = email = '';
+                    rec       = result[i];
+                    id        = rec.Id;
+                    firstName = rec.Contact__r.FirstName;
+                    lastName  = rec.Contact__r.LastName;
+                    csId      = rec.Contact__r.Id;
+
+                    if('CellPhone__c' in rec)
+                        cellPhone = rec.CellPhone__c;
+
+                    if('Email__c' in rec)
+                        email = rec.Email__c;
+
+                    if(!csMap[csId])
+                        csMap[csId] = {FirstName: firstName, LastName: lastName, Email: email, CellPhone: cellPhone};
+                }
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.KaiserSiteController.getData}', dataResults, {buffer: false, timeout: 120000 });
+            }
+        }
+
+        function dataResults(result, event) {
+
+            var len,rec,i,empMap,empArray;
+            var empId,empName,firstName,lastName,cellPhone,email,role;
+            var coordinatorFirstName,coordinatorLastName,coordinatorFirstName,coordinatorLastName,organizer1FirstName,organizer1LastName,organizer2FirstName,organizer2LastName;
+            var coordinatorCellPhone,coordinatorEmail,organizer1CellPhone,organizer1Email,organizer2CellPhone,organizer2Email;
+            var csFirstName,csLastName,csCellPhone,csEmail
+            var kaiserGridOptions,kaiserColumnDefs,initialSort;
+
+            empArray = [];
+            empMap   = {};
+            debugger;
+            if(event.status) {
+                for(i=0,len=result.length;i<len;i++) {
+                    csId = coordinatorFirstName = coordinatorLastName = coordinatorFirstName = coordinatorLastName = organizer1FirstName = organizer1LastName = organizer2FirstName = organizer2LastName = '';
+                    coordinatorCellPhone = coordinatorEmail = organizer1CellPhone = organizer1Email = organizer2CellPhone = organizer2Email = '';
+                    csFirstName = csLastName = csCellPhone = csEmail = '';
+                    rec     = result[i];
+                    empId   = rec.Id;
+                    empName = rec.Name;
+
+                    if('Coordinator__c' in rec) {
+                        coordinatorFirstName = rec.Coordinator__r.FirstName;
+                        coordinatorLastName  = rec.Coordinator__r.LastName;
+                        coordinatorCellPhone = rec.Coordinator__r.MobilePhone;
+                        coordinatorEmail     = rec.Coordinator__r.Email;
+                    }
+
+                    if('Organizer_1__c' in rec) {
+                        organizer1FirstName = rec.Organizer_1__r.FirstName;
+                        organizer1LastName  = rec.Organizer_1__r.LastName;
+                        organizer1CellPhone = rec.Organizer_1__r.MobilePhone;
+                        organizer1Email     = rec.Organizer_1__r.Email;
+                    }
+
+                    if('Organizer_2__c' in rec) {
+                        organizer2FirstName = rec.Organizer_2__r.FirstName;
+                        organizer2LastName  = rec.Organizer_2__r.LastName;
+                        organizer2CellPhone = rec.Organizer_2__r.MobilePhone;
+                        organizer2Email     = rec.Organizer_2__r.Email;
+                    }
+
+                    if('Contract_Specialist__c' in rec) {
+                        csId = rec.Contract_Specialist__c;
+                        if(csMap[csId]) {
+                            csRec       = csMap[csId];
+                            csFirstName = csRec.FirstName;
+                            csLastName  = csRec.LastName;
+                            csCellPhone = phoneFormat(csRec.CellPhone);
+                            csEmail     = csRec.Email;
+                        }
+                    }
+
+                    empArray.push({
+                        EmpName:              empName,
+                        CoordinatorFirstName: coordinatorFirstName,
+                        CoordinatorLastName:  coordinatorLastName,
+                        CoordinatorCellPhone: coordinatorCellPhone,
+                        CoordinatorEmail:     coordinatorEmail,
+                        Organizer1FirstName:  organizer1FirstName,
+                        Organizer1LastName :  organizer1LastName,
+                        Organizer1CellPhone:  organizer1CellPhone,
+                        Organizer1Email:      organizer1Email,
+                        Organizer2FirstName:  organizer2FirstName,
+                        Organizer2LastName:   organizer2LastName,
+                        Organizer2CellPhone:  organizer2CellPhone,
+                        Organizer2Email:      organizer2Email,
+                        CsFirstName:          csFirstName,
+                        CsLastName:           csLastName,
+                        CsCellPhone:          csCellPhone,
+                        CsEmail:              csEmail
+                    });
+                }
+
+                debugger;
+                initialSort = [
+                    {colId: 'EmpName',               sort: 'asc'},
+                    {colId: 'CoordinatorLastName',   sort: 'asc'},
+                    {colId: 'CoordinatorFirstName',  sort: 'asc'},
+                    {colId: 'Organizer1LastName',    sort: 'asc'},
+                    {colId: 'Organizer1FirstName',   sort: 'asc'},
+                    {colId: 'Organizer2LastName',    sort: 'asc'},
+                    {colId: 'Organizer2FirstName',   sort: 'asc'}
+                ];
+
+                kaiserColumnDefs = [
+                    {headerName: 'Employer',               field: 'EmpName',           width: 300},
+                    {headerName: "Coordinator",
+                        children: [
+                            {headerName: 'First Name',  field: 'CoordinatorFirstName', width: 140},
+                            {headerName: 'Last Name',   field: 'CoordinatorLastName',  width: 140},
+                            {headerName: 'Cell Phone',  field: 'CoordinatorCellPhone', width: 140},
+                            {headerName: 'Email',       field: 'CoordinatorEmail',     width: 140}]
+                    },
+                    {headerName: "Organizer1",
+                        children: [
+                            {headerName: 'First Name',  field: 'Organizer1FirstName',  width: 140},
+                            {headerName: 'Last Name',   field: 'Organizer1LastName',   width: 140},
+                            {headerName: 'Cell Phone',  field: 'Organizer1CellPhone',  width: 140},
+                            {headerName: 'Email',       field: 'Organizer1Email',      width: 140}]
+                    },
+                    {headerName: "Organizer2",
+                        children: [
+                            {headerName: 'First Name',  field: 'Organizer2FirstName',  width: 140},
+                            {headerName: 'Last Name',   field: 'Organizer2LastName',   width: 140},
+                            {headerName: 'Cell Phone',  field: 'Organizer2CellPhone',  width: 140},
+                            {headerName: 'Email',       field: 'Organizer2Email',      width: 140}]
+                    },
+                    {headerName: "Contract Specialist",
+                        children: [
+                            {headerName: 'First Name',  field: 'CsFirstName',          width: 140},
+                            {headerName: 'Last Name',   field: 'CsLastName',           width: 140},
+                            {headerName: 'Cell Phone',  field: 'CsCellPhone',          width: 140},
+                            {headerName: 'Email',       field: 'CsEmail',              width: 140}]
+                    }
+                ];
+
+                kaiserGridOptions = {
+                    columnDefs: kaiserColumnDefs,
+                    rowData: empArray,
+                    enableSorting: true,
+                    suppressCellSelection: true
+                };
+
+                kaiserGridDiv = document.querySelector('#KaiserGrid');
+                new agGrid.Grid(kaiserGridDiv,  kaiserGridOptions);
+                kaiserGridOptions.api.setSortModel(initialSort);
+
+            }
+            else {
+                console.log('error retrieving from SF');
+            }
+        }
+
+        function phoneFormat(s) {
+            var s1;
+            if(s == null || s.trim().length < 10)
+                s1 = '';
+            else {
+                s1 = s.trim().replace(/[^0-9]/g,'');
+                s1 = '(' + s1.substr(0,3) + ') ' + s1.substr(3,3) + '-' + s1.substr(6);
+            }
+            return s1;
+        }
+
+    </script>
+    </html>
+</apex:page>

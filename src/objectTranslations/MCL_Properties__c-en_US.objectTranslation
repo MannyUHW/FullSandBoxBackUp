@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>MCL Properties</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>MCL Properties</value>
+    </caseValues>
+    <fields>
+        <label><!-- Google Maps API Key --></label>
+        <name>Google_Maps_API_Key__c</name>
+    </fields>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

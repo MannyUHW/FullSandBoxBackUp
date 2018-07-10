@@ -1,0 +1,25 @@
+<apex:page controller="GetMyStaff">
+
+
+
+  
+<apex:form >
+
+    <apex:pageBlock >
+<br>    
+<apex:outputLink style="font-size:16px" target="_blank" value="https://www.getfeedback.com/r/y45UgghQ?&gf_q[6141470][12653413]={!$User.FirstName}&gf_q[6141470][12653414]={!$User.LastName}&gf_q[6141470][12653415]={!$User.Department}&gf_q[6141470][12653416]=<Select Facility>&gf_q[6141470][12653417]={!$User.SOS_Manager_Name__c}&gf_q[6141470][12653418]=Myself&Survey_Question__c=a0t0H00000G44OHQAZ&EnteredBy={!$User.Id}&Title={!$User.Title}&ContactID={!$User.Staff_Contact_Id__c}" id="theLink3"> 2018 Dignity Campaign Evaluation </apex:outputLink>
+</br>
+<br>
+<apex:outputLink style="font-size:16px" target="_blank" value="https://www.getfeedback.com/r/LjmNC2tc?&gf_q[6037117][12469080]={!$User.FirstName}&gf_q[6037117][12469081]={!$User.LastName}&gf_q[6037117][12469082]={!$User.Department}&gf_q[6037117][12469083]=<Select Facility>&gf_q[6037117][12469084]={!$User.SOS_Manager_Name__c}&gf_q[6037117][12469085]=Myself&Survey_Question__c=a0t0H00000EVY8fQAH&EnteredBy={!$User.Id}&Title={!$User.Title}&ContactID={!$User.Staff_Contact_Id__c}" id="theLink2"> 2018 Kaiser Picket Evaluation (Organizer only) </apex:outputLink>
+</br>
+        <apex:outputLink style="font-size:16px" target="_blank" value="https://www.getfeedback.com/r/tazlfJy1?&gf_q[5826451][12062869]={!$User.FirstName}&gf_q[5826451][12062870]={!$User.LastName}&gf_q[5826451][12062871]={!$User.Department}&gf_q[5826451][12062872]={!$User.Title}&gf_q[5826451][12062873]={!$User.SOS_Manager_Name__c}&gf_q[5826451][12062876]=Myself&Survey_Question__c=a0t0H00000EVIO1QAP&EnteredBy={!$User.Id}&ContactID={!$User.Staff_Contact_Id__c}" id="theLink"> 2017 Year End Evaluation </apex:outputLink>
+        <apex:pageblockTable value="{!usrs}" var="u">
+            <apex:column >
+                <apex:outputLink style="font-size:12px" target="_blank" value="https://www.getfeedback.com/r/NiH5lAbv?&gf_q[5826631][12063283]={!u.FirstName}&gf_q[5826631][12063284]={!u.LastName}&gf_q[5826631][12063285]={!u.Department}&gf_q[5826631][12063286]={!u.Title}&gf_q[5826631][12063287]={!u.Manager.Name}&EnteredBy={!u.Id}&ContactID={!u.Staff_Contact_Id__c}"> {!u.Name} </apex:outputLink>
+            <br></br>
+            </apex:column>
+        </apex:pageblockTable>
+    </apex:pageblock>    
+</apex:form>
+
+</apex:page>

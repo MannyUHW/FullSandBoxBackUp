@@ -1,0 +1,622 @@
+<apex:page sidebar="false" showHeader="false" standardStylesheets="false" >
+<meta name="viewport" content="width=device-width, initial-scale=0.75,minimum-scale=0.5, maximum-scale=1.5, user-scalable=yes"></meta>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<meta name="viewport" content="width=device-width, initial-scale=0.75"></meta>
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+
+<style type="text/css">
+#pleaseWait {
+  background-color:#fff;
+  width:59.9%;
+  min-height:9.9%;
+  height:auto;
+  visibility:hidden;
+  z-index:0;
+  position:absolute;
+  left:0;
+  top:0;
+  padding: 30% 20%;
+  text-align:center;
+}
+</style>
+
+<div id="pleaseWait">Processing, please wait.</div>
+
+<script language="JavaScript">
+
+$("#pleaseWait").hide();
+
+var userName = "";
+var debugWriter = "";
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+function toggleAccordion(pPrefix) {
+  //alert("[toggleAccordion] start.");
+  var togState = document.getElementById(pPrefix + "Toggler").innerHTML;
+  //alert("[toggleAccordion] togState = " + togState);
+  if (togState == "+") {
+    //alert("[toggleAccordion] expanding...");
+    $("#" + pPrefix + "Div").show();
+    document.getElementById(pPrefix + "Toggler").innerHTML = "-";
+    localStorage.setItem("mono_browse_toggler_" +pPrefix, "-");
+  } else {
+    //alert("[toggleAccordion] collapsing...");
+    $("#" + pPrefix + "Div").hide();  
+    document.getElementById(pPrefix + "Toggler").innerHTML = "+";    
+    localStorage.setItem("mono_browse_toggler_" +pPrefix, "+");
+  }
+  //alert("[toggleAccordion] done.");
+}
+
+</script>
+
+
+<a name="topofpage"></a>
+<div align="center">
+
+<table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MONO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MONO_Search}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+
+  <font size="+2"><div id="titleDiv">Browse</div></font>
+  <br>
+  <a href="javascript:clearFilters()">Clear Filters</a>  
+  </br>
+  <br>&nbsp;</br>
+  <button class="btn btn-primary" type="submit" onclick="goList();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  Go to List
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button>
+
+<table>
+<tr valign="top">
+<td valign="left">
+
+  <dl>
+  <dt>Organizer</dt>
+  <dd>
+  <div align="center">
+  <select id="ownerSelect">
+    <option value="">All</option>   
+  </select>
+  </div>
+  <br/><font color="white">________________________________________</font><br/>
+  </dd>  
+
+  <dt><a style="text-decoration:none" href="javascript:toggleAccordion('department');"><font size="+2"><div style="display: inline" id="departmentToggler">-</div></font></a>
+  Department</dt>
+  <dd>
+  <div align="center" id="departmentDiv">
+  <select id="departmentSelect" size="8" multiple="true">
+    <option value=""></option>      
+  </select>
+  </div>
+  <br/>
+  </dd>
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_department") != null && localStorage.getItem("mono_browse_toggler_department") == "+") {
+      toggleAccordion("department");
+    }
+  </script> 
+  
+  <dt><a style="text-decoration:none" href="javascript:toggleAccordion('shift');"><font size="+2"><div style="display: inline" id="shiftToggler">-</div></font></a>
+  Shift</dt>
+  <dd>
+  <div align="center" id="shiftDiv">
+  <select id="shiftSelect" size="5" multiple="true">
+    <option value=""></option>      
+  </select>
+  </div>
+  <br/>
+  </dd>
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_shift") != null && localStorage.getItem("mono_browse_toggler_shift") == "+") {
+      toggleAccordion("shift");
+    }
+  </script> 
+
+  <dt><a style="text-decoration:none" href="javascript:toggleAccordion('verbal');"><font size="+2"><div style="display: inline" id="verbalToggler">-</div></font></a>
+  Verbal</dt>
+  <dd>
+  <div align="center" id="verbalDiv">
+  <select id="verbalSelect" size="8" multiple="true">
+    <option value=""></option>      
+    <option value="0">0. No Response</option>    
+    <option value="1">1. SEIU-UHW Leader Producing</option>
+    <option value="2">2. SEIU-UHW Supporter</option>
+    <option value="3">3. Undecided</option>
+    <option value="4">4. Anti-Union</option>
+    <option value="5">5. NUHW Supporter</option>
+    <option value="6">6. Management Leader</option>
+    <option value="7">7. NUHW leader or activist</option>
+    <option value="9">9. Reported to be NLE</option>      
+  </select>
+  </div>
+  <br/>
+  </dd>
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_verbal") != null && localStorage.getItem("mono_browse_toggler_verbal") == "+") {
+      toggleAccordion("verbal");
+    }
+  </script> 
+
+  <dt><a style="text-decoration:none" href="javascript:toggleAccordion('card');"><font size="+2"><div style="display: inline" id="cardToggler">-</div></font></a>
+  Card</dt>
+  <dd>
+  <div align="center"  id="cardDiv">
+  <select id="cardSelect" size="8" multiple="true">
+    <option value=""></option>        
+    <option value="0">0. No Response</option>    
+    <option value="1">1. SEIU-UHW Leader Producing</option>
+    <option value="2">2. SEIU-UHW Supporter</option>
+    <option value="3">3. Undecided</option>
+    <option value="4">4. Anti-Union</option>
+    <option value="5">5. NUHW Supporter</option>
+    <option value="6">6. Management Leader</option>
+    <option value="7">7. NUHW leader or activist</option>
+    <option value="9">9. Reported to be NLE</option>      
+  </select>
+  </div>
+  <br/>
+  </dd>
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_card") != null && localStorage.getItem("mono_browse_toggler_card") == "+") {
+      toggleAccordion("card");
+    }
+  </script>   
+
+  <dt><a style="text-decoration:none" href="javascript:toggleAccordion('vyp');"><font size="+2"><div style="display: inline" id="vypToggler">-</div></font></a>
+  Vote Yes Petition</dt>
+  <dd>
+  <div align="center"  id="vypDiv">
+  <select id="vypSelect" size="8" multiple="true">
+    <option value=""></option>        
+    <option value="0">0. No Response</option>    
+    <option value="1">1. SEIU-UHW Leader Producing</option>
+    <option value="2">2. SEIU-UHW Supporter</option>
+    <option value="G">Gettable</option>
+    <option value="3">3. Undecided</option>
+    <option value="4">4. Anti-Union</option>
+    <option value="5">5. NUHW Supporter</option>
+    <option value="6">6. Management Leader</option>
+    <option value="7">7. NUHW leader or activist</option>
+    <option value="9">9. Reported to be NLE</option>      
+  </select>
+  </div>
+  <br/>
+  </dd>  
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_vyp") != null && localStorage.getItem("mono_browse_toggler_vyp") == "+") {
+      toggleAccordion("vyp");
+    }
+  </script>  
+  
+  <dt><a style="text-decoration:none" href="javascript:toggleAccordion('gotv');"><font size="+2"><div style="display: inline" id="gotvToggler">-</div></font></a>
+  GOTV</dt>
+  <dd>
+  <div align="center"  id="gotvDiv">
+  <select id="gotvSelect" size="8" multiple="true">
+    <option value=""></option>        
+    <option value="0">0. No Response</option>  
+    <option value="1">1. SEIU-UHW Leader Producing</option>
+    <option value="2">2. SEIU-UHW Supporter</option>
+    <option value="3">3. Undecided</option>
+    <option value="4">4. Anti-Union</option>
+    <option value="5">5. NUHW Supporter</option>
+    <option value="6">6. Management Leader</option>
+    <option value="7">7. NUHW leader or activist</option>
+    <option value="9">9. Reported to be NLE</option>      
+  </select>
+  </div>
+  <br/>
+  </dd>   
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_gotv") != null && localStorage.getItem("mono_browse_toggler_gotv") == "+") {
+      toggleAccordion("gotv");
+    }
+  </script>  
+    
+  <dt><a style="text-decoration:none" href="javascript:toggleAccordion('block');"><font size="+2"><div style="display: inline"  id="blockToggler">-</div></font></a>
+    Vote Block</dt>
+  <dd>
+  <div align="center"  id="blockDiv">
+  <select id="blockSelect"  size="7" multiple="true">
+    <option value="all">All Blocks</option>   
+  </select>
+  </div>
+  <br/>
+  </dd>  
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_block") != null && localStorage.getItem("mono_browse_toggler_block") == "+") {
+      toggleAccordion("block");
+    }
+  </script>  
+  
+ 
+  
+  <dt><a style="text-decoration:none" href="javascript:toggleAccordion('eday');"><font size="+2"><div style="display: inline" id="edayToggler">-</div></font></a>
+  Works EDay</dt>
+  <dd>
+  <div align="center"  id="edayDiv">
+  <select id="edaySelect" size="5" multiple="true">
+    <option value=""></option>
+    <option value="nnn">Not Working</option>    
+    <option value="ed1">Works EDay 1</option>
+    <option value="ed2">Works EDay 2</option>
+    <option value="nd1">Works Night Before EDay 1</option>    
+    <option value="nd2">Works Night Before EDay 2</option>    
+  </select>
+  </div>
+  <br/>
+  </dd>    
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_eday") != null && localStorage.getItem("mono_browse_toggler_eday") == "+") {
+      toggleAccordion("eday");
+    }
+  </script>
+  
+    <dt><a style="text-decoration:none" href="javascript:toggleAccordion('challenge');"><font size="+2"><div style="display: inline" id="challengeToggler">-</div></font></a>
+  Challenge</dt>
+  <dd>
+  <div align="center"  id="challengeDiv">
+  <select id="challengeSelect" size="4" multiple="true">
+    <option value=""></option>
+    <option value="unc">Unchallenged</option>
+    <option value="uhw">UHW</option>
+    <option value="emp">Employer</option>
+    <option value="brd">Board</option>    
+  </select>
+  </div>
+  <br/>
+  </dd>    
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_challenge") != null && localStorage.getItem("mono_browse_toggler_challenge") == "+") {
+      toggleAccordion("challenge");
+    }
+  </script>
+  
+  
+      <dt><a style="text-decoration:none" href="javascript:toggleAccordion('tt');"><font size="+2"><div style="display: inline" id="ttToggler">-</div></font></a>
+  Three Touch Count</dt>
+  <dd>
+  <div align="center"  id="ttDiv">
+  <select id="ttSelect" size="4" multiple="true">
+    <option value="0">0 Touches</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>     
+  </select>
+  </div>
+  <br/>
+  </dd>    
+  <script language="JavaScript">
+    if (localStorage.getItem("mono_browse_toggler_tt") != null && localStorage.getItem("mono_browse_toggler_tt") == "+") {
+      toggleAccordion("tt");
+    }
+  </script>
+  
+  
+   
+  </dl>
+
+  </td>
+</tr>
+</table>
+  
+  <button class="btn btn-primary" type="submit" onclick="goList();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  Go to List
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button>
+  
+<br>&nbsp;</br>
+
+
+<script language="JavaScript">
+var debugWriter = "";
+
+
+var paramEmid = "{!$CurrentPage.parameters.emid}";
+var emid = 8817;
+//alert("paramcode="  + paramEmid );
+if (paramEmid != null && paramEmid != "" && paramEmid != "null") {
+  emid = paramEmid ;
+}
+
+try{ 
+
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+
+    var query = "SELECT Department, Owner_Name__c, Shift__c from Contact where In_Current_BU__c = true and Account.Employer_ID__c = \'" + emid + "\' ";
+     
+    var records = sforce.connection.query(query);
+    var records0 = records.getArray('records'); 
+     
+    var departmentSet = new Array()
+    var shiftSet = new Array();
+    var ownerSet = new Array();
+    for(var i=0;i < records0.length; i++){ 
+      if (ownerSet.indexOf(records0[i].Owner_Name__c) < 0) {
+        ownerSet.push(records0[i].Owner_Name__c);
+      }
+      if (departmentSet.indexOf(toProperCase(records0[i].Department)) < 0) {
+        departmentSet.push(toProperCase(records0[i].Department));
+      }
+      if (shiftSet.indexOf(records0[i].Shift__c ) < 0) {
+        shiftSet.push(records0[i].Shift__c );
+      }            
+    }
+    ownerSet.sort();
+    departmentSet.sort();
+    shiftSet.sort();
+    
+    var ownerSelect = document.getElementById("ownerSelect");
+    for (var i = 0; i < ownerSet.length; i++) {
+      ownerSelect.options[i+1] = new Option(ownerSet[i], ownerSet[i]);
+    }
+    var departmentSelect = document.getElementById("departmentSelect");
+    for (var i = 0; i < departmentSet.length; i++) {
+      departmentSelect.options[i+1] = new Option(departmentSet[i], departmentSet[i]);
+    }    
+    var shiftSelect = document.getElementById("shiftSelect");
+    for (var i = 0; i < shiftSet.length; i++) {
+      if (shiftSet[i] == null || shiftSet[i] == "null" || shiftSet[i] == "null") {
+        shiftSelect.options[i+1] = new Option("Unknown", "Unknown");
+      } else {
+        shiftSelect.options[i+1] = new Option(shiftSet[i], shiftSet[i]);
+      }
+    }  
+    
+   var blockSet = new Array();
+   
+   var refreshBlocks = true;
+   if (localStorage.getItem("mono_browse_blocks") != null) {
+     if (localStorage.getItem("mono_browse_block_ts") != null) {
+       var ts = parseInt(localStorage.getItem("mono_browse_block_ts"));
+       //alert("mono_browse_block_ts = " + localStorage.getItem("mono_browse_block_ts")); 
+       if ((new Date()).getTime() - ts <= (24 * 60 * 60 * 1000)) {
+         blockSet = JSON.parse(localStorage.getItem("mono_browse_blocks"));
+         refreshBlocks = false;
+       }
+     }
+   }
+    
+   if (refreshBlocks == true) {
+     for (var p = 0; p < 10; p++) {
+        var query = "select Response_Value__c from Survey_Response__c where Survey_Question__r.Name like '%vote block%' and Contact__r.Account.Employer_Id__c = \'" + emid + "\' and FID__c like \'%" + p + "\'";
+        var records = sforce.connection.query(query);
+        var records0 = records.getArray('records'); 
+        for(var i=0;i < records0.length; i++){ 
+          if (blockSet.indexOf(records0[i].Response_Value__c) < 0) {
+            blockSet.push(records0[i].Response_Value__c);
+          }
+        }      
+     }
+     localStorage.setItem("mono_browse_blocks", JSON.stringify(blockSet));
+     localStorage.setItem("mono_browse_block_ts", "" + (new Date()).getTime());     
+     //alert("vote blocks refreshed from DB");
+   } else { 
+     //alert("vote blocks in cache");
+   } 
+   
+   blockSet.sort();
+   var blockSelect = document.getElementById("blockSelect");
+    for (var i = 0; i < blockSet.length; i++) {
+      blockSelect .options[i+1] = new Option(blockSet[i], blockSet[i].substring(0, 1));
+    }
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+    
+if (localStorage.getItem("mono_browse_verbal") != null) {
+  $('#verbalSelect').val(JSON.parse(localStorage.getItem("mono_browse_verbal")));    
+}
+if (localStorage.getItem("mono_browse_card") != null) {
+  $('#cardSelect').val(JSON.parse(localStorage.getItem("mono_browse_card")));    
+}
+if (localStorage.getItem("mono_browse_vyp") != null) {
+  $('#vypSelect').val(JSON.parse(localStorage.getItem("mono_browse_vyp")));    
+}
+if (localStorage.getItem("mono_browse_gotv") != null) {
+  $('#gotvSelect').val(JSON.parse(localStorage.getItem("mono_browse_gotv")));    
+}
+
+if (localStorage.getItem("mono_browse_block") != null) {
+  $('#blockSelect').val(JSON.parse(localStorage.getItem("mono_browse_block")));    
+}
+if (localStorage.getItem("mono_browse_organizer") != null) {
+  $('#ownerSelect').val(localStorage.getItem("mono_browse_organizer"));    
+}  else {
+  $('#ownerSelect').val("");
+}
+
+if (localStorage.getItem("mono_browse_department") != null) {
+  $('#departmentSelect').val(JSON.parse(localStorage.getItem("mono_browse_department")));    
+}
+if (localStorage.getItem("mono_browse_shift") != null) {
+  $('#shiftSelect').val(JSON.parse(localStorage.getItem("mono_browse_shift")));    
+}
+if (localStorage.getItem("mono_browse_tt") != null) {
+  $('#ttSelect').val(JSON.parse(localStorage.getItem("mono_browse_tt")));    
+} else {
+  $('#ttSelect').val(["0", "1", "2"]);    
+}
+if (localStorage.getItem("mono_browse_eday") != null) {
+  $('#edaySelect').val(JSON.parse(localStorage.getItem("mono_browse_eday")));    
+}
+if (localStorage.getItem("mono_browse_challenge") != null) {
+  $('#challengeSelect').val(JSON.parse(localStorage.getItem("mono_browse_challenge")));    
+}
+    
+function goList() {
+  var s = "";
+  var fverbals = $('#verbalSelect').val();
+  if (fverbals != null && fverbals.length > 0 && fverbals[0] != "") {
+    s += " verbal" + fverbals.join("");
+    localStorage.setItem("mono_browse_verbal", JSON.stringify(fverbals));
+  } else {
+    localStorage.setItem("mono_browse_verbal", null);
+  }
+  
+  var fcards = $('#cardSelect').val();
+  if (fcards != null && fcards.length > 0 && fcards[0] != "") {
+    s += " card" + fcards.join("");
+    localStorage.setItem("mono_browse_card", JSON.stringify(fcards));
+  } else {
+    localStorage.setItem("mono_browse_card", null);
+  }
+  
+  var fvyps = $('#vypSelect').val();
+  if (fvyps != null && fvyps.length > 0 && fvyps[0] != "") {
+    s += " vyp" + fvyps.join("");
+    localStorage.setItem("mono_browse_vyp", JSON.stringify(fvyps));    
+  } else {
+    localStorage.setItem("mono_browse_vyp", null);
+  }
+  
+  
+  var fgotvs = $('#gotvSelect').val();
+  if (fgotvs != null && fgotvs.length > 0 && fgotvs[0] != "") {
+    s += " gotv" + fgotvs.join("");
+    localStorage.setItem("mono_browse_gotv", JSON.stringify(fgotvs));    
+  } else {
+    localStorage.setItem("mono_browse_gotv", null);
+  }
+  
+  var ftts = $('#ttSelect').val();
+  if (ftts  != null && ftts.length > 0 && ftts[0] != "") {
+    s += " tt" + ftts.join("");
+    localStorage.setItem("mono_browse_tt", JSON.stringify(ftts));    
+  } else {
+    localStorage.setItem("mono_browse_tt", JSON.stringify(["0", "1", "2"]));
+  }
+       
+  var forganizer = $('#ownerSelect').val();
+  if (forganizer != "" && forganizer.toLowerCase().trim() != "all") {
+    s += " organizer" + forganizer.replace(" ", "_").replace(" ", "_");
+    localStorage.setItem("mono_browse_organizer", forganizer);
+  } else {
+    localStorage.setItem("mono_browse_organizer", null);
+  }
+  
+  var fblocks = $('#blockSelect').val();
+  if (fblocks != null && fblocks.length > 0 && fblocks[0].toLowerCase().trim() != "all") {
+    s += " block" + fblocks.join("");
+    localStorage.setItem("mono_browse_block", JSON.stringify(fblocks));
+  } else {
+    localStorage.setItem("mono_browse_block", null);
+  }  
+  
+  var fedays = $('#edaySelect').val();
+  if (fedays != null && fedays.length > 0 && fedays[0].toLowerCase().trim() != "") {
+    s += " eday" + fedays.join("");
+    localStorage.setItem("mono_browse_eday", JSON.stringify(fedays));
+  } else {
+    localStorage.setItem("mono_browse_eday", null);
+  }    
+  
+  var fchallenges = $('#challengeSelect').val();
+  if (fchallenges != null && fchallenges.length > 0 && fchallenges[0].toLowerCase().trim() != "") {
+    s += " challenge" + fchallenges.join("");
+    localStorage.setItem("mono_browse_challenge", JSON.stringify(fchallenges));
+  } else {
+    localStorage.setItem("mono_browse_challenge", null);
+  }    
+  
+    
+  var fdepartments = $('#departmentSelect').val();
+  if (fdepartments != null && fdepartments.length > 0 && fdepartments[0].toLowerCase().trim() != "") {
+    s += " department" + fdepartments.join("").replace(/\\s/g, "_").replace(/-/g, "_").replace(/ /g, "_"); 
+    localStorage.setItem("mono_browse_department", JSON.stringify(fdepartments));
+  } else {
+    localStorage.setItem("mono_browse_department", null);
+  }  
+  
+  var fshifts = $('#shiftSelect').val();
+  if (fshifts != null && fshifts.length > 0 && fshifts[0].toLowerCase().trim() != "") {
+    s += " shift" + fshifts.join("").replace(/\\s/g, "_").replace(/-/g, "_").replace(/ /g, "_"); 
+    localStorage.setItem("mono_browse_shift", JSON.stringify(fshifts)); 
+  } else {
+    localStorage.setItem("mono_browse_shift", null);
+  }  
+ 
+  //alert(s);
+  navigateTo("{!$Page.MONO_List}?&search=" + encodeURIComponent(s.trim()));
+  return false; 
+}    
+
+function clearFilters() {
+  localStorage.setItem("mono_browse_challenge", null);
+  localStorage.setItem("mono_browse_eday", null);
+  localStorage.setItem("mono_browse_shift", null);
+  localStorage.setItem("mono_browse_department", null);
+  localStorage.setItem("mono_browse_tt", JSON.stringify(["0", "1", "2"])); 
+  localStorage.setItem("mono_browse_verbal", null);
+  localStorage.setItem("mono_browse_card", null);
+  localStorage.setItem("mono_browse_vyp", null);
+  localStorage.setItem("mono_browse_gotv", null);
+  localStorage.setItem("mono_browse_block", null);  
+  localStorage.setItem("mono_browse_organizer", null);  
+  navigateTo("{!$Page.MONO_Browse}");
+  return false; 
+}
+    
+</script>
+ 
+
+
+<br>&nbsp;</br>
+<i>CONFIDENTIAL</i></div>
+
+<script> 
+(function(){try{var a=navigator.userAgent;if((a.indexOf('Salesforce')!=-1)&&(a.indexOf('iPhone')!=-1||a.indexOf('iPad')!=-1)&&(a.indexOf('OS/8')!=-1||a.indexOf('OS 8')!=-1)&&(a.indexOf('Safari')==-1)){ 
+var s=document.createElement('style'); 
+s.innerHTML="html,html body{overflow: auto;-webkit-overflow-scrolling:touch;}body{position:absolute;left:0;right:0;top:0;bottom:0;}"; 
+document.getElementsByTagName('head')[0].appendChild(s);}}catch(e){}})(); 
+</script> 
+
+
+<div id="debugDiv"></div>
+<script> 
+//document.getElementById("debugDiv").innerHTML = debugWriter;
+
+</script>
+</apex:page>

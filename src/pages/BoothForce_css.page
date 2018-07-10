@@ -1,0 +1,965 @@
+<apex:page cache="false" showHeader="false" contentType="text/css" controller="BoothForce_SetupShiftsController">
+
+/** Booth Force Instruction **/
+
+  #boothForceGuide{
+    margin: 10px auto;
+    border: 1px solid #ccc;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    padding: 10px;
+    max-width: 880px;
+  }
+
+  #boothForceGuide div{
+    color: #666;
+    margin-top: 10px;
+    position: relative;
+    padding-left: 230px;
+    font-size: 1.2em;
+  }
+  
+  #boothForceGuide span{
+    display: block;
+    width: 160px;
+    text-align: right;
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+  }
+  
+  #boothForceGuide h3{
+    padding: 0 10px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #666;
+    position: absolute;
+    left: 160px;
+  }
+  
+  #boothForceGuide h2{
+    color: #333;
+    display: block;
+  }
+  
+/** BoothForce Main User Page **/
+
+  #nav{
+    
+		background: url("/img/alohaSkin/metaBar_sprite.png") repeat-x scroll left -104px transparent;
+		height:30px;
+		position:relative;
+		padding-left:20px;
+		border: 1px solid #aaa;
+		margin-bottom: 20px;
+		
+		-moz-border-radius:12px;
+		border-radius: 12px;
+  }
+
+	  #nav span{
+	    color: #666;
+	    padding: 7px 12px;
+	    margin-right: 10px;
+	    font-weight: bold;
+	    font-size: 14px;
+	    cursor: pointer;
+	    top: 7px;
+	    position: relative;
+	    border-left: 1px solid transparent;
+	    border-right: 1px solid transparent;
+	  }
+	  
+	  #nav span.active{
+	    background: #fff;
+	    color: #F6931F;
+	    border-color: #aaa;
+	  }
+ /* 
+  #boothStaffingContainer{
+    display: none;
+  }
+  */
+  #filterMenu{
+    -moz-box-shadow:0 0 20px #666666;
+		background:none repeat scroll 0 0 rgba(255, 255, 255, 0.9);
+		border-top:1px solid #666666;
+		bottom:0;
+		height:40px;
+		left:0;
+		position:fixed;
+		width:100%;
+		z-index:1000;
+		visibility: hidden;
+  }
+
+
+/** Setup Shifts **/
+
+  #setupPage{
+    display: none;
+  }
+
+  a.btn{
+    text-decoration: none !important;
+  }
+
+	.zoneContainer{
+		/* background: url(/img/icon/bigtop16.png) no-repeat 0 4px; */
+		margin-top: 20px;
+	}
+
+/*	
+	#setupPage div[class*="zone"]{
+    -moz-box-shadow:none;
+  }
+*/
+
+
+	form.shiftZone .detail{
+		margin-left: 40px;
+		min-height: 200px;
+		-moz-box-shadow: 0 0 4px #ccc;
+		-webkit-box-shadow: 0 0 4px #ccc;
+		position: relative;
+		border: 1px solid #ddd;
+		overflow: hidden;
+	}
+	
+		form.shiftZone .menu{
+			margin: 0 0 6px 40px;
+		}
+		
+		.shiftZone .menu a{
+			display: inline-block;
+			text-decoration: none;
+			margin: 4px;
+		}
+		
+	#zoneForm{
+	 display: none;
+	 padding: 20px;
+	}
+	
+	.overlay{
+	 background: white;
+	 border: 1px solid #ccc;
+	 padding: 20px;
+	 display: none;
+	 z-index: 10;
+	 -moz-border-radius: 8px;
+	 border-radius: 8px;
+	}
+	
+	 .overlay select{
+	   width: 200px !important;
+	 }
+	 
+	 .fieldTitle{
+	   font-size: 16px;
+	   color: #666;
+	   margin-top: 10px;
+	   font-weight: bold;
+	 }
+	 
+	 .overlay .lookupInput{
+	   visibility: hidden;
+	 }
+
+	h4.zoneName{
+		font-size: 20px;
+		color: #666;
+		margin-bottom: 6px;
+		margin: 0 0 0 20px;
+		display: inline-block;
+		cursor: pointer;
+		background: url({!URLFOR($Resource.boothForce, '/images/arrow_closed.gif')}) no-repeat 4px 8px;
+		padding-left: 22px;
+	}
+	
+	h4.zoneName[data-view="true"]{
+	 background: url({!URLFOR($Resource.boothForce, '/images/arrow_open.gif')}) no-repeat 4px 8px;
+	}
+	
+	.dropBool{
+    color: #666;
+    margin-left: 42px;
+	}
+	
+	 .dropBool div{
+	   display: inline-block;
+	   width: 50px;
+	   border: 1px solid #ccc;
+	   background: #eee;
+	   position: relative;
+	   hieght: 14px;
+	 }
+	 
+	 * html .dropBool div { display:inline; }  /* for IE 6 */
+   * + html .dropBool div { display:inline; }  /* for IE 7 */
+	
+	 .dropBool div span.dropToggle{
+	   color: green;
+	   cursor: pointer;
+	 }
+	 
+	 .dropBool div span.dropToggle[data-value="true"]{
+	   position: relative;
+	   left: 23px;
+	   color: red;
+	 }
+
+	#dayMenu, .shiftTimes{
+		margin-left: 180px;
+		clear: both;
+	}
+	
+	#dayMenu{
+		padding-left: 20px;
+		height: 24px;
+	}
+	
+	.dateOption{
+		cursor: pointer;
+	}
+	
+			.active{
+				background: white;
+				font-weight: bold;
+				opacity: 1;
+			}
+	
+	.shiftTimes{
+		background: #fff;
+		position: relative;
+	}
+	
+		.shiftTimeDay{
+			display: block;
+			float: left;
+			max-height:48px;
+		}
+	
+	.booth .boothTitle{
+		display: block;
+		float: left;
+		width: 160px;
+		text-align: right;
+		padding: 0 10px;
+		font-weight: bold;
+		color: #666;
+		/*height: 12px;*/
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-height: 42px;
+	}
+	
+	.booth{
+		/*float: left;*/
+		clear: both;
+		/*min-width: {shiftTimeStrings.size * 90 + 120}px;*/
+		/*min-width: 1000px;*/
+	}
+	
+	.dateinput{
+		float: left;
+		width: 70px;
+		padding: 0 10px;
+		text-align: center;
+	}
+	
+	.shiftTimes .times{
+		display: inline-block;
+		float: left;
+		width: 70px;
+		overflow: hidden;
+		padding: 10px;
+		height: 28px;
+	}
+	
+		.shiftTimeDay .shiftTimeHeader{
+			display: block;
+			position: relative;
+			z-index: 10;
+			height: 47px;
+		}
+		
+		.shiftTimeDay .dateCol{
+			height: 280px; 
+			display: inline-block;
+
+		}
+		
+		.shiftTimeHeader .dateCol, .shiftTimeHeader .dateTitle{
+			display: inline-block;
+		}
+		
+		.shiftTimeHeader .dateTitle{
+		  *display: none !important; /* IE 7 TODO: Fix rotation */
+      _display: none !important; /* IE 6 TODO: Fix rotation */
+		}
+		
+		.shiftTimeHeader .dateCol{
+			border-right: 0px;
+		}
+		
+		.dateCol{
+			padding: 10px;
+			width: 30px;
+			display: inline-block;
+			border-left: 1px solid #ccc;
+		}
+		
+		.booth .dateCol{
+			padding: 10px;
+			width: 30px;
+			float: left;
+			height: 22px;
+		}
+		
+		.inactive .dateCol{
+			border-right: 1px solid #ccc;
+		}
+		
+		.toggler{
+		  position: absolute;
+		  top: 30px;
+		  padding: 0 6px !important; /* SFDC btnPrimary override */
+		  left: 14px;
+		  opacity: .8;
+		}
+		
+		
+		
+		.dateTitle{
+			font-size:20px;
+			color: #999;
+			left:-35px;
+			position:absolute;
+			text-align:right;
+			top:110px;
+			width:120px;
+		}
+		
+		.dateTitle{
+		   -moz-transform:rotate(-90deg);
+      -webkit-transform:rotate(-90deg);
+		}
+		
+		
+		.dateOption{
+			font-weight: bold;
+			color: #999;
+		}
+		
+		/*.firstCol{
+			border-left: 1px solid #ccc;
+		}*/
+
+
+	input[id*="saveSubmitButton"]{
+		display: inline-block;
+		margin:4px;
+	}
+	
+	#newSetup{
+		clear: both;
+	}
+	
+/*
+	.rightBorder{
+		border-right: 1px solid #ccc;
+		height: 22px;
+	}
+
+*/
+
+	.shiftTimeDetail{
+		height: 48px;
+		overflow: hidden;
+		/*float: left;*/
+		position: relative;
+		margin-left: 51px;
+		top: -48px;
+	}
+	
+
+/** Booth Staffing Page **/
+
+	#boothStaffingContainer h2{
+		background:url("/img/icon/bigtop32.png") no-repeat scroll 0 0 transparent;
+		color:#CCCCCC;
+		font-size:32px;
+		padding-left:42px;
+	}
+
+/*	
+	div[class*="zone"]{
+		margin:0 42px 30px;
+	}
+*/
+
+  .area{
+    margin:0 42px 30px;
+  }
+  
+    span.zone{
+      font-size: 14px;
+      font-weight: bold;
+      color: #666;
+      padding: 2px 8px 2px 24px;
+      margin: 4px 4px 0 0;
+      display: inline-block;
+      cursor: pointer;
+      background: url({!URLFOR($Resource.boothForce, '/images/arrow_open.gif')}) no-repeat 8px 5px;
+      border:1px solid #ddd;
+      -moz-border-radius: 4px;
+      border-radius: 4px;
+    }
+    
+    span.zone[data-visible="false"]{
+      color: #999;
+      background: url({!URLFOR($Resource.boothForce, '/images/arrow_closed.gif')}) no-repeat 8px 5px;
+    }
+    
+    
+
+	.boothStaffing a{
+		outline: none;
+	}
+
+	.boothStaffing{
+		clear:both;
+		color:#333333;
+		display:block;
+		margin:0;
+		min-height:50px;
+		padding:20px 0 0;
+		position:relative;
+	}
+	
+	.boothStaffing div[id*="signUpAjax"]{
+		display: none;
+	}
+	
+		.boothStaffing .boothName{
+			clear:both;
+			display:block;
+			font-size:16px;
+			font-weight:bold;
+			padding:0 0 4px 130px;
+		}
+		
+		.boothStaffing .boothSubZone{
+			font-size: 12px;
+			font-weight: normal;
+			color: #666;
+		}
+		
+		.boothStaffing .boothSignUp{
+			left:0;
+			position:absolute;
+			text-align:left;
+			top:20px;
+			width:120px;
+		}
+		
+			.boothSignUp a{
+				text-decoration: none !important;
+			}
+		
+			.boothSignUp .boothSlots{
+				display: block;
+				font-size: 20px;
+				color: #666;
+				padding-bottom: 4px;
+			}
+			
+			.boothSignUp .boothSignUpLink{
+
+			}
+	
+		.boothStaffing .boothDescription{
+			clear:both;
+			display:block;
+			font-size:12px;
+			line-height:1.2em;
+			max-width:640px;
+			min-height: 20px;
+			padding-left:130px;
+		}
+		
+		
+
+	
+/** My Booths Page **/
+**ADDED BY G**/
+  #swapContainerManager{
+    min-height: 200px;
+    width: 500px;
+  }
+  
+    #swapContainerManager a.close{
+      bottom:27px;
+      right:20px;
+      outline:medium none;
+      position:absolute;
+    }
+  
+    #swapContainerManager .lookupInput{
+      visibility: visible;
+      margin-left: 0;
+    }
+    
+    #swapContainerManager div{
+      margin-bottom: 6px;
+    }
+    
+    #swapContainerManager h2{
+      color:#CCCCCC;
+      display:inline-block;
+      font-size:18px;
+      font-weight:normal;
+      text-align:right;
+      vertical-align:top;
+      width:140px;
+    }
+    
+    #swapContainerManager span{
+      color:#333333;
+      display:inline-block;
+      font-size:18px;
+      margin-left:10px;
+      width:350px;
+    }
+/**END**/
+  #swapContainer{
+    min-height: 200px;
+    width: 500px;
+  }
+  
+    #swapContainer a.close{
+	    bottom:27px;
+			right:20px;
+			outline:medium none;
+			position:absolute;
+		}
+  
+    #swapContainer .lookupInput{
+      visibility: visible;
+      margin-left: 0;
+    }
+    
+    #swapContainer div{
+      margin-bottom: 6px;
+    }
+    
+    #swapContainer h2{
+      color:#CCCCCC;
+			display:inline-block;
+			font-size:18px;
+			font-weight:normal;
+			text-align:right;
+			vertical-align:top;
+			width:140px;
+    }
+    
+    #swapContainer span{
+      color:#333333;
+			display:inline-block;
+			font-size:18px;
+			margin-left:10px;
+			width:350px;
+    }
+
+	#myBooths a{
+		outline: none;
+	}
+/*
+	#myBooths div[class*="day"]{
+		padding: 10px;
+		-moz-box-shadow: 0 0 8px #ccc;
+		margin: 10px;
+		-moz-border-radius: 6px;
+		display:inline-block;
+		vertical-align: top;
+		max-width: 270px;
+	}
+*/
+	#myBooths .myShift{
+		padding: 10px 10px 10px 100px;
+		position: relative;
+	}
+	
+	#myBooths .myShift span.btn{
+		text-decoration: none;
+		position: absolute;
+		left: 4px;
+		top: 10px;
+	}
+	/*
+		#myBooths h2{
+			font-size: 18px;
+			color: #ccc;
+		}
+		
+	*/
+	/*
+		#myBooths .shiftDetail{
+		}
+	
+		#myBooths .shiftTime{
+			color: #666;
+		}
+	*/
+		#myBooths a.shiftTitle{
+			font-size: 20px;
+			text-decoration: none;
+			display: block;
+		}
+		
+/** Manager View **/
+
+/*
+	#managerView div[class*="userBlock"]{
+		clear: both;
+		margin-bottom: 20px;
+	}
+	
+	#managerView a.btn{
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		text-decoration: none;
+	}
+	
+	#managerView a.boothName{
+		font-size: 18px;
+		text-decoration: none;
+	}
+	
+	#managerView a{
+		outline: none;
+	}
+	
+	#managerView .userName{
+		font-size: 20px;
+		font-weight: bold;
+		color: #666;
+	}
+
+	#managerView div[class*="day"]{
+		padding: 10px;
+		-moz-box-shadow: 0 0 8px #ccc;
+		margin: 10px;
+		-moz-border-radius: 6px;
+		border-radius: 6px;
+		max-width: 270px;
+		display: inline-block;
+		vertical-align: top;
+	}
+
+	#managerView .staffedBooth{
+		padding: 10px 10px 10px 80px;
+		position: relative;
+	}
+	
+		#managerView h2{
+			font-size: 18px;
+			color: #ccc;
+		}
+	
+		#managerView a.shiftTitle{
+			font-size: 20px;
+			text-decoration: none;
+			display: block;
+		}
+*/
+
+/** Booth Listing "Page" **/
+
+  #boothListing a.btn{
+    display: inline-block;
+    text-decoration: none !important;
+  }
+
+  #boothListing #boothInfo .boothName{
+    clear: both;
+    display: block;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 4px 0;
+  }
+  
+  #boothListing #boothInfo .boothDescription{
+    clear: both;
+    display: block;
+    border-bottom: 2px dashed #ddd;
+    margin-bottom: 10px;
+    padding-bottom: 20px;
+  }
+
+  #boothListing .boothShift{
+    clear: both;
+    border-bottom: 1px solid #ccc;
+  }
+  
+    #boothListing #dates{
+      clear: both;
+      padding-left: 120px;
+    }
+    
+      #dates .date{
+        width: 100px;
+        display: inline-block;
+        padding: 10px;
+      }
+  
+    #boothListing .shiftTime{
+      color: #F6931F;
+    }
+
+    #boothListing .day{
+      display: inline-block;
+      vertical-align: top;
+    }
+    
+    * html #boothListing .day { display:inline; }  /* for IE 6 */
+    * + html #boothListing .day { display:inline; }  /* for IE 7 */
+    
+    .day .btn{
+      display: inline-block;
+    }
+    
+    .day ul{
+      padding-left: 0;
+      list-style-type: none;
+    }
+    
+    .day li{
+      margin-left: 0;
+    }
+
+
+/* BOOTH LISTING */
+
+#boothStaffingContainer{
+  padding: 0 20px;
+}
+
+
+.filterMenu{
+	position: absolute;
+	padding:10px 30px 10px 0;
+	text-align:right;
+	width:100px;
+	left: 0;
+}
+
+  .filterRange{
+    background: transparent;
+    border: 0;
+    color:#f6931f;
+    font-weight:bold;
+  }
+
+
+.dayCluster{
+  display: inline-block;
+  vertical-align: top;
+  width: 150px;
+  border: 1px solid #bbb;
+  margin-right: 10px;
+  color: #ccc;
+  margin-top: 6px;
+  overflow: hidden;
+}
+
+* html .dayCluster { display:inline; }  /* for IE 6 */
+* + html .dayCluster { display:inline; }  /* for IE 7 */
+
+  .dayCluster .dayHeader{
+	 
+		background:none repeat scroll 0 0 #F5F5F5;
+		color:#666;
+		padding:10px;
+		
+		box-shadow:0 0 4px #666;
+		-moz-box-shadow:0 0 4px #666;
+		-webkit-box-shadow:0 0 4px #666;
+		 
+  }
+  
+	  .dayCluster .day, .dayCluster .day-text{
+	    font-size: 16px;
+	    display: inline-block;
+	  }
+	  
+	  * html .dayCluster .day, * html .dayCluster .day-text { display:inline; }  /* for IE 6 */
+    * + html .dayCluster .day, * + html .dayCluster .day-text { display:inline; }  /* for IE 7 */
+	  
+	.dayCluster .dataCell{
+	  border-bottom: 1px dotted #eee;
+	  display: block;
+	  color: #aaa;
+	  padding: 10px 10px 10px 20px;
+	}
+	
+		.dataCell .shiftTime{
+		  color: #F6931F;
+		  margin-left: -10px;
+		  font-size: 13px;
+    }
+    
+    .dataCell a.btn{
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    
+    .dataCell h2, .dataCell h3{
+      display: block;
+    }
+    
+    .dataCell h3{
+      font-weight: normal;
+    }
+    
+    .dataCell span.btn{
+      display: inline-block;
+    }
+    
+.detailCluster{
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  border: 1px solid #bbb;
+  margin-right: 10px;
+  color: #ccc;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+* html .detailCluster { display:inline; }  /* for IE 6 */
+* + html .detailCluster { display:inline; }  /* for IE 7 */
+
+  .detailCluster .dayHeader{
+   
+    background:none repeat scroll 0 0 #F5F5F5;
+    color:#666;
+    padding:10px;
+    
+    box-shadow:0 0 4px #666;
+    -moz-box-shadow:0 0 4px #666;
+    -webkit-box-shadow:0 0 4px #666;
+     
+  }
+  
+    .detailCluster .day, .detailCluster .day-text{
+      font-size: 16px;
+      display: inline-block;
+    }
+    
+    * html .detailCluster .day, * html .detailCluster .day-text { display:inline; }  /* for IE 6 */
+    * + html .detailCluster .day, * + html .detailCluster .day-text { display:inline; }  /* for IE 7 */
+
+    .detailCluster .dataCell{
+	    border-bottom: 1px dotted #eee;
+	    display: block;
+	    color: #aaa;
+	    padding: 10px 10px 10px 20px;
+	  }
+	  
+	  .detailCluster .dataCell .richData{
+	    color: #333;
+	  }
+
+/* MY BOOTHS */
+
+#myBoothsContainer{
+  padding: 0 20px;
+}
+
+#myBooths .dataCell span.btn{
+  display: inline-block;
+}
+
+/*
+#myBooths .shiftTime {
+	color:#F6931F;
+}
+*/
+
+
+/* Shift Manager iFrame */
+#shiftManagerContainer iframe{
+  border: 0;
+  height: 600px;
+  width: 100%;
+}
+
+#shiftManagerView{
+  font-family: Arial,Helvetica,sans-serif;
+}
+
+#shiftManagerView form span, #stafferTable span{
+  font-weight: bold;
+  color: #666;
+  width: 120px;
+  text-align: right;
+  display: inline-block;
+  padding-right: 6px;
+}
+
+* html #shiftManagerView form span, * html #stafferTable span { display:inline; }  /* for IE 6 */
+* + html #shiftManagerView form span, * + html #stafferTable span { display:inline; }  /* for IE 7 */
+
+  #stafferTable{
+    margin-top: 10px;
+    border-top: 2px dashed #ddd;
+    padding-top: 10px;
+  }
+  
+  #stafferTable table{
+    margin-top: 10px;
+  }
+  
+    #stafferTable div{
+      font-weight: bold;
+      color: #333;
+    }
+
+	  #stafferTable th{
+	    text-align: left;
+	    border-bottom: 1px solid #ccc;
+	  }
+	  
+	  #stafferTable td, #stafferTable th{
+	   padding: 4px 10px 4px 4px;
+	  }
+	  
+	  #stafferTable tr:nth-child(odd){
+	   background: #eee;
+	  }
+	  
+	  
+	  
+/* Assign User */
+
+#assignContainer{
+  width: 300px;
+}
+
+	#assignContainer .lookupInput{
+	  visibility: visible;
+	}
+	
+	#assignContainer span{
+	 display: inline-block;
+	}
+	
+	#assignContainer .assignHelp{
+	 font-weight: bold;
+	 color: #666;
+	 font-size: 14px;
+	}
+</apex:page>

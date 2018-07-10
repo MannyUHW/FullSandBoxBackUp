@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>40.0</apiVersion>
+    <availableInTouch>true</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Params:  code, desc,dignity flag,goal
+E.G.  apex/DignitySummitResponses4?code=D17&amp;desc=Dignity Summit&amp;dignity=true&amp;goal=Signup</description>
+    <label>Response Summary</label>
+</ApexPage>

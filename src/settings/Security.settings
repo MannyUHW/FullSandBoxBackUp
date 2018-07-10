@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SecuritySettings xmlns="http://soap.sforce.com/2006/04/metadata">
+    <networkAccess>
+        <ipRanges>
+            <description>UHW</description>
+            <end>216.100.240.215</end>
+            <start>216.100.240.193</start>
+        </ipRanges>
+        <ipRanges>
+            <description>UHW Wifi San Francisco</description>
+            <end>104.8.33.237</end>
+            <start>104.8.33.237</start>
+        </ipRanges>
+        <ipRanges>
+            <description>Pardot</description>
+            <end>67.228.223.107</end>
+            <start>67.228.223.106</start>
+        </ipRanges>
+        <ipRanges>
+            <description>Pardot</description>
+            <end>67.228.168.141</end>
+            <start>67.228.168.139</start>
+        </ipRanges>
+        <ipRanges>
+            <description>Pardot</description>
+            <end>67.228.95.145</end>
+            <start>67.228.95.145</start>
+        </ipRanges>
+        <ipRanges>
+            <description>UHW Wifi San Jose</description>
+            <end>50.196.190.150</end>
+            <start>50.196.190.144</start>
+        </ipRanges>
+        <ipRanges>
+            <description>UHW Wifi Sacramento</description>
+            <end>50.73.55.246</end>
+            <start>50.73.55.240</start>
+        </ipRanges>
+        <ipRanges>
+            <description>Touchpoint OC</description>
+            <end>45.48.55.20</end>
+            <start>45.48.55.10</start>
+        </ipRanges>
+        <ipRanges>
+            <description>UHW Wifi LA 1</description>
+            <end>12.250.92.250</end>
+            <start>12.250.92.250</start>
+        </ipRanges>
+        <ipRanges>
+            <description>UHW Wifi Oakland 1</description>
+            <end>12.247.50.70</end>
+            <start>12.247.50.70</start>
+        </ipRanges>
+        <ipRanges>
+            <description>UHW Wifi Oakland 2</description>
+            <end>12.178.135.50</end>
+            <start>12.178.135.1</start>
+        </ipRanges>
+        <ipRanges>
+            <description>UHW Wifi LA 2</description>
+            <end>12.52.74.50</end>
+            <start>12.52.74.1</start>
+        </ipRanges>
+    </networkAccess>
+    <passwordPolicies>
+        <complexity>SpecialCharacters</complexity>
+        <expiration>NinetyDays</expiration>
+        <historyRestriction>3</historyRestriction>
+        <lockoutInterval>FifteenMinutes</lockoutInterval>
+        <maxLoginAttempts>ThreeAttempts</maxLoginAttempts>
+        <minimumPasswordLength>8</minimumPasswordLength>
+        <minimumPasswordLifetime>false</minimumPasswordLifetime>
+        <obscureSecretAnswer>true</obscureSecretAnswer>
+        <questionRestriction>DoesNotContainPassword</questionRestriction>
+    </passwordPolicies>
+    <sessionSettings>
+        <disableTimeoutWarning>false</disableTimeoutWarning>
+        <enableCSPOnEmail>true</enableCSPOnEmail>
+        <enableCSRFOnGet>true</enableCSRFOnGet>
+        <enableCSRFOnPost>true</enableCSRFOnPost>
+        <enableCacheAndAutocomplete>true</enableCacheAndAutocomplete>
+        <enableClickjackNonsetupSFDC>true</enableClickjackNonsetupSFDC>
+        <enableClickjackNonsetupUser>false</enableClickjackNonsetupUser>
+        <enableClickjackNonsetupUserHeaderless>false</enableClickjackNonsetupUserHeaderless>
+        <enableClickjackSetup>true</enableClickjackSetup>
+        <enableContentSniffingProtection>false</enableContentSniffingProtection>
+        <enablePostForSessions>false</enablePostForSessions>
+        <enableSMSIdentity>true</enableSMSIdentity>
+        <enableUpgradeInsecureRequests>false</enableUpgradeInsecureRequests>
+        <enableXssProtection>false</enableXssProtection>
+        <enforceIpRangesEveryRequest>false</enforceIpRangesEveryRequest>
+        <forceLogoutOnSessionTimeout>true</forceLogoutOnSessionTimeout>
+        <forceRelogin>false</forceRelogin>
+        <hstsOnForcecomSites>false</hstsOnForcecomSites>
+        <identityConfirmationOnEmailChange>false</identityConfirmationOnEmailChange>
+        <identityConfirmationOnTwoFactorRegistrationEnabled>true</identityConfirmationOnTwoFactorRegistrationEnabled>
+        <lockSessionsToDomain>true</lockSessionsToDomain>
+        <lockSessionsToIp>false</lockSessionsToIp>
+        <redirectionWarning>false</redirectionWarning>
+        <referrerPolicy>true</referrerPolicy>
+        <requireHttpOnly>false</requireHttpOnly>
+        <requireHttps>true</requireHttps>
+        <securityCentralKillSession>false</securityCentralKillSession>
+        <sessionTimeout>ThirtyMinutes</sessionTimeout>
+    </sessionSettings>
+</SecuritySettings>

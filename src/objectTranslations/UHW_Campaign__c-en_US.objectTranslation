@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>UHW Campaign</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>UHW Campaigns</value>
+    </caseValues>
+    <fields>
+        <label><!-- Campaign Requirements --></label>
+        <name>Campaign_Requirements__c</name>
+    </fields>
+    <fields>
+        <label><!-- Division Links --></label>
+        <name>Division_Links__c</name>
+    </fields>
+    <fields>
+        <label><!-- Employer Filter --></label>
+        <name>Employer_Filter__c</name>
+    </fields>
+    <fields>
+        <label><!-- End Date --></label>
+        <name>End_Date__c</name>
+    </fields>
+    <fields>
+        <label><!-- Not a MO Campaign --></label>
+        <name>Not_a_MO_Campaign__c</name>
+    </fields>
+    <fields>
+        <label><!-- Petition Campaign --></label>
+        <name>Petition_Campaign__c</name>
+    </fields>
+    <fields>
+        <label><!-- Report Links --></label>
+        <name>Report_Links__c</name>
+    </fields>
+    <fields>
+        <label><!-- Start Date --></label>
+        <name>Start_Date__c</name>
+    </fields>
+    <layouts>
+        <layout>New Organizing Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>UHW Campaign Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <recordTypes>
+        <description><!-- New Organizing Campaign Type --></description>
+        <label><!-- New Organizing --></label>
+        <name>New_Organizing</name>
+    </recordTypes>
+    <recordTypes>
+        <description><!-- Standard UHW Campaign --></description>
+        <label><!-- Standard --></label>
+        <name>Standard</name>
+    </recordTypes>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

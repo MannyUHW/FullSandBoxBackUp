@@ -1,0 +1,201 @@
+<apex:page sidebar="true" showheader="true">
+ 
+ <script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/moment-with-locales.min.js')}"/>
+
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<div align="center">
+  <h1 id="h1Title">Enter Survey Response</h1>
+
+<br>&nbsp;</br>
+<table cellpadding="10">
+
+<script language="JavaScript">
+
+    var cid = "{!$CurrentPage.parameters.cid}";
+    if (cid == null || cid == "") {
+      //default to Ollie Allen
+      //cid = "003i000000n8QeFAAU";
+    }
+    
+    var qcode = "{!$CurrentPage.parameters.qcode}";
+    if (qcode == null || qcode == "") {
+      qcode = "WTP";
+    }
+
+    var pickListDivWriter = "";
+
+try{ 
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    //alert("start");
+    
+    var user = sforce.connection.getUserInfo();
+    var userName = user.userName;
+    var query = "SELECT ID, Name, Staff_Contact_Id__c, Title from User WHERE User.username=\'" + userName + "\' and Staff_Contact_Id__c != null";
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records');       
+
+    if (records1.length > 0) {
+      if (cid == null || cid == "") {    
+        cid = records1[0].Staff_Contact_Id__c;
+      }
+    }
+    
+    
+    //see if there was a previous value
+    var query = "SELECT id, contact__r.fid__c, Response_Value__c, Add_Info__c FROM Survey_Response__c";
+    query = query + " where survey_question__r.Survey_Code__c=\'" + qcode + "\' and contact__r.id =\'" + cid + "\' order by Collected_Datetime__c desc limit 1"; 
+  
+    //alert("query=" + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var previousValue = "";
+    var previousId = null;
+    //alert("previous responses count =" + records1.length);
+    for(var i=0;i<records1.length;i++){ 
+      previousValue = records1[i].Response_Value__c;
+      if (records1[i].Add_Info__c != null && records1[i].Add_Info__c != "") {
+        previousValue += " (" + records1[i].Add_Info__c + ")";
+      }
+      previousId = records1[i].Id;      
+    }
+
+    var query = "SELECT Id, Name, Allowed_Responses__c,Survey_Code__c, Add_Info_Type__c, Add_Info_Control__c FROM Survey_Question__c where Survey_Code__c = \'" + qcode + "\' limit 1";
+  
+    //alert("query=" + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var allowedResponses = null;
+    var qname = null;
+    var qid = null;
+    if (records1.length==0) {
+      alert("Invalid Survey Question Code \"" + qcode + "\".  Please double-check the Survey Question object to confirm the code.");
+    }
+    for(var i=0;i<records1.length;i++){ 
+      allowedResponses = records1[i].Allowed_Responses__c;
+      qname = records1[i].Name; 
+      qid = records1[i].Id;      
+      if (records1[i].Add_Info_Type__c.trim().toLowerCase() == 'picklist') {
+
+        pickListDivWriter = "Options:&nbsp;&nbsp;&nbsp;&nbsp; <select id=\"addInfoSelect\">";
+        var pickValueArray = records1[i].Add_Info_Control__c.split("\n");
+        for (var px = 0; px < pickValueArray.length; px++) {
+          pickListDivWriter += "<option value=\""+ pickValueArray[px] + "\">" + pickValueArray[px] + "</option>\n";
+        }
+        pickListDivWriter += "</select>";
+  
+      }
+    }
+    
+    var query = "select fid__c, id, name, lastname, firstname, middlename, account.name from contact where id = \'" + cid + "\' limit 1";
+  
+    //alert("query=" + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+
+    if (records1.length==0) {
+      alert("Invalid Contact \"" + cid + "\".  Please double-check the Contact Id.");
+    }
+    var cname = null;
+    var emname = null;
+    for(var i=0;i<records1.length;i++){ 
+      cname = records1[i].Name;
+      emname = records1[i].Account.Name; 
+    }
+
+
+} 
+catch(e){ 
+alert('An Error has Occured. Error:' +e); 
+}
+
+</script>
+
+<tr valign="top"><td align="right">Contact Name:</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div id="div_cname"></div></td></tr>
+<tr valign="top"><td align="right">Employer:</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div id="div_emname"></div></td></tr>
+<tr valign="top"><td align="right">Survey Question:</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div id="div_qname"></div></td></tr>
+<tr valign="top"><td align="right">Previous Response:</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td><td><div id="div_previousValue"></div></td></tr>
+<tr valign="top"><td align="right">Response:</td><td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td>
+  <select id="response_select"></select>
+  </td>
+</tr>
+
+<tr valign="top"><td colspan="3" align="center">Comments:<br/><input length="80" id="commentsText"></input><br/>&nbsp;</td></tr>
+
+<tr valign="top"><td colspan="3" align="center"><div id="SupplementDiv"></div></td></tr>
+
+</table>
+<br>&nbsp;</br>
+<button onclick="submitSurvey()">Submit Survey Response</button>
+<br>&nbsp;</br>
+<button onclick="window.history.back()">Back</button>
+<br>&nbsp;</br>
+<script language="JavaScript">
+  document.getElementById("div_cname").innerHTML = cname;
+  document.getElementById("div_emname").innerHTML = emname;
+  document.getElementById("div_qname").innerHTML = qname;  
+  document.getElementById("div_previousValue").innerHTML = previousValue;    
+  var rselect = document.getElementById("response_select");
+  var rarray = allowedResponses.split("\n");
+  //alert(allowedResponses);
+  //alert(sforce.connection.getServerTimestamp()["timestamp"]);
+  for (var i = 0; i < rarray.length; i++) {
+    rselect.options[i] = new Option(rarray[i], rarray[i]);  
+  }
+  
+  if (pickListDivWriter != null && pickListDivWriter != "") {
+          document.getElementById("SupplementDiv").innerHTML = pickListDivWriter ;
+  }
+
+  
+  function submitSurvey() {
+    //add insert/push
+    var responses = []; 
+    var response = new sforce.SObject("Survey_Response__c"); 
+    response.Contact__c = cid;
+    response.Survey_Question__c = qid;
+    //response.Collected_Datetime__c = "2015-02-11T00:59:00.000Z";
+    response.Collected_Datetime__c = sforce.connection.getServerTimestamp()["timestamp"];
+    response.Response_Value__c = document.getElementById("response_select").value;
+
+    if ($("#commentsText").val() != null && $("#commentsText").val().trim() != "") {
+      response.Comments__c = $("#commentsText").val();
+    }
+
+    if ($("#addInfoSelect") != null) {
+      //alert($("#addInfoSelect").val());
+      response.Add_Info__c = $("#addInfoSelect").val();
+    }
+    responses.push(response); 
+    
+        
+    var results = null;
+    if (previousId == null) {
+      results = sforce.connection.create(responses); 
+    } else {
+      response.Id = previousId;
+      results = sforce.connection.update(responses); 
+    }
+    if (results[0].getBoolean("success")) { 
+      alert("Response submitted successfully."); 
+      document.getElementById("div_previousValue").innerHTML = document.getElementById("response_select").value;    
+      window.history.back();
+    } else { 
+      alert("failed to create Survey Response " + results[0]); 
+    } 
+
+  }
+
+
+</script>
+</div>
+</apex:page>

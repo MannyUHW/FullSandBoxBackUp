@@ -1,0 +1,153 @@
+<apex:page >
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.tablesorter.min.js')}"/>
+<link rel="stylesheet" href="{!URLFOR($Resource.mo_assets, '/mo_assets/css/tablesorter/tablesorter_blue_style.css')}" type="text/css" id="" media="print, projection, screen" />
+
+
+ <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+
+<div align="center">
+<h1>New Organizing Raw Activities Report</h1>
+<br>&nbsp;</br>
+<i>Note: this report only lists which records have been changed in the last seven days.  Those changes may have been minor or major.</i>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+sforce.connection.sessionId = "{!$Api.Session_ID}";
+var countMap = new Array();
+var emNameSet = new Array();
+
+var bedMap = new Array();
+var stageMap = new Array();
+var emIdMap = new Array();
+
+var sortArray = new Array();
+
+var allCountMap = new Array();
+
+try {
+
+  var query = "select account.name, count(id) from contact group by Account.Name";
+  var records = sforce.connection.query(query); 
+  var records1 = records.getArray('records'); 
+  for (var i = 0; i < records1.length; i++) {
+    if (i == 0) {
+      //alert(JSON.stringify(records1[i]));
+    }
+    var allCount = records1[i].expr0;
+    allCountMap[records1[i].Name] = allCount;
+  }
+  
+  
+  var query = "SELECT Id, Name, Number_of_Beds__c, Assessment_Stage__c FROM Account";
+  var records = sforce.connection.query(query); 
+  var records1 = records.getArray('records'); 
+  //alert("query results count = " + records1.length);
+  for (var i = 0; i < records1.length; i++) {
+    if ( records1[i].Assessment_Stage__c == null) {
+     records1[i].Assessment_Stage__c = "";
+    }
+    if ( records1[i].Number_of_Beds__c == null) {
+      records1[i].Number_of_Beds__c = 0;
+    } else {
+      records1[i].Number_of_Beds__c = parseInt(records1[i].Number_of_Beds__c);
+    }
+    bedMap[records1[i].Name] = records1[i].Number_of_Beds__c;
+    stageMap[records1[i].Name] = records1[i].Assessment_Stage__c;
+    emIdMap[records1[i].Name] = records1[i].Id;    
+  }
+
+  for (var p = 0; p < 10; p++) {
+    var query = "SELECT FID__c, Account.Name FROM Contact where Division_Type__c = \'New Organizing\' and lastmodifieddate >= LAST_WEEK and FID__c like \'%" + p + "\' ";
+    //alert(query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    //alert("query results count = " + records1.length);
+    for (var i = 0; i < records1.length; i++) {
+      var fid = records1[i].FID__c;
+      var emName = records1[i].Account.Name;
+      var ccount = 0;
+      if (countMap[emName] != null) {
+        ccount = countMap[emName];
+      }
+      ccount++;
+      countMap[emName] = ccount;
+      
+      if (emNameSet.indexOf(emName) < 0) {
+        emNameSet.push(emName);
+      }
+      
+    }  
+  }
+  
+  var w = 0;
+  for (var k = 0; k < emNameSet.length; k++) {
+    var emName = emNameSet[k];
+    if (countMap[emName] != null && countMap[emName] >= 5) {  
+      sortArray[w++] = (99999999 -  countMap[emName]) + "~" + emName;
+    }
+  }
+  sortArray.sort();
+    
+  document.write("<table border=\"1\" id=\"newOrgTable\" class=\"tablesorter\">\n");
+  document.write("<thead>\n");
+  document.write("<tr valign=\"bottom\"><th>Employer</th><th>Number of Beds</th><th>Assessment Stage</th><th>Records Modified</th><th>Number of <br/>Employer Contacts</th></tr>\n");
+  document.write("</thead>\n");
+  document.write("<tbody>\n");
+  for (var k = 0; k < sortArray.length; k++) {
+    var emName = sortArray[k].split("~")[1];
+    if (countMap[emName] != null && countMap[emName] >= 5) {
+      //if (1==1) {
+    
+      document.write("<tr valign=\"top\">\n");
+      document.write("<td align=\"left\">\n");
+
+      document.write("<a target=\"_BLANK\" href=\"/" + emIdMap[emName] + "\">"  + toProperCase(emName) + "</a>");
+      //document.write(toProperCase(emName));      
+      document.write("</td>\n");
+      
+      document.write("<td align=\"center\">\n");
+      document.write(bedMap[emName]);       
+      document.write("</td>\n");     
+
+      document.write("<td align=\"center\">\n");
+      document.write(stageMap[emName]);       
+      document.write("</td>\n");     
+      
+      
+      
+      document.write("<td align=\"center\">\n");
+      document.write(countMap[emName]);       
+      document.write("</td>\n");  
+      
+      
+      document.write("<td align=\"center\">\n");
+      document.write(allCountMap[emName]);       
+      document.write("</td>\n"); 
+          
+      document.write("</tr>\n");  
+    }
+  }  
+  document.write("</tbody>\n");
+  document.write("</table>\n");  
+ 
+  $(document).ready(function() 
+      {  
+         $("#newOrgTable").tablesorter(); 
+      } 
+  );   
+  
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+</script>
+
+</div>
+</apex:page>

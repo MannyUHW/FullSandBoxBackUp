@@ -1,0 +1,304 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>MO: Enter Responder Contact Details</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+<script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+ sessionStorage.setItem("mo_last_page", "MO_Manual_Contact_Page");
+
+</script>
+
+</head>
+
+  <body>
+  <div align="center">
+  <a href="MO_Main_Page"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  
+  <table border="0"> 
+  <tr valign="top">
+  <td align="center">
+
+    <br></br>
+  <h4>Enter Contact Information</h4>
+  <br>&nbsp;</br>
+
+  <table width="100%">  
+  <tr valign="top">
+  <td align="right">  
+  First Name:
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td width="50%" align="left">
+  <input id="firstname"></input>
+  </td>
+  </tr>
+  
+  <tr valign="top">
+  <td  align="right">  
+  Middle Name:
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td width="50%" align="left">
+  <input id="middlename"></input>
+  </td>
+  </tr>
+  
+  <tr valign="top">
+  <td  align="right">  
+  Last Name:
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td width="50%" align="left">
+  <input id="lastname"></input>
+  </td>
+  </tr>
+
+  <tr valign="top">
+  <td  align="right">  
+  Employer/Facility:
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>  
+  <td width="50%" align="left">
+  <select id="emselect"></select>
+  </td>
+  </tr>
+  
+  <tr valign="top">
+  <td  align="right">  
+  Phone:
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td width="50%" align="left">
+  <input id="phone"></input>
+  </td>
+  </tr>
+
+  <tr valign="top">
+  <td  align="right">  
+  Email:
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td width="50%" align="left">
+  <input id="email"></input>
+  </td>
+  </tr>
+  
+    <tr valign="top">
+  <td  align="right">  
+  Person Type:
+  </td>
+  <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+  <td width="50%" align="left">
+  <select id="ptype">
+  <option></option>
+  <option>Allies</option>
+  <option>Friends/Family</option>
+  <option>Not Yet Union</option>
+  <option>Pre-member Community</option>
+  <option>Pre-member Hospital/Kaiser</option>
+
+  
+  </select>
+  </td>
+  </tr>
+  
+  
+  <tr valign="top">
+  <td align="left" colspan="3">  
+  <br>&nbsp;</br>
+  Relative/Associate/Friend with Contact:
+  </td>
+  </tr>
+  
+  <tr valign="middle">
+  <td colspan="2" align="center">
+  <div id="relatedDiv">No Contact Selected</div>
+  </td>
+  <td>
+  <div id="associateDiv">
+  <a href="javascript:searchForAssociate();">&nbsp;&nbsp;&nbsp;&nbsp;
+  <img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/>
+  &nbsp;&nbsp;&nbsp;&nbsp;</a>
+  <br></br>
+  </div>
+  </td>
+  </tr>
+  
+  </table>
+  <br>&nbsp;</br>
+
+<button class="btn btn-lg btn-primary" type="submit" onclick="submitContact()">  
+
+  &nbsp;&nbsp;
+  Continue
+  &nbsp;&nbsp;
+  </button><br></br>  
+
+  <br>&nbsp;</br>
+  <br>&nbsp;</br>
+  <br>&nbsp;</br>
+
+  </td>
+  </tr>
+  <tr>
+  <td>
+  <div align="center">
+  <a href="javascript:navigateTo(\'{! $Page.MO_Main_Page}\'"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </div>
+</td>
+</tr>
+  </table>
+  <br>&nbsp;</br>
+        &copy; 2015 SEIU-UHW. All rights reserved.
+  </div>
+  
+<script language="JavaScript">
+
+  var mode = "{!$CurrentPage.parameters.mode}";
+  if (mode == null || mode == "" || mode == "null") {
+    mode = localStorage.getItem("mo_search_mode");
+  }
+  
+  if (mode == "shifts") {
+    $("#associateDiv").hide();
+  } else {
+    $("#associateDiv").show();  
+  }
+  
+  var fid3 = "{!$CurrentPage.parameters.fid3}";
+  var cid3 = null;
+  if (fid3 != null && fid3 != "" && fid3 != "null" && localStorage.getItem("mo_fid_" + fid3)!=null && localStorage.getItem("mo_fid_" + fid3)!="") {
+    //var crecord3 = JSON.parse(localStorage.getItem("mo_fid_" + fid3));
+    var compressedContactArray = JSON.parse(localStorage.getItem("mo_fid_" + fid3));
+    var crecord3 = uncompressContact(compressedContactArray);
+    
+    var lastname = crecord3.LastName;
+    var firstname = crecord3.FirstName;
+    var middlename = crecord3.MiddleName;  
+    cid3 = crecord3.Id;     
+    if (middlename == null || middlename == "null") {
+        middlename = "";
+    }     
+    var fullname3 = toProperCase(lastname + ", " + firstname + " " + middlename).trim();
+    document.getElementById("relatedDiv").innerHTML = fullname3;
+  }
+  
+  
+  var emids =  localStorage.getItem("mo_sync_emids");
+  var emnames =  localStorage.getItem("mo_sync_emnames");
+    var emsfids =  localStorage.getItem("mo_sync_emsfids");
+    var syncTs = localStorage.getItem("mo_last_sync");
+    var currentTs = (new Date()).getTime();
+    if (emnames == null || emnames == "" || emsfids == null || emsfids == "") {
+      window.location = "MO_Choose_Page";
+    } else if (currentTs - syncTs > (24 * 60 * 60 * 1000)) {
+      window.location = "MO_Sync_Page?emids=" + emids;
+    }
+  
+  
+  var emselect = document.getElementById("emselect");
+  var j = 0;
+  for (var i = 0; i < emids.length; i++) {
+    if (emnames.split(",")[i] != null && emnames.split(",")[i].trim() != "" && emnames.split(",")[i].trim() != "null")  {
+      emselect.options[j] = new Option(toProperCase(emnames.split(",")[i]), emids.split(",")[i]);
+      j++;
+    }
+  }
+  
+  
+  if (sessionStorage.getItem("mo_enter_survey_altlast") != null && sessionStorage.getItem("mo_enter_survey_altlast") != "" && sessionStorage.getItem("mo_enter_survey_altlast") != "null") {
+    document.getElementById("lastname").value = sessionStorage.getItem("mo_enter_survey_altlast");
+    document.getElementById("firstname").value = sessionStorage.getItem("mo_enter_survey_altfirst");
+    document.getElementById("middlename").value = sessionStorage.getItem("mo_enter_survey_altmiddle");
+    document.getElementById("emselect").value = sessionStorage.getItem("mo_enter_survey_altemid");                  
+    document.getElementById("ptype").value = sessionStorage.getItem("mo_enter_survey_altptype");     
+    document.getElementById("phone").value = sessionStorage.getItem("mo_enter_survey_phone");   
+    document.getElementById("email").value =  sessionStorage.getItem("mo_enter_survey_email"); 
+  }
+  
+  
+  function submitContact() {
+  
+
+  
+    if (document.getElementById("firstname").value.trim() == "" || document.getElementById("lastname").value.trim() == "") {
+      alert("You must provide a first and last name.");
+      return false;
+    }
+  
+    if (document.getElementById("ptype").value.trim() == "") {
+      alert("Please indicate what type of person this is?");
+      return false;
+    }
+    var params = "altlast=" + encodeURIComponent(document.getElementById("lastname").value);
+    params += "&altfirst="  + encodeURIComponent(document.getElementById("firstname").value);
+    params += "&altemid="  + encodeURIComponent(document.getElementById("emselect").value);
+    params += "&altmiddle="  + encodeURIComponent(document.getElementById("middlename").value);
+    params += "&altphone="  + encodeURIComponent(document.getElementById("phone").value);            
+    params += "&altemail="  + encodeURIComponent(document.getElementById("email").value);                
+    params += "&altptype="  + encodeURIComponent(document.getElementById("ptype").value);  
+    //alert("cid3=_" + cid3 + "_");
+    if (cid3 != null && cid3 != "" && cid3 != "null") {
+      params += "&altrid="  + encodeURIComponent(cid3);      
+    }
+    if (mode != null && mode.trim().toLowerCase() == "shifts") {
+      navigateTo("{! $Page.MO_Enter_Shifts}?" + params);
+    } else {                  
+      navigateTo("{! $Page.MO_Enter_Survey_Page}?" + params);
+    }
+  }
+  
+  function searchForAssociate() {
+
+    sessionStorage.setItem("mo_enter_survey_altlast", document.getElementById("lastname").value);
+    sessionStorage.setItem("mo_enter_survey_altfirst", document.getElementById("firstname").value);
+    sessionStorage.setItem("mo_enter_survey_altmiddle", document.getElementById("middlename").value);
+    sessionStorage.setItem("mo_enter_survey_altemid", document.getElementById("emselect").value);                  
+    sessionStorage.setItem("mo_enter_survey_altptype", document.getElementById("ptype").value);     
+    sessionStorage.setItem("mo_enter_survey_phone", document.getElementById("phone").value);   
+    sessionStorage.setItem("mo_enter_survey_email", document.getElementById("email").value); 
+    navigateTo("{! $Page.MO_Search_Page}?mode=related");
+    
+  }   
+  
+  
+</script>
+  
+    </body>
+</html>
+
+
+</apex:page>

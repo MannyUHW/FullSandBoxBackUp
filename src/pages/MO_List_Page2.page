@@ -1,0 +1,338 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+sessionStorage.setItem("mo_last_page", "MO_List_Page");
+
+</script>
+
+<div align="center">
+
+  <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MO_Search_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+  
+   <select id="qselect" onchange="updateResponses()">
+   </select>
+  
+
+<br>&nbsp;</br>
+  <h1 id="h1Title">List</h1>
+<br>&nbsp;</br>
+
+<script language="JavaScript">
+
+  sessionStorage.setItem("mo_last_page", window.location);
+
+        sforce.connection.sessionId = "{!$Api.Session_ID}";
+  
+
+var qpopulated = false;
+
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emids = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnames = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").split(",");
+var cams = localStorage.getItem("mo_sync_cams").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+var syncTs = localStorage.getItem("mo_last_sync");
+if (syncTs == null) {
+  syncTs = 0;
+}
+var currentTs = (new Date()).getTime();
+if (currentTs - syncTs > (24 * 60 * 60 * 1000)) {
+      window.location = "MO_Sync_Page?emids=" + localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "");
+}
+
+  var qcodeSelectedParam = "{!$CurrentPage.parameters.qcode}";
+  //alert("qcodeSelectedParam= _" + qcodeSelectedParam + "_");
+  //populate questions
+  var qselect = document.getElementById("qselect");
+
+  //alert("localStorage.getItem(\"mo_enter_survey_qselect\")=" + localStorage.getItem("mo_enter_survey_qselect"));
+
+  var currentQid = qids[0];
+  for (var i = 0; i < qids.length; i++) {
+    qselect.options[i] = new Option(questions[i], qids[i]);
+    if (qcodeSelectedParam != null && qcodeSelectedParam != "" && qcodeSelectedParam != "null") {
+      if (qcodes[i] == qcodeSelectedParam) {
+        qselect.options[i].selected = true;
+        currentQid = qids[i];      
+      }
+    } else if (localStorage.getItem("mo_enter_survey_qselect") != null && localStorage.getItem("mo_enter_survey_qselect") == qids[i]) {
+      qselect.options[i].selected = true;
+      currentQid = qids[i];
+    }
+  }
+  //alert("current qid = " + currentQid);
+
+try {
+  var query = "Select FID__c, Response_Value__c FROM Survey_Response__c where Survey_Question__r.Id='" + currentQid + "' AND (";
+  for (var emdex = 0; emdex < emnames.length; emdex++) {
+    if (emdex > 0) {
+      query = query + " OR ";
+    }
+    query = query + " Employer_Name__c='" + emnames[emdex].replace(/'/g, '\\\'') + "' ";         
+  }  
+  query += ")";
+  //alert(query);
+  var records = sforce.connection.query(query); 
+  var records1 = records.getArray('records'); 
+  //alert("query results count = " + records1.length);
+  var responseMap = new Array();
+  for (var i = 0; i < records1.length; i++) {
+    var fid = records1[i].FID__c;
+    var response = records1[i].Response_Value__c;
+    responseMap[fid] = response;
+  }
+
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+var emid = "{!$CurrentPage.parameters.emid}";
+if (emid == null || emid.trim() == "" || emid == "null") {
+  emid = "2590";
+}
+
+var dept = "{!$CurrentPage.parameters.dept}";
+
+//alert("dept0 = " + dept);
+
+var job =  "{!$CurrentPage.parameters.job}";
+var mode = "DEPT";
+var listTitle = dept;
+var worksite=null;
+if (job != null && job.trim() != "" && job.trim() != "null") {
+  mode = "JOB";
+  listTitle = job;
+} else if (dept == null || dept.trim() == "" || dept == "null") {
+  dept = "Environmental Svcs";
+  origDept = dept;
+} else if (isKaiserSouth(emnames[0])) {
+  var siteDeptBreakDex = dept.indexOf("-");
+  worksite = dept.substring(0,siteDeptBreakDex).trim();
+  dept = dept.substring(siteDeptBreakDex + 1).trim();
+}
+
+
+//alert("dept = " + dept + ", listTitle = " + listTitle);
+
+var emNameIdMap = new Array();
+var emIdNameMap = new Array();
+for (var i = 0; i < emids.length; i++ ) { 
+  emNameIdMap[emnames[i].toLowerCase()] = emids[i];
+  emIdNameMap[emids[i]] = emnames[i];  
+}
+
+
+
+$("#h1Title").html("List for " + toProperCase(emIdNameMap[emid]) + ", " + toProperCase(listTitle));
+
+var deptBuMap = new Array();
+var allDepts = 0;
+var tempc = 0;
+var emDeptList = new Array();
+
+  document.write("<table cellpadding=\"10\">\n");
+  document.write("<tr valign=\"bottom\">\n");  
+  document.write("<th>Name</th>\n");
+  if (mode == "JOB") {
+    document.write("<th>Department</th>\n");
+  } else {
+    document.write("<th>Job Class</th>\n");
+  }
+  document.write("<th>Shift</th>\n");  
+  document.write("<th>COPE Pledge</th>\n");    
+  document.write("<th>Survey<br/>Response</th>\n");      
+  document.write("</tr>\n");  
+  
+  var sortMap = new Array();
+  var sortList = new Array();
+
+      for (var rr = 0; rr < localStorage.length; rr++) {
+        if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+          //var crecord = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+          var compressedContactArray = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+          var crecord = uncompressContact(compressedContactArray);
+          
+          var dept2 = crecord.Department;
+          if (dept2.toLowerCase().indexOf("&") >= 0) {
+            dept2 = dept2.replace(/&/g, "and");
+          }
+          
+          var emname2 = crecord.Account.Name;
+          var emid2 = emNameIdMap[emname2.toLowerCase().trim()];
+          var includeMember = false;
+          
+          if (crecord.Worksite__c != null) {
+            crecord.Worksite__c = crecord.Worksite__c.replace(/\./g,'');
+            crecord.Worksite__c = crecord.Worksite__c.replace(/\s/g,'');            
+          }
+          if (worksite != null) {
+            worksite = worksite.replace(/\./g,'');          
+            worksite = worksite.replace(/\s/g,'');                       
+          }
+          if (emid == emid2) {
+            if (dept2.toLowerCase().indexOf("internal med") >= 0 && crecord.Worksite__c.toLowerCase().indexOf("10820") == 0) {
+              //alert(emnames[0]);
+              //alert("kaiser south = " + isKaiserSouth(emnames[0]) + ", worksite = " + crecord.Worksite__c  + " vs " + worksite  + ", dept = " + dept2 + " vs. " + dept);
+            }
+            if (!isKaiserSouth(emnames[0]) && mode == "DEPT" && dept.toLowerCase().trim() == dept2.toLowerCase().trim()) {
+              includeMember = true;
+            } else if (isKaiserSouth(emnames[0]) && mode == "DEPT" && dept.toLowerCase().indexOf(dept2.toLowerCase().trim()) >= 0 && (crecord.Worksite__c == null || crecord.Worksite__c.toLowerCase().indexOf(worksite.toLowerCase())>= 0)) {
+              //alert("including...");
+              includeMember = true;
+            } else if (mode == "JOB" && crecord.Title != null && job.toUpperCase().trim() == crecord.Title.toUpperCase().trim()) {
+              includeMember = true;
+            }
+          }
+          if (includeMember) {
+            var shift = crecord.Shift__c;
+            if (shift == null || shift == "" || shift == "null") {
+              shift = "Unknown";
+            }
+            var sortKey = shift + crecord.LastName + crecord.FirstName + crecord.FID__c;
+            sortMap[sortKey] = crecord;
+            sortList.push(sortKey);
+          }
+        }
+      }
+      //alert("sort list size = " + sortList.length);
+      sortList.sort();
+      for (var i = 0; i < sortList.length; i++) {
+        var sortKey = sortList[i];
+        var crecord = sortMap[sortKey];
+        var fid = crecord.FID__c;
+            var lastname = crecord.LastName;
+            var firstname = crecord.FirstName;
+            var middlename = crecord.MiddleName;       
+            if (middlename == null || middlename == "null") {
+              middlename = "";
+            }     
+            var fullname1 = toProperCase(lastname + ", " + firstname + " " + middlename).trim();
+          
+            document.write("<tr valign=\"top\">\n");
+            document.write("<td><a href=\"javascript:navigateTo('{! $Page.MO_Contact_Page}?fid=" + fid + "\');\">" + fullname1 + "</a></td>\n"); 
+            if (mode == "JOB") {
+              var dept = crecord.Department;
+              if (crecord.Worksite__c == null) {
+                crecord.Worksite__c = "Unknown Worksite";
+              }              
+              if (isKaiserSouth(emnames[0])) {
+                //alert("worksite=" + crecord.Worksite__c);
+                dept = truncateWorksite(crecord.Worksite__c).replace("-", " ") + " - " + crecord.Department;
+              }
+              //alert("dept = " +dept + " for " + emnames[0]);
+              document.write("<td align=\"center\"><a href=\"javascript:navigateTo('{! $Page.MO_List_Page}?emid=" + emid + "&dept=" + encodeURIComponent(dept) + "\');\">" + toProperCase(dept) + "</td>\n");     
+            } else {   
+              document.write("<td align=\"center\"><a href=\"javascript:navigateTo('{! $Page.MO_List_Page}?emid=" + emid + "&job=" + encodeURIComponent(crecord.Title) + "\');\">" + toProperCase(crecord.Title) + "</td>\n");     
+            }
+            var shift = crecord.Shift__c;
+            if (shift == null || shift == "" || shift == "null") {
+              shift = "Unknown";
+            }
+                       
+            document.write("<td align=\"center\">" + shift + "</td>\n");      
+            
+            var cope = crecord.Cope_Amount__c;
+            if (crecord.COPE_Pledge__c != null || crecord.COPE_Pledge__c > 0) {
+               cope = crecord.COPE_Pledge__c;
+            }
+            
+            if (cope > 0) {
+              document.write("<td align=\"center\">$" + cope + "</td>\n");                  
+            } else {
+              document.write("<td align=\"center\">&nbsp;</td>\n");      
+            }
+            
+                        
+            if (responseMap[crecord.FID__c] != null) {
+              document.write("<td align=\"center\">" + responseMap[crecord.FID__c] + "</td>\n");                  
+            } else {
+              document.write("<td align=\"center\">&nbsp;</td>\n");      
+            }
+         
+            document.write("</tr>\n\n");
+      }
+      
+      
+      document.write("</table>");
+
+
+
+function updateResponses() {
+  //alert("updateResponses start.\ncurrent qid = " + currentQid  + "\nselected qid = " + $("#qselect").val());
+  
+  if (currentQid != $("#qselect").val()) {
+    var qparam = "";
+    //alert("qids length = " + qids.length);
+    for (var t = 0; t < qids.length; t++) {
+      if (qids[t].trim() == $("#qselect").val().trim()) {
+        qparam = qcodes[t];
+        break;
+      }
+    }
+    
+    var emid = "{!$CurrentPage.parameters.emid}";
+    var dept = "{!$CurrentPage.parameters.dept}";
+    var job =  "{!$CurrentPage.parameters.job}";
+    var newUrl = "MO_List_Page?qcode=" + qparam + "&emid=" + emid;
+    if (dept != null && dept != "" && dept != "null") {
+      newUrl += "&dept=" + encodeURIComponent(dept);
+    } else {
+      newUrl += "&job=" + encodeURIComponent(job);
+    }
+    //alert("newUrl = " + newUrl)
+    window.location = newUrl;
+  }
+}
+
+</script>
+<br>&nbsp;</br>
+<br>&nbsp;</br>
+
+<a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+
+
+</div>
+</apex:page>

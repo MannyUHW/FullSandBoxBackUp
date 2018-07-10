@@ -1,0 +1,184 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false" applyBodyTag="false" applyHtmlTag="false">
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=0.8"></meta>
+    <meta name="description" content=""></meta>
+    <meta name="author" content=""></meta>
+                          
+    <title>UHW Asset Search</title>
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/36.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/36.0/apex.js" type="text/javascript"></script>
+
+
+</head>
+
+  <body>
+  <div align="center">
+ 
+  <table border="0"> 
+  <tr valign="top">
+  <td align="center">
+  <div align="center">
+    <br></br>
+  <font color="#481C60" size="+2">UHW Asset Search</font>
+  <br>&nbsp;</br>
+
+
+  <input size="40" id="searchterms"></input>
+  <br>&nbsp;</br>
+
+  <button class="btn btn-primary" type="submit" onclick="search();">
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  <img src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_small.png')}"></img>
+  &nbsp;&nbsp;
+  Search
+  &nbsp;&nbsp;&nbsp;&nbsp;
+  </button><br></br>
+  
+    
+  </div>
+  <br>&nbsp;</br>  
+  <div id="searchResultsDiv"><i>Enter any terms, including partial ones to search.</i><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br></div>
+  <br>&nbsp;</br>
+  </td>
+  </tr>
+  <tr>
+  <td>
+
+</td>
+</tr>
+  </table>
+  <br>&nbsp;</br>
+        &copy; 2016 SEIU-UHW. All rights reserved.
+  </div>
+  
+<script language="JavaScript">
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+
+document.getElementById("searchterms").addEventListener("keydown", function (e) {
+    if (e.keyCode === 13) {  //checks whether the pressed key is "Enter"
+        search();
+    }
+});
+  
+  
+function search() {  
+
+  document.getElementById("searchResultsDiv").innerHTML = "Searching...";
+
+
+  var terms = document.getElementById("searchterms").value.toLowerCase().trim(); 
+  if (terms == "") {
+    return;
+  }
+   
+  var tarray = terms.split(" ");
+  var sortKeyList = new Array();
+  var resultsKeyMap = new Array();
+
+  var resultsArray = new Array();
+  sforce.connection.sessionId = "{!$Api.Session_ID}";
+  for (var ii = 0; ii < 10; ii++) {
+    var query = "select Id, Name, Office_Assigned__c, Serial_Number__c, User__r.Name, User_Active__c, Make__c, Model__c, Asset_Type__c, Computer_Name__c, Purchase_Order_Id__c, Disposition__c, Disposition_Add_Info__c from UHW_Asset__c ";
+    query += " where Name like \'%" + ii + "\' ";
+    var records = sforce.connection.query(query); 
+    var records0 = records.getArray('records'); 
+    for (var jj = 0; jj < records0.length; jj++) {
+      var arecord = records0[jj];
+      var score = 0.0;
+      for (var kk = 0; kk < tarray.length; kk++) {
+        if (JSON.stringify(arecord).toLowerCase().indexOf("\"" + tarray[kk]) > 0) {
+          score += 7;
+        } else if (JSON.stringify(arecord).toLowerCase().indexOf(" " + tarray[kk]) > 0) {
+          score += 6;          
+        } else if (JSON.stringify(arecord).toLowerCase().indexOf(tarray[kk]) > 0) {
+          score += 5;
+        } else if (tarray[kk].length >= 5 && JSON.stringify(arecord).toLowerCase().indexOf(tarray[kk].substring(0, 5)) > 0) {
+          score += 3;
+        } else if (tarray[kk].length >= 3 && JSON.stringify(arecord).toLowerCase().indexOf(tarray[kk].substring(0, 3)) > 0) {
+          score += 1;
+        }
+      } 
+      if (score > 0) {
+        resultsArray.push(JSON.stringify([(99999999 - score), arecord]));
+      }
+    }
+  }
+
+  //alert("search results count = " + resultsArray.length);
+ 
+  resultsArray.sort();
+
+  
+  if (resultsArray.length == 0) {
+      document.getElementById("searchResultsDiv").innerHTML = "<font color=\"red\"><i>No Results Found</i><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br></font>";
+//  } else if (resultsArray.length > 200) {
+//      document.getElementById("searchResultsDiv").innerHTML = "<font color=\"red\"><i>Too many results.  Please narrow your search terms.</i><br>&nbsp;</br><br>&nbsp;</br><br>&nbsp;</br></font>";
+  } else {
+      sortKeyList.sort();
+      var s = "<table border=\"0\"><tr><td>";        
+      for (var i = 0; i < resultsArray.length; i++) {
+        if (i > 100) {
+          s += "<br>Search results have been truncated.<br/>Please enter more specific terms.</br>";
+          break;
+        }
+        var sortKey = resultsArray[i];
+        var crecord = JSON.parse(sortKey)[1];     
+        s += "<font size=\"+1\"><a href=\"javascript:navigateTo(\'/" + crecord.Id + "\');\">" + crecord.Name + "</a></font><br/>\n";
+        s += "&nbsp;&nbsp;&nbsp;&nbsp;Asset Type: " + crecord.Asset_Type__c + "<br/>\n";                
+        s += "&nbsp;&nbsp;&nbsp;&nbsp;Make: " + crecord.Make__c + "<br/>\n";        
+        s += "&nbsp;&nbsp;&nbsp;&nbsp;Model: " + crecord.Model__c + "<br/>\n";
+        s += "&nbsp;&nbsp;&nbsp;&nbsp;Office: " + crecord.Office_Assigned__c + "<br/>\n";        
+        var userName = "unassigned";
+        if (crecord.User__r != null && crecord.User__r.Name != null && crecord.User__r.Name != "null" && crecord.User__r.Name != "" ) {
+          userName = toProperCase(crecord.User__r.Name);      
+        }
+        s += "&nbsp;&nbsp;&nbsp;&nbsp;User: " + userName;
+        if (userName != "unassigned") {
+          if (crecord.User_Active__c != null && (crecord.User_Active__c == false || crecord.User_Active__c == "false" || crecord.User_Active__c == "FALSE")) {
+            s += " (inactive)";
+          } else {
+            s += " (active)";        
+          }
+        }
+        s += "<br/>\n";
+        
+        s += "&nbsp;&nbsp;&nbsp;&nbsp;Disposition: " + crecord.Disposition__c  + "<br/>\n";
+        if (crecord.Disposition_Add_Info__c != null && crecord.Disposition_Add_Info__c != "" && crecord.Disposition_Add_Info__c != "null" ) {
+          s += "&nbsp;&nbsp;&nbsp;&nbsp;<font size=\"-2\">" + crecord.Disposition_Add_Info__c + "</font><br/>\n";
+        }                               
+        s += "<br><div align=\"center\">_______________________________________</div></br><br>&nbsp;</br>\n\n";
+      }
+      s += "<br>&nbsp;</br><br>&nbsp;</br>";
+      s += "</td></tr></table>";
+      document.getElementById("searchResultsDiv").innerHTML = s;
+    }
+  
+}
+  
+  
+</script>
+  
+    </body>
+</html>
+
+
+</apex:page>

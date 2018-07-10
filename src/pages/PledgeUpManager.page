@@ -1,0 +1,833 @@
+<apex:page sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="false">
+  <head>
+    <meta charset="utf-8"></meta>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+    <meta name="referrer" content="always"></meta>
+    <apex:includeScript value="{!$Resource.agGridEnterprise17}" />
+    <script src="/soap/ajax/31.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/31.0/apex.js" type="text/javascript"></script>
+    <style>
+
+      .hide {
+        visibility: hidden;
+      }
+
+      .show {
+        visibility: visible;        
+      }
+
+      @media screen and (max-width: 1920px) { 
+        #MembersGridDiv, #TransactionsGridDiv {
+          height: 815px;
+          clear: both;
+          padding-top: 6px;
+        }
+      }    
+
+      #tabContainer {
+        background-color: rebeccapurple;
+        -moz-border-radius: 4px;
+        border-radius: 4px;
+        border-color: red;
+        border-width: 2px;
+        overflow: visible;
+        padding-bottom: 6px;
+      }
+
+      #tabContainer h3 {
+        width: 50%;
+        font-style: italic;
+        clear: left;
+      }
+
+      #tabs {
+        padding-top: 0px;
+        padding-bottom: 1px;
+        width: 90%;
+        margin-left: 20px;
+      }
+
+      #tabs>ul {
+        font: 1em;
+        list-style: none;
+      }
+
+      #tabs>ul>li {
+        margin-top: 0px;
+        margin-right: 4px;
+        margin-bottom: 1px;
+        margin-left: 2px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-left: 10px;
+        padding-right: 10px;
+        display: block;
+        float: left;
+        color: #FFF;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+        -moz-border-radius-topleft: 4px;
+        -moz-border-radius-topright: 4px;
+        -moz-border-radius-bottomright: 0px;
+        -moz-border-radius-bottomleft: 0px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 0px;
+        border-bottom-left-radius: 0px;
+        background: -moz-linear-gradient(top, #0C91EC 0%, #257AB6 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #0C91EC), color-stop(100%, #257AB6));
+      }
+
+      #tabs>ul>li:hover {
+        background: -moz-linear-gradient(top, #FFFFFF 0%, #F3F3F3 10%, #F3F3F3 50%, #FFFFFF 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFFFFF), color-stop(10%, #F3F3F3), color-stop(50%, #F3F3F3), color-stop(100%, #FFFFFF));
+        cursor: pointer;
+        color: #333;
+      }
+
+      #tabs>ul>li.tabActiveHeader {
+        background: -moz-linear-gradient(top, #FFFFFF 0%, #F3F3F3 10%, #F3F3F3 50%, #FFFFFF 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFFFFF), color-stop(10%, #F3F3F3), color-stop(50%, #F3F3F3), color-stop(100%, #FFFFFF));
+        cursor: pointer;
+        color: #333;
+      }
+
+      #tabscontent {
+        -moz-border-radius-topleft: 0px;
+        -moz-border-radius-topright: 4px;
+        -moz-border-radius-bottomright: 4px;
+        -moz-border-radius-bottomleft: 4px;
+        border-top-left-radius: 0px;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        border-bottom-left-radius: 4px;
+        background: -moz-linear-gradient(top, #FFFFFF 0%, #FFFFFF 90%, #e4e9ed 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFFFFF), color-stop(90%, #FFFFFF), color-stop(100%, #e4e9ed));
+        color: #333;
+        padding: 0px;
+        margin: 20px;
+        padding-bottom: 5px;
+      }
+
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+
+      #MainDiv {
+        background-color: rebeccapurple;
+        color:white;
+      }
+
+      #Version, #Info {
+        font-size: 10px;
+        padding-right: 10px;
+        padding-left: 5px;
+        padding-top: 7px;
+      }
+
+      #TitleDiv, #BatchDiv {
+        display: flex;
+        justify-content: space-between;
+      }
+
+    .HeaderLeft {  
+      color: blue;
+      margin-left: 5px;
+      padding-right: 7px !important;
+    }
+
+    .HeaderRight {  
+      display: flex;  
+      justify-content: flex-end;
+      color: blue;
+      margin-left: 2px;
+      padding-right: 7px !important;
+    }
+
+    .HeaderCenter {  
+      color: blue;
+      margin-left: 2px;
+      padding-left: 18px !important;
+      padding-right: 5px !important;
+    }
+
+    .CellLeft {
+      text-align: left;
+      padding-left: 5px !important;
+    }
+
+    .CellRight {
+      text-align: right;
+      padding-right: 5px !important;
+    }
+
+    .CellCenter {
+      text-align: center !important;
+    }
+
+    .modalDialog {
+      position: fixed;
+      font-family: Arial, Helvetica, sans-serif;
+      top: 200px;
+      left: 270px;
+      width: 80%;
+      height: 70%;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 99999;
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .modalDialog>div {
+      width: 400px;
+      position: relative;
+      margin: 10% auto;
+      padding: 5px 20px 13px 20px;
+      border-radius: 10px;
+      background: #fff;
+      background: -moz-linear-gradient(#fff, #999);
+      background: -webkit-linear-gradient(#fff, #999);
+      background: -o-linear-gradient(#fff, #999);
+    }
+
+    </style>
+  </head>
+
+  <body>
+
+    <div id="MainDiv">
+      <div id="TitleDiv">
+        <label id="Version">v0.1</label>
+        <label id="TitleLbl">Pledge Up Manager</label>
+        <label id="Info"></label>      
+      </div>
+
+      <span id="statusDiv1" style="padding: 5px;clear: both;"> </span>
+      <span id="statusDiv2" style="padding: 5px;clear: both;"> </span>
+
+      <div id="tabContainer">
+        <div id="tabs">
+          <ul>
+            <li id="tabHeader_1">Members</li>
+            <li id="tabHeader_2">Transactions</li>
+            <li id="tabHeader_3">Reports</li>
+            <li id="tabHeader_4">Debug</li>
+          </ul>
+        </div>
+
+        <div id="tabscontent">
+          <div class="tabpage" id="tabpage_1">
+            <div id="MembersGridDiv" class="ag-fresh"></div>
+          </div>
+
+          <div class="tabpage" id="tabpage_2">
+            <div id="TransactionsGridDiv" class="ag-fresh"></div>
+          </div>
+
+          <div class="tabpage" id="tabpage_3">
+            <h3>Reports</h3>
+            <div id="ReportsDiv"></div>
+          </div>
+
+          <div class="tabpage" id="tabpage_4">
+            <h3>Debug</h3>
+            <div id="DebugDiv"> 
+                <textarea id="DebugLog" placeholder="Debug log" rows="2" cols="120"></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="ModalLoadingDiv" class="modalDialog hide">
+      <div>
+        <h2>Loading data...</h2>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+
+      'use strict';
+
+      function log(pStr) {
+        debugLog.append(pStr + '\n');
+      }
+
+      function processTransactions(txData) {
+        let i,l,txRec,addrRec;
+        let amount,canRetry,createdAt,description,dollarAmount,gatewayTransactionUid,isUserDefined,originalTransaction,pk,retryTransaction,status,statusDetail,transactionDate,transactionType,transactionUid,updatedAt,url;
+        let firstName,middleName,lastName;
+
+        if(txData.results) {
+          for(i=0,l=txData.results.length;i<l;i++) {
+            txRec = addrRec = null;
+            txRec                 = txData.results[i];
+            amount                = txRec.amount                  || 0;
+            canRetry              = txRec.can_retry               || false;
+            createdAt             = txRec.created_at              || '';
+            description           = txRec.description             || '';
+            dollarAmount          = txRec.dollar_amount           || 0;
+            gatewayTransactionUid = txRec.gateway_transaction_uid || '';
+            isUserDefined         = txRec.is_user_defined         || false;
+            originalTransaction   = txRec.original_transaction    || '';
+            pk                    = txRec.pk                      || '';
+            retryTransaction      = txRec.retry_transaction       || false;
+            status                = txRec.status                  || '';
+            statusDetail          = txRec.status_detail           || '';
+            transactionDate       = txRec.transaction_date        || '';
+            transactionType       = txRec.transaction_type        || '';
+            transactionUid        = txRec.transaction_uid         || '';
+            updatedAt             = txRec.updated_at              || '';
+            url                   = txRec.url                     || '';
+
+            // if(memberMap[pk]) {
+            //   firstName  = memberMap[pk].FirstName;
+            //   middleName = memberMap[pk].MiddleName;
+            //   lastName   = memberMap[pk].LastName;
+            // } else {
+            //   if(i < 3) {
+            //     console.log(pk + ' missing from MbrMap');
+            //   }
+            // }
+
+// console.log('---- Transaction ----');
+// console.log(amount, canRetry, createdAt, description, dollarAmount, gatewayTransactionUid, isUserDefined, originalTransaction, pk, retryTransaction, status, statusDetail, transactionDate, transactionType, transactionUid, updatedAt, url);
+
+            // Don't think there is any data on these object that we care about
+            if('member' in txRec) {
+              if(txRec.member) {
+//                console.log('txRec.member: ', txRec.member);
+              }
+            }
+
+            if('metadata' in txRec) {
+              if(txRec.metadata) {
+//                console.log('txRec.metadata: ', txRec.metadata);                
+              }
+            }
+
+            if('payment' in txRec) {
+              if(txRec.payment) {
+//                console.log('txRec.payment: ', txRec.payment);
+              }
+            }
+
+            txDataArray.push({
+              FirstName:firstName,
+              MiddleName:middleName,
+              LastName:lastName,
+              Amount:amount,
+              CanRetry:canRetry,
+              CreatedAt:createdAt,
+              Description:description,
+              DollarAmount:dollarAmount,
+              GatewayTransactionUid:gatewayTransactionUid,
+              IsUserDefined:isUserDefined,
+              OriginalTransaction:originalTransaction,
+              PledgeUpId:pk,
+              RetryTransaction:retryTransaction,
+              Status:status,
+              StatusDetail:statusDetail,
+              TransactionDate:transactionDate,
+              TransactionType:transactionType,
+              TransactionUid:transactionUid,
+              UpdatedAt:updatedAt,
+              Url:url}
+            );
+
+          }
+        }
+        showTransactionsGrid();
+      }
+
+      function processMembers(mbrData) {
+        let i,rec,addrRec,mbrRec,street1,street2,city,state,zipcode,latitude,longitude;
+        let pledgeUpId,collectedBy,contactId,lastDuesPaid,termDate,cellPhone,dateOfBirth,email,gender,firstName,lastName,middleName,name,language;
+        let insurance,where,prefix,suffix,homeEmail,homePhone,notes,previousStatus,profession,plCreateDate,salutation,textAuth,title,uid,workEmail,workPhone;
+        let assessment,isleader,lastInvite;
+
+        if(mbrData.results) {
+          for(i=0;i<mbrData.results.length;i++) {
+            mbrRec = addrRec = null;
+            rec = mbrData.results[i];
+            if('data' in rec) {
+              if(rec.data) {
+                if('home_address' in rec.data) {
+                  if(rec.data.home_address) {
+                    addrRec   = rec.data.home_address;
+                    street1   = toProperCase(addrRec.street1);
+                    street2   = toProperCase(addrRec.street2);
+                    city      = toProperCase(addrRec.city);
+                    state     = addrRec.state;
+                    if(state) {
+                      state = state.toUpperCase();
+                    }
+                    zipcode   = toProperCase(addrRec.zipcode);
+                    latitude  = addrRec.latitude; 
+                    longitude = addrRec.longitude;
+                  }
+                }
+              
+                if('member' in rec.data) {
+                  if(rec.data.member) {
+                    mbrRec = rec.data.member;
+                    collectedBy    = mbrRec['Collected By']  || '';
+                    contactId      = mbrRec['Contact ID']    || '';
+                    language       = mbrRec.Language         || '';
+                    lastDuesPaid   = mbrRec.LastDuesPaid     || '';
+                    termDate       = mbrRec['TERM-DATE']     || '';
+                    insurance      = mbrRec['What type of health insurance do you have?']     || '';
+                    where          = mbrRec['Where do you receive your healthcare services?'] || '';
+                    assessment     = mbrRec.assessment       || ''; 
+                    cellPhone      = mbrRec['cell phone']    || '';
+                    dateOfBirth    = mbrRec['date of birth'] || '';
+                    email          = mbrRec.email            || '';
+                    firstName      = mbrRec['first name']    || '';
+                    gender         = mbrRec.gender           || '';
+                    homeEmail      = mbrRec['home email']    || '';
+                    homePhone      = mbrRec['home phone']    || '';
+                    pledgeUpId     = mbrRec.id               || '';
+                    isleader       = mbrRec['is leader']     || '';
+                    lastInvite     = mbrRec['last invite sent at'] || '';
+                    lastName       = mbrRec['last name']     || '';
+                    middleName     = mbrRec['middle name']   || '';
+                    name           = mbrRec.name             || '';
+                    notes          = mbrRec.notes            || '';
+                    prefix         = mbrRec.prefix           || '';
+                    previousStatus = mbrRec.previous_status  || '';
+                    profession     = mbrRec.profession       || '';
+                    plCreateDate   = mbrRec['record created at'] || '';
+                    salutation     = mbrRec.salutation       || '';
+                    textAuth       = mbrRec['text auth']     || '';
+                    title          = mbrRec.title            || '';
+                    suffix         = mbrRec.suffix           || '';
+                    uid            = mbrRec.uid              || '';
+                    workEmail      = mbrRec['work email']    || '';
+                    workPhone      = mbrRec['work phone']    || '';
+
+                    firstName      = toProperCase(firstName);
+                    middleName     = toProperCase(middleName);
+                    lastName       = toProperCase(lastName);
+                    collectedBy    = toProperCase(collectedBy);
+                    language       = toProperCase(language);
+                    gender         = toProperCase(gender);
+                    previousStatus = toProperCase(previousStatus);
+                    profession     = toProperCase(profession);
+                    title          = toProperCase(title);
+                    email          = email.toLowerCase();
+                    cellPhone      = phoneFormat(cellPhone);
+                    homePhone      = phoneFormat(homePhone);
+                    workPhone      = phoneFormat(workPhone);
+
+                    if(!memberMap[pledgeUpId]) {
+                      memberMap[pledgeUpId] = {FirstName:firstName,MiddleName:middleName,LastName:lastName};
+                    }
+
+                  }
+
+                  recCount++;
+                  membersDataArray.push({
+                    CollectedBy:collectedBy,
+                    ContactId:contactId,
+                    Language:language,
+                    LastDuesPaid:lastDuesPaid,
+                    TermDate:termDate,
+                    Insurance:insurance,
+                    Where:where,
+                    Assessment:assessment,
+                    CellPhone:cellPhone,
+                    DateOfBirth:dateOfBirth,
+                    Email:email,
+                    FirstName:firstName,
+                    Gender:gender,
+                    HomeEmail:homeEmail,
+                    HomePhone:homePhone,
+                    PledgeUpId:pledgeUpId,
+                    Isleader:isleader,
+                    LastInvite:lastInvite,
+                    LastName:lastName,
+                    MiddleName:middleName,
+                    Name:name,
+                    Notes:notes,
+                    Prefix:prefix,
+                    PreviousStatus:previousStatus,
+                    Profession:profession,
+                    PlCreateDate:plCreateDate,
+                    Salutation:salutation,
+                    Suffix:suffix,
+                    TextAuth:textAuth,
+                    Title:title,
+                    Uid:uid,
+                    WorkEmail:workEmail,
+                    WorkPhone:workPhone,
+                    Street1:street1,
+                    Street2:street2,
+                    City:city,
+                    State:state,
+                    Zipcode:zipcode,
+                    Latitude:latitude,
+                    Longitude:longitude}
+                  );
+                }
+              } 
+            }
+          }
+        }
+        if(mbrData.next) {
+          titleLabel.innerHTML = `Pledge Up Manager (Batch : ${batchCount})`;
+          console.log(`Batch : ${batchCount}`);
+          getMembers(mbrData.next);
+        } else {
+          showMembersGrid();
+          showLoadingMsg(false);
+          titleLabel.innerHTML = `Pledge Up Manager (Members: ${recCount})`;
+          console.log(`Finished getting Mbr Data. Batch Count: ${batchCount} - Record Count: ${recCount} `);
+          console.log('Fetching TX data...');
+          getTransactions();
+
+console.log('***** memberMap *******', memberMap);
+
+        }
+      }
+
+      function getMembers(next) {
+          let tokenStr = 'JWT ' + token;
+          let url;
+console.log('tokenStr:: ', tokenStr);
+          if(next) {
+            url = next + '?page_size=5000';
+            batchCount++;
+          } else {
+            url = 'https://pledgeup.com/api/v1/local/organization/seiu-uhw/member/?page_size=5000';  
+          }
+
+          sforce.connection.remoteFunction({
+            url: url,
+            requestHeaders: {'Authorization' : tokenStr, Accept: 'application/json'},
+            method: 'GET',
+            timeout: 3000,
+            onSuccess: function(response) {
+              let responseObj = JSON.parse(response);
+              processMembers(responseObj);
+            },
+            onFailure: function(error) {
+              alert('Members not ok');
+              console.log('failure', error);
+            }
+          });
+
+      }
+
+      function getTransactions(next) {
+          let tokenStr = 'JWT ' + token;
+          let url;
+
+          if(next) {
+            url = next + '?page_size=5000';
+            batchCount++;
+          } else {
+            url = 'https://pledgeup.com/api/v1/local/organization/seiu-uhw/transaction/?page_size=5000';  
+          }
+
+          sforce.connection.remoteFunction({
+            url: url,
+            requestHeaders: {'Authorization' : tokenStr, Accept: 'application/json'},
+            method: 'GET',
+            timeout: 3000,
+            onSuccess: function(response) {
+              let responseObj = JSON.parse(response);
+              processTransactions(responseObj);
+            },
+            onFailure: function(error) {
+              alert('Transactions not ok');
+              console.log('failure', error);
+            }
+          });
+
+      }
+
+      function getToken() {
+        return new Promise(function (resolve, reject) {
+          sforce.connection.remoteFunction({
+            url: 'https://pledgeup.com/api/v1/accounts/auth-token/',
+            requestHeaders: {Accept: 'application/json', 'Content-Type': 'application/json'},
+            requestData: '{"email": "mmoreno@seiu-uhw.org", "password": "sAs3*z2p!"}',
+            method: 'POST',
+            timeout: 3000,
+            onSuccess: function(response) {
+              let responseObj = JSON.parse(response);
+              token = responseObj.token;
+              let parts = token.split(".");
+              let header  = JSON.parse(window.atob(parts[0]));
+              let payload = JSON.parse(window.atob(parts[1]));
+              tokenExpirateDate = new Date(payload.exp * 1000).toLocaleString('en-US', dateOption);
+              info.innerHTML = `PledgeUp Token expires: ${tokenExpirateDate}`
+              log(`PledgeUp Token expires: ${tokenExpirateDate}` );
+              resolve('ok');
+            },
+            onFailure: function(response) {
+              alert('Failed to get token.  Call Graham (510 869 2244)');
+              console.log('failure', response);
+              reject('error');
+            }
+          });
+        });
+      }
+
+      function phoneFormat(s) {
+        var s1;
+        if (s == null || s == '')
+          s1 = '';
+        else
+          s1 = s.replace('-', '');
+        s1 = s1.replace(' ', '');
+        s1 = s1.replace('(', '');
+        s1 = s1.replace(')', '');
+        s1 = s1.substr(0, 3) + ' ' + s1.substr(3, 3) + ' ' + s1.substr(6);
+        return s1;
+      }
+
+      function toProperCase(s)
+      // My version - handles hyphenated names correctly :)
+      {
+        var s1;
+        if (s == null)
+          s1 = '';
+        else
+          s1 = s.toLowerCase().replace(/\b[a-zA-Z]/g, function ($1) { return $1.toUpperCase(); });
+
+        return s1;
+      }
+
+      function number_format(number, decimals, dec_point, thousands_sep) {
+        number = (number + '')
+          .replace(/[^0-9+\-Ee.]/g, '');
+        var n = !isFinite(+number) ? 0 : +number,
+          prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+          sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+          dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+          s = '',
+          toFixedFix = function (n, prec) {
+            var k = Math.pow(10, prec);
+            return '' + (Math.round(n * k) / k).toFixed(prec);
+          };
+        // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n))
+          .split('.');
+        if (s[0].length > 3) {
+          s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+        }
+        if ((s[1] || '').length < prec) {
+          s[1] = s[1] || '';
+          s[1] += new Array(prec - s[1].length + 1)
+            .join('0');
+        }
+        return s.join(dec);
+      }
+
+      function initTabs() {
+
+        // get tab container
+        var container = document.getElementById("tabContainer");
+        var tabcon = document.getElementById("tabscontent");
+
+        // set current tab
+        var navitem = document.getElementById("tabHeader_1");
+
+        //store which tab we are on
+        var ident = navitem.id.split("_")[1];
+
+        navitem.parentNode.setAttribute("data-current", ident);
+        //set current tab with class of activetabheader
+        navitem.setAttribute("class", "tabActiveHeader");
+
+        //hide two tab contents we don't need
+        var pages = tabcon.getElementsByTagName("div");
+        var page;
+
+        for (var i = 1; i < pages.length; i++) {
+          page = pages.item(i);
+          if (page.className.indexOf('tabpage') != -1) {
+            pages.item(i).style.display = "none";
+          }
+        };
+
+        //this adds click event to tabs
+        var tabs = container.getElementsByTagName("li");
+        for (var i = 0; i < tabs.length; i++) {
+          tabs[i].onclick = displayPage;
+        }
+      }
+
+      // on click of one of tabs
+      function displayPage() {
+        var current = this.parentNode.getAttribute("data-current");
+        //remove class of activetabheader and hide old contents
+        document.getElementById("tabHeader_" + current).removeAttribute("class");
+        document.getElementById("tabpage_" + current).style.display = "none";
+
+        var ident = this.id.split("_")[1];
+        //add class of activetabheader to new active tab and show contents
+        this.setAttribute("class", "tabActiveHeader");
+        document.getElementById("tabpage_" + ident).style.display = "block";
+        this.parentNode.setAttribute("data-current", ident);
+      }
+
+      function initAgGrid() {
+
+        membersColDefs = [
+          { headerName: 'Prefix',         field: 'Prefix',         width:  80, cellClass: 'CellCenter', headerClass: 'HeaderCenter', pinned:'left'},
+          { headerName: 'FirstName',      field: 'FirstName',      width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft',   pinned:'left'},
+          { headerName: 'MiddleName',     field: 'MiddleName',     width: 120, cellClass: 'CellCenter', headerClass: 'HeaderCenter', pinned:'left'},
+          { headerName: 'LastName',       field: 'LastName',       width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft',   pinned:'left'},
+          { headerName: 'Suffix',         field: 'Suffix',         width:  80, cellClass: 'CellCenter', headerClass: 'HeaderCenter', pinned:'left'},
+          { headerName: 'ContactId',      field: 'ContactId',      width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'LastDuesPaid',   field: 'LastDuesPaid',   width: 120, cellClass: 'CellRight',  headerClass: 'HeaderRight'},
+          { headerName: 'TermDate',       field: 'TermDate',       width: 120, cellClass: 'CellRight',  headerClass: 'HeaderRight'},
+          { headerName: 'CollectedBy',    field: 'CollectedBy',    width: 170, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'PledgeUpId',     field: 'PledgeUpId',     width: 120, cellClass: 'CellCenter', headerClass: 'HeaderCenter'},
+          { headerName: 'Salutation',     field: 'Salutation',     width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Title',          field: 'Title',          width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Language',       field: 'Language',       width: 130, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Insurance',      field: 'Insurance',      width: 220, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Where',          field: 'Where',          width: 220, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Assessment',     field: 'Assessment',     width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'CellPhone',      field: 'CellPhone',      width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'DateOfBirth',    field: 'DateOfBirth',    width: 120, cellClass: 'CellRight',  headerClass: 'HeaderRight'},
+          { headerName: 'Email',          field: 'Email',          width: 220, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Gender',         field: 'Gender',         width: 120, cellClass: 'CellCenter', headerClass: 'HeaderCenter'},
+          { headerName: 'HomeEmail',      field: 'HomeEmail',      width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'HomePhone',      field: 'HomePhone',      width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Isleader',       field: 'Isleader',       width: 120, cellClass: 'CellCenter', headerClass: 'HeaderCenter'},
+          { headerName: 'LastInvite',     field: 'LastInvite',     width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Notes',          field: 'Notes',          width: 500, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'PreviousStatus', field: 'PreviousStatus', width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Profession',     field: 'Profession',     width: 230, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'PlCreateDate',   field: 'PlCreateDate',   width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'TextAuth',       field: 'TextAuth',       width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'WorkEmail',      field: 'WorkEmail',      width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'WorkPhone',      field: 'WorkPhone',      width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Street1',        field: 'Street1',        width: 180, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Street2',        field: 'Street2',        width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'City',           field: 'City',           width: 180, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'State',          field: 'State',          width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Zipcode',        field: 'Zipcode',        width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Latitude',       field: 'Latitude',       width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Longitude',      field: 'Longitude',      width: 120, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'},
+          { headerName: 'Uid',            field: 'Uid',            width: 220, cellClass: 'CellLeft',   headerClass: 'HeaderLeft'}
+        ];
+
+        txColDefs = [
+          { headerName: 'PledgeUpId',            field: 'PledgeUpId',                 width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'FirstName',             field: 'FirstName',                  width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'MiddleName',            field: 'MiddleName',                 width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'LastName',              field: 'LastName',                   width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'Amount',                field: 'Amount',                     width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'CanRetry',              field: 'CanRetry',                   width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'CreatedAt',             field: 'CreatedAt',                  width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'Description',           field: 'Description',                width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'DollarAmount',          field: 'DollarAmount',               width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'GatewayTransactionUid', field: 'GatewayTransactionUid',      width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'IsUserDefined',         field: 'IsUserDefined',              width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'OriginalTransaction',   field: 'OriginalTransaction',        width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'PledgeUpId',            field: 'PledgeUpId',                 width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'RetryTransaction',      field: 'RetryTransaction',           width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'Status',                field: 'Status',                     width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'StatusDetail',          field: 'StatusDetail',               width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'TransactionDate',       field: 'TransactionDate',            width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'TransactionType',       field: 'TransactionType',            width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'TransactionUid',        field: 'TransactionUid',             width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'UpdatedAt',             field: 'UpdatedAt',                  width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'},
+          { headerName: 'Url:url',               field: 'Url:url',                    width: 120, cellClass: 'CellLeft', headerClass: 'HeaderLeft'}
+        ];
+
+      }
+
+      function showMembersGrid() {
+          if (membersGridOptions)
+            membersGridOptions.api.destroy();
+
+          membersGridOptions = {
+            columnDefs: membersColDefs,
+            rowData: membersDataArray,
+            enableSorting: true,
+            enableFilter: true,
+            showToolPanel: false,
+            toolPanelSuppressRowGroups: true,
+            toolPanelSuppressValues: true,
+            toolPanelSuppressPivots: true,
+            toolPanelSuppressPivotMode: true
+          };
+          new agGrid.Grid(membersGridDiv, membersGridOptions);
+          membersGridOptions.api.setSortModel(initialSort);
+//        membersGridOptions.api.exportDataAsCsv({ fileName: 'PledgeUp.csv' });
+      }
+
+      function showTransactionsGrid() {
+          if (txGridOptions)
+            txGridOptions.api.destroy();
+
+          txGridOptions = {
+            columnDefs: txColDefs,
+            rowData: txDataArray,
+            enableSorting: true,
+            enableFilter: true,
+            showToolPanel: false,
+            toolPanelSuppressRowGroups: true,
+            toolPanelSuppressValues: true,
+            toolPanelSuppressPivots: true,
+            toolPanelSuppressPivotMode: true
+          };
+          new agGrid.Grid(txGridDiv, txGridOptions);
+      }
+
+      function showLoadingMsg(show) {
+        if (show) // modal window fake
+          modalLoadingDiv.setAttribute('class', 'modalDialog');
+        else
+          modalLoadingDiv.setAttribute('class', 'hide');
+      }
+
+      // ***************** Globals *****************
+
+      const titleLabel      = document.getElementById('TitleLbl');
+      const info            = document.getElementById('Info');
+      const password        = document.getElementById('password');
+      const userId          = document.getElementById('user-id');
+      const debugLog        = document.getElementById('DebugLog');
+      const membersGridDiv  = document.getElementById('MembersGridDiv');
+      const txGridDiv       = document.getElementById('TransactionsGridDiv');
+      const modalLoadingDiv = document.getElementById('ModalLoadingDiv');
+
+      const dateOption = { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' };
+
+      const initialSort = [
+        { colId: 'LastName',    sort: 'asc' },
+        { colId: 'FirstName',   sort: 'asc' },
+        { colId: 'MiddleName',  sort: 'asc' }        
+      ];
+
+      let token,tokenExpirateDate,batchCount=1,recCount=0,currentUserInfo;
+      let membersColDefs,membersGridOptions,membersDataArray=[],memberMap={};
+      let txColDefs,txGridOptions,txDataArray=[];
+
+      // ***************** Main Program Entry *****************
+
+        sforce.connection.sessionId = "{!$Api.Session_ID}";
+        info.innerHTML = `screen: ${screen.width} x ${screen.height}`;
+        currentUserInfo = sforce.connection.getUserInfo();
+
+        showLoadingMsg(true);
+        initTabs();
+        initAgGrid();
+        getToken().then( function() { 
+          getMembers();
+        }).catch(function (error) {
+          console.log('Error' + error);
+        });
+
+    </script>
+  </body>
+</apex:page>

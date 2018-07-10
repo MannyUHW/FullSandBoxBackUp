@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>true</doesSendEmailToMembers>
+    <email>hr@seiu-uhw.org</email>
+    <name>HR Team</name>
+    <queueMembers>
+        <publicGroups>
+            <publicGroup>HR_Team</publicGroup>
+        </publicGroups>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>BHAT_Activity__c</sobjectType>
+    </queueSobject>
+</Queue>

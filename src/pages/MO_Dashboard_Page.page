@@ -1,0 +1,353 @@
+<apex:page standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!URLFOR($Resource.mo_assets, '/mo_assets/css/bootstrap.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/jquery.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/bootstrap.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.mo_assets, '/mo_assets/js/dgutils.js')}"/>
+
+ <script src="/soap/ajax/34.0/connection.js" type="text/javascript"></script>
+<script src="/soap/ajax/34.0/apex.js" type="text/javascript"></script>
+<script language="JavaScript">
+
+function navigateBack() {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.back(true);
+  } else {
+    window.history.back();
+  }
+  return true;
+}
+
+function navigateTo(pUrl) {
+  if( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ) {
+    sforce.one.navigateToURL(pUrl);
+  } else {
+    window.location=pUrl;
+  }
+  return true;
+}
+
+  sessionStorage.setItem("mo_last_page", "MO_Dashboard_Page");
+
+</script>
+
+<div align="center">
+
+  <table>
+  <tr valign="middle">
+  <td align="left" width="20%">
+    <a href="javascript:navigateBack();"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/back.png')}"/></a>
+  </td>
+  <td align="center" width="5%">
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </td>
+  <td align="center" width="50%">  
+    <a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a>
+  </td>
+  <td align="center" width="25%">
+    <a href="javascript:navigateTo('{! $Page.MO_Search_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/search_white.png')}"/></a>
+  </td>
+  </tr>
+  </table>
+  
+
+<br>&nbsp;</br>
+  <h1 id="h1Title">Dashboard</h1>
+<br>&nbsp;</br>
+
+<table border="0" colpadding="10">
+
+<tr valign="top">
+<td align="right">
+Survey:
+</td>
+<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+<td align="left">
+<select id="qselect" onchange="changeQuestion()">
+<option value="ALL">All</option>
+</select>
+</td>
+</tr>
+<tr valign="top">
+<td colspan="3" align="right">
+&nbsp;
+</td>
+</tr>
+
+<tr valign="top">
+<td colspan="3" align="right">
+
+<script language="JavaScript">
+
+var qpopulated = false;
+
+var questions = localStorage.getItem("mo_sync_questions").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qids = localStorage.getItem("mo_sync_qids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var qcodes = localStorage.getItem("mo_sync_qcodes").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emids = localStorage.getItem("mo_sync_emids").replace("[", "").replace("]","").replace("\"", "").split(",");
+var emnames = localStorage.getItem("mo_sync_emnames").replace("[", "").replace("]","").replace("\"", "").split(",");
+var cams = localStorage.getItem("mo_sync_cams").replace("[", "").replace("]","").replace("\"", "").split(",");
+
+var qcode = qcodes[0];
+
+var emNameIdMap = new Array();
+var emIdNameMap = new Array();
+for (var i = 0; i < emids.length; i++ ) { 
+  emNameIdMap[emnames[i].toLowerCase()] = emids[i];
+  emIdNameMap[emids[i]] = emnames[i];  
+}
+
+
+var paramcode = "{!$CurrentPage.parameters.qcode}";
+if (paramcode != null && paramcode != "" && paramcode != "null") {
+  qcode = paramcode;
+} else {
+  qcode = "ALL";
+}
+
+var qpopulated = false;
+var qselect = document.getElementById("qselect");
+for (var i = 0; i < qcodes.length; i++) {
+  qselect.options[i+1] = new Option(questions[i], qcodes[i]);
+  if (qcodes[i] = qcode){ 
+    qselect.options[i+1].selected = true;
+    qselect.selectedIndex = i+1;
+  }
+}
+qselect.value = qcode;
+$('#qselect').val(qcode);
+
+
+var qidMap = new Array();
+var deptBuMap = new Array();
+var allDepts = 0;
+var tempc = 0;
+var cope10Payers = 0;
+
+      for (var rr = 0; rr < localStorage.length; rr++) {
+        if (localStorage.key(rr).trim().indexOf("mo_fid_") == 0) {
+          //var crecord = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+          var compressedContactArray = JSON.parse(localStorage.getItem(localStorage.key(rr)));
+          var crecord = uncompressContact(compressedContactArray);
+
+          var dept = crecord.Department;
+          var emname = crecord.Account.Name;
+          var emdept = ("" + emname + "~" + dept).trim().toLowerCase();
+          if (tempc < 3) {
+            //alert("crecord=" + crecord);
+            //alert("emdept=" + emdept);
+          }
+          var deptCount = 0;
+          if (deptBuMap[emdept] != null) {
+            deptCount = deptBuMap[emdept];
+          } else {
+            allDepts++;
+          }
+          deptCount++;
+          deptBuMap[emdept] = deptCount;
+          tempc++;
+          
+          var cope = crecord.Cope_Amount__c;
+          if (crecord.COPE_Pledge__c != null || crecord.COPE_Pledge__c > 0) {
+             cope = crecord.COPE_Pledge__c;
+          }
+          if (cope >= 9.2) {
+            cope10Payers++;
+          }
+        }
+      }
+
+//alert("deptBuMap size = " + allDepts);
+//alert("qcode=" + qcode);
+try{ 
+
+    
+    var qrMap = new Array();
+    // query Salesforce using SOQL
+    sforce.connection.sessionId = "{!$Api.Session_ID}";
+    var query = "SELECT Id, Allowed_Responses__c from Survey_Question__c  where ";
+    for (var g = 0; g < qids.length; g++) {
+        if (g > 0) {
+          query += " OR "
+        }
+        query += " Id = \'" + qids[g] + "\' ";
+    }
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    for(var i=0;i<records1.length;i++){ 
+      qrMap[records1[i].Id] = records1[i].Allowed_Responses__c.split("\n")[0];
+    }
+
+    
+    var query = "SELECT Survey_Question__r.Id, ";
+    if (qcode != "ALL") {
+      query += " Contact__r.Account.Name,Contact__r.Department,";
+    }
+    query += " Response_Value__c, count(id) FROM Survey_Response__c ";
+    query += " where (";
+    for (var g = 0; g < emids.length; g++) {
+      if (g > 0) {
+        query += " OR "
+      }
+      query += " Contact__r.Account.Employer_ID__c = \'" + emids[g] + "\' ";
+    }
+    query += ") AND (";
+    if (qcode == "ALL") {
+      for (var g = 0; g < qids.length; g++) {
+        if (g > 0) {
+          query += " OR "
+        }
+        query += " Survey_Question__r.Id = \'" + qids[g] + "\' ";
+
+        qidMap[qids[g]] = questions[g];
+      }
+      query += ") group by  Survey_Question__r.Id,Response_Value__c";      
+    } else {
+      query += " Survey_Code__c='" + qcode + "' ";
+      query += ") group by  Survey_Question__r.Id, Contact__r.Account.Name,Contact__r.Department,Response_Value__c";
+    }
+   
+    //alert("query=" + query);
+    var records = sforce.connection.query(query); 
+    var records1 = records.getArray('records'); 
+    var nonzeroList = new Array();
+
+    document.write("<table border=\"0\" cellpadding=\"10\">\n");
+    document.write("<tr valign=\"bottom\">\n");
+    if (qcode == "ALL") {
+      document.write("<th>Survey</th>\n");
+    }
+    document.write("<th>Response</th>\n");
+    if (qcode != "ALL") {
+      document.write("<th>Employer</th>\n");
+      document.write("<th>Department</th>\n");    
+    }
+    document.write("<th>Response<br/>Count</th>\n");
+    document.write("<th>BU<br/>Count</th>\n");
+    document.write("<th>Response<br/>Pct</th>\n");
+    document.write("</tr>\n");
+      
+    var rdefault = "Unknown";
+   
+    if (qcode=="ALL") {
+      //COPE $10 payers
+      document.write("<tr valign=\"top\">");
+      document.write("<td>COPE</td>");
+      document.write("<td>Payer $10+</td>");
+      document.write("<td align=\"center\">" + cope10Payers + "</td>");    
+      var bucount = parseInt(localStorage.getItem("mo_sync_bu"));      
+      document.write("<td align=\"center\">" + bucount + "</td>");
+      document.write("<td align=\"center\">"+ ((100.0 * cope10Payers) / bucount).toFixed(1) + "%</td>");          
+      document.write("</tr>");
+    }
+                
+    for(var i=0;i<records1.length;i++){ 
+      if (i == 0) {
+        //alert(records1[i]);
+      }
+      document.write("<tr valign=\"top\">");
+      var respcount = records1[i]["expr0"];
+      if (qcode == "ALL") {
+        document.write("<td>" + qidMap[records1[i]["Id"]] + "</td>");
+      } else {
+        //ignore
+      }
+      
+      document.write("<td>" + records1[i]["Response_Value__c"] + "</td>");
+      rdefault = records1[i]["Response_Value__c"];
+      
+      
+      //alert("bu size = " + localStorage.getItem("mo_sync_bu"));
+      
+      var bucount = parseInt(localStorage.getItem("mo_sync_bu"));      
+
+
+      if (qcode != "ALL") {
+        document.write("<td>" + toProperCase(records1[i]["Name"]) + "</td>");
+        var emid = emNameIdMap[records1[i]["Name"].trim().toLowerCase()];
+        document.write("<td><a href=\"javascript:navigateTo(\'{! $Page.MO_List_Page}?emid=" + emid + "&dept=" + encodeURIComponent(crecord.Department) + "\');\">" + toProperCase(records1[i]["Department"]) + "</td>");      
+        
+        var emdept = (records1[i]["Name"] + "~" + records1[i]["Department"]).trim().toLowerCase();
+        nonzeroList.push(emdept);  
+        bucount = deptBuMap[emdept] 
+      }  else {
+        nonzeroList.push(records1[i]["Id"]);
+      }
+      
+      document.write("<td align=\"center\">" + respcount + "</td>");
+    
+      document.write("<td align=\"center\">" + bucount + "</td>");
+      document.write("<td align=\"center\">" + Math.round((100.0 * respcount) / bucount) + "%</td>");      
+      document.write("</tr>");
+    }
+
+    if (qcode != "ALL") {
+      //alert("qdefault=" + qdefault);
+      for (var emdept in deptBuMap) {
+        if (nonzeroList.indexOf(emdept) < 0) {
+
+            document.write("<tr valign=\"top\">");
+            var respcount = 0;
+            document.write("<td>" + rdefault + "</td>");
+            document.write("<td>" + toProperCase(emdept.split("~")[0]) + "</td>");
+            
+            var emid = emNameIdMap[emdept.split("~")[0].trim().toLowerCase()];
+            
+            document.write("<td><a href=\"javascript:navigateTo(\'{! $Page.MO_List_Page}?emid=" + emid + "&dept=" + encodeURIComponent(emdept.split("~")[1]) + "\');\">" + toProperCase(emdept.split("~")[1]) + "</td>");      
+            document.write("<td align=\"center\">" + respcount + "</td>");
+            var bucount = deptBuMap[emdept];
+            document.write("<td align=\"center\">" + bucount + "</td>");
+            document.write("<td  align=\"center\">" + Math.round((100.0 * respcount) / bucount) + "%</td>");      
+            document.write("</tr>");
+
+        }
+      }
+    } else {
+      
+      //alert("nonzero list = " + JSON.stringify(nonzeroList));
+      for (var i = 0; i < qids.length; i++) {
+        if (nonzeroList.indexOf(qids[i]) < 0) {
+          document.write("<tr valign=\"top\">");
+          document.write("<td>" + qidMap[qids[i]]  + "</td>");
+          document.write("<td>" + qrMap[qids[i]] + "</td>");
+          document.write("<td align=\"center\">0</td>");    
+          
+          var bucount = parseInt(localStorage.getItem("mo_sync_bu"));      
+          //var bucount = 0;    
+          document.write("<td align=\"center\">" + bucount + "</td>");
+          document.write("<td align=\"center\">0%</td>");          
+          document.write("</tr>");
+        }
+      }
+    }
+    document.write("</table>");
+    
+} catch(e) { 
+ alert('An Error has Occured. Error:' +e); 
+}
+
+function changeQuestion() {
+  //alert("changeQuestion()");
+  if (qpopulated) {
+    var newcode = document.getElementById('qselect').value;
+    if (newcode != qcode) {
+       navigateTo("{! $Page.MO_Dashboard_Page}?qcode=" + newcode);
+       return true;
+    }
+    return false;
+  }
+}
+
+qpopulated = true;
+</script>
+<br>&nbsp;</br>
+</td>
+</tr>
+<tr><td colspan="3">
+<div align="center"><a href="javascript:navigateTo('{! $Page.MO_Main_Page}');"><img border="0" src="{!URLFOR($Resource.mo_assets, '/mo_assets/images/mo_white.png')}"/></a></div>
+</td>
+</tr>
+</table>
+
+</div>
+</apex:page>

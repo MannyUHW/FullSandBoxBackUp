@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <label><!-- Cope Amount_UHW --></label>
+        <name>Cope_Amount_UHW__c</name>
+    </fields>
+    <fields>
+        <label><!-- Delete Packet Contact --></label>
+        <name>Delete_Packet_Contact__c</name>
+    </fields>
+    <fields>
+        <label><!-- Dispatch Response --></label>
+        <name>Dispatch__c</name>
+        <picklistValues>
+            <masterLabel>Call - Bad Number</masterLabel>
+            <translation><!-- Call - Bad Number --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Call - Fixed Address</masterLabel>
+            <translation><!-- Call - Fixed Address --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Call - Language Barrier</masterLabel>
+            <translation><!-- Call - Language Barrier --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Call - No Client (NLE)</masterLabel>
+            <translation><!-- Call - No Client (NLE) --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Call - Not Home</masterLabel>
+            <translation><!-- Call - Not Home --></translation>
+        </picklistValues>
+        <picklistValues>
+            <masterLabel>Call - Verbal Supporter</masterLabel>
+            <translation><!-- Call - Verbal Supporter --></translation>
+        </picklistValues>
+    </fields>
+    <fields>
+        <label><!-- Generic Status --></label>
+        <name>Generic_Status__c</name>
+    </fields>
+    <fields>
+        <label><!-- Languages --></label>
+        <name>Languages__c</name>
+    </fields>
+    <fields>
+        <label><!-- Mobile --></label>
+        <name>Mobile__c</name>
+    </fields>
+    <fields>
+        <label><!-- Prime Phone --></label>
+        <name>Prime_Phone__c</name>
+    </fields>
+    <fields>
+        <label><!-- Result --></label>
+        <name>Result__c</name>
+    </fields>
+    <fields>
+        <label><!-- Secondary Phone1 --></label>
+        <name>Secondary_Phone1__c</name>
+    </fields>
+    <fields>
+        <label><!-- Secondary Phone2 --></label>
+        <name>Secondary_Phone2__c</name>
+    </fields>
+    <fields>
+        <label><!-- Zipcode5 --></label>
+        <name>Zipcode5__c</name>
+    </fields>
+</CustomObjectTranslation>
